@@ -8,17 +8,17 @@ all: help
 
 install:
 	python3 -m venv .venv
-	source .venv/bin/activate && pip install --upgrade pip && pip install -e .
+	. .venv/bin/activate && pip install --upgrade pip && pip install -e .
 
 clean:
-	rm -rf results .venv
+	rm -rf .venv
 
 ######################
 # RUN
 ######################
 
 run:
-	langgraph dev
+	. .venv/bin/activate && langgraph dev
 
 ######################
 # HELP
