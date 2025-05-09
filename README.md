@@ -2,8 +2,8 @@
 
 ### start
 
-1. install dependencies  
+1.install dependencies  
 `make install`
 
-2. start langchain studio  
+2.start langchain studio  
 `make run`
