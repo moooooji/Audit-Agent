@@ -4,9 +4,11 @@ import re
 import os
 from dotenv import load_dotenv
 
+# google genai
 from google import genai
 from google.genai import types
 
+# state
 from react_agent.state import State
 
 load_dotenv()
@@ -51,7 +53,7 @@ architecture_analysis = {
     }
 }
 
-# 전체 threats 리스트
+# all threats list
 all_threats = []
 
 # threats list
@@ -66,10 +68,10 @@ def json_str_to_dict(raw: str) -> dict:
     """
     s = raw.strip()
 
-    # ```json … ``` 혹은 ``` … ``` 제거
+    # remove ```json … ``` or ``` … ```
     if s.startswith("```"):
-        s = re.sub(r"^```(?:json)?\s*", "", s)   # 앞쪽 ```json 또는 ``` 제거
-        s = re.sub(r"\s*```$", "", s)            # 뒤쪽 ``` 제거
+        s = re.sub(r"^```(?:json)?\s*", "", s)   # remove ```json … ``` or ``` … ```
+        s = re.sub(r"\s*```$", "", s)            # remove ```
 
     return json.loads(s)
 
@@ -82,34 +84,34 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
     if not actor:
         raise ValueError(f"Actor with id {actor_id} not found")
 
-    # 1. 관련 behaviors
+    # 1. related behaviors
     behaviors = [
         b for b in data["behaviors"]
         if b["initiator_type"] == "Actor" and b["initiator_id"] == actor_id
     ]
 
-    # 2. 관련 components (target of behaviors)
+    # 2. related components (target of behaviors)
     component_ids = {b["target_id"] for b in behaviors}
     components = [c for c in data["components"] if c["id"] in component_ids]
 
-    # 3. 관련 assets (from components' assets_managed)
+    # 3. related assets (from components' assets_managed)
     asset_ids = {aid for comp in components for aid in comp.get("assets_managed", [])}
     assets = [a for a in data["assets"] if a["id"] in asset_ids]
 
-    # 4. 관련 data_flows (actor or related component involved)
+    # 4. related data_flows (actor or related component involved)
     data_flows = [
         df for df in data["data_flows"]
         if df["source_id"] == actor_id or df["destination_id"] in component_ids
     ]
 
-    # 5. 관련 trust boundaries
+    # 5. related trust boundaries
     all_component_ids = {c["id"] for c in components}
     trust_boundaries = [
         tb for tb in data["trust_boundaries"]
         if any(cid in all_component_ids for cid in tb["between_ids"])
     ]
 
-    # 6. 결과 조합
+    # 6. combine results
     chunk = {
         "actor": actor,
         "behaviors": behaviors,
@@ -127,7 +129,7 @@ def analyze_architecture(state: State) -> State:
     with open(state.target_docs_path, "r") as f:
         target_docs = f.read()
         
-    # feedback loop가 아닐 경우
+    # not feedback loop
     if state.feedback_loop_count == 0:
     
         prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace("{DOCS}", target_docs)
@@ -149,7 +151,7 @@ def analyze_architecture(state: State) -> State:
         with open("results/architecture_analysis.json", "w") as f:
             json.dump(response_dict, f, indent=2)
         
-        # 결과를 state에 저장
+        # save architecture_analysis file path
         state.target_architecture_analysis_path = "results/architecture_analysis.json"
         return state
     else:
@@ -183,7 +185,7 @@ def analyze_architecture(state: State) -> State:
         try:
             analysis_result = json.loads(response.text)
 
-            # 맵 업데이트
+            # map update
             components_map.update({comp["id"]: comp for comp in analysis_result.get("components", [])})
             actors_map.update({actor["id"]: actor for actor in analysis_result.get("actors", [])})
             assets_map.update({asset["id"]: asset for asset in analysis_result.get("assets", [])})
@@ -194,7 +196,7 @@ def analyze_architecture(state: State) -> State:
             architecture_analysis["system_context"]["docs"]["overview"] = target_docs
             architecture_analysis["system_context"]["docs"]["pol"] = target_docs
             
-            # 결과 저장
+            # save result
             with open("results/enriched_architecture_analysis.json", "w") as f:
                 json.dump(architecture_analysis, f, indent=2)
 
@@ -227,7 +229,7 @@ def assess_architecture(state: State) -> State:
     with open(state.target_docs_path, "r") as f:
         target_docs = f.read()
     
-    # architecture_analysis 파일 읽기
+    # read architecture_analysis 
     with open(state.target_architecture_analysis_path, "r") as f:
         analysis_json = f.read()
     
@@ -248,14 +250,14 @@ def assess_architecture(state: State) -> State:
         config=ASSESSMENT_CONFIG,
     )
     
-    # JSON 파싱 및 파일 저장
+    # parsing json and save to file
     response_dict = json_str_to_dict(response.text)
     with open("results/assessment.json", "w") as f:
         json.dump(response_dict, f, indent=2)
     
     # feedback loop count
     state.feedback_loop_count += 1
-    # 결과를 state에 저장
+    # save assessment file path
     state.target_assessment_path = "results/assessment.json"
     return state
 
@@ -296,12 +298,12 @@ def analyze_threats(state: State) -> State:
     print(f"총 actor {len(threats_list)}명의 threat {id_weight}개 추출 완료")
     
     for i, actor_threat in enumerate(threats_list):
-        # actor별 threat 파일 저장
+        # save actors' threats
         with open(f'results/actors/threats_actor_{i+1}.json', 'w') as f:
             json.dump(actor_threat, f, indent=2)
         print(f"Saved threats for actor {i+1}")
         
-        # 전체 threats 리스트에 추가
+        # append to all threats list actor_threat
         all_threats.extend(actor_threat)
         
     with open('results/all_threats.json', 'w') as f:
@@ -371,7 +373,7 @@ def generate_checklist(state: State) -> State:
         for checklist_item in response_dict['checklist_items']:
             checklist_item['id'] = id_weight
             id_weight = id_weight+1
-            # 현재 액터로부터 뽑은 체크리스트를 하나씩 append
+            # append each checklist item extracted from the current actor
             checklist_items.append(checklist_item)
         print(i, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
         

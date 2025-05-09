@@ -7,7 +7,6 @@ from react_agent.utils import (
     generate_checklist
 )
 
-
 def feedback_loop_edge(state: State):
     if state.feedback_loop_count < 1:
         return "assess_architecture"
