@@ -123,11 +123,19 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
 
     return chunk
 
+def save_json(data: dict, path: str):
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+        
+def load_file(path: str) -> dict:
+    with open(path, "r") as f:
+        return f.read()
+
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
-    """아키텍처 분석 노드"""
-    with open(state.target_docs_path, "r") as f:
-        target_docs = f.read()
+    """architecture analysis node"""
+    # load target docs
+    target_docs = load_file(state.target_docs_path)
         
     # not feedback loop
     if state.feedback_loop_count == 0:
@@ -148,18 +156,17 @@ def analyze_architecture(state: State) -> State:
         )
         
         response_dict = json_str_to_dict(response.text)
-        with open("results/architecture_analysis.json", "w") as f:
-            json.dump(response_dict, f, indent=2)
+        # save architecture_analysis
+        save_json(response_dict, "results/architecture_analysis.json")
         
         # save architecture_analysis file path
         state.target_architecture_analysis_path = "results/architecture_analysis.json"
         return state
     else:
-        with open(state.target_architecture_analysis_path, "r") as f:
-            analysis_json = f.read()
+        # load architecture_analysis
+        analysis_json = load_file(state.target_architecture_analysis_path)
         # read assessment file
-        with open(state.target_assessment_path, "r") as f:
-            assessment_json = f.read()
+        assessment_json = load_file(state.target_assessment_path)
             
         prompt = ARCHITECTURE_CORRECTION_TEMPLATE.replace(
         "{docs}", target_docs
@@ -211,13 +218,11 @@ def analyze_architecture(state: State) -> State:
         except json.JSONDecodeError as e:
             print(f"❌ JSON 파싱 오류: {e}")
         # read initial_architecture_analysis file
-        with open(state.target_architecture_analysis_path, "r") as f:
-            analysis_json = f.read()
+        analysis_json = load_file(state.target_architecture_analysis_path)
         
         response_dict = json_str_to_dict(response.text)
         # parsing response and save to file
-        with open("results/architecture_analysis.json", "w") as f:
-            json.dump(response_dict, f, indent=2)
+        save_json(response_dict, "results/architecture_analysis.json")
         
         # save result to state
         state.target_architecture_analysis_path = "results/architecture_analysis.json"
@@ -225,13 +230,11 @@ def analyze_architecture(state: State) -> State:
     
 # assessment node
 def assess_architecture(state: State) -> State:
-    """아키텍처 평가 노드"""
-    with open(state.target_docs_path, "r") as f:
-        target_docs = f.read()
+    """architecture assessment node"""
+    target_docs = load_file(state.target_docs_path)
     
     # read architecture_analysis 
-    with open(state.target_architecture_analysis_path, "r") as f:
-        analysis_json = f.read()
+    analysis_json = load_file(state.target_architecture_analysis_path)
     
     prompt = ASSESSMENT_TEMPLATE.replace("{docs}", target_docs).replace(
         "{json}", analysis_json
@@ -252,8 +255,7 @@ def assess_architecture(state: State) -> State:
     
     # parsing json and save to file
     response_dict = json_str_to_dict(response.text)
-    with open("results/assessment.json", "w") as f:
-        json.dump(response_dict, f, indent=2)
+    save_json(response_dict, "results/assessment.json")
     
     # feedback loop count
     state.feedback_loop_count += 1
@@ -264,11 +266,9 @@ def assess_architecture(state: State) -> State:
 def analyze_threats(state: State) -> State:
     id_weight = 1
     # read target docs file
-    with open(state.target_docs_path, "r") as f:
-        target_docs = f.read()
+    target_docs = load_file(state.target_docs_path)
     # read architecture_correction file
-    with open(state.target_architecture_analysis_path, "r") as f:
-        architecture_correction = f.read()
+    architecture_correction = load_file(state.target_architecture_analysis_path)
         
     for actor_number in range(len(actors_map)):
         cur_actor = build_llm_chunk(architecture_correction, actor_number + 1)
@@ -299,15 +299,13 @@ def analyze_threats(state: State) -> State:
     
     for i, actor_threat in enumerate(threats_list):
         # save actors' threats
-        with open(f'results/actors/threats_actor_{i+1}.json', 'w') as f:
-            json.dump(actor_threat, f, indent=2)
+        save_json(actor_threat, f'results/actors/threats_actor_{i+1}.json')
         print(f"Saved threats for actor {i+1}")
         
         # append to all threats list actor_threat
         all_threats.extend(actor_threat)
         
-    with open('results/all_threats.json', 'w') as f:
-        json.dump({ "threats": all_threats }, f, indent=2)
+    save_json({ "threats": all_threats }, 'results/all_threats.json')
     print("Saved all threats in 'all_threats.json'")
 
     # save result to state
@@ -379,6 +377,7 @@ def generate_checklist(state: State) -> State:
         
     with open("results/checklist.json", "w") as f:
         json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
+    print("Saved checklist in 'results/checklist.json'")
     
     # save result to state
     state.target_checklist_path = "results/checklist.json"

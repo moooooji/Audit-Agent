@@ -1,0 +1,1332 @@
+{
+  "actors": [
+    {
+      "id": 1,
+      "name": "External User",
+      "type": "External User",
+      "capabilities": [
+        "Check $BERA Airdrop",
+        "Claim $BERA Airdrop",
+        "Connect to Berachain",
+        "Provide liquidity to protocols",
+        "Stake receipt tokens in Reward Vaults",
+        "Delegate $BGT to validators",
+        "Vote on governance proposals",
+        "Create governance proposals",
+        "Add Incentives to Reward Vaults",
+        "Boost a Validator with $BGT",
+        "Claim Incentives",
+        "Swap assets",
+        "Mint $HONEY",
+        "Redeem $HONEY",
+        "Trade assets on BEX",
+        "Trade assets on Honey Swap",
+        "Bridge tokens from Ethereum to Berachain"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Validator",
+      "type": "Internal Service",
+      "description": "A blockchain node being run to validate transactions, produce blocks and come to consensus with other validators in the network",
+      "capabilities": [
+        "Stake $BERA",
+        "Propose blocks",
+        "Direct $BGT rewards to Reward Vaults",
+        "Collect Incentives from Reward Vaults",
+        "Set Incentive Commission",
+        "Change commission percentage"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Protocol",
+      "type": "Internal Service",
+      "description": "An entity, group, or organization that offers Incentive tokens for their respective Reward Vault with the goal of capturing $BGT emissions for their protocol and/or users",
+      "capabilities": [
+        "Create Reward Vault",
+        "Submit governance proposal to whitelist Reward Vault",
+        "Offer Incentive Tokens",
+        "Manage Incentive Rates",
+        "Deposit additional Incentive Tokens"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "BGT Foundation",
+      "type": "Internal Service",
+      "description": "Reviews Reward Vault whitelisting proposals",
+      "capabilities": [
+        "Review Reward Vault whitelisting proposals"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Guardians",
+      "type": "Internal Service",
+      "description": "Can cancel malicious governance proposals during the timelock period",
+      "capabilities": [
+        "Cancel malicious governance proposals"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Token Manager",
+      "type": "Internal Service",
+      "description": "Responsible for offering Incentive Tokens",
+      "capabilities": [
+        "Offer Incentives",
+        "Increase Incentive Tokens",
+        "Increase Incentive Rate",
+        "Set lower Incentive Rate",
+        "Deposit additional Incentive Tokens"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "BGT Incentive Distributor",
+      "type": "Internal Service",
+      "description": "Manages the distribution and claiming of Incentive Tokens",
+      "capabilities": [
+        "Distribute Incentive Tokens",
+        "Update proofs of user's entitlement to Incentive Tokens"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Berachain Hub",
+      "type": "Internal Service",
+      "description": "The place to manage all things $BGT and access Berachain liquidity through BEX",
+      "capabilities": [
+        "Review active Reward Vaults",
+        "Review active Validators",
+        "Boost validators with $BGT",
+        "Redeem $BGT for $BERA",
+        "Claim earned $BGT rewards",
+        "Swap assets",
+        "Provide BEX liquidity",
+        "Participate in Governance",
+        "Create Reward Vaults",
+        "Add Incentives to Reward Vaults"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "BEX",
+      "type": "Internal Service",
+      "description": "Berachain's native decentralized exchange",
+      "capabilities": [
+        "Allow trading of any arbitrary pair of crypto assets",
+        "Provide liquidity into liquidity pools"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Honey Swap",
+      "type": "Internal Service",
+      "description": "Allows users to trade approved stables and assets for $HONEY",
+      "capabilities": [
+        "Trade approved stables and assets for $HONEY"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Berachain Bridge",
+      "type": "Internal Service",
+      "description": "Enables users to transfer tokens from one blockchain to another",
+      "capabilities": [
+        "Transfer tokens from one blockchain to another"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "LayerZero",
+      "type": "Partner System",
+      "description": "Powers the Berachain Bridge",
+      "capabilities": [
+        "Power the Berachain Bridge"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "BeraScan Block Explorer",
+      "type": "Internal Service",
+      "description": "Provides Berachain network data",
+      "capabilities": [
+        "Provide Berachain network data"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "OpenZeppelin",
+      "type": "Partner System",
+      "description": "Provides Governance contracts",
+      "capabilities": [
+        "Provide Governance contracts"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Big Bera Labs",
+      "type": "Internal Service",
+      "description": "Core contributors to the Berachain blockchain",
+      "capabilities": [
+        "Contribute to Berachain blockchain"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Berachain Discord",
+      "type": "Partner System",
+      "description": "Provides a platform for questions and discussions about Berachain",
+      "capabilities": [
+        "Provide a platform for questions and discussions about Berachain"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Governance Forum",
+      "type": "Partner System",
+      "description": "Provides a platform for discussing and creating governance proposals",
+      "capabilities": [
+        "Provide a platform for discussing and creating governance proposals"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "BGT IncentiveDistributor",
+      "type": "Internal Service",
+      "description": "Distributes Incentive Tokens to users who boosted validators",
+      "capabilities": [
+        "Distribute Incentive Tokens"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "FeeCollector",
+      "type": "Internal Service",
+      "description": "Collects and distributes fees from dApps",
+      "capabilities": [
+        "Collect fees from dApps",
+        "Distribute fees to $BGT holders"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Airdrop Checker",
+      "type": "Internal Service",
+      "description": "Tool for checking $BERA airdrop allocation",
+      "capabilities": [
+        "Check $BERA airdrop allocation"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Airdrop Claim",
+      "type": "Internal Service",
+      "description": "Tool for claiming $BERA airdrop tokens",
+      "capabilities": [
+        "Claim $BERA airdrop tokens"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": 1,
+      "name": "BERA",
+      "description": "Berachain's native gas and staking token",
+      "type": "Token",
+      "sensitivity": "High"
+    },
+    {
+      "id": 2,
+      "name": "BGT",
+      "description": "Berachain's staking and governance token",
+      "type": "Token",
+      "sensitivity": "High"
+    },
+    {
+      "id": 3,
+      "name": "HONEY",
+      "description": "Berachain's native stablecoin",
+      "type": "Token",
+      "sensitivity": "High"
+    },
+    {
+      "id": 4,
+      "name": "Bong Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 5,
+      "name": "Bond Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 6,
+      "name": "Boo Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 7,
+      "name": "Baby Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 8,
+      "name": "Band Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 9,
+      "name": "Bit Bears",
+      "type": "NFT",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 10,
+      "name": "LP Token",
+      "description": "Receipt token for providing liquidity to BEX pools",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 11,
+      "name": "Incentive Tokens",
+      "description": "Tokens offered by protocols to incentivize validators",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 12,
+      "name": "Voting Power",
+      "description": "Power to vote on governance proposals",
+      "type": "Voting Power",
+      "sensitivity": "High"
+    },
+    {
+      "id": 13,
+      "name": "Private Keys",
+      "type": "Key",
+      "sensitivity": "High"
+    },
+    {
+      "id": 14,
+      "name": "Wallet Phrase",
+      "type": "Key",
+      "sensitivity": "High"
+    },
+    {
+      "id": 15,
+      "name": "USDC",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 16,
+      "name": "BYUSD",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 17,
+      "name": "WETH",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 18,
+      "name": "WBTC",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 19,
+      "name": "stgUSDC",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 20,
+      "name": "pyUSD",
+      "type": "Token",
+      "sensitivity": "Medium"
+    },
+    {
+      "id": 21,
+      "name": "ETH",
+      "type": "Token",
+      "sensitivity": "Medium"
+    }
+  ],
+  "components": [
+    {
+      "id": 1,
+      "name": "Berachain Blockchain",
+      "description": "High-performance EVM-Identical Layer 1 blockchain",
+      "trust_level": "High",
+      "assets_managed": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Governance Contract",
+      "description": "Contract for managing governance proposals",
+      "trust_level": "High",
+      "assets_managed": [
+        12
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Reward Vaults",
+      "description": "Smart contracts for staking PoL-eligible assets",
+      "trust_level": "High",
+      "assets_managed": [
+        2,
+        11
+      ]
+    },
+    {
+      "id": 4,
+      "name": "BGTIncentiveDistributor",
+      "description": "Distributes Incentive Tokens to users who boosted validators",
+      "trust_level": "High",
+      "assets_managed": [
+        11
+      ]
+    },
+    {
+      "id": 5,
+      "name": "FeeCollector",
+      "description": "Collects and distributes fees from dApps",
+      "trust_level": "High",
+      "assets_managed": [
+        1
+      ]
+    },
+    {
+      "id": 6,
+      "name": "HoneyFactory",
+      "description": "Mints $HONEY tokens",
+      "trust_level": "High",
+      "assets_managed": [
+        3
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Honey Vaults",
+      "description": "Vaults for depositing collateral to mint $HONEY",
+      "trust_level": "High",
+      "assets_managed": [
+        3,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 8,
+      "name": "BEX",
+      "description": "Berachain's native decentralized exchange",
+      "trust_level": "Medium",
+      "assets_managed": [
+        1,
+        2,
+        3,
+        10,
+        15,
+        16,
+        17,
+        18
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Honey Swap",
+      "description": "Allows users to trade approved stables and assets for $HONEY",
+      "trust_level": "Medium",
+      "assets_managed": [
+        3,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Berachain Bridge",
+      "description": "Enables users to transfer tokens from one blockchain to another",
+      "trust_level": "Medium",
+      "assets_managed": [
+        1
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Airdrop Checker",
+      "description": "Tool for checking $BERA airdrop allocation",
+      "trust_level": "Medium",
+      "assets_managed": [
+        1
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Airdrop Claim",
+      "description": "Tool for claiming $BERA airdrop tokens",
+      "trust_level": "Medium",
+      "assets_managed": [
+        1
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Berachain Hub",
+      "description": "The place to manage all things $BGT and access Berachain liquidity through BEX",
+      "trust_level": "Medium",
+      "assets_managed": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 14,
+      "name": "BlockRewardController",
+      "description": "Manages block reward emissions",
+      "trust_level": "High",
+      "assets_managed": [
+        2
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Governance Forum",
+      "description": "Provides a platform for discussing and creating governance proposals",
+      "trust_level": "Medium",
+      "assets_managed": []
+    }
+  ],
+  "data_flows": [
+    {
+      "id": 1,
+      "source_id": 1,
+      "destination_id": 20,
+      "data": "User address",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 2,
+      "source_id": 1,
+      "destination_id": 21,
+      "data": "Wallet address",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 3,
+      "source_id": 1,
+      "destination_id": 8,
+      "data": "BGT",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 4,
+      "source_id": 1,
+      "destination_id": 3,
+      "data": "PoL-eligible assets",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 5,
+      "source_id": 2,
+      "destination_id": 3,
+      "data": "BGT rewards",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 6,
+      "source_id": 3,
+      "destination_id": 2,
+      "data": "Governance proposals",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 7,
+      "source_id": 3,
+      "destination_id": 4,
+      "data": "Incentive Tokens",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 8,
+      "source_id": 4,
+      "destination_id": 1,
+      "data": "Incentive Tokens",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 9,
+      "source_id": 8,
+      "destination_id": 1,
+      "data": "BGT rewards",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 10,
+      "source_id": 8,
+      "destination_id": 2,
+      "data": "BGT",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 11,
+      "source_id": 10,
+      "destination_id": 1,
+      "data": "HONEY",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 12,
+      "source_id": 1,
+      "destination_id": 10,
+      "data": "Tokens",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 13,
+      "source_id": 7,
+      "destination_id": 6,
+      "data": "Collateral",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 14,
+      "source_id": 6,
+      "destination_id": 1,
+      "data": "HONEY",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 15,
+      "source_id": 5,
+      "destination_id": 1,
+      "data": "Fees",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 16,
+      "source_id": 1,
+      "destination_id": 9,
+      "data": "Assets for trading",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 17,
+      "source_id": 9,
+      "destination_id": 1,
+      "data": "Traded assets",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 18,
+      "source_id": 1,
+      "destination_id": 11,
+      "data": "Tokens to bridge",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 19,
+      "source_id": 11,
+      "destination_id": 1,
+      "data": "Bridged tokens",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 20,
+      "source_id": 1,
+      "destination_id": 10,
+      "data": "Assets for trading",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 21,
+      "source_id": 10,
+      "destination_id": 1,
+      "data": "Traded assets",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 22,
+      "source_id": 18,
+      "destination_id": 1,
+      "data": "Incentive Tokens",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 23,
+      "source_id": 19,
+      "destination_id": 1,
+      "data": "Fees",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 24,
+      "source_id": 2,
+      "destination_id": 18,
+      "data": "BGT rewards",
+      "security_properties": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 25,
+      "source_id": 1,
+      "destination_id": 13,
+      "data": "User requests",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 26,
+      "source_id": 13,
+      "destination_id": 1,
+      "data": "Responses",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 27,
+      "source_id": 1,
+      "destination_id": 17,
+      "data": "Governance proposals",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 28,
+      "source_id": 17,
+      "destination_id": 1,
+      "data": "Governance updates",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 29,
+      "source_id": 1,
+      "destination_id": 16,
+      "data": "Questions and discussions",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 30,
+      "source_id": 16,
+      "destination_id": 1,
+      "data": "Answers and information",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 31,
+      "source_id": 14,
+      "destination_id": 2,
+      "data": "Governance contracts",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 32,
+      "source_id": 15,
+      "destination_id": 1,
+      "data": "Berachain blockchain contributions",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 33,
+      "source_id": 13,
+      "destination_id": 2,
+      "data": "Validator information",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 34,
+      "source_id": 13,
+      "destination_id": 3,
+      "data": "Reward Vault information",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 35,
+      "source_id": 13,
+      "destination_id": 1,
+      "data": "Reward Vault APR",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    }
+  ],
+  "trust_boundaries": [
+    {
+      "id": 1,
+      "name": "Berachain Network Boundary",
+      "between_ids": [
+        1,
+        1
+      ],
+      "description": "Protects the integrity and security of the Berachain network",
+      "validation_required": true
+    },
+    {
+      "id": 2,
+      "name": "Governance System Boundary",
+      "between_ids": [
+        1,
+        2
+      ],
+      "description": "Protects the integrity of the governance process",
+      "validation_required": true
+    },
+    {
+      "id": 3,
+      "name": "Reward Vault Boundary",
+      "between_ids": [
+        1,
+        3
+      ],
+      "description": "Protects the integrity and security of Reward Vaults",
+      "validation_required": true
+    },
+    {
+      "id": 4,
+      "name": "Incentive Distribution Boundary",
+      "between_ids": [
+        3,
+        4
+      ],
+      "description": "Protects the integrity of Incentive Token distribution",
+      "validation_required": true
+    },
+    {
+      "id": 5,
+      "name": "dApp Boundary",
+      "between_ids": [
+        1,
+        8
+      ],
+      "description": "Protects the integrity and security of dApps",
+      "validation_required": true
+    },
+    {
+      "id": 6,
+      "name": "Bridge Boundary",
+      "between_ids": [
+        1,
+        10
+      ],
+      "description": "Protects the integrity and security of the Berachain Bridge",
+      "validation_required": true
+    },
+    {
+      "id": 7,
+      "name": "HoneySwap Boundary",
+      "between_ids": [
+        1,
+        9
+      ],
+      "description": "Protects the integrity and security of Honey Swap",
+      "validation_required": true
+    },
+    {
+      "id": 8,
+      "name": "Airdrop Checker Boundary",
+      "between_ids": [
+        1,
+        20
+      ],
+      "description": "Protects the integrity and security of the Airdrop Checker",
+      "validation_required": true
+    },
+    {
+      "id": 9,
+      "name": "Airdrop Claim Boundary",
+      "between_ids": [
+        1,
+        21
+      ],
+      "description": "Protects the integrity and security of the Airdrop Claim",
+      "validation_required": true
+    },
+    {
+      "id": 10,
+      "name": "Berachain Hub Boundary",
+      "between_ids": [
+        1,
+        13
+      ],
+      "description": "Protects the integrity and security of the Berachain Hub",
+      "validation_required": true
+    }
+  ],
+  "behaviors": [
+    {
+      "id": 1,
+      "name": "User checks $BERA airdrop allocation",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 20,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 2,
+      "name": "User claims $BERA airdrop tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 21,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 3,
+      "name": "User connects wallet to Berachain",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 4,
+      "name": "User provides liquidity to protocols",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 8,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 5,
+      "name": "User stakes receipt tokens in Reward Vaults",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 6,
+      "name": "User delegates $BGT to validators",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 7,
+      "name": "User votes on governance proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 8,
+      "name": "User creates governance proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 9,
+      "name": "User adds Incentives to Reward Vaults",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 10,
+      "name": "User boosts a Validator with $BGT",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 11,
+      "name": "User claims Incentives",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 12,
+      "name": "Validator stakes $BERA",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 13,
+      "name": "Validator proposes blocks",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 14,
+      "name": "Validator directs $BGT rewards to Reward Vaults",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 15,
+      "name": "Validator collects Incentives from Reward Vaults",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 16,
+      "name": "Validator sets Incentive Commission",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 17,
+      "name": "Validator changes commission percentage",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 18,
+      "name": "Protocol creates Reward Vault",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 19,
+      "name": "Protocol submits governance proposal to whitelist Reward Vault",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 20,
+      "name": "Protocol offers Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 21,
+      "name": "Protocol manages Incentive Rates",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 22,
+      "name": "Protocol deposits additional Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 23,
+      "name": "BGT Foundation reviews Reward Vault whitelisting proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 4,
+      "target_id": 3,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 24,
+      "name": "Guardians cancel malicious governance proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 5,
+      "target_id": 2,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 25,
+      "name": "Token Manager offers Incentives",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 26,
+      "name": "Token Manager increases Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 27,
+      "name": "Token Manager increases Incentive Rate",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 28,
+      "name": "Token Manager sets lower Incentive Rate",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 29,
+      "name": "Token Manager deposits additional Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 4,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 30,
+      "name": "BGT IncentiveDistributor distributes Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 7,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 31,
+      "name": "BGT IncentiveDistributor updates proofs of user's entitlement to Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 7,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 32,
+      "name": "FeeCollector collects fees from dApps",
+      "initiator_type": "Actor",
+      "initiator_id": 19,
+      "target_id": 8,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 33,
+      "name": "FeeCollector distributes fees to $BGT holders",
+      "initiator_type": "Actor",
+      "initiator_id": 19,
+      "target_id": 1,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 34,
+      "name": "User trades assets on BEX",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 8,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 35,
+      "name": "User trades assets on Honey Swap",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 9,
+      "action": "call",
+      "risk_level": "Low"
+    },
+    {
+      "id": 36,
+      "name": "User bridges tokens from Ethereum to Berachain",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 10,
+      "action": "call",
+      "risk_level": "Low"
+    }
+  ]
+}

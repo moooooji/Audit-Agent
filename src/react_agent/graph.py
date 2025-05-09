@@ -24,7 +24,8 @@ builder.add_node(generate_checklist)
 
 # define edges
 builder.add_edge("__start__", "analyze_architecture")
-# feedback loop count에 따라 분기
+
+# jump based on feedback loop count
 builder.add_conditional_edges("analyze_architecture", feedback_loop_edge)
 builder.add_edge("assess_architecture", "analyze_architecture")
 builder.add_edge("analyze_threats", "generate_checklist")
