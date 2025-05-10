@@ -1,14 +1,16 @@
 from langgraph.graph import StateGraph
 from react_agent.state import InputState, State
-from react_agent.utils import (
+from react_agent.node import (
     analyze_architecture, 
     assess_architecture, 
     analyze_threats, 
     generate_checklist
 )
 
+from react_agent.variables import FEEDBACK_LOOP_COUNT
+
 def feedback_loop_edge(state: State):
-    if state.feedback_loop_count < 1:
+    if state.feedback_loop_count < FEEDBACK_LOOP_COUNT:
         return "assess_architecture"
     else:
         return "analyze_threats"

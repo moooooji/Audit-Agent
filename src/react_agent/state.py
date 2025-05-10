@@ -9,8 +9,11 @@ class InputState:
 
 @dataclass
 class State(InputState):
-    target_architecture_analysis_path: str = field(default="")
-    target_assessment_path: str = field(default="")
-    target_threat_analysis_path: str = field(default="")
-    target_checklist_path: str = field(default="")
     feedback_loop_count: int = field(default=0)
+    initial_architecture_analysis: bool = field(default=False)
+    assessment_analysis: bool = field(default=False)
+    feedback_architecture_analysis: bool = field(default=False)
+    threat_analysis: bool = field(default=False)
+    checklist_analysis: bool = field(default=False)
+    threat_prompt: str = field(default="")
+    checklist_prompt: str = field(default="")
