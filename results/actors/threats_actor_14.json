@@ -1,6 +1,6 @@
 [
   {
-    "id": 53,
+    "id": 50,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -46,8 +46,7 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication.",
-      "An attacker can craft a valid-looking vote message without proper authorization"
+      "The actor is able to access the voting interface without authentication."
     ],
     "mitigation": {
       "strategy": "Require signature-based vote authentication and role validation.",
@@ -61,7 +60,7 @@
     }
   },
   {
-    "id": 54,
+    "id": 51,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -92,7 +91,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data may be altered during transmission or processing."
+      "gap_description": "Vote data may be manipulated during transmission."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -103,26 +102,25 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide integrity guarantees for vote data."
+      "rationale": "Data manipulation is possible due to lack of integrity checks."
     },
     "assumptions": [
-      "The governance contract does not verify the integrity of vote messages.",
-      "The actor can intercept or modify the vote message before it reaches the contract.",
-      "The system does not employ data integrity mechanisms such as digital signatures or hashing"
+      "The system lacks integrity checks on the vote data during transmission.",
+      "The actor can intercept and modify the vote data before it reaches the contract."
     ],
     "mitigation": {
-      "strategy": "Implement data integrity checks, such as digital signatures or message authentication codes.",
+      "strategy": "Implement robust data integrity checks and use secure channels for vote submission.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may modify the vote data to alter the outcome of the governance process.",
+    "description": "An attacker may alter the vote data to influence the outcome of the governance process.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 55,
+    "id": 52,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
@@ -153,7 +151,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "The system lacks mechanisms to prevent users from denying their votes."
+      "gap_description": "Lack of accountability for votes submitted."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -164,19 +162,78 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide non-repudiation for votes."
+      "rationale": "The system does not provide sufficient audit trail for votes."
     },
     "assumptions": [
-      "The governance contract does not record user identities reliably.",
-      "The actor can submit votes anonymously or without proper authentication.",
-      "There is no mechanism to link votes back to specific users beyond transaction data"
+      "The system does not log vote submissions with sufficient detail to identify the voter.",
+      "The contract does not support verifiable vote tracking."
     ],
     "mitigation": {
-      "strategy": "Implement a secure logging system and non-repudiation mechanisms using digital signatures or similar technologies.",
+      "strategy": "Implement non-repudiation mechanisms, such as digital signatures and robust audit logs.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "A user may deny having cast a specific vote.",
+    "description": "An attacker may cast votes without accountability, making it difficult to trace the origin of malicious votes.",
+    "trace_source": {
+      "doc_reference": "governance/voting.md#vote-process",
+      "matched_capability": "Vote on Proposal"
+    }
+  },
+  {
+    "id": 53,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
+    },
+    "threat_target": {
+      "component_id": 9,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 11,
+      "data_description": "vote selection + signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        9
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Vote data may be exposed during transmission or storage."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor is unauthenticated and can perform governance actions."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "Sensitive data is transmitted without appropriate protection."
+    },
+    "assumptions": [
+      "The system does not encrypt vote data during transmission or storage.",
+      "The actor can access the network and capture vote data."
+    ],
+    "mitigation": {
+      "strategy": "Implement encryption for vote data during transmission and storage.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker may intercept vote data during transmission or access stored vote data, revealing sensitive information about voters and their choices.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

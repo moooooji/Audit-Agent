@@ -46,7 +46,7 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The actor is able to access the voting interface without authentication"
     ],
     "mitigation": {
       "strategy": "Require signature-based vote authentication and role validation.",
@@ -91,7 +91,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data could be manipulated during transmission."
+      "gap_description": "Vote data may be altered in transit without detection."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -102,18 +102,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system lacks data integrity checks during vote submission."
+      "rationale": "Tampering attacks are possible without proper data validation."
     },
     "assumptions": [
-      "The communication channel between the user and the contract is not secured.",
-      "The contract does not validate the integrity of received vote data."
+      "The system does not employ end-to-end encryption for vote submissions.",
+      "The actor can intercept and modify vote data in transit."
     ],
     "mitigation": {
-      "strategy": "Implement data integrity checks (e.g., checksums, digital signatures) during vote transmission.",
+      "strategy": "Implement data integrity checks and possibly end-to-end encryption.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker might alter the vote data during transmission to influence the outcome of the proposal.",
+    "description": "An attacker may intercept and alter the vote data before it reaches the governance contract.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -151,7 +151,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Lack of auditable voting trail."
+      "gap_description": "Vote submission lacks accountability mechanisms."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -162,18 +162,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide mechanisms for non-repudiation of votes."
+      "rationale": "The system does not trace the origin of votes."
     },
     "assumptions": [
-      "The voting system does not record sufficient metadata to link votes to specific users.",
-      "There is no mechanism to cryptographically prove the origin and authenticity of votes."
+      "The system does not log vote submissions with sufficient user identification.",
+      "The actor can submit votes anonymously or with fake identities."
     ],
     "mitigation": {
-      "strategy": "Implement a secure audit log to record vote metadata and cryptographic signatures.",
+      "strategy": "Implement logging and auditing mechanisms to track vote origins.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could cast votes and deny their participation later on.",
+    "description": "An attacker may cast votes and deny their participation.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -211,7 +211,7 @@
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Vote details may be exposed during transmission."
+      "gap_description": "Vote data may be exposed during transmission or storage."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -222,18 +222,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not sufficiently protect the confidentiality of vote data."
+      "rationale": "Sensitive vote data could be exposed due to insecure data handling."
     },
     "assumptions": [
-      "The communication channel between the user and the governance contract is not encrypted.",
-      "The governance contract does not handle vote data in a confidential manner."
+      "Vote data is transmitted or stored using insecure channels or methods.",
+      "The actor can access or intercept vote data through vulnerabilities in the system."
     ],
     "mitigation": {
-      "strategy": "Encrypt the communication channel and implement confidential handling of vote data within the governance contract.",
+      "strategy": "Encrypt vote data during transmission and storage.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could intercept vote data during transmission and reveal vote information.",
+    "description": "An attacker may obtain sensitive information about the votes submitted.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

@@ -1,6 +1,6 @@
 [
   {
-    "id": 49,
+    "id": 47,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -47,10 +47,10 @@
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
       "The actor is able to access the voting interface without authentication.",
-      "The system does not employ any form of rate limiting or CAPTCHA to mitigate against automated attacks"
+      "An attacker can craft a valid vote message without valid authorization tokens"
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation. Implement rate limiting and CAPTCHA.",
+      "strategy": "Require signature-based vote authentication and role validation.",
       "type": "Technical Control",
       "priority": "High"
     },
@@ -61,7 +61,7 @@
     }
   },
   {
-    "id": 50,
+    "id": 48,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -92,7 +92,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be tampered with without sufficient integrity checks."
+      "gap_description": "Vote input may be altered without proper authorization."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -103,25 +103,26 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not have tamper-proof mechanisms to verify vote data integrity."
+      "rationale": "Tampering requires access to the voting interface and some understanding of the contract."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of the vote data before processing.",
-      "The actor is able to intercept and modify the vote data in transit."
+      "The governance contract does not have sufficient input validation to prevent tampering.",
+      "The actor can modify the vote message before submission.",
+      "The system lacks mechanisms to detect or prevent vote tampering"
     ],
     "mitigation": {
-      "strategy": "Implement cryptographic hashing or digital signatures to ensure the integrity of vote data.",
+      "strategy": "Implement robust input validation and integrity checks on the governance contract.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may alter vote data in transit to manipulate the outcome of the governance process.",
+    "description": "An attacker may alter the vote message to change the outcome of the governance proposal.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 51,
+    "id": 49,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
@@ -152,7 +153,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Votes can be submitted anonymously without traceability."
+      "gap_description": "Votes may not be reliably attributed to users."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -163,78 +164,19 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The voting system does not track the origin of individual votes."
+      "rationale": "Lack of proper logging and auditing mechanisms for votes make it difficult to trace the origin of actions."
     },
     "assumptions": [
-      "The governance contract does not require user identification for voting.",
-      "The system does not store IP addresses or other identifying information associated with votes."
+      "The governance contract does not provide sufficient logging and auditing mechanisms to track votes.",
+      "There is no mechanism to securely associate the vote with the user\u2019s identity.",
+      "Vote data is not cryptographically signed or otherwise tamper-evident"
     ],
     "mitigation": {
-      "strategy": "Implement a secure identification system with audit logging of vote submissions.",
+      "strategy": "Implement detailed logging and auditing for all governance actions, including user IDs and timestamps. Integrate cryptographic signing or other methods for tamper-evident data.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes and deny their involvement.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 52,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote information may be leaked due to insecure data handling."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not fully protect the confidentiality of votes before or after aggregation."
-    },
-    "assumptions": [
-      "The system does not use end-to-end encryption for vote messages.",
-      "The database storing vote information is not properly secured."
-    ],
-    "mitigation": {
-      "strategy": "Implement end-to-end encryption and secure database management practices.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may gain access to sensitive vote information before the aggregation process.",
+    "description": "An attacker can cast a vote and deny their participation.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

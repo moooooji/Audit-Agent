@@ -46,10 +46,11 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The actor is able to access the voting interface without authentication.",
+      "The system does not employ any mechanism to prevent the submission of duplicate votes from the same actor in a given voting period"
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Require signature-based vote authentication and role validation. Implement rate limiting and anti-replay mechanisms.",
       "type": "Technical Control",
       "priority": "High"
     },
@@ -91,29 +92,29 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Votes can be manipulated without proper validation."
+      "gap_description": "Malicious actors could alter vote data before submission."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor is unauthenticated and can tamper with proposal data."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system lacks robust input validation for votes."
+      "risk_level": "Medium",
+      "rationale": "Data integrity checks are insufficient before votes are processed."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of vote messages.",
-      "An attacker can modify vote parameters before submission."
+      "The system does not validate the integrity of the vote data before it is processed by the governance contract.",
+      "The attacker has access to modify the data sent to the governance contract before the signature is added"
     ],
     "mitigation": {
-      "strategy": "Implement strict input validation and data integrity checks for all votes.",
+      "strategy": "Implement data integrity checks to prevent vote tampering and data corruption. Utilize secure communication protocols.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker may alter the content of a vote to influence the outcome of a governance proposal.",
+    "description": "An attacker may alter the vote data before submission, leading to manipulation of voting results.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -151,29 +152,29 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Lack of audit trail for votes."
+      "gap_description": "Lack of proper audit trail to track voters and their votes."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor can repudiate their vote due to a lack of accountability."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not provide mechanisms to prove vote origin and authenticity."
+      "risk_level": "Low",
+      "rationale": "The system does not maintain a verifiable audit trail of votes cast."
     },
     "assumptions": [
-      "The system does not maintain a comprehensive audit log of votes cast.",
-      "There is no mechanism for verifiable vote attribution."
+      "The governance contract does not record detailed information about vote origin, timestamp, and user identity.",
+      "There is no mechanism for tamper-evident logging of votes."
     ],
     "mitigation": {
-      "strategy": "Implement a secure and auditable logging mechanism to track all votes and their submitters.",
+      "strategy": "Implement a robust audit trail that records all voting activities with verifiable timestamps and user identities.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "Low"
     },
-    "description": "An attacker may cast a vote and deny their participation, making it difficult to trace their actions.",
+    "description": "Voters may deny having cast a vote, or their votes may be hard to verify.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -211,29 +212,29 @@
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Votes may be exposed without proper access control."
+      "gap_description": "Votes may be exposed to unauthorized actors."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor is unauthenticated and can potentially access sensitive voting information."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Votes are not protected against unauthorized access."
+      "rationale": "Vote data is not adequately protected from unauthorized access during transmission or storage."
     },
     "assumptions": [
-      "The governance contract does not protect vote data against unauthorized disclosure.",
-      "An attacker could gain access to the database or contract storage."
+      "The voting system does not encrypt vote data during transmission or at rest.",
+      "The system does not implement appropriate access control measures to protect vote data from unauthorized disclosure."
     ],
     "mitigation": {
-      "strategy": "Implement appropriate access control mechanisms to restrict access to vote data.",
+      "strategy": "Implement encryption to protect vote data during transmission and at rest. Secure storage of vote data and access control measures.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to sensitive vote information, potentially revealing voting patterns or preferences.",
+    "description": "An attacker may gain access to voting data through various means, potentially compromising voter privacy.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

@@ -1,6 +1,6 @@
 [
   {
-    "id": 72,
+    "id": 70,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -46,8 +46,7 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication.",
-      "The system does not employ any mechanism to prevent vote replay attacks"
+      "The actor is able to access the voting interface without authentication."
     ],
     "mitigation": {
       "strategy": "Require signature-based vote authentication and role validation.",
@@ -61,7 +60,7 @@
     }
   },
   {
-    "id": 73,
+    "id": 71,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -92,7 +91,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data may be modified without proper validation."
+      "gap_description": "Vote message could be altered in transit."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -102,27 +101,26 @@
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system does not adequately validate vote data."
+      "risk_level": "Medium",
+      "rationale": "Vote message integrity is not guaranteed."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of vote data.",
-      "The actor has the ability to intercept and modify vote messages before they reach the contract.",
-      "The system lacks mechanisms to detect or prevent tampering with vote data"
+      "The communication channel between the user and the contract is not secure.",
+      "The attacker can intercept and modify vote messages without detection."
     ],
     "mitigation": {
-      "strategy": "Implement data integrity checks and validation of the vote data before processing.",
+      "strategy": "Implement secure communication channels with integrity checks (e.g., TLS, digital signatures).",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker may intercept and modify votes before they are recorded in the contract.",
+    "description": "An attacker could intercept and modify a vote message before it reaches the contract.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 74,
+    "id": 72,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
@@ -153,7 +151,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "The system lacks mechanisms to ensure accountability for votes."
+      "gap_description": "Lack of non-repudiation mechanisms for votes."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -164,26 +162,25 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide adequate mechanisms for tracking and verifying vote origins and identities."
+      "rationale": "The system does not provide mechanisms to prevent users from denying their votes."
     },
     "assumptions": [
-      "The system does not implement robust logging or auditing mechanisms to track votes.",
-      "The system does not enforce strong user authentication.",
-      "The system does not provide a way to link votes to specific user identities definitively"
+      "The system does not log vote submissions with user identity.",
+      "The system does not utilize mechanisms to prevent vote repudiation (e.g., digital signatures)."
     ],
     "mitigation": {
-      "strategy": "Implement detailed logging and auditing of all votes cast, including user identities and timestamps. Use cryptographic techniques to ensure vote immutability and traceability.",
+      "strategy": "Implement mechanisms for non-repudiation (e.g., digital signatures, secure logging).",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker can cast votes and deny their participation.",
+    "description": "A user may cast a vote and later deny having done so.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 75,
+    "id": 73,
     "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
@@ -213,8 +210,8 @@
     "security_gap": {
       "confidentiality_required": true,
       "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Vote data may be exposed to unauthorized actors."
+      "availability_required": false,
+      "gap_description": "Votes may be exposed to unauthorized actors."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -225,19 +222,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system lacks sufficient access control mechanisms to protect vote data."
+      "rationale": "Vote confidentiality is not ensured."
     },
     "assumptions": [
-      "Vote data is stored in the contract's state and potentially accessible to unauthorized users through contract interactions.",
-      "The system does not employ encryption or other confidentiality-preserving mechanisms to protect vote data.",
-      "The system does not restrict access to vote data through appropriate role-based access control measures"
+      "Votes are stored in a database accessible by unauthorized actors.",
+      "The system does not use encryption for vote data."
     ],
     "mitigation": {
-      "strategy": "Encrypt or obfuscate vote data during storage or transmission. Implement role-based access control mechanisms that ensure only authorized users can access vote data.",
+      "strategy": "Encrypt vote data at rest and in transit. Implement access controls to restrict database access.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "Vote data may be exposed to unauthorized parties via contract interactions.",
+    "description": "An attacker may gain access to sensitive information about how users voted.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

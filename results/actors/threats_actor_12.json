@@ -1,6 +1,6 @@
 [
   {
-    "id": 45,
+    "id": 44,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -46,7 +46,8 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The actor is able to access the voting interface without authentication.",
+      "The governance contract does not implement rate limiting or other anti-spam measures for vote submissions"
     ],
     "mitigation": {
       "strategy": "Require signature-based vote authentication and role validation.",
@@ -60,7 +61,7 @@
     }
   },
   {
-    "id": 46,
+    "id": 45,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -91,7 +92,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data could be modified in transit."
+      "gap_description": "Votes may be manipulated without proper validation."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -101,26 +102,28 @@
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Vote data is transmitted over an insecure channel."
+      "risk_level": "High",
+      "rationale": "The system does not sufficiently validate votes against system state."
     },
     "assumptions": [
-      "The network connection between the user and the contract is susceptible to man-in-the-middle attacks."
+      "The governance contract does not implement integrity checks on vote data.",
+      "The actor is able to submit malformed or tampered vote messages.",
+      "There's a lack of input sanitization to prevent malicious data injection in vote messages"
     ],
     "mitigation": {
-      "strategy": "Employ end-to-end encryption and data integrity checks for vote transmission.",
+      "strategy": "Implement data validation checks on vote parameters and state before processing.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may intercept and modify vote data before it reaches the contract.",
+    "description": "An attacker might be able to manipulate vote data and affect the outcome of proposals.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 47,
-    "stride_category": "Repudiation",
+    "id": 46,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
@@ -148,68 +151,9 @@
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "The system lacks mechanisms to verify the authenticity of votes."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not track voter identities reliably."
-    },
-    "assumptions": [
-      "The system lacks logging or audit trails to prove who cast which votes."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust logging and audit trails of all voting activity and voter identities.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may cast votes and deny responsibility.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 48,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data may be accessible to unauthorized parties."
+      "availability_required": true,
+      "gap_description": "The system might be vulnerable to flooding attacks impacting proposal processing."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -220,18 +164,19 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Vote data is not adequately protected from unauthorized access."
+      "rationale": "The system's vote processing may not be resilient against high-volume requests."
     },
     "assumptions": [
-      "The database storing vote information is vulnerable to SQL injection or other attacks.",
-      "The API endpoint for submitting votes does not implement proper authorization checks."
+      "The governance contract does not implement rate limiting to protect against flood attacks.",
+      "The actor can submit a large number of spurious vote requests.",
+      "No measures are in place to filter or throttle unusually high volume of vote requests"
     ],
     "mitigation": {
-      "strategy": "Secure the database and API endpoint using appropriate access controls and input sanitization.",
+      "strategy": "Implement rate limiting and request throttling measures to prevent denial of service attacks.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to vote data.",
+    "description": "An attacker might be able to overload the system by submitting a huge number of votes, thus hindering the governance process.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
