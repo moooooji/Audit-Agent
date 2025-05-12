@@ -1,6 +1,6 @@
 [
   {
-    "id": 73,
+    "id": 98,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -46,10 +46,11 @@
     },
     "assumptions": [
       "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The actor is able to access the voting interface without authentication.",
+      "The system does not have rate limiting on votes to mitigate against denial-of-service attacks"
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Require signature-based vote authentication, role validation, and rate limiting.",
       "type": "Technical Control",
       "priority": "High"
     },
@@ -60,7 +61,7 @@
     }
   },
   {
-    "id": 74,
+    "id": 99,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -91,7 +92,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data may be altered during transmission."
+      "gap_description": "Vote message could be altered in transit."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -102,25 +103,26 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not protect against data manipulation in transit."
+      "rationale": "The system does not protect against vote tampering."
     },
     "assumptions": [
-      "The communication channel between the user and the governance contract is not secure.",
-      "An attacker can intercept and modify vote messages before they reach the contract."
+      "The communication channel between the user and the governance contract is insecure.",
+      "The governance contract does not verify the integrity of the vote message.",
+      "The actor can intercept and modify the vote message without detection"
     ],
     "mitigation": {
-      "strategy": "Use secure communication protocols (HTTPS, TLS) and message signing for vote submissions.",
+      "strategy": "Implement message authentication using digital signatures and secure communication channels.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may intercept and modify votes before they reach the governance contract, potentially influencing the outcome of the voting process.",
+    "description": "An attacker may alter a user's vote before it reaches the governance contract.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 75,
+    "id": 100,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
@@ -151,7 +153,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Lack of audit trail for votes."
+      "gap_description": "The system does not record vote origins."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -162,26 +164,27 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide a mechanism for tracing votes back to their origin."
+      "rationale": "The system lacks mechanisms for vote traceability."
     },
     "assumptions": [
-      "The governance contract does not maintain a verifiable audit log of vote submissions.",
-      "An attacker can submit a vote and later deny their involvement."
+      "The governance contract does not record the source IP address of the vote.",
+      "The system does not implement a secure logging mechanism to trace votes.",
+      "Votes are not cryptographically signed"
     ],
     "mitigation": {
-      "strategy": "Implement a secure and immutable audit trail for all vote submissions, including timestamps and user identifiers.",
+      "strategy": "Implement secure logging and audit trails for vote submissions.  Utilize cryptographically verifiable vote receipts.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker can cast votes and deny their involvement due to lack of a reliable audit trail.",
+    "description": "An attacker can cast votes without leaving a verifiable trace.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 76,
-    "stride_category": "Information Disclosure",
+    "id": 101,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
@@ -208,10 +211,10 @@
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote information might be exposed during transmission."
+      "availability_required": true,
+      "gap_description": "The governance contract may be vulnerable to flooding attacks."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -221,19 +224,20 @@
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not protect vote confidentiality during transmission."
+      "risk_level": "High",
+      "rationale": "No rate limiting is present on vote submissions."
     },
     "assumptions": [
-      "The communication channel between the user and the governance contract is not encrypted.",
-      "An attacker can intercept and read vote messages without decryption."
+      "The governance contract does not implement rate limiting or other denial-of-service protections.",
+      "The actor can submit a large number of requests in a short amount of time.",
+      "The system is not designed to handle high volumes of requests"
     ],
     "mitigation": {
-      "strategy": "Encrypt vote data during transmission using appropriate encryption methods.",
+      "strategy": "Implement rate limiting and other denial-of-service countermeasures.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker could potentially intercept and gain access to user votes, revealing sensitive information.",
+    "description": "An attacker may flood the governance contract with requests, making it unavailable.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

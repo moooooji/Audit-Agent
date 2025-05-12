@@ -5,238 +5,419 @@
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 20,
+      "capability_match": "Delegate $BGT"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 7,
       "asset_ids": [
-        4
+        10
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 20,
+      "data_flow_id": 30,
+      "data_description": "Validator address, $BGT amount, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 40,
+      "boundary_name": "User to Berachain Hub",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "gap_description": "User input (target validator, amount) could be altered via compromised interface."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Standard user interacting with frontend."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "behavior_id": 20,
+      "risk_level": "Medium",
+      "rationale": "Relies on trusting the user interface to correctly present transaction details."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication"
+      "Attacker can compromise the user interface (Berachain Hub) presented to the user.",
+      "User does not independently verify the transaction details (especially target address) before signing."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement integrity checks for transaction parameters on the frontend and encourage user verification.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker tricks a user into delegating their $BGT to a different validator than intended by manipulating the Berachain Hub interface.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost A Validator With $BGT"
     }
   },
   {
     "id": 2,
-    "stride_category": "Tampering",
+    "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 3,
+      "behavior_id": 20,
+      "capability_match": "Process delegated $BGT / Distribute Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 7,
       "asset_ids": [
-        4
+        10,
+        11
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 20,
+      "data_flow_id": 30,
+      "data_description": "$BGT delegation records, incentive distribution records"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 42,
+      "boundary_name": "Contract to Contract",
       "between_component_ids": [
-        1,
-        9
+        7,
+        4
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote data may be altered in transit without detection."
+      "gap_description": "Validator operator could attempt to deny boost amounts or refuse to distribute incentives as required by contract logic."
     },
     "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "actor_id": 3,
+      "type": "Partner System",
+      "overprivileged": true,
+      "description": "Controls validator infrastructure and reward allocation."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Tampering attacks are possible without proper data validation."
+      "behavior_id": 20,
+      "risk_level": "Low",
+      "rationale": "On-chain contract logic governs delegation processing and incentive distribution, providing auditable records."
     },
     "assumptions": [
-      "The system does not employ end-to-end encryption for vote submissions.",
-      "The actor can intercept and modify vote data in transit."
+      "Smart contracts (Validator Staking, BGT Distributor) accurately record delegations and enforce distribution rules.",
+      "Blockchain provides immutable transaction history."
     ],
     "mitigation": {
-      "strategy": "Implement data integrity checks and possibly end-to-end encryption.",
+      "strategy": "Rely on immutable smart contract logic and blockchain ledger for verification.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "Low"
     },
-    "description": "An attacker may intercept and alter the vote data before it reaches the governance contract.",
+    "description": "A malicious validator operator attempts to deny the amount of $BGT delegated to them by users or refuses to distribute earned incentives according to the protocol rules, despite on-chain records.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/participants.md#validators-\u2705",
+      "matched_capability": "Validator Incentives"
     }
   },
   {
     "id": 3,
-    "stride_category": "Repudiation",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 20,
+      "capability_match": "Submit Transaction"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 7,
       "asset_ids": [
-        4
+        12
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 20,
+      "data_flow_id": 30,
+      "data_description": "Transaction load on network"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 40,
+      "boundary_name": "User to Berachain Hub",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote submission lacks accountability mechanisms."
+      "gap_description": "Legitimate boost transactions may be delayed or fail due to network spam."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Attacker using standard transaction submission."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 20,
       "risk_level": "Medium",
-      "rationale": "The system does not trace the origin of votes."
+      "rationale": "Public blockchains are susceptible to transaction spam impacting availability, though gas fees mitigate this."
     },
     "assumptions": [
-      "The system does not log vote submissions with sufficient user identification.",
-      "The actor can submit votes anonymously or with fake identities."
+      "Attacker has sufficient funds to pay transaction fees for spamming.",
+      "Network capacity is limited relative to attack volume."
     ],
     "mitigation": {
-      "strategy": "Implement logging and auditing mechanisms to track vote origins.",
+      "strategy": "Implement dynamic gas pricing and transaction prioritization.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes and deny their participation.",
+    "description": "An attacker floods the Berachain network with transactions, causing delays or failures for users attempting to boost validators.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "help/faqs.md",
+      "matched_capability": "Transactions per Second (TPS)"
     }
   },
   {
     "id": 4,
-    "stride_category": "Information Disclosure",
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 3,
+      "behavior_id": 20,
+      "capability_match": "Exclude transactions from block"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        10
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 20,
+      "data_flow_id": 30,
+      "data_description": "Transaction pool content"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 43,
+      "boundary_name": "Validator Network Boundary",
+      "between_component_ids": [
+        3,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "A malicious validator may intentionally exclude boost transactions targeted at competing validators."
+    },
+    "actor_risk": {
+      "actor_id": 3,
+      "type": "Partner System",
+      "overprivileged": true,
+      "description": "Controls transaction inclusion in blocks they propose."
+    },
+    "behavioral_risk": {
+      "behavior_id": 20,
+      "risk_level": "Medium",
+      "rationale": "Malicious validators can censor specific transactions. Impact depends on the concentration of malicious validators."
+    },
+    "assumptions": [
+      "A significant portion of validators are malicious and colluding.",
+      "Users cannot easily bypass censorship (e.g., alternative mempools, waiting)."
+    ],
+    "mitigation": {
+      "strategy": "Promote validator decentralization and diverse operator set.",
+      "type": "Process Control",
+      "priority": "Medium"
+    },
+    "description": "A validator intentionally omits transactions that delegate $BGT to their competitors from the blocks they propose, impacting other validators' boost and user rewards.",
+    "trace_source": {
+      "doc_reference": "pol/bgtmath.md#validator-selection",
+      "matched_capability": "Validator Selection"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 21,
+      "capability_match": "Generate fraudulent claim proof"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        11
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 21,
+      "data_flow_id": 31,
+      "data_description": "Claim proof data, user signature on proof"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 45,
+      "boundary_name": "Backend Service to Contract",
+      "between_component_ids": [
+        9,
+        4
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Attacker compromises the off-chain service generating claim proofs, allowing them to claim other users' incentives."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "Attacker compromises the backend service (Component ID 9)."
+    },
+    "behavioral_risk": {
+      "behavior_id": 21,
+      "risk_level": "High",
+      "rationale": "The security of the incentive claim process is highly dependent on the integrity and availability of the off-chain proof generation service."
+    },
+    "assumptions": [
+      "Attacker can gain unauthorized access to or control over the off-chain backend service responsible for generating claim proofs (Component ID 9).",
+      "The on-chain contract (Component ID 4) relies on the backend's proof without sufficient independent verification."
+    ],
+    "mitigation": {
+      "strategy": "Implement strong security controls for the backend service and robust on-chain proof validation.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker compromises the off-chain backend service used for incentive claims, allowing them to steal incentive tokens belonging to legitimate users by generating fraudulent claim proofs.",
+    "trace_source": {
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "The backend API updates proofs of the user's entitlement"
+    }
+  },
+  {
+    "id": 6,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 21,
+      "capability_match": "Manipulate claim proof/transaction"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        11
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 21,
+      "data_flow_id": 31,
+      "data_description": "Claim proof data, requested amount/token in transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 45,
+      "boundary_name": "Backend Service to Contract",
+      "between_component_ids": [
+        9,
+        4
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Attacker compromises backend and tampers with the amount or type of tokens requested in a claim."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "Attacker compromises the backend service (Component ID 9)."
+    },
+    "behavioral_risk": {
+      "behavior_id": 21,
+      "risk_level": "High",
+      "rationale": "If backend is compromised, it could alter claim details presented to the contract."
+    },
+    "assumptions": [
+      "Attacker can gain unauthorized access to or control over the off-chain backend service (Component ID 9).",
+      "The claim proof does not fully bind the claimed amount and token type, or the on-chain contract verification is insufficient."
+    ],
+    "mitigation": {
+      "strategy": "Ensure the claim proof cryptographically binds all critical claim parameters (user, token, amount) and validate on-chain.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker compromises the off-chain backend service and modifies the details within a claim proof or the transaction data derived from it to steal more tokens or different token types than entitled.",
+    "trace_source": {
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claim incentive token rewards"
+    }
+  },
+  {
+    "id": 7,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 21,
+      "capability_match": "Attack backend service"
     },
     "threat_target": {
       "component_id": 9,
       "asset_ids": [
-        4
+        13
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 21,
+      "data_flow_id": 31,
+      "data_description": "Backend service availability"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 40,
+      "boundary_name": "User to Berachain Hub",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data may be exposed during transmission or storage."
+      "availability_required": true,
+      "gap_description": "DoS attack on the backend service prevents users from obtaining claim proofs and claiming incentives."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Attacker targets the backend service availability."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Sensitive vote data could be exposed due to insecure data handling."
+      "behavior_id": 21,
+      "risk_level": "High",
+      "rationale": "The backend service is a potential single point of failure for proof generation required for claiming."
     },
     "assumptions": [
-      "Vote data is transmitted or stored using insecure channels or methods.",
-      "The actor can access or intercept vote data through vulnerabilities in the system."
+      "The backend service (Component ID 9) is vulnerable to DoS attacks.",
+      "There is no alternative method for users to obtain valid claim proofs."
     ],
     "mitigation": {
-      "strategy": "Encrypt vote data during transmission and storage.",
+      "strategy": "Implement robust DoS protection for the backend service and consider alternative proof/claim mechanisms.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may obtain sensitive information about the votes submitted.",
+    "description": "An attacker prevents users from claiming their earned incentive tokens by making the off-chain backend service that generates claim proofs unavailable through a denial-of-service attack.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "The backend API updates proofs of the user's entitlement every 24 hours."
     }
   }
 ]

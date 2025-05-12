@@ -91,7 +91,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote message could be altered in transit."
+      "gap_description": "Vote data may be modified without detection."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -101,19 +101,19 @@
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Vote message integrity is not guaranteed."
+      "risk_level": "High",
+      "rationale": "The system does not validate the integrity of vote messages."
     },
     "assumptions": [
-      "The communication channel between the user and the contract is not secure.",
-      "The attacker can intercept and modify vote messages without detection."
+      "The governance contract does not validate vote data integrity.",
+      "The actor can intercept and modify vote messages before reaching the contract."
     ],
     "mitigation": {
-      "strategy": "Implement secure communication channels with integrity checks (e.g., TLS, digital signatures).",
+      "strategy": "Implement data integrity checks for vote messages.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker could intercept and modify a vote message before it reaches the contract.",
+    "description": "An attacker may modify vote data to alter the outcome of the voting process.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -151,7 +151,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Lack of non-repudiation mechanisms for votes."
+      "gap_description": "Votes lack verifiable attribution."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -162,18 +162,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not provide mechanisms to prevent users from denying their votes."
+      "rationale": "The system does not provide mechanisms to verify the origin of votes."
     },
     "assumptions": [
-      "The system does not log vote submissions with user identity.",
-      "The system does not utilize mechanisms to prevent vote repudiation (e.g., digital signatures)."
+      "The governance contract does not track the identity of voters.",
+      "The actor can cast votes anonymously."
     ],
     "mitigation": {
-      "strategy": "Implement mechanisms for non-repudiation (e.g., digital signatures, secure logging).",
+      "strategy": "Implement a system to authenticate voters and record their identity with votes.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "A user may cast a vote and later deny having done so.",
+    "description": "An attacker may cast votes and deny their involvement.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
@@ -211,7 +211,7 @@
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Votes may be exposed to unauthorized actors."
+      "gap_description": "Vote data may be exposed to unauthorized actors."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -222,18 +222,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Vote confidentiality is not ensured."
+      "rationale": "The system may not protect vote data from unauthorized access."
     },
     "assumptions": [
-      "Votes are stored in a database accessible by unauthorized actors.",
-      "The system does not use encryption for vote data."
+      "The governance contract does not properly protect vote data.",
+      "The actor can access the database or network traffic containing vote data."
     ],
     "mitigation": {
-      "strategy": "Encrypt vote data at rest and in transit. Implement access controls to restrict database access.",
+      "strategy": "Implement access controls to protect vote data.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to sensitive information about how users voted.",
+    "description": "An attacker may gain access to vote data.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

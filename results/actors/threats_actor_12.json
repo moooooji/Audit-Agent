@@ -1,184 +1,301 @@
 [
   {
-    "id": 44,
+    "id": 21,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 6,
+      "capability_match": "Boost Validator"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 7,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 6,
+      "data_flow_id": 1,
+      "data_description": "Boost parameters (validator ID, amount)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Native dApp",
       "between_component_ids": [
         1,
-        9
+        7
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "availability_required": false,
+      "gap_description": "Unauthorized BGT delegation possible if identity verification is weak."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Unauthenticated external user attempting unauthorized actions."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 6,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Unauthorized delegation impacts validator economics and user rewards distribution, undermining the PoL mechanism."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication.",
-      "The governance contract does not implement rate limiting or other anti-spam measures for vote submissions"
+      "The system does not strictly verify the identity of the request initiator beyond basic authentication/signing.",
+      "An attacker can forge or replay signed requests."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement strong authentication and unique transaction signing tied to identity for all BGT delegation actions.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker impersonates a BGT holder to delegate their BGT to a validator without authorization, affecting reward distribution and validator boost metrics.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost Validator"
     }
   },
   {
-    "id": 45,
+    "id": 22,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 2,
+      "capability_match": "Swap Assets"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 5,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 2,
+      "data_flow_id": 1,
+      "data_description": "Swap parameters (token in, token out, amount, recipient)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Native dApp",
       "between_component_ids": [
         1,
-        9
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Votes may be manipulated without proper validation."
+      "availability_required": false,
+      "gap_description": "Manipulation of swap details leads to incorrect token exchange or loss."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user interacting with DEX swap function."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 2,
       "risk_level": "High",
-      "rationale": "The system does not sufficiently validate votes against system state."
+      "rationale": "Tampering with swap parameters can lead to significant financial loss for the user or protocol if not properly validated."
     },
     "assumptions": [
-      "The governance contract does not implement integrity checks on vote data.",
-      "The actor is able to submit malformed or tampered vote messages.",
-      "There's a lack of input sanitization to prevent malicious data injection in vote messages"
+      "The system allows modification of transaction parameters after signing or during transmission.",
+      "The target component does not validate swap parameters against the original user intent."
     ],
     "mitigation": {
-      "strategy": "Implement data validation checks on vote parameters and state before processing.",
+      "strategy": "Ensure transaction signing covers all critical swap parameters and implement strict server-side and smart contract validation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might be able to manipulate vote data and affect the outcome of proposals.",
+    "description": "An attacker intercepts and modifies a user's swap transaction to change the token amounts, pair, or destination address before execution.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap Assets"
     }
   },
   {
-    "id": 46,
-    "stride_category": "Denial of Service",
+    "id": 23,
+    "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Claim BGT Rewards"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 7,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 1,
+      "data_description": "Claim proof/request"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Native dApp",
       "between_component_ids": [
         1,
-        9
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "User can deny claiming rewards after they have been transferred if action isn't unequivocally linked."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User claiming earned rewards through the system."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "Lack of strong evidence linking a claim action to the user could allow repudiation, potentially causing disputes regarding reward distribution or unauthorized access claims."
+    },
+    "assumptions": [
+      "The claim process, involving proofs and API interaction, does not produce sufficient non-repudiable on-chain evidence strongly linking the claim action to the specific user.",
+      "The user's interaction method allows plausible deniability."
+    ],
+    "mitigation": {
+      "strategy": "Ensure all reward claim actions are initiated via signed transactions on-chain, explicitly linked to the user's address and recorded in an immutable log.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "A user claims BGT rewards but later denies having done so, potentially alleging unauthorized access or disputing the reward amount if the claim action cannot be definitively attributed.",
+    "trace_source": {
+      "doc_reference": "guides/claim-incentives.md",
+      "matched_capability": "Claim BGT Rewards"
+    }
+  },
+  {
+    "id": 24,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 2,
+      "capability_match": "Swap Assets"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 1,
+      "data_description": "Swap requests"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Native dApp",
+      "between_component_ids": [
+        1,
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "The system might be vulnerable to flooding attacks impacting proposal processing."
+      "gap_description": "Excessive requests disrupt normal trading operations or increase costs for legitimate users."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user flooding the DEX with transaction requests."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 2,
       "risk_level": "Medium",
-      "rationale": "The system's vote processing may not be resilient against high-volume requests."
+      "rationale": "Flooding the swap function can degrade performance, increase network congestion, or drive up gas prices for all users, impacting availability."
     },
     "assumptions": [
-      "The governance contract does not implement rate limiting to protect against flood attacks.",
-      "The actor can submit a large number of spurious vote requests.",
-      "No measures are in place to filter or throttle unusually high volume of vote requests"
+      "The target component (BEX) or underlying network lacks sufficient rate limiting or DoS protection mechanisms.",
+      "Transaction fees (gas) are not a significant deterrent for the attacker."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting and request throttling measures to prevent denial of service attacks.",
+      "strategy": "Implement rate limiting at the application and network layers, monitor for unusual transaction patterns, and ensure transaction fees effectively deter spam.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker might be able to overload the system by submitting a huge number of votes, thus hindering the governance process.",
+    "description": "An attacker sends a large volume of swap requests to the BEX, potentially overwhelming the service or increasing transaction costs for other users, disrupting normal trading.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap Assets"
+    }
+  },
+  {
+    "id": 25,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Vote on Proposal"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 1,
+      "data_description": "Vote parameters (proposal ID, vote choice)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Native dApp",
+      "between_component_ids": [
+        1,
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Actor votes or proposes without meeting the minimum BGT stake/delegation requirement."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "External user attempting to influence governance without meeting BGT stake/delegation requirements."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Successful unauthorized voting or proposing can compromise the integrity of the governance process and chain decision-making."
+    },
+    "assumptions": [
+      "The governance smart contract does not correctly enforce BGT stake/delegation requirements for voting or proposal creation.",
+      "An attacker finds a bypass in the access control logic of the governance contract."
+    ],
+    "mitigation": {
+      "strategy": "Strictly enforce BGT stake/delegation requirements within the governance smart contract for all voting and proposal creation actions.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker attempts to vote on or propose a governance proposal using the vote function without possessing the necessary BGT stake or delegation required by the protocol rules.",
+    "trace_source": {
+      "doc_reference": "governance.md",
       "matched_capability": "Vote on Proposal"
     }
   }

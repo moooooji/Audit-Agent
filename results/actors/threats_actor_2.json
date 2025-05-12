@@ -1,242 +1,305 @@
 [
   {
-    "id": 5,
+    "id": 8,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 601,
+      "capability_match": "Vote on Governance Proposal"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 201,
       "asset_ids": [
-        4
+        301,
+        304
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 601,
+      "data_flow_id": 501,
+      "data_description": "vote selection and voter identifier"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 401,
+      "boundary_name": "Public Network",
       "between_component_ids": [
-        1,
-        9
+        101,
+        201
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "availability_required": false,
+      "gap_description": "Voter identity may not be sufficiently verified."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "An external user attempts to impersonate another user to vote."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 601,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Weak identity verification for voting allows impersonation."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The system does not cryptographically verify the voter's identity.",
+      "An attacker can submit votes claiming to be another address."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement cryptographic signature verification for vote submissions tied to BGT ownership/delegation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker could spoof the identity of a legitimate $BGT holder to cast fraudulent votes on a governance proposal.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "Simulated Chunk Analysis",
+      "matched_capability": "Vote on Governance Proposal"
     }
   },
   {
-    "id": 6,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be tampered with without sufficient validation."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system does not sufficiently validate vote integrity."
-    },
-    "assumptions": [
-      "The governance contract does not validate vote data integrity.",
-      "The actor can modify the vote message before submission."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust input validation and integrity checks for vote messages.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may alter the contents of a vote before it is processed by the governance contract.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 7,
+    "id": 9,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 601,
+      "capability_match": "Vote on Governance Proposal"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 201,
       "asset_ids": [
-        4
+        305
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 601,
+      "data_flow_id": 501,
+      "data_description": "vote selection and voter identifier"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 401,
+      "boundary_name": "Public Network",
       "between_component_ids": [
-        1,
-        9
+        101,
+        201
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Lack of verifiable proof linking a vote to the voter."
+    },
+    "actor_risk": {
+      "actor_id": 101,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user attempts to deny casting a specific vote."
+    },
+    "behavioral_risk": {
+      "behavior_id": 601,
+      "risk_level": "Medium",
+      "rationale": "The voting mechanism may not provide cryptographically binding proof of the voter's action."
+    },
+    "assumptions": [
+      "The system does not require a cryptographic signature for voting.",
+      "There is no other permanent, verifiable on-chain record linking the voter to their specific vote."
+    ],
+    "mitigation": {
+      "strategy": "Require cryptographic signatures for all vote submissions.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "A user who has cast a vote on a governance proposal could later deny having done so.",
+    "trace_source": {
+      "doc_reference": "Simulated Chunk Analysis",
+      "matched_capability": "Vote on Governance Proposal"
+    }
+  },
+  {
+    "id": 10,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 101,
+      "behavior_id": 601,
+      "capability_match": "Vote on Governance Proposal"
+    },
+    "threat_target": {
+      "component_id": 201,
+      "asset_ids": [
+        301
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 601,
+      "data_flow_id": 501,
+      "data_description": "vote submission transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 401,
+      "boundary_name": "Public Network",
+      "between_component_ids": [
+        101,
+        201
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Voting system may be overwhelmed by excessive transactions."
+    },
+    "actor_risk": {
+      "actor_id": 101,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user attempts to make the voting service unavailable."
+    },
+    "behavioral_risk": {
+      "behavior_id": 601,
+      "risk_level": "High",
+      "rationale": "The governance contract or network infrastructure may be vulnerable to transaction spam targeting the voting function."
+    },
+    "assumptions": [
+      "The governance contract or network is unable to handle a high volume of voting transactions.",
+      "Transaction fees are low enough to make transaction spam economically feasible for an attacker."
+    ],
+    "mitigation": {
+      "strategy": "Implement effective transaction validation, gas limits, and potentially rate limiting or priority fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could flood the governance contract or the network with a large volume of voting transactions, preventing legitimate users from casting their votes.",
+    "trace_source": {
+      "doc_reference": "Simulated Chunk Analysis",
+      "matched_capability": "Vote on Governance Proposal"
+    }
+  },
+  {
+    "id": 11,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 101,
+      "behavior_id": 602,
+      "capability_match": "Swap Assets"
+    },
+    "threat_target": {
+      "component_id": 202,
+      "asset_ids": [
+        302,
+        303
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 602,
+      "data_flow_id": 502,
+      "data_description": "swap parameters and transaction input"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 402,
+      "boundary_name": "Public Network",
+      "between_component_ids": [
+        101,
+        202
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Votes may be submitted without verifiable authentication or authorization."
+      "availability_required": false,
+      "gap_description": "Swap outcomes or pool state could be manipulated due to contract vulnerabilities."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "An external user attempts to manipulate a token swap via contract exploit."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The lack of strong authentication makes it difficult to trace votes back to their origin."
+      "behavior_id": 602,
+      "risk_level": "High",
+      "rationale": "Logic errors in the BEX swap contract could allow manipulation of swap parameters or liquidity pools."
     },
     "assumptions": [
-      "The system does not maintain a verifiable audit trail of votes.",
-      "The actor can submit votes anonymously or under a pseudonymous identity."
+      "The BEX Swap Contract contains logic vulnerabilities (e.g., reentrancy, faulty fee calculation).",
+      "An attacker can craft transactions that exploit these vulnerabilities."
     ],
     "mitigation": {
-      "strategy": "Implement robust logging, auditing, and non-repudiation mechanisms for all vote submissions.",
+      "strategy": "Conduct rigorous smart contract audits and implement secure coding practices (e.g., checks-effects-interactions).",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may submit votes without being held accountable for their actions.",
+    "description": "An attacker could exploit vulnerabilities in the BEX Swap Contract logic to alter swap amounts, fees, or adversely affect liquidity pools.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "Simulated Chunk Analysis",
+      "matched_capability": "Swap Assets"
     }
   },
   {
-    "id": 8,
-    "stride_category": "Information Disclosure",
+    "id": 12,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 602,
+      "capability_match": "Swap Assets"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 202,
       "asset_ids": [
-        4
+        302,
+        303
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 602,
+      "data_flow_id": 502,
+      "data_description": "swap execution"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 402,
+      "boundary_name": "Public Network",
       "between_component_ids": [
-        1,
-        9
+        101,
+        202
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data may be exposed due to insufficient access controls."
+      "availability_required": true,
+      "gap_description": "Liquidity pool exhaustion or transaction flooding could prevent swaps."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "An external user attempts to disrupt asset swapping functionality."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 602,
       "risk_level": "Medium",
-      "rationale": "Vote data could be exposed during transmission or storage."
+      "rationale": "Availability of swapping depends on sufficient liquidity and resilience to transaction volume."
     },
     "assumptions": [
-      "The voting system does not use end-to-end encryption to protect vote data.",
-      "Vote data is stored in a database that is not properly secured."
+      "Liquidity pools are sufficiently shallow that an attacker can significantly impact them.",
+      "The BEX contract or network infrastructure is inefficient in handling a high volume of transactions, legitimate or otherwise."
     ],
     "mitigation": {
-      "strategy": "Implement end-to-end encryption for vote data and secure storage of vote records.",
+      "strategy": "Encourage deep liquidity in pools and ensure efficient, gas-optimized contract execution and network handling.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to sensitive vote data through various attack vectors.",
+    "description": "An attacker could attempt to exhaust liquidity pools or flood the network with swap transactions, hindering other users' ability to trade.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "Simulated Chunk Analysis",
+      "matched_capability": "Swap Assets"
     }
   }
 ]

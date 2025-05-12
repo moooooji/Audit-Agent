@@ -1,182 +1,248 @@
 [
   {
-    "id": 21,
+    "id": 30,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Claim Incentive (via transaction initiation)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Claim transaction data including proof"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User Wallet to Berachain Node",
       "between_component_ids": [
         1,
-        9
+        1
       ]
     },
     "security_gap": {
-      "confidentiality_required": false,
+      "confidentiality_required": true,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "gap_description": "Weaknesses in the off-chain proof generation or on-chain verification could allow unauthorized claims."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Attacker leveraging compromised key or system vulnerability to impersonate another user's claim."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 1,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Successful spoofing allows an attacker to steal another user's earned incentive tokens."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The backend generating claim proofs is vulnerable to compromise.",
+      "The on-chain proof verification logic is flawed.",
+      "An attacker obtains a user's private key."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement robust off-chain security for proof generation and formally verified on-chain proof verification.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker could spoof another user's identity to steal their incentive tokens by exploiting vulnerabilities in the proof generation or verification process associated with their claim transaction.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentive"
     }
   },
   {
-    "id": 22,
+    "id": 31,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Claim Incentive (via transaction initiation)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Claim transaction data including proof"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User Wallet to Berachain Node",
       "between_component_ids": [
         1,
-        9
+        1
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be modified without proper validation."
+      "gap_description": "Weaknesses in the off-chain proof or on-chain verification could allow claim data tampering."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Attacker leveraging compromised key or system vulnerability to alter claim data."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 1,
       "risk_level": "High",
-      "rationale": "The system does not validate vote data integrity before processing."
+      "rationale": "Successful tampering could allow an attacker to claim more incentive tokens than entitled or claim different tokens."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of the vote data.",
-      "The actor can manipulate the vote data before submission."
+      "The backend generating claim proofs is vulnerable to compromise.",
+      "The on-chain proof verification or claim logic is flawed.",
+      "An attacker obtains a user's private key."
     ],
     "mitigation": {
-      "strategy": "Implement input validation and data integrity checks for vote data.",
+      "strategy": "Implement robust off-chain security for proof generation and formally verified on-chain proof/claim verification logic.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may alter the vote data to influence the outcome of the governance process.",
+    "description": "An attacker could tamper with their claim transaction or proof to claim more incentive tokens than entitled by exploiting vulnerabilities in the proof generation or verification process.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentive"
     }
   },
   {
-    "id": 23,
-    "stride_category": "Repudiation",
+    "id": 32,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Initiate Transaction (for DoS attack)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 1,
       "asset_ids": [
-        4
+        1,
+        2,
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "High volume of transaction data"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User Wallet to Berachain Node",
       "between_component_ids": [
         1,
-        9
+        1
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Votes may be cast anonymously without accountability."
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "The network or target contracts may be overwhelmed by excessive transaction volume."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "An attacker sending a high volume of transactions."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 1,
       "risk_level": "Medium",
-      "rationale": "The system does not track the source of votes."
+      "rationale": "High transaction volume can overload network resources, but gas costs provide a natural barrier."
     },
     "assumptions": [
-      "The governance contract does not enforce user identification.",
-      "The actor can cast votes without revealing their identity."
+      "Gas costs are sufficiently low to make spamming economically feasible for an attacker.",
+      "The network nodes or smart contracts lack effective rate limiting or transaction prioritization mechanisms."
     ],
     "mitigation": {
-      "strategy": "Implement a mechanism to track and verify the origin of votes.",
+      "strategy": "Ensure sufficient gas costs for transactions and implement rate limiting at the node or contract level.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes without leaving a trace of their actions, making it difficult to hold them accountable.",
+    "description": "An attacker could attempt to degrade network performance or disrupt the functionality of smart contracts (like boosting or claiming) by flooding the chain with transactions.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "help/faqs.md#what-do-berachain-s-performance-metrics-look-like",
+      "matched_capability": "Initiate Transaction"
+    }
+  },
+  {
+    "id": 33,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Initiate Transaction (revealing activity)"
+    },
+    "threat_target": {
+      "component_id": 1,
+      "asset_ids": [
+        1,
+        2,
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Public transaction data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "User Wallet to Berachain Node",
+      "between_component_ids": [
+        1,
+        1
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Transaction details including sender, receiver, asset types, and amounts are visible on the public ledger."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Any external observer of the blockchain."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "Low",
+      "rationale": "Blockchain transparency inherently reveals transaction details, which may include sensitive information about user activity."
+    },
+    "assumptions": [
+      "The blockchain is public and designed for transparency.",
+      "Users may not be fully aware of the extent of data publicly recorded."
+    ],
+    "mitigation": {
+      "strategy": "Educate users about blockchain transparency and explore privacy-enhancing technologies (e.g., mixers) as opt-in features.",
+      "type": "Process Control",
+      "priority": "Low"
+    },
+    "description": "Sensitive information about user activities, such as asset holdings, transaction counterparties, and participation in specific dApps (boosting/claiming), can be inferred from publicly available transaction data.",
+    "trace_source": {
+      "doc_reference": "help/faqs.md#what-is-liquidity",
+      "matched_capability": "Initiate Transaction"
     }
   }
 ]

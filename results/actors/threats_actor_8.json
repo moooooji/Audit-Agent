@@ -1,242 +1,364 @@
 [
   {
-    "id": 28,
+    "id": 1,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 2,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
-        4
+        6,
+        7
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Claim transaction, entitlement proofs from backend service"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
       "between_component_ids": [
-        1,
-        9
+        2,
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "gap_description": "Vulnerability in backend service allows generating/manipulating claim proofs."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 2,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user exploiting a vulnerability in a service supporting the application."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 7,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Claiming incentives relies on an off-chain backend service for proofs, introducing a potential attack surface."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The backend service providing claim proofs has a vulnerability allowing an attacker to forge or manipulate proofs for other users.",
+      "The on-chain contract accepting proofs does not sufficiently validate manipulated proofs."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement robust security measures for the backend service and cryptographic validation of proofs on-chain.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker compromises the backend service providing claim proofs, enabling them to claim incentives belonging to other users by forging or manipulating proofs of entitlement.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
-    "id": 29,
+    "id": 2,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 2,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
+        6,
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Interaction with backend service for entitlement proofs"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Dependency on a single backend service for claim proofs creates a DoS risk."
+    },
+    "actor_risk": {
+      "actor_id": 2,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "External user targeting a public service relied upon by the application."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Disrupting the off-chain proof service prevents users from completing the critical action of claiming incentives."
+    },
+    "assumptions": [
+      "The backend service providing claim proofs is vulnerable to denial of service attacks (e.g., volume-based, resource exhaustion).",
+      "There are no sufficient fallback mechanisms if the backend service is unavailable."
+    ],
+    "mitigation": {
+      "strategy": "Implement DoS protection for the backend service, explore distributed proof generation or caching.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker launches a denial of service attack against the backend service that provides proofs for incentive claims, preventing legitimate users from accessing their entitlement proofs and claiming rewards.",
+    "trace_source": {
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 3,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 2,
+      "behavior_id": 6,
+      "capability_match": "Boost a Validator with $BGT"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 6,
+      "data_flow_id": 6,
+      "data_description": "BGT delegation transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Vulnerabilities in the smart contract handling delegation or frontend/backend allow unauthorized delegation."
+    },
+    "actor_risk": {
+      "actor_id": 2,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "External user potentially without BGT, exploiting system flaws."
+    },
+    "behavioral_risk": {
+      "behavior_id": 6,
+      "risk_level": "Medium",
+      "rationale": "Flaws in the delegation process could allow unauthorized BGT boosting."
+    },
+    "assumptions": [
+      "The smart contract responsible for BGT delegation contains a vulnerability (e.g., access control flaw, signature bypass) allowing unauthorized delegation.",
+      "The Berachain Hub frontend/backend allows crafting or submitting malicious delegation requests without proper user authorization."
+    ],
+    "mitigation": {
+      "strategy": "Conduct thorough smart contract audits and secure the application interface handling delegation requests.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker exploits a vulnerability in the BGT delegation smart contract or the Berachain Hub interface to delegate BGT from another user's wallet without their authorization.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost a Validator with $BGT"
+    }
+  },
+  {
+    "id": 4,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 2,
+      "behavior_id": 6,
+      "capability_match": "Boost a Validator with $BGT"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 6,
+      "data_flow_id": 6,
+      "data_description": "BGT delegation transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
       "between_component_ids": [
-        1,
-        9
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Flaws allow manipulation of delegation transaction details before on-chain finality."
+    },
+    "actor_risk": {
+      "actor_id": 2,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "External user manipulating data in transit or through system flaws."
+    },
+    "behavioral_risk": {
+      "behavior_id": 6,
+      "risk_level": "Medium",
+      "rationale": "Manipulation of delegation parameters could lead to unintended outcomes for users or validators."
+    },
+    "assumptions": [
+      "There is a time window or vulnerability allowing an attacker to intercept and modify a user's signed delegation transaction.",
+      "The smart contract or network does not fully validate all parameters against the user's intent or signature after modification."
+    ],
+    "mitigation": {
+      "strategy": "Ensure all delegation transaction parameters are immutably tied to the user's signature and validated on-chain.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker intercepts or manipulates a user's legitimate BGT delegation transaction, altering parameters like the amount of BGT delegated or the target validator before the transaction is processed on-chain.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost a Validator with $BGT"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 2,
+      "behavior_id": 8,
+      "capability_match": "Participate in Governance (vote)"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 8,
+      "data_description": "Vote transaction via governance contract"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
+      "between_component_ids": [
+        2,
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Malicious votes could alter the outcome of a proposal."
+      "gap_description": "Vulnerabilities in the governance contract allow voting without required BGT or authorization."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 2,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user potentially without sufficient BGT, exploiting contract flaws."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 8,
       "risk_level": "High",
-      "rationale": "The system does not validate the integrity of votes."
+      "rationale": "Manipulation of voting allows impacting critical protocol decisions."
     },
     "assumptions": [
-      "The governance contract does not validate the contents of vote messages.",
-      "The actor is able to submit arbitrary data as a vote."
+      "The governance smart contract contains a vulnerability that bypasses BGT ownership/delegation checks for voting.",
+      "The governance smart contract allows casting votes on behalf of another user without valid signature or proof of authorization."
     ],
     "mitigation": {
-      "strategy": "Implement input validation to prevent malicious vote manipulation.",
+      "strategy": "Conduct thorough smart contract audits focusing on voting logic, enforce strict BGT balance/delegation checks and signature validation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may submit a modified or malicious vote, potentially influencing the outcome of a proposal.",
+    "description": "An attacker exploits a vulnerability in the governance smart contract to cast fraudulent votes using BGT that they do not own or control, potentially influencing governance outcomes.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "governance.md",
+      "matched_capability": "Participate in Governance (vote)"
     }
   },
   {
-    "id": 30,
-    "stride_category": "Repudiation",
+    "id": 6,
+    "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 2,
+      "behavior_id": 8,
+      "capability_match": "Participate in Governance (vote)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 5,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 8,
+      "data_flow_id": 8,
+      "data_description": "Vote transaction via governance contract"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "User to Application",
       "between_component_ids": [
-        1,
-        9
+        2,
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Votes are not immutably linked to users."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not provide robust audit trails for votes."
-    },
-    "assumptions": [
-      "The voting system does not log IP addresses or other identifying information.",
-      "The system does not require non-repudiable signatures."
-    ],
-    "mitigation": {
-      "strategy": "Implement a secure logging system and potentially require non-repudiable signatures.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may submit a vote and subsequently deny having done so.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 31,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Votes might be exposed due to insufficient access control."
+      "gap_description": "Flaws allow manipulation of vote transaction details before on-chain finality."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 2,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user manipulating data in transit or through system flaws."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system may expose vote information to unauthorized parties."
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Manipulation of vote choice or weight directly impacts governance decisions."
     },
     "assumptions": [
-      "The governance contract does not have sufficient access controls.",
-      "Vote information is stored in an insecure database or improperly sanitized."
+      "There is a time window or vulnerability allowing an attacker to intercept and modify a user's signed vote transaction.",
+      "The governance smart contract or network does not fully validate all vote parameters against the user's intent or signature after modification."
     ],
     "mitigation": {
-      "strategy": "Implement appropriate access controls and data sanitization to protect vote information.",
+      "strategy": "Ensure all vote transaction parameters are immutably tied to the user's signature and validated on-chain.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker might be able to read vote information before it's processed or expose it through various means.",
+    "description": "An attacker intercepts or manipulates a user's legitimate vote transaction, altering parameters like the vote choice (yes/no/abstain) or vote weight before the transaction is processed on-chain by the governance contract.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "governance.md",
+      "matched_capability": "Participate in Governance (vote)"
     }
   }
 ]

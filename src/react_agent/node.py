@@ -4,15 +4,19 @@ import json
 # state
 from react_agent.state import State
 # utils
-from react_agent.utils import (
+from react_agent.Utils.llm_utils import (
+    init_state,
     json_str_to_dict, 
     save_json, 
     load_file,
     map_update,
     generate_llm_response,
     build_llm_chunk,
+    _init_db,
+    _code_binding
 )
 
+# import variables
 from react_agent.variables import (
     components_map,
     actors_map,
@@ -26,15 +30,15 @@ from react_agent.variables import (
 
 from react_agent.prompt import THREAT_ANALYSIS_TEMPLATE, CHECKLIST_TEMPLATE
 
-# dataset/berachain_docs_merged.md
-
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
     # not feedback loop
     if state.feedback_loop_count == 0:
+        print("completed initializing state")
+        state = init_state(state)
         print("first architecture analysis ...")
-        state.initial_architecture_analysis = True
+        state.is_initial_architecture_analysis = True
         # generate llm response
         response = generate_llm_response(state)
         # parsing response and save to file
@@ -46,7 +50,7 @@ def analyze_architecture(state: State) -> State:
         return state
     else:
         print("feedback loop architecture analysis ...")
-        state.feedback_architecture_analysis = True
+        state.is_feedback_architecture_analysis = True
         # load architecture_analysis
         response = generate_llm_response(state)
         
@@ -56,14 +60,13 @@ def analyze_architecture(state: State) -> State:
         # parsing response and save to file
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed feedback loop architecture analysis")
+        
         return state
     
 # assessment node
 def assess_architecture(state: State) -> State:
     """architecture assessment node"""
-    state.assessment_analysis = True
-    print("assessing architecture ...")
-    
+    state.is_assessment_analysis = True
     # generate llm response
     response = generate_llm_response(state)
     
@@ -79,7 +82,7 @@ def assess_architecture(state: State) -> State:
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
-    state.threat_analysis = True
+    state.is_threat_analysis = True
     id_weight = 1
     # read target docs file
     target_docs = load_file(state.target_docs_path)
@@ -114,11 +117,12 @@ def analyze_threats(state: State) -> State:
     save_json({ "threats": all_threats }, 'results/all_threats.json')
     print("Saved all threats in 'all_threats.json'")
     print("completed analyzing threats")
+    
     return state
 
 def generate_checklist(state: State) -> State:
     print("generating checklist ...")
-    state.checklist_analysis = True
+    state.is_checklist_analysis = True
     # read target docs file
     with open(state.target_docs_path, "r") as f:
         target_docs = f.read()
@@ -177,4 +181,20 @@ def generate_checklist(state: State) -> State:
     print("completed generating checklist")
     
     return state
-        
+
+def init_db(state: State) -> State:
+    print("initializing vector db ...")
+    state.is_init_db = True
+    _init_db()
+    
+    print("completed initializing vector db")
+    
+def code_binding(state: State) -> State:
+    print("code binding ...")
+    state.is_code_binding = True
+    
+    _code_binding(state)
+    
+    print("completed code binding")
+    
+    return state

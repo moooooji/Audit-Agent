@@ -1,246 +1,246 @@
 [
   {
-    "id": 36,
+    "id": 12,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 602,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 202,
       "asset_ids": [
-        4
+        402,
+        403
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 602,
+      "data_flow_id": 305,
+      "data_description": "cryptographic proof verifying entitlement"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 504,
+      "boundary_name": "Blockchain to Backend Service",
       "between_component_ids": [
-        1,
-        9
+        202,
+        203
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "gap_description": "Flawed proof generation or verification allows unauthorized claiming."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "A standard user attempting to claim incentives they are not entitled to."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 602,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Successful exploitation could lead to unauthorized drain of incentive token assets."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication.",
-      "An attacker can craft a malicious vote message that passes validation checks without proper authorization"
+      "The off-chain service generating proofs can be compromised or has logic flaws allowing forgery.",
+      "The on-chain contract's proof verification is insufficient or bypassable."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement robust cryptographic proof generation and strict on-chain verification tied to user identity.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker may forge a cryptographic proof to claim incentive tokens from the distributor contract that they are not legitimately entitled to, impersonating a valid claimant.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claims their incentive token rewards"
     }
   },
   {
-    "id": 37,
+    "id": 13,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 101,
+      "behavior_id": 602,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 202,
+      "asset_ids": [
+        402,
+        403
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 602,
+      "data_flow_id": 306,
+      "data_description": "Information on available incentives requiring a proof to claim"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 504,
+      "boundary_name": "Blockchain to Backend Service",
+      "between_component_ids": [
+        202,
+        203
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Reliance on a potentially vulnerable off-chain service for critical claim functionality."
+    },
+    "actor_risk": {
+      "actor_id": 101,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User or attacker attempting to disrupt the claim process availability."
+    },
+    "behavioral_risk": {
+      "behavior_id": 602,
+      "risk_level": "High",
+      "rationale": "Disruption of the off-chain proof service prevents all users from claiming earned value."
+    },
+    "assumptions": [
+      "The off-chain proof generation service is a single point of failure for claiming.",
+      "The off-chain service is vulnerable to Denial of Service attacks (e.g., overwhelming requests)."
+    ],
+    "mitigation": {
+      "strategy": "Ensure high availability and DoS protection for the off-chain proof service. Explore decentralized alternatives for proof generation.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker may disrupt the off-chain service responsible for generating proofs required to claim incentives, preventing legitimate users from accessing their earned tokens.",
+    "trace_source": {
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "retrieves this proof and claims their incentive token rewards"
+    }
+  },
+  {
+    "id": 14,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 601,
+      "capability_match": "Boost Validator"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 201,
       "asset_ids": [
-        4
+        401
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 601,
+      "data_flow_id": 301,
+      "data_description": "Transaction call to activate a queued BGT boost."
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 501,
+      "boundary_name": "User Interface to Blockchain",
       "between_component_ids": [
-        1,
-        9
+        203,
+        201
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be tampered with without proper validation."
+      "gap_description": "Contract or interface allows modification of activation parameters or timing."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "User or attacker manipulating the boost activation process."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system does not sufficiently validate vote inputs."
+      "behavior_id": 601,
+      "risk_level": "Medium",
+      "rationale": "Tampering can lead to BGT being unusable or directed incorrectly for a period."
     },
     "assumptions": [
-      "The governance contract does not validate vote data integrity.",
-      "The actor can modify the vote data before submission.",
-      "The system lacks mechanisms to detect vote tampering attempts"
+      "The contract's 'Activate Boost' function allows modification of the queued request parameters during activation.",
+      "An attacker can intercept and modify the 'Activate Boost' transaction parameters before it's confirmed (e.g., via MEV or frontrunning).",
+      "The user interface doesn't strictly enforce activation timing or parameters."
     ],
     "mitigation": {
-      "strategy": "Implement robust input validation and data integrity checks for vote messages.",
+      "strategy": "Ensure contract strictly enforces queued boost parameters upon activation and prevents modification. Consider transaction monitoring.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker may manipulate or alter vote data during submission, resulting in inaccurate voting results.",
+    "description": "An attacker may tamper with the transaction parameters or timing when activating a queued validator boost, potentially affecting the user's BGT delegation or its impact.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md#activate-boost",
+      "matched_capability": "Activate Boost"
     }
   },
   {
-    "id": 38,
+    "id": 15,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 602,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 202,
       "asset_ids": [
-        4
+        402,
+        403
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 602,
+      "data_flow_id": 302,
+      "data_description": "On-chain transaction confirming incentive claim."
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 501,
+      "boundary_name": "User Interface to Blockchain",
       "between_component_ids": [
-        1,
-        9
+        203,
+        202
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "The system lacks mechanisms to prevent vote repudiation."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not provide mechanisms for verifiable vote casting."
-    },
-    "assumptions": [
-      "The system does not implement mechanisms to ensure vote provenance.",
-      "Actors are not required to provide non-repudiable proof of their votes.",
-      "An attacker could cast votes anonymously and deny their actions later"
-    ],
-    "mitigation": {
-      "strategy": "Use a mechanism to create a non-repudiable audit trail for all votes cast.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may cast votes and subsequently deny their participation in the voting process.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 39,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Vote data may be exposed to unauthorized parties."
+      "gap_description": "Theoretical possibility to deny a blockchain action."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "User attempting to deny a completed transaction."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system may not properly protect vote data privacy."
+      "behavior_id": 602,
+      "risk_level": "Low",
+      "rationale": "Blockchain transactions are inherently non-repudiable due to signatures and immutability."
     },
     "assumptions": [
-      "The system does not encrypt vote data during transmission or storage.",
-      "The system does not implement appropriate access controls to protect vote data.",
-      "An attacker may exploit vulnerabilities to gain access to vote data"
+      "Standard blockchain transaction logging and signing are effective and cannot be bypassed.",
+      "Claim proofs are cryptographically tied to the user's identity used for the transaction."
     ],
     "mitigation": {
-      "strategy": "Implement encryption of vote data both in transit and at rest, and restrict access based on roles.",
+      "strategy": "Rely on inherent blockchain properties for non-repudiation.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "Low"
     },
-    "description": "An attacker may gain access to confidential vote data.",
+    "description": "A user may attempt to deny having claimed incentives after the on-chain transaction is confirmed and recorded on the blockchain.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/claim_incentives.md#claim-incentives",
+      "matched_capability": "Claim Incentive Tokens"
     }
   }
 ]

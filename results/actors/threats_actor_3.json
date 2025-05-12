@@ -1,12 +1,12 @@
 [
   {
-    "id": 9,
+    "id": 13,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Governance Proposal"
     },
     "threat_target": {
       "component_id": 9,
@@ -17,7 +17,7 @@
     "attack_surface": {
       "behavior_id": 5,
       "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_description": "Governance proposal data"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -30,43 +30,43 @@
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "availability_required": false,
+      "gap_description": "Proposal initiation request may be sent by an unauthorized user impersonating a legitimate $BGT holder."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor could attempt to impersonate a user with sufficient $BGT."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Impersonating a proposer bypasses the BGT threshold control."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "The mechanism for verifying the identity of the proposer based on $BGT holdings/delegation is flawed.",
+      "An attacker can craft a proposal request appearing to originate from a different address."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement strong cryptographic verification of the proposer's identity linked to their $BGT.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An attacker impersonates a user with sufficient $BGT holdings/delegation to initiate a governance proposal.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_3, doc_23",
+      "matched_capability": "Initiate Governance Proposal (Requires 10000 $BGT)"
     }
   },
   {
-    "id": 10,
+    "id": 14,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Governance Proposal"
     },
     "threat_target": {
       "component_id": 9,
@@ -77,7 +77,7 @@
     "attack_surface": {
       "behavior_id": 5,
       "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_description": "Governance proposal data"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -90,54 +90,52 @@
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote data may be manipulated during transmission."
+      "availability_required": false,
+      "gap_description": "The content of the proposal data could be modified during transit or processing before being finalized by the contract."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor could attempt to alter the proposal's content."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not protect against vote data tampering during transmission."
+      "risk_level": "High",
+      "rationale": "Tampering could lead to malicious proposals being processed."
     },
     "assumptions": [
-      "The communication channel between the user and the governance contract is insecure.",
-      "The actor can intercept and modify vote data before it reaches the contract."
+      "The governance proposal data is not protected by cryptographic signatures.",
+      "The contract does not verify the integrity of the submitted proposal data against a known state or signature."
     ],
     "mitigation": {
-      "strategy": "Implement secure communication channels (HTTPS, TLS) and data integrity checks.",
+      "strategy": "Require cryptographic signing of the proposal data and verify the signature on-chain.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may intercept and modify vote data before it is processed by the governance contract.",
+    "description": "An attacker intercepts and modifies the governance proposal data before it is submitted to or processed by the contract.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_3",
+      "matched_capability": "Initiate Governance Proposal"
     }
   },
   {
-    "id": 11,
+    "id": 15,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Governance Proposal"
     },
     "threat_target": {
       "component_id": 9,
-      "asset_ids": [
-        4
-      ]
+      "asset_ids": []
     },
     "attack_surface": {
       "behavior_id": 5,
       "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_description": "Governance proposal data"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -149,55 +147,53 @@
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "The system lacks mechanisms to verify the authenticity and non-repudiation of votes."
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "The system may not provide irrefutable proof that a specific user initiated a specific proposal."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor could deny having initiated a proposal."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Votes are not cryptographically signed or otherwise authenticated."
+      "risk_level": "Low",
+      "rationale": "While not critical for core function, traceability is important for accountability."
     },
     "assumptions": [
-      "The governance contract does not record user identities with votes.",
-      "The actor can cast votes anonymously without any accountability mechanism."
+      "Proposal submission is not uniquely and cryptographically linked to the specific user's identity/key.",
+      "There is no verifiable log or signature mechanism to prove proposal origin."
     ],
     "mitigation": {
-      "strategy": "Implement mechanisms for vote authentication, such as digital signatures or zero-knowledge proofs.",
+      "strategy": "Ensure proposal submission requires a transaction signed by the user's key and record this.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Low"
     },
-    "description": "An attacker may cast votes and deny their involvement in the voting process.",
+    "description": "A user who initiates a governance proposal could later deny that they performed the action.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_3",
+      "matched_capability": "Initiate Governance Proposal"
     }
   },
   {
-    "id": 12,
-    "stride_category": "Information Disclosure",
+    "id": 16,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Governance Proposal"
     },
     "threat_target": {
       "component_id": 9,
-      "asset_ids": [
-        4
-      ]
+      "asset_ids": []
     },
     "attack_surface": {
       "behavior_id": 5,
       "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_description": "Governance proposal data"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -208,35 +204,93 @@
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data may be leaked through insecure transmission or storage."
+      "availability_required": true,
+      "gap_description": "An attacker could flood the contract or network with numerous proposals, potentially hindering legitimate governance activity."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "The actor could attempt to submit an excessive number of proposals."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system does not protect against unauthorized access to vote data."
+      "rationale": "Spamming proposals could disrupt governance processes."
     },
     "assumptions": [
-      "Vote data is transmitted or stored insecurely.",
-      "An attacker can gain unauthorized access to the system's database or network traffic."
+      "The gas cost or $BGT requirement for proposal creation is insufficient to deter high-volume spamming.",
+      "The contract or network can be overwhelmed by a large number of incoming proposal creation requests."
     ],
     "mitigation": {
-      "strategy": "Implement encryption and access control measures to protect vote data.",
+      "strategy": "Ensure adequate gas costs for proposal creation and consider proposal deposits or frequency limits.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to sensitive vote data.",
+    "description": "An attacker repeatedly initiates a large number of governance proposals to overload the Governance Contract or the network.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_3, doc_23",
+      "matched_capability": "Initiate Governance Proposal"
+    }
+  },
+  {
+    "id": 17,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Initiate Governance Proposal"
+    },
+    "threat_target": {
+      "component_id": 9,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 11,
+      "data_description": "Governance proposal data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        9
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "An unauthorized user could gain the privilege to initiate proposals without meeting the required $BGT threshold."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "The actor would gain the privilege to initiate proposals they are not authorized to create."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "Bypassing the BGT requirement grants unauthorized access to a key governance function."
+    },
+    "assumptions": [
+      "The Governance Contract's access control for the 'propose' function is incorrectly implemented or bypassable.",
+      "The check for the 10,000 $BGT threshold can be circumvented."
+    ],
+    "mitigation": {
+      "strategy": "Strictly enforce the 10,000 $BGT balance/delegation check within the 'propose' function.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker exploits a vulnerability to initiate a governance proposal without holding or having delegated the required 10,000 $BGT.",
+    "trace_source": {
+      "doc_reference": "doc_3, doc_23",
+      "matched_capability": "Initiate Governance Proposal (Requires 10000 $BGT)"
     }
   }
 ]

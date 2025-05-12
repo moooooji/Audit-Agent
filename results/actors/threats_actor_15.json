@@ -1,6 +1,6 @@
 [
   {
-    "id": 54,
+    "id": 58,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
@@ -60,7 +60,7 @@
     }
   },
   {
-    "id": 55,
+    "id": 59,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
@@ -91,7 +91,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Votes can be manipulated without proper validation."
+      "gap_description": "Vote data can be modified without detection."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -102,25 +102,25 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "The system lacks input validation for vote messages."
+      "rationale": "The system does not protect against manipulation of vote data."
     },
     "assumptions": [
-      "The governance contract does not validate the content of vote messages.",
-      "The actor is able to submit malformed or manipulated votes."
+      "The governance contract does not validate vote data integrity.",
+      "The actor can modify the vote data before submission."
     ],
     "mitigation": {
-      "strategy": "Implement robust input validation for vote messages.",
+      "strategy": "Implement cryptographic hashing and integrity checks for vote data.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may alter or manipulate vote data to influence the outcome of governance proposals.",
+    "description": "An attacker may alter the vote data to influence the outcome of the proposal.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 56,
+    "id": 60,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
@@ -151,7 +151,7 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "The system does not track or verify vote origins."
+      "gap_description": "Votes are not linked to user identities in a verifiable way."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -162,25 +162,25 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Vote traceability and accountability is not implemented."
+      "rationale": "The system lacks mechanisms to ensure accountability for votes."
     },
     "assumptions": [
-      "The governance contract does not record vote origins or timestamps.",
-      "The actor can submit votes anonymously."
+      "The system does not use mechanisms like digital signatures or verifiable credentials.",
+      "The actor can cast votes anonymously."
     ],
     "mitigation": {
-      "strategy": "Implement mechanisms to track vote origins, timestamps, and user identities.",
+      "strategy": "Use a secure, auditable voting system with user authentication and non-repudiation mechanisms.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes and deny their participation, making it difficult to hold them accountable.",
+    "description": "An attacker may cast votes and deny involvement, making it difficult to trace back their actions.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
-    "id": 57,
+    "id": 61,
     "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
@@ -211,7 +211,7 @@
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Votes are not handled securely."
+      "gap_description": "Vote details are exposed to unauthorized parties."
     },
     "actor_risk": {
       "actor_id": 1,
@@ -222,18 +222,18 @@
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Votes might be intercepted or disclosed during transmission."
+      "rationale": "The system does not protect vote confidentiality."
     },
     "assumptions": [
-      "The communication channel between the user and the governance contract is not encrypted or secured.",
-      "Votes are transmitted in plain text."
+      "The governance contract exposes vote details publicly.",
+      "The actor can access the exposed vote data."
     ],
     "mitigation": {
-      "strategy": "Secure the communication channel using encryption (TLS) and implement appropriate access controls.",
+      "strategy": "Implement confidentiality mechanisms to restrict access to vote details.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "Votes submitted by users might be intercepted or disclosed due to insecure data transmission.",
+    "description": "An attacker may gain access to vote data, potentially revealing voting patterns or user preferences.",
     "trace_source": {
       "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"

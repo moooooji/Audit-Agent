@@ -31,7 +31,7 @@ architecture_analysis = {
 all_threats = []
 # threats list
 threats_list = []
-model = "gemini-1.5-flash"
+model = "gemini-2.5-flash-preview-04-17"
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 client = genai.Client(
     api_key=GOOGLE_API_KEY

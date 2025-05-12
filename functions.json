@@ -1,0 +1,634 @@
+{
+  "Exttload.exttload": [
+    "function exttload(bytes32 slot) external view returns (bytes32) {\n        assembly (\"memory-safe\") {\n            mstore(0, tload(slot))\n            return(0, 0x20)\n        }\n    }",
+    "function exttload(bytes32[] calldata slots) external view returns (bytes32[] memory) {\n        assembly (\"memory-safe\") {\n            let memptr := mload(0x40)\n            let start := memptr\n            mstore(memptr, 0x20)\n            mstore(add(memptr, 0x20), slots.length)\n            memptr := add(memptr, 0x40)\n            let end := add(memptr, shl(5, slots.length))\n            let calldataptr := slots.offset\n            for {} 1 {} {\n                mstore(memptr, tload(calldataload(calldataptr)))\n                memptr := add(memptr, 0x20)\n                calldataptr := add(calldataptr, 0x20)\n                if iszero(lt(memptr, end)) { break }\n            }\n            return(start, sub(end, start))\n        }\n    }"
+  ],
+  "ERC6909.transfer": [
+    "function transfer(address receiver, uint256 id, uint256 amount) public virtual returns (bool) {\n        balanceOf[msg.sender][id] -= amount;\n        balanceOf[receiver][id] += amount;\n        emit Transfer(msg.sender, msg.sender, receiver, id, amount);\n        return true;\n    }"
+  ],
+  "ERC6909.transferFrom": [
+    "function transferFrom(address sender, address receiver, uint256 id, uint256 amount) public virtual returns (bool) {\n        if (msg.sender != sender && !isOperator[sender][msg.sender]) {\n            uint256 allowed = allowance[sender][msg.sender][id];\n            if (allowed != type(uint256).max) allowance[sender][msg.sender][id] = allowed - amount;\n        }\n        balanceOf[sender][id] -= amount;\n        balanceOf[receiver][id] += amount;\n        emit Transfer(msg.sender, sender, receiver, id, amount);\n        return true;\n    }"
+  ],
+  "ERC6909.approve": [
+    "function approve(address spender, uint256 id, uint256 amount) public virtual returns (bool) {\n        allowance[msg.sender][spender][id] = amount;\n        emit Approval(msg.sender, spender, id, amount);\n        return true;\n    }"
+  ],
+  "ERC6909.setOperator": [
+    "function setOperator(address operator, bool approved) public virtual returns (bool) {\n        isOperator[msg.sender][operator] = approved;\n        emit OperatorSet(msg.sender, operator, approved);\n        return true;\n    }"
+  ],
+  "ERC6909.supportsInterface": [
+    "function supportsInterface(bytes4 interfaceId) public view virtual returns (bool) {\n        return interfaceId == 0x01ffc9a7 \n            || interfaceId == 0x0f632fb3; \n    }"
+  ],
+  "ERC6909._mint": [
+    "function _mint(address receiver, uint256 id, uint256 amount) internal virtual {\n        balanceOf[receiver][id] += amount;\n        emit Transfer(msg.sender, address(0), receiver, id, amount);\n    }"
+  ],
+  "ERC6909._burn": [
+    "function _burn(address sender, uint256 id, uint256 amount) internal virtual {\n        balanceOf[sender][id] -= amount;\n        emit Transfer(msg.sender, sender, address(0), id, amount);\n    }"
+  ],
+  "PoolManager.onlyWhenUnlocked": [
+    "modifier onlyWhenUnlocked() {\n        if (!Lock.isUnlocked()) ManagerLocked.selector.revertWith();\n        _;\n    }"
+  ],
+  "PoolManager.unlock": [
+    "function unlock(bytes calldata data) external override returns (bytes memory result) {\n        if (Lock.isUnlocked()) AlreadyUnlocked.selector.revertWith();\n        Lock.unlock();\n        result = IUnlockCallback(msg.sender).unlockCallback(data);\n        if (NonzeroDeltaCount.read() != 0) CurrencyNotSettled.selector.revertWith();\n        Lock.lock();\n    }"
+  ],
+  "PoolManager.initialize": [
+    "function initialize(PoolKey memory key, uint160 sqrtPriceX96) external noDelegateCall returns (int24 tick) {\n        if (key.tickSpacing > MAX_TICK_SPACING) TickSpacingTooLarge.selector.revertWith(key.tickSpacing);\n        if (key.tickSpacing < MIN_TICK_SPACING) TickSpacingTooSmall.selector.revertWith(key.tickSpacing);\n        if (key.currency0 >= key.currency1) {\n            CurrenciesOutOfOrderOrEqual.selector.revertWith(\n                Currency.unwrap(key.currency0), Currency.unwrap(key.currency1)\n            );\n        }\n        if (!key.hooks.isValidHookAddress(key.fee)) Hooks.HookAddressNotValid.selector.revertWith(address(key.hooks));\n        uint24 lpFee = key.fee.getInitialLPFee();\n        key.hooks.beforeInitialize(key, sqrtPriceX96);\n        PoolId id = key.toId();\n        tick = _pools[id].initialize(sqrtPriceX96, lpFee);\n        emit Initialize(id, key.currency0, key.currency1, key.fee, key.tickSpacing, key.hooks, sqrtPriceX96, tick);\n        key.hooks.afterInitialize(key, sqrtPriceX96, tick);\n    }"
+  ],
+  "PoolManager.modifyLiquidity": [
+    "function modifyLiquidity(PoolKey memory key, ModifyLiquidityParams memory params, bytes calldata hookData)\n        external\n        onlyWhenUnlocked\n        noDelegateCall\n        returns (BalanceDelta callerDelta, BalanceDelta feesAccrued)\n    {\n        PoolId id = key.toId();\n        {\n            Pool.State storage pool = _getPool(id);\n            pool.checkPoolInitialized();\n            key.hooks.beforeModifyLiquidity(key, params, hookData);\n            BalanceDelta principalDelta;\n            (principalDelta, feesAccrued) = pool.modifyLiquidity(\n                Pool.ModifyLiquidityParams({\n                    owner: msg.sender,\n                    tickLower: params.tickLower,\n                    tickUpper: params.tickUpper,\n                    liquidityDelta: params.liquidityDelta.toInt128(),\n                    tickSpacing: key.tickSpacing,\n                    salt: params.salt\n                })\n            );\n            callerDelta = principalDelta + feesAccrued;\n        }\n        emit ModifyLiquidity(id, msg.sender, params.tickLower, params.tickUpper, params.liquidityDelta, params.salt);\n        BalanceDelta hookDelta;\n        (callerDelta, hookDelta) = key.hooks.afterModifyLiquidity(key, params, callerDelta, feesAccrued, hookData);\n        if (hookDelta != BalanceDeltaLibrary.ZERO_DELTA) _accountPoolBalanceDelta(key, hookDelta, address(key.hooks));\n        _accountPoolBalanceDelta(key, callerDelta, msg.sender);\n    }"
+  ],
+  "PoolManager.swap": [
+    "function swap(PoolKey memory key, SwapParams memory params, bytes calldata hookData)\n        external\n        onlyWhenUnlocked\n        noDelegateCall\n        returns (BalanceDelta swapDelta)\n    {\n        if (params.amountSpecified == 0) SwapAmountCannotBeZero.selector.revertWith();\n        PoolId id = key.toId();\n        Pool.State storage pool = _getPool(id);\n        pool.checkPoolInitialized();\n        BeforeSwapDelta beforeSwapDelta;\n        {\n            int256 amountToSwap;\n            uint24 lpFeeOverride;\n            (amountToSwap, beforeSwapDelta, lpFeeOverride) = key.hooks.beforeSwap(key, params, hookData);\n            swapDelta = _swap(\n                pool,\n                id,\n                Pool.SwapParams({\n                    tickSpacing: key.tickSpacing,\n                    zeroForOne: params.zeroForOne,\n                    amountSpecified: amountToSwap,\n                    sqrtPriceLimitX96: params.sqrtPriceLimitX96,\n                    lpFeeOverride: lpFeeOverride\n                }),\n                params.zeroForOne ? key.currency0 : key.currency1 \n            );\n        }\n        BalanceDelta hookDelta;\n        (swapDelta, hookDelta) = key.hooks.afterSwap(key, params, swapDelta, hookData, beforeSwapDelta);\n        if (hookDelta != BalanceDeltaLibrary.ZERO_DELTA) _accountPoolBalanceDelta(key, hookDelta, address(key.hooks));\n        _accountPoolBalanceDelta(key, swapDelta, msg.sender);\n    }"
+  ],
+  "PoolManager._swap": [
+    "function _swap(Pool.State storage pool, PoolId id, Pool.SwapParams memory params, Currency inputCurrency)\n        internal\n        returns (BalanceDelta)\n    {\n        (BalanceDelta delta, uint256 amountToProtocol, uint24 swapFee, Pool.SwapResult memory result) =\n            pool.swap(params);\n        if (amountToProtocol > 0) _updateProtocolFees(inputCurrency, amountToProtocol);\n        emit Swap(\n            id,\n            msg.sender,\n            delta.amount0(),\n            delta.amount1(),\n            result.sqrtPriceX96,\n            result.liquidity,\n            result.tick,\n            swapFee\n        );\n        return delta;\n    }"
+  ],
+  "PoolManager.donate": [
+    "function donate(PoolKey memory key, uint256 amount0, uint256 amount1, bytes calldata hookData)\n        external\n        onlyWhenUnlocked\n        noDelegateCall\n        returns (BalanceDelta delta)\n    {\n        PoolId poolId = key.toId();\n        Pool.State storage pool = _getPool(poolId);\n        pool.checkPoolInitialized();\n        key.hooks.beforeDonate(key, amount0, amount1, hookData);\n        delta = pool.donate(amount0, amount1);\n        _accountPoolBalanceDelta(key, delta, msg.sender);\n        emit Donate(poolId, msg.sender, amount0, amount1);\n        key.hooks.afterDonate(key, amount0, amount1, hookData);\n    }"
+  ],
+  "PoolManager.sync": [
+    "function sync(Currency currency) external {\n        if (currency.isAddressZero()) {\n            CurrencyReserves.resetCurrency();\n        } else {\n            uint256 balance = currency.balanceOfSelf();\n            CurrencyReserves.syncCurrencyAndReserves(currency, balance);\n        }\n    }"
+  ],
+  "PoolManager.take": [
+    "function take(Currency currency, address to, uint256 amount) external onlyWhenUnlocked {\n        unchecked {\n            _accountDelta(currency, -(amount.toInt128()), msg.sender);\n            currency.transfer(to, amount);\n        }\n    }"
+  ],
+  "PoolManager.settle": [
+    "function settle() external payable onlyWhenUnlocked returns (uint256) {\n        return _settle(msg.sender);\n    }"
+  ],
+  "PoolManager.settleFor": [
+    "function settleFor(address recipient) external payable onlyWhenUnlocked returns (uint256) {\n        return _settle(recipient);\n    }"
+  ],
+  "PoolManager.clear": [
+    "function clear(Currency currency, uint256 amount) external onlyWhenUnlocked {\n        int256 current = currency.getDelta(msg.sender);\n        int128 amountDelta = amount.toInt128();\n        if (amountDelta != current) MustClearExactPositiveDelta.selector.revertWith();\n        unchecked {\n            _accountDelta(currency, -(amountDelta), msg.sender);\n        }\n    }"
+  ],
+  "PoolManager.mint": [
+    "function mint(address to, uint256 id, uint256 amount) external onlyWhenUnlocked {\n        unchecked {\n            Currency currency = CurrencyLibrary.fromId(id);\n            _accountDelta(currency, -(amount.toInt128()), msg.sender);\n            _mint(to, currency.toId(), amount);\n        }\n    }"
+  ],
+  "PoolManager.burn": [
+    "function burn(address from, uint256 id, uint256 amount) external onlyWhenUnlocked {\n        Currency currency = CurrencyLibrary.fromId(id);\n        _accountDelta(currency, amount.toInt128(), msg.sender);\n        _burnFrom(from, currency.toId(), amount);\n    }"
+  ],
+  "PoolManager.updateDynamicLPFee": [
+    "function updateDynamicLPFee(PoolKey memory key, uint24 newDynamicLPFee) external {\n        if (!key.fee.isDynamicFee() || msg.sender != address(key.hooks)) {\n            UnauthorizedDynamicLPFeeUpdate.selector.revertWith();\n        }\n        newDynamicLPFee.validate();\n        PoolId id = key.toId();\n        _pools[id].setLPFee(newDynamicLPFee);\n    }"
+  ],
+  "PoolManager._settle": [
+    "function _settle(address recipient) internal returns (uint256 paid) {\n        Currency currency = CurrencyReserves.getSyncedCurrency();\n        if (currency.isAddressZero()) {\n            paid = msg.value;\n        } else {\n            if (msg.value > 0) NonzeroNativeValue.selector.revertWith();\n            uint256 reservesBefore = CurrencyReserves.getSyncedReserves();\n            uint256 reservesNow = currency.balanceOfSelf();\n            paid = reservesNow - reservesBefore;\n            CurrencyReserves.resetCurrency();\n        }\n        _accountDelta(currency, paid.toInt128(), recipient);\n    }"
+  ],
+  "PoolManager._accountDelta": [
+    "function _accountDelta(Currency currency, int128 delta, address target) internal {\n        if (delta == 0) return;\n        (int256 previous, int256 next) = currency.applyDelta(target, delta);\n        if (next == 0) {\n            NonzeroDeltaCount.decrement();\n        } else if (previous == 0) {\n            NonzeroDeltaCount.increment();\n        }\n    }"
+  ],
+  "PoolManager._accountPoolBalanceDelta": [
+    "function _accountPoolBalanceDelta(PoolKey memory key, BalanceDelta delta, address target) internal {\n        _accountDelta(key.currency0, delta.amount0(), target);\n        _accountDelta(key.currency1, delta.amount1(), target);\n    }"
+  ],
+  "PoolManager._getPool": [
+    "function _getPool(PoolId id) internal view override returns (Pool.State storage) {\n        return _pools[id];\n    }"
+  ],
+  "PoolManager._isUnlocked": [
+    "function _isUnlocked() internal view override returns (bool) {\n        return Lock.isUnlocked();\n    }"
+  ],
+  "NoDelegateCall.checkNotDelegateCall": [
+    "function checkNotDelegateCall() private view {\n        if (address(this) != original) DelegateCallNotAllowed.selector.revertWith();\n    }"
+  ],
+  "NoDelegateCall.noDelegateCall": [
+    "modifier noDelegateCall() {\n        checkNotDelegateCall();\n        _;\n    }"
+  ],
+  "ProtocolFees.setProtocolFeeController": [
+    "function setProtocolFeeController(address controller) external onlyOwner {\n        protocolFeeController = controller;\n        emit ProtocolFeeControllerUpdated(controller);\n    }"
+  ],
+  "ProtocolFees.setProtocolFee": [
+    "function setProtocolFee(PoolKey memory key, uint24 newProtocolFee) external {\n        if (msg.sender != protocolFeeController) InvalidCaller.selector.revertWith();\n        if (!newProtocolFee.isValidProtocolFee()) ProtocolFeeTooLarge.selector.revertWith(newProtocolFee);\n        PoolId id = key.toId();\n        _getPool(id).setProtocolFee(newProtocolFee);\n        emit ProtocolFeeUpdated(id, newProtocolFee);\n    }"
+  ],
+  "ProtocolFees.collectProtocolFees": [
+    "function collectProtocolFees(address recipient, Currency currency, uint256 amount)\n        external\n        returns (uint256 amountCollected)\n    {\n        if (msg.sender != protocolFeeController) InvalidCaller.selector.revertWith();\n        if (!currency.isAddressZero() && CurrencyReserves.getSyncedCurrency() == currency) {\n            ProtocolFeeCurrencySynced.selector.revertWith();\n        }\n        amountCollected = (amount == 0) ? protocolFeesAccrued[currency] : amount;\n        protocolFeesAccrued[currency] -= amountCollected;\n        currency.transfer(recipient, amountCollected);\n    }"
+  ],
+  "ProtocolFees._isUnlocked": [
+    "function _isUnlocked() internal virtual returns (bool);"
+  ],
+  "ProtocolFees._getPool": [
+    "function _getPool(PoolId id) internal virtual returns (Pool.State storage);"
+  ],
+  "ProtocolFees._updateProtocolFees": [
+    "function _updateProtocolFees(Currency currency, uint256 amount) internal {\n        unchecked {\n            protocolFeesAccrued[currency] += amount;\n        }\n    }"
+  ],
+  "ERC6909Claims._burnFrom": [
+    "function _burnFrom(address from, uint256 id, uint256 amount) internal {\n        address sender = msg.sender;\n        if (from != sender && !isOperator[from][sender]) {\n            uint256 senderAllowance = allowance[from][sender][id];\n            if (senderAllowance != type(uint256).max) {\n                allowance[from][sender][id] = senderAllowance - amount;\n            }\n        }\n        _burn(from, id, amount);\n    }"
+  ],
+  "Extsload.extsload": [
+    "function extsload(bytes32 slot) external view returns (bytes32) {\n        assembly (\"memory-safe\") {\n            mstore(0, sload(slot))\n            return(0, 0x20)\n        }\n    }",
+    "function extsload(bytes32 startSlot, uint256 nSlots) external view returns (bytes32[] memory) {\n        assembly (\"memory-safe\") {\n            let memptr := mload(0x40)\n            let start := memptr\n            let length := shl(5, nSlots)\n            mstore(memptr, 0x20)\n            mstore(add(memptr, 0x20), nSlots)\n            memptr := add(memptr, 0x40)\n            let end := add(memptr, length)\n            for {} 1 {} {\n                mstore(memptr, sload(startSlot))\n                memptr := add(memptr, 0x20)\n                startSlot := add(startSlot, 1)\n                if iszero(lt(memptr, end)) { break }\n            }\n            return(start, sub(end, start))\n        }\n    }",
+    "function extsload(bytes32[] calldata slots) external view returns (bytes32[] memory) {\n        assembly (\"memory-safe\") {\n            let memptr := mload(0x40)\n            let start := memptr\n            mstore(memptr, 0x20)\n            mstore(add(memptr, 0x20), slots.length)\n            memptr := add(memptr, 0x40)\n            let end := add(memptr, shl(5, slots.length))\n            let calldataptr := slots.offset\n            for {} 1 {} {\n                mstore(memptr, sload(calldataload(calldataptr)))\n                memptr := add(memptr, 0x20)\n                calldataptr := add(calldataptr, 0x20)\n                if iszero(lt(memptr, end)) { break }\n            }\n            return(start, sub(end, start))\n        }\n    }"
+  ],
+  "BalanceDeltaLibrary.amount0": [
+    "function amount0(BalanceDelta balanceDelta) internal pure returns (int128 _amount0) {\n        assembly (\"memory-safe\") {\n            _amount0 := sar(128, balanceDelta)\n        }\n    }"
+  ],
+  "BalanceDeltaLibrary.amount1": [
+    "function amount1(BalanceDelta balanceDelta) internal pure returns (int128 _amount1) {\n        assembly (\"memory-safe\") {\n            _amount1 := signextend(15, balanceDelta)\n        }\n    }"
+  ],
+  "PoolIdLibrary.toId": [
+    "function toId(PoolKey memory poolKey) internal pure returns (PoolId poolId) {\n        assembly (\"memory-safe\") {\n            poolId := keccak256(poolKey, 0xa0)\n        }\n    }"
+  ],
+  "BeforeSwapDeltaLibrary.getSpecifiedDelta": [
+    "function getSpecifiedDelta(BeforeSwapDelta delta) internal pure returns (int128 deltaSpecified) {\n        assembly (\"memory-safe\") {\n            deltaSpecified := sar(128, delta)\n        }\n    }"
+  ],
+  "BeforeSwapDeltaLibrary.getUnspecifiedDelta": [
+    "function getUnspecifiedDelta(BeforeSwapDelta delta) internal pure returns (int128 deltaUnspecified) {\n        assembly (\"memory-safe\") {\n            deltaUnspecified := signextend(15, delta)\n        }\n    }"
+  ],
+  "Slot0Library.sqrtPriceX96": [
+    "function sqrtPriceX96(Slot0 _packed) internal pure returns (uint160 _sqrtPriceX96) {\n        assembly (\"memory-safe\") {\n            _sqrtPriceX96 := and(MASK_160_BITS, _packed)\n        }\n    }"
+  ],
+  "Slot0Library.tick": [
+    "function tick(Slot0 _packed) internal pure returns (int24 _tick) {\n        assembly (\"memory-safe\") {\n            _tick := signextend(2, shr(TICK_OFFSET, _packed))\n        }\n    }"
+  ],
+  "Slot0Library.protocolFee": [
+    "function protocolFee(Slot0 _packed) internal pure returns (uint24 _protocolFee) {\n        assembly (\"memory-safe\") {\n            _protocolFee := and(MASK_24_BITS, shr(PROTOCOL_FEE_OFFSET, _packed))\n        }\n    }"
+  ],
+  "Slot0Library.lpFee": [
+    "function lpFee(Slot0 _packed) internal pure returns (uint24 _lpFee) {\n        assembly (\"memory-safe\") {\n            _lpFee := and(MASK_24_BITS, shr(LP_FEE_OFFSET, _packed))\n        }\n    }"
+  ],
+  "Slot0Library.setSqrtPriceX96": [
+    "function setSqrtPriceX96(Slot0 _packed, uint160 _sqrtPriceX96) internal pure returns (Slot0 _result) {\n        assembly (\"memory-safe\") {\n            _result := or(and(not(MASK_160_BITS), _packed), and(MASK_160_BITS, _sqrtPriceX96))\n        }\n    }"
+  ],
+  "Slot0Library.setTick": [
+    "function setTick(Slot0 _packed, int24 _tick) internal pure returns (Slot0 _result) {\n        assembly (\"memory-safe\") {\n            _result := or(and(not(shl(TICK_OFFSET, MASK_24_BITS)), _packed), shl(TICK_OFFSET, and(MASK_24_BITS, _tick)))\n        }\n    }"
+  ],
+  "Slot0Library.setProtocolFee": [
+    "function setProtocolFee(Slot0 _packed, uint24 _protocolFee) internal pure returns (Slot0 _result) {\n        assembly (\"memory-safe\") {\n            _result :=\n                or(\n                    and(not(shl(PROTOCOL_FEE_OFFSET, MASK_24_BITS)), _packed),\n                    shl(PROTOCOL_FEE_OFFSET, and(MASK_24_BITS, _protocolFee))\n                )\n        }\n    }"
+  ],
+  "Slot0Library.setLpFee": [
+    "function setLpFee(Slot0 _packed, uint24 _lpFee) internal pure returns (Slot0 _result) {\n        assembly (\"memory-safe\") {\n            _result :=\n                or(and(not(shl(LP_FEE_OFFSET, MASK_24_BITS)), _packed), shl(LP_FEE_OFFSET, and(MASK_24_BITS, _lpFee)))\n        }\n    }"
+  ],
+  "CurrencyLibrary.transfer": [
+    "function transfer(Currency currency, address to, uint256 amount) internal {\n        bool success;\n        if (currency.isAddressZero()) {\n            assembly (\"memory-safe\") {\n                success := call(gas(), to, amount, 0, 0, 0, 0)\n            }\n            if (!success) {\n                CustomRevert.bubbleUpAndRevertWith(to, bytes4(0), NativeTransferFailed.selector);\n            }\n        } else {\n            assembly (\"memory-safe\") {\n                let fmp := mload(0x40)\n                mstore(fmp, 0xa9059cbb00000000000000000000000000000000000000000000000000000000)\n                mstore(add(fmp, 4), and(to, 0xffffffffffffffffffffffffffffffffffffffff)) \n                mstore(add(fmp, 36), amount) \n                success :=\n                    and(\n                        or(and(eq(mload(0), 1), gt(returndatasize(), 31)), iszero(returndatasize())),\n                        call(gas(), currency, 0, fmp, 68, 0, 32)\n                    )\n                mstore(fmp, 0) \n                mstore(add(fmp, 0x20), 0) \n                mstore(add(fmp, 0x40), 0) \n            }\n            if (!success) {\n                CustomRevert.bubbleUpAndRevertWith(\n                    Currency.unwrap(currency), IERC20Minimal.transfer.selector, ERC20TransferFailed.selector\n                );\n            }\n        }\n    }"
+  ],
+  "CurrencyLibrary.balanceOfSelf": [
+    "function balanceOfSelf(Currency currency) internal view returns (uint256) {\n        if (currency.isAddressZero()) {\n            return address(this).balance;\n        } else {\n            return IERC20Minimal(Currency.unwrap(currency)).balanceOf(address(this));\n        }\n    }"
+  ],
+  "CurrencyLibrary.balanceOf": [
+    "function balanceOf(Currency currency, address owner) internal view returns (uint256) {\n        if (currency.isAddressZero()) {\n            return owner.balance;\n        } else {\n            return IERC20Minimal(Currency.unwrap(currency)).balanceOf(owner);\n        }\n    }"
+  ],
+  "CurrencyLibrary.isAddressZero": [
+    "function isAddressZero(Currency currency) internal pure returns (bool) {\n        return Currency.unwrap(currency) == Currency.unwrap(ADDRESS_ZERO);\n    }"
+  ],
+  "CurrencyLibrary.toId": [
+    "function toId(Currency currency) internal pure returns (uint256) {\n        return uint160(Currency.unwrap(currency));\n    }"
+  ],
+  "CurrencyLibrary.fromId": [
+    "function fromId(uint256 id) internal pure returns (Currency) {\n        return Currency.wrap(address(uint160(id)));\n    }"
+  ],
+  "Position.get": [
+    "function get(mapping(bytes32 => State) storage self, address owner, int24 tickLower, int24 tickUpper, bytes32 salt)\n        internal\n        view\n        returns (State storage position)\n    {\n        bytes32 positionKey = calculatePositionKey(owner, tickLower, tickUpper, salt);\n        position = self[positionKey];\n    }"
+  ],
+  "Position.calculatePositionKey": [
+    "function calculatePositionKey(address owner, int24 tickLower, int24 tickUpper, bytes32 salt)\n        internal\n        pure\n        returns (bytes32 positionKey)\n    {\n        assembly (\"memory-safe\") {\n            let fmp := mload(0x40)\n            mstore(add(fmp, 0x26), salt) \n            mstore(add(fmp, 0x06), tickUpper) \n            mstore(add(fmp, 0x03), tickLower) \n            mstore(fmp, owner) \n            positionKey := keccak256(add(fmp, 0x0c), 0x3a) \n            mstore(add(fmp, 0x40), 0) \n            mstore(add(fmp, 0x20), 0) \n            mstore(fmp, 0) \n        }\n    }"
+  ],
+  "Position.update": [
+    "function update(\n        State storage self,\n        int128 liquidityDelta,\n        uint256 feeGrowthInside0X128,\n        uint256 feeGrowthInside1X128\n    ) internal returns (uint256 feesOwed0, uint256 feesOwed1) {\n        uint128 liquidity = self.liquidity;\n        if (liquidityDelta == 0) {\n            if (liquidity == 0) CannotUpdateEmptyPosition.selector.revertWith();\n        } else {\n            self.liquidity = LiquidityMath.addDelta(liquidity, liquidityDelta);\n        }\n        unchecked {\n            feesOwed0 =\n                FullMath.mulDiv(feeGrowthInside0X128 - self.feeGrowthInside0LastX128, liquidity, FixedPoint128.Q128);\n            feesOwed1 =\n                FullMath.mulDiv(feeGrowthInside1X128 - self.feeGrowthInside1LastX128, liquidity, FixedPoint128.Q128);\n        }\n        self.feeGrowthInside0LastX128 = feeGrowthInside0X128;\n        self.feeGrowthInside1LastX128 = feeGrowthInside1X128;\n    }"
+  ],
+  "LiquidityMath.addDelta": [
+    "function addDelta(uint128 x, int128 y) internal pure returns (uint128 z) {\n        assembly (\"memory-safe\") {\n            z := add(and(x, 0xffffffffffffffffffffffffffffffff), signextend(15, y))\n            if shr(128, z) {\n                mstore(0, 0x93dafdf1)\n                revert(0x1c, 0x04)\n            }\n        }\n    }"
+  ],
+  "TickBitmap.compress": [
+    "function compress(int24 tick, int24 tickSpacing) internal pure returns (int24 compressed) {\n        assembly (\"memory-safe\") {\n            tick := signextend(2, tick)\n            tickSpacing := signextend(2, tickSpacing)\n            compressed :=\n                sub(\n                    sdiv(tick, tickSpacing),\n                    slt(smod(tick, tickSpacing), 0)\n                )\n        }\n    }"
+  ],
+  "TickBitmap.position": [
+    "function position(int24 tick) internal pure returns (int16 wordPos, uint8 bitPos) {\n        assembly (\"memory-safe\") {\n            wordPos := sar(8, signextend(2, tick))\n            bitPos := and(tick, 0xff)\n        }\n    }"
+  ],
+  "TickBitmap.flipTick": [
+    "function flipTick(mapping(int16 => uint256) storage self, int24 tick, int24 tickSpacing) internal {\n        assembly (\"memory-safe\") {\n            tick := signextend(2, tick)\n            tickSpacing := signextend(2, tickSpacing)\n            if smod(tick, tickSpacing) {\n                let fmp := mload(0x40)\n                mstore(fmp, 0xd4d8f3e6) \n                mstore(add(fmp, 0x20), tick)\n                mstore(add(fmp, 0x40), tickSpacing)\n                revert(add(fmp, 0x1c), 0x44)\n            }\n            tick := sdiv(tick, tickSpacing)\n            mstore(0, sar(8, tick))\n            mstore(0x20, self.slot)\n            let slot := keccak256(0, 0x40)\n            sstore(slot, xor(sload(slot), shl(and(tick, 0xff), 1)))\n        }\n    }"
+  ],
+  "TickBitmap.nextInitializedTickWithinOneWord": [
+    "function nextInitializedTickWithinOneWord(\n        mapping(int16 => uint256) storage self,\n        int24 tick,\n        int24 tickSpacing,\n        bool lte\n    ) internal view returns (int24 next, bool initialized) {\n        unchecked {\n            int24 compressed = compress(tick, tickSpacing);\n            if (lte) {\n                (int16 wordPos, uint8 bitPos) = position(compressed);\n                uint256 mask = type(uint256).max >> (uint256(type(uint8).max) - bitPos);\n                uint256 masked = self[wordPos] & mask;\n                initialized = masked != 0;\n                next = initialized\n                    ? (compressed - int24(uint24(bitPos - BitMath.mostSignificantBit(masked)))) * tickSpacing\n                    : (compressed - int24(uint24(bitPos))) * tickSpacing;\n            } else {\n                (int16 wordPos, uint8 bitPos) = position(++compressed);\n                uint256 mask = ~((1 << bitPos) - 1);\n                uint256 masked = self[wordPos] & mask;\n                initialized = masked != 0;\n                next = initialized\n                    ? (compressed + int24(uint24(BitMath.leastSignificantBit(masked) - bitPos))) * tickSpacing\n                    : (compressed + int24(uint24(type(uint8).max - bitPos))) * tickSpacing;\n            }\n        }\n    }"
+  ],
+  "Lock.unlock": [
+    "function unlock() internal {\n        assembly (\"memory-safe\") {\n            tstore(IS_UNLOCKED_SLOT, true)\n        }\n    }"
+  ],
+  "Lock.lock": [
+    "function lock() internal {\n        assembly (\"memory-safe\") {\n            tstore(IS_UNLOCKED_SLOT, false)\n        }\n    }"
+  ],
+  "Lock.isUnlocked": [
+    "function isUnlocked() internal view returns (bool unlocked) {\n        assembly (\"memory-safe\") {\n            unlocked := tload(IS_UNLOCKED_SLOT)\n        }\n    }"
+  ],
+  "ProtocolFeeLibrary.getZeroForOneFee": [
+    "function getZeroForOneFee(uint24 self) internal pure returns (uint16) {\n        return uint16(self & 0xfff);\n    }"
+  ],
+  "ProtocolFeeLibrary.getOneForZeroFee": [
+    "function getOneForZeroFee(uint24 self) internal pure returns (uint16) {\n        return uint16(self >> 12);\n    }"
+  ],
+  "ProtocolFeeLibrary.isValidProtocolFee": [
+    "function isValidProtocolFee(uint24 self) internal pure returns (bool valid) {\n        assembly (\"memory-safe\") {\n            let isZeroForOneFeeOk := lt(and(self, 0xfff), FEE_0_THRESHOLD)\n            let isOneForZeroFeeOk := lt(and(self, 0xfff000), FEE_1_THRESHOLD)\n            valid := and(isZeroForOneFeeOk, isOneForZeroFeeOk)\n        }\n    }"
+  ],
+  "ProtocolFeeLibrary.calculateSwapFee": [
+    "function calculateSwapFee(uint16 self, uint24 lpFee) internal pure returns (uint24 swapFee) {\n        assembly (\"memory-safe\") {\n            self := and(self, 0xfff)\n            lpFee := and(lpFee, 0xffffff)\n            let numerator := mul(self, lpFee)\n            swapFee := sub(add(self, lpFee), div(numerator, PIPS_DENOMINATOR))\n        }\n    }"
+  ],
+  "ParseBytes.parseSelector": [
+    "function parseSelector(bytes memory result) internal pure returns (bytes4 selector) {\n        assembly (\"memory-safe\") {\n            selector := mload(add(result, 0x20))\n        }\n    }"
+  ],
+  "ParseBytes.parseFee": [
+    "function parseFee(bytes memory result) internal pure returns (uint24 lpFee) {\n        assembly (\"memory-safe\") {\n            lpFee := mload(add(result, 0x60))\n        }\n    }"
+  ],
+  "ParseBytes.parseReturnDelta": [
+    "function parseReturnDelta(bytes memory result) internal pure returns (int256 hookReturn) {\n        assembly (\"memory-safe\") {\n            hookReturn := mload(add(result, 0x40))\n        }\n    }"
+  ],
+  "Hooks.validateHookPermissions": [
+    "function validateHookPermissions(IHooks self, Permissions memory permissions) internal pure {\n        if (\n            permissions.beforeInitialize != self.hasPermission(BEFORE_INITIALIZE_FLAG)\n                || permissions.afterInitialize != self.hasPermission(AFTER_INITIALIZE_FLAG)\n                || permissions.beforeAddLiquidity != self.hasPermission(BEFORE_ADD_LIQUIDITY_FLAG)\n                || permissions.afterAddLiquidity != self.hasPermission(AFTER_ADD_LIQUIDITY_FLAG)\n                || permissions.beforeRemoveLiquidity != self.hasPermission(BEFORE_REMOVE_LIQUIDITY_FLAG)\n                || permissions.afterRemoveLiquidity != self.hasPermission(AFTER_REMOVE_LIQUIDITY_FLAG)\n                || permissions.beforeSwap != self.hasPermission(BEFORE_SWAP_FLAG)\n                || permissions.afterSwap != self.hasPermission(AFTER_SWAP_FLAG)\n                || permissions.beforeDonate != self.hasPermission(BEFORE_DONATE_FLAG)\n                || permissions.afterDonate != self.hasPermission(AFTER_DONATE_FLAG)\n                || permissions.beforeSwapReturnDelta != self.hasPermission(BEFORE_SWAP_RETURNS_DELTA_FLAG)\n                || permissions.afterSwapReturnDelta != self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)\n                || permissions.afterAddLiquidityReturnDelta != self.hasPermission(AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG)\n                || permissions.afterRemoveLiquidityReturnDelta\n                    != self.hasPermission(AFTER_REMOVE_LIQUIDITY_RETURNS_DELTA_FLAG)\n        ) {\n            HookAddressNotValid.selector.revertWith(address(self));\n        }\n    }"
+  ],
+  "Hooks.isValidHookAddress": [
+    "function isValidHookAddress(IHooks self, uint24 fee) internal pure returns (bool) {\n        if (!self.hasPermission(BEFORE_SWAP_FLAG) && self.hasPermission(BEFORE_SWAP_RETURNS_DELTA_FLAG)) return false;\n        if (!self.hasPermission(AFTER_SWAP_FLAG) && self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)) return false;\n        if (!self.hasPermission(AFTER_ADD_LIQUIDITY_FLAG) && self.hasPermission(AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG))\n        {\n            return false;\n        }\n        if (\n            !self.hasPermission(AFTER_REMOVE_LIQUIDITY_FLAG)\n                && self.hasPermission(AFTER_REMOVE_LIQUIDITY_RETURNS_DELTA_FLAG)\n        ) return false;\n        return address(self) == address(0)\n            ? !fee.isDynamicFee()\n            : (uint160(address(self)) & ALL_HOOK_MASK > 0 || fee.isDynamicFee());\n    }"
+  ],
+  "Hooks.callHook": [
+    "function callHook(IHooks self, bytes memory data) internal returns (bytes memory result) {\n        bool success;\n        assembly (\"memory-safe\") {\n            success := call(gas(), self, 0, add(data, 0x20), mload(data), 0, 0)\n        }\n        if (!success) CustomRevert.bubbleUpAndRevertWith(address(self), bytes4(data), HookCallFailed.selector);\n        assembly (\"memory-safe\") {\n            result := mload(0x40)\n            mstore(0x40, add(result, and(add(returndatasize(), 0x3f), not(0x1f))))\n            mstore(result, returndatasize())\n            returndatacopy(add(result, 0x20), 0, returndatasize())\n        }\n        if (result.length < 32 || result.parseSelector() != data.parseSelector()) {\n            InvalidHookResponse.selector.revertWith();\n        }\n    }"
+  ],
+  "Hooks.callHookWithReturnDelta": [
+    "function callHookWithReturnDelta(IHooks self, bytes memory data, bool parseReturn) internal returns (int256) {\n        bytes memory result = callHook(self, data);\n        if (!parseReturn) return 0;\n        if (result.length != 64) InvalidHookResponse.selector.revertWith();\n        return result.parseReturnDelta();\n    }"
+  ],
+  "Hooks.noSelfCall": [
+    "modifier noSelfCall(IHooks self) {\n        if (msg.sender != address(self)) {\n            _;\n        }\n    }"
+  ],
+  "Hooks.beforeInitialize": [
+    "function beforeInitialize(IHooks self, PoolKey memory key, uint160 sqrtPriceX96) internal noSelfCall(self) {\n        if (self.hasPermission(BEFORE_INITIALIZE_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.beforeInitialize, (msg.sender, key, sqrtPriceX96)));\n        }\n    }"
+  ],
+  "Hooks.afterInitialize": [
+    "function afterInitialize(IHooks self, PoolKey memory key, uint160 sqrtPriceX96, int24 tick)\n        internal\n        noSelfCall(self)\n    {\n        if (self.hasPermission(AFTER_INITIALIZE_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.afterInitialize, (msg.sender, key, sqrtPriceX96, tick)));\n        }\n    }"
+  ],
+  "Hooks.beforeModifyLiquidity": [
+    "function beforeModifyLiquidity(\n        IHooks self,\n        PoolKey memory key,\n        ModifyLiquidityParams memory params,\n        bytes calldata hookData\n    ) internal noSelfCall(self) {\n        if (params.liquidityDelta > 0 && self.hasPermission(BEFORE_ADD_LIQUIDITY_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.beforeAddLiquidity, (msg.sender, key, params, hookData)));\n        } else if (params.liquidityDelta <= 0 && self.hasPermission(BEFORE_REMOVE_LIQUIDITY_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.beforeRemoveLiquidity, (msg.sender, key, params, hookData)));\n        }\n    }"
+  ],
+  "Hooks.afterModifyLiquidity": [
+    "function afterModifyLiquidity(\n        IHooks self,\n        PoolKey memory key,\n        ModifyLiquidityParams memory params,\n        BalanceDelta delta,\n        BalanceDelta feesAccrued,\n        bytes calldata hookData\n    ) internal returns (BalanceDelta callerDelta, BalanceDelta hookDelta) {\n        if (msg.sender == address(self)) return (delta, BalanceDeltaLibrary.ZERO_DELTA);\n        callerDelta = delta;\n        if (params.liquidityDelta > 0) {\n            if (self.hasPermission(AFTER_ADD_LIQUIDITY_FLAG)) {\n                hookDelta = BalanceDelta.wrap(\n                    self.callHookWithReturnDelta(\n                        abi.encodeCall(\n                            IHooks.afterAddLiquidity, (msg.sender, key, params, delta, feesAccrued, hookData)\n                        ),\n                        self.hasPermission(AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG)\n                    )\n                );\n                callerDelta = callerDelta - hookDelta;\n            }\n        } else {\n            if (self.hasPermission(AFTER_REMOVE_LIQUIDITY_FLAG)) {\n                hookDelta = BalanceDelta.wrap(\n                    self.callHookWithReturnDelta(\n                        abi.encodeCall(\n                            IHooks.afterRemoveLiquidity, (msg.sender, key, params, delta, feesAccrued, hookData)\n                        ),\n                        self.hasPermission(AFTER_REMOVE_LIQUIDITY_RETURNS_DELTA_FLAG)\n                    )\n                );\n                callerDelta = callerDelta - hookDelta;\n            }\n        }\n    }"
+  ],
+  "Hooks.beforeSwap": [
+    "function beforeSwap(IHooks self, PoolKey memory key, SwapParams memory params, bytes calldata hookData)\n        internal\n        returns (int256 amountToSwap, BeforeSwapDelta hookReturn, uint24 lpFeeOverride)\n    {\n        amountToSwap = params.amountSpecified;\n        if (msg.sender == address(self)) return (amountToSwap, BeforeSwapDeltaLibrary.ZERO_DELTA, lpFeeOverride);\n        if (self.hasPermission(BEFORE_SWAP_FLAG)) {\n            bytes memory result = callHook(self, abi.encodeCall(IHooks.beforeSwap, (msg.sender, key, params, hookData)));\n            if (result.length != 96) InvalidHookResponse.selector.revertWith();\n            if (key.fee.isDynamicFee()) lpFeeOverride = result.parseFee();\n            if (self.hasPermission(BEFORE_SWAP_RETURNS_DELTA_FLAG)) {\n                hookReturn = BeforeSwapDelta.wrap(result.parseReturnDelta());\n                int128 hookDeltaSpecified = hookReturn.getSpecifiedDelta();\n                if (hookDeltaSpecified != 0) {\n                    bool exactInput = amountToSwap < 0;\n                    amountToSwap += hookDeltaSpecified;\n                    if (exactInput ? amountToSwap > 0 : amountToSwap < 0) {\n                        HookDeltaExceedsSwapAmount.selector.revertWith();\n                    }\n                }\n            }\n        }\n    }"
+  ],
+  "Hooks.afterSwap": [
+    "function afterSwap(\n        IHooks self,\n        PoolKey memory key,\n        SwapParams memory params,\n        BalanceDelta swapDelta,\n        bytes calldata hookData,\n        BeforeSwapDelta beforeSwapHookReturn\n    ) internal returns (BalanceDelta, BalanceDelta) {\n        if (msg.sender == address(self)) return (swapDelta, BalanceDeltaLibrary.ZERO_DELTA);\n        int128 hookDeltaSpecified = beforeSwapHookReturn.getSpecifiedDelta();\n        int128 hookDeltaUnspecified = beforeSwapHookReturn.getUnspecifiedDelta();\n        if (self.hasPermission(AFTER_SWAP_FLAG)) {\n            hookDeltaUnspecified += self.callHookWithReturnDelta(\n                abi.encodeCall(IHooks.afterSwap, (msg.sender, key, params, swapDelta, hookData)),\n                self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)\n            ).toInt128();\n        }\n        BalanceDelta hookDelta;\n        if (hookDeltaUnspecified != 0 || hookDeltaSpecified != 0) {\n            hookDelta = (params.amountSpecified < 0 == params.zeroForOne)\n                ? toBalanceDelta(hookDeltaSpecified, hookDeltaUnspecified)\n                : toBalanceDelta(hookDeltaUnspecified, hookDeltaSpecified);\n            swapDelta = swapDelta - hookDelta;\n        }\n        return (swapDelta, hookDelta);\n    }"
+  ],
+  "Hooks.beforeDonate": [
+    "function beforeDonate(IHooks self, PoolKey memory key, uint256 amount0, uint256 amount1, bytes calldata hookData)\n        internal\n        noSelfCall(self)\n    {\n        if (self.hasPermission(BEFORE_DONATE_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.beforeDonate, (msg.sender, key, amount0, amount1, hookData)));\n        }\n    }"
+  ],
+  "Hooks.afterDonate": [
+    "function afterDonate(IHooks self, PoolKey memory key, uint256 amount0, uint256 amount1, bytes calldata hookData)\n        internal\n        noSelfCall(self)\n    {\n        if (self.hasPermission(AFTER_DONATE_FLAG)) {\n            self.callHook(abi.encodeCall(IHooks.afterDonate, (msg.sender, key, amount0, amount1, hookData)));\n        }\n    }"
+  ],
+  "Hooks.hasPermission": [
+    "function hasPermission(IHooks self, uint160 flag) internal pure returns (bool) {\n        return uint160(address(self)) & flag != 0;\n    }"
+  ],
+  "CustomRevert.revertWith": [
+    "function revertWith(bytes4 selector) internal pure {\n        assembly (\"memory-safe\") {\n            mstore(0, selector)\n            revert(0, 0x04)\n        }\n    }",
+    "function revertWith(bytes4 selector, address addr) internal pure {\n        assembly (\"memory-safe\") {\n            mstore(0, selector)\n            mstore(0x04, and(addr, 0xffffffffffffffffffffffffffffffffffffffff))\n            revert(0, 0x24)\n        }\n    }",
+    "function revertWith(bytes4 selector, int24 value) internal pure {\n        assembly (\"memory-safe\") {\n            mstore(0, selector)\n            mstore(0x04, signextend(2, value))\n            revert(0, 0x24)\n        }\n    }",
+    "function revertWith(bytes4 selector, uint160 value) internal pure {\n        assembly (\"memory-safe\") {\n            mstore(0, selector)\n            mstore(0x04, and(value, 0xffffffffffffffffffffffffffffffffffffffff))\n            revert(0, 0x24)\n        }\n    }",
+    "function revertWith(bytes4 selector, int24 value1, int24 value2) internal pure {\n        assembly (\"memory-safe\") {\n            let fmp := mload(0x40)\n            mstore(fmp, selector)\n            mstore(add(fmp, 0x04), signextend(2, value1))\n            mstore(add(fmp, 0x24), signextend(2, value2))\n            revert(fmp, 0x44)\n        }\n    }",
+    "function revertWith(bytes4 selector, uint160 value1, uint160 value2) internal pure {\n        assembly (\"memory-safe\") {\n            let fmp := mload(0x40)\n            mstore(fmp, selector)\n            mstore(add(fmp, 0x04), and(value1, 0xffffffffffffffffffffffffffffffffffffffff))\n            mstore(add(fmp, 0x24), and(value2, 0xffffffffffffffffffffffffffffffffffffffff))\n            revert(fmp, 0x44)\n        }\n    }",
+    "function revertWith(bytes4 selector, address value1, address value2) internal pure {\n        assembly (\"memory-safe\") {\n            let fmp := mload(0x40)\n            mstore(fmp, selector)\n            mstore(add(fmp, 0x04), and(value1, 0xffffffffffffffffffffffffffffffffffffffff))\n            mstore(add(fmp, 0x24), and(value2, 0xffffffffffffffffffffffffffffffffffffffff))\n            revert(fmp, 0x44)\n        }\n    }"
+  ],
+  "CustomRevert.bubbleUpAndRevertWith": [
+    "function bubbleUpAndRevertWith(\n        address revertingContract,\n        bytes4 revertingFunctionSelector,\n        bytes4 additionalContext\n    ) internal pure {\n        bytes4 wrappedErrorSelector = WrappedError.selector;\n        assembly (\"memory-safe\") {\n            let encodedDataSize := mul(div(add(returndatasize(), 31), 32), 32)\n            let fmp := mload(0x40)\n            mstore(fmp, wrappedErrorSelector)\n            mstore(add(fmp, 0x04), and(revertingContract, 0xffffffffffffffffffffffffffffffffffffffff))\n            mstore(\n                add(fmp, 0x24),\n                and(revertingFunctionSelector, 0xffffffff00000000000000000000000000000000000000000000000000000000)\n            )\n            mstore(add(fmp, 0x44), 0x80)\n            mstore(add(fmp, 0x64), add(0xa0, encodedDataSize))\n            mstore(add(fmp, 0x84), returndatasize())\n            returndatacopy(add(fmp, 0xa4), 0, returndatasize())\n            mstore(add(fmp, add(0xa4, encodedDataSize)), 0x04)\n            mstore(\n                add(fmp, add(0xc4, encodedDataSize)),\n                and(additionalContext, 0xffffffff00000000000000000000000000000000000000000000000000000000)\n            )\n            revert(fmp, add(0xe4, encodedDataSize))\n        }\n    }"
+  ],
+  "Pool.checkTicks": [
+    "function checkTicks(int24 tickLower, int24 tickUpper) private pure {\n        if (tickLower >= tickUpper) TicksMisordered.selector.revertWith(tickLower, tickUpper);\n        if (tickLower < TickMath.MIN_TICK) TickLowerOutOfBounds.selector.revertWith(tickLower);\n        if (tickUpper > TickMath.MAX_TICK) TickUpperOutOfBounds.selector.revertWith(tickUpper);\n    }"
+  ],
+  "Pool.initialize": [
+    "function initialize(State storage self, uint160 sqrtPriceX96, uint24 lpFee) internal returns (int24 tick) {\n        if (self.slot0.sqrtPriceX96() != 0) PoolAlreadyInitialized.selector.revertWith();\n        tick = TickMath.getTickAtSqrtPrice(sqrtPriceX96);\n        self.slot0 = Slot0.wrap(bytes32(0)).setSqrtPriceX96(sqrtPriceX96).setTick(tick).setLpFee(lpFee);\n    }"
+  ],
+  "Pool.setProtocolFee": [
+    "function setProtocolFee(State storage self, uint24 protocolFee) internal {\n        self.checkPoolInitialized();\n        self.slot0 = self.slot0.setProtocolFee(protocolFee);\n    }"
+  ],
+  "Pool.setLPFee": [
+    "function setLPFee(State storage self, uint24 lpFee) internal {\n        self.checkPoolInitialized();\n        self.slot0 = self.slot0.setLpFee(lpFee);\n    }"
+  ],
+  "Pool.modifyLiquidity": [
+    "function modifyLiquidity(State storage self, ModifyLiquidityParams memory params)\n        internal\n        returns (BalanceDelta delta, BalanceDelta feeDelta)\n    {\n        int128 liquidityDelta = params.liquidityDelta;\n        int24 tickLower = params.tickLower;\n        int24 tickUpper = params.tickUpper;\n        checkTicks(tickLower, tickUpper);\n        {\n            ModifyLiquidityState memory state;\n            if (liquidityDelta != 0) {\n                (state.flippedLower, state.liquidityGrossAfterLower) =\n                    updateTick(self, tickLower, liquidityDelta, false);\n                (state.flippedUpper, state.liquidityGrossAfterUpper) = updateTick(self, tickUpper, liquidityDelta, true);\n                if (liquidityDelta >= 0) {\n                    uint128 maxLiquidityPerTick = tickSpacingToMaxLiquidityPerTick(params.tickSpacing);\n                    if (state.liquidityGrossAfterLower > maxLiquidityPerTick) {\n                        TickLiquidityOverflow.selector.revertWith(tickLower);\n                    }\n                    if (state.liquidityGrossAfterUpper > maxLiquidityPerTick) {\n                        TickLiquidityOverflow.selector.revertWith(tickUpper);\n                    }\n                }\n                if (state.flippedLower) {\n                    self.tickBitmap.flipTick(tickLower, params.tickSpacing);\n                }\n                if (state.flippedUpper) {\n                    self.tickBitmap.flipTick(tickUpper, params.tickSpacing);\n                }\n            }\n            {\n                (uint256 feeGrowthInside0X128, uint256 feeGrowthInside1X128) =\n                    getFeeGrowthInside(self, tickLower, tickUpper);\n                Position.State storage position = self.positions.get(params.owner, tickLower, tickUpper, params.salt);\n                (uint256 feesOwed0, uint256 feesOwed1) =\n                    position.update(liquidityDelta, feeGrowthInside0X128, feeGrowthInside1X128);\n                feeDelta = toBalanceDelta(feesOwed0.toInt128(), feesOwed1.toInt128());\n            }\n            if (liquidityDelta < 0) {\n                if (state.flippedLower) {\n                    clearTick(self, tickLower);\n                }\n                if (state.flippedUpper) {\n                    clearTick(self, tickUpper);\n                }\n            }\n        }\n        if (liquidityDelta != 0) {\n            Slot0 _slot0 = self.slot0;\n            (int24 tick, uint160 sqrtPriceX96) = (_slot0.tick(), _slot0.sqrtPriceX96());\n            if (tick < tickLower) {\n                delta = toBalanceDelta(\n                    SqrtPriceMath.getAmount0Delta(\n                        TickMath.getSqrtPriceAtTick(tickLower), TickMath.getSqrtPriceAtTick(tickUpper), liquidityDelta\n                    ).toInt128(),\n                    0\n                );\n            } else if (tick < tickUpper) {\n                delta = toBalanceDelta(\n                    SqrtPriceMath.getAmount0Delta(sqrtPriceX96, TickMath.getSqrtPriceAtTick(tickUpper), liquidityDelta)\n                        .toInt128(),\n                    SqrtPriceMath.getAmount1Delta(TickMath.getSqrtPriceAtTick(tickLower), sqrtPriceX96, liquidityDelta)\n                        .toInt128()\n                );\n                self.liquidity = LiquidityMath.addDelta(self.liquidity, liquidityDelta);\n            } else {\n                delta = toBalanceDelta(\n                    0,\n                    SqrtPriceMath.getAmount1Delta(\n                        TickMath.getSqrtPriceAtTick(tickLower), TickMath.getSqrtPriceAtTick(tickUpper), liquidityDelta\n                    ).toInt128()\n                );\n            }\n        }\n    }"
+  ],
+  "Pool.swap": [
+    "function swap(State storage self, SwapParams memory params)\n        internal\n        returns (BalanceDelta swapDelta, uint256 amountToProtocol, uint24 swapFee, SwapResult memory result)\n    {\n        Slot0 slot0Start = self.slot0;\n        bool zeroForOne = params.zeroForOne;\n        uint256 protocolFee =\n            zeroForOne ? slot0Start.protocolFee().getZeroForOneFee() : slot0Start.protocolFee().getOneForZeroFee();\n        int256 amountSpecifiedRemaining = params.amountSpecified;\n        int256 amountCalculated = 0;\n        result.sqrtPriceX96 = slot0Start.sqrtPriceX96();\n        result.tick = slot0Start.tick();\n        result.liquidity = self.liquidity;\n        {\n            uint24 lpFee = params.lpFeeOverride.isOverride()\n                ? params.lpFeeOverride.removeOverrideFlagAndValidate()\n                : slot0Start.lpFee();\n            swapFee = protocolFee == 0 ? lpFee : uint16(protocolFee).calculateSwapFee(lpFee);\n        }\n        if (swapFee >= SwapMath.MAX_SWAP_FEE) {\n            if (params.amountSpecified > 0) {\n                InvalidFeeForExactOut.selector.revertWith();\n            }\n        }\n        if (params.amountSpecified == 0) return (BalanceDeltaLibrary.ZERO_DELTA, 0, swapFee, result);\n        if (zeroForOne) {\n            if (params.sqrtPriceLimitX96 >= slot0Start.sqrtPriceX96()) {\n                PriceLimitAlreadyExceeded.selector.revertWith(slot0Start.sqrtPriceX96(), params.sqrtPriceLimitX96);\n            }\n            if (params.sqrtPriceLimitX96 <= TickMath.MIN_SQRT_PRICE) {\n                PriceLimitOutOfBounds.selector.revertWith(params.sqrtPriceLimitX96);\n            }\n        } else {\n            if (params.sqrtPriceLimitX96 <= slot0Start.sqrtPriceX96()) {\n                PriceLimitAlreadyExceeded.selector.revertWith(slot0Start.sqrtPriceX96(), params.sqrtPriceLimitX96);\n            }\n            if (params.sqrtPriceLimitX96 >= TickMath.MAX_SQRT_PRICE) {\n                PriceLimitOutOfBounds.selector.revertWith(params.sqrtPriceLimitX96);\n            }\n        }\n        StepComputations memory step;\n        step.feeGrowthGlobalX128 = zeroForOne ? self.feeGrowthGlobal0X128 : self.feeGrowthGlobal1X128;\n        while (!(amountSpecifiedRemaining == 0 || result.sqrtPriceX96 == params.sqrtPriceLimitX96)) {\n            step.sqrtPriceStartX96 = result.sqrtPriceX96;\n            (step.tickNext, step.initialized) =\n                self.tickBitmap.nextInitializedTickWithinOneWord(result.tick, params.tickSpacing, zeroForOne);\n            if (step.tickNext <= TickMath.MIN_TICK) {\n                step.tickNext = TickMath.MIN_TICK;\n            }\n            if (step.tickNext >= TickMath.MAX_TICK) {\n                step.tickNext = TickMath.MAX_TICK;\n            }\n            step.sqrtPriceNextX96 = TickMath.getSqrtPriceAtTick(step.tickNext);\n            (result.sqrtPriceX96, step.amountIn, step.amountOut, step.feeAmount) = SwapMath.computeSwapStep(\n                result.sqrtPriceX96,\n                SwapMath.getSqrtPriceTarget(zeroForOne, step.sqrtPriceNextX96, params.sqrtPriceLimitX96),\n                result.liquidity,\n                amountSpecifiedRemaining,\n                swapFee\n            );\n            if (params.amountSpecified > 0) {\n                unchecked {\n                    amountSpecifiedRemaining -= step.amountOut.toInt256();\n                }\n                amountCalculated -= (step.amountIn + step.feeAmount).toInt256();\n            } else {\n                unchecked {\n                    amountSpecifiedRemaining += (step.amountIn + step.feeAmount).toInt256();\n                }\n                amountCalculated += step.amountOut.toInt256();\n            }\n            if (protocolFee > 0) {\n                unchecked {\n                    uint256 delta = (swapFee == protocolFee)\n                        ? step.feeAmount \n                        : (step.amountIn + step.feeAmount) * protocolFee / ProtocolFeeLibrary.PIPS_DENOMINATOR;\n                    step.feeAmount -= delta;\n                    amountToProtocol += delta;\n                }\n            }\n            if (result.liquidity > 0) {\n                unchecked {\n                    step.feeGrowthGlobalX128 +=\n                        UnsafeMath.simpleMulDiv(step.feeAmount, FixedPoint128.Q128, result.liquidity);\n                }\n            }\n            if (result.sqrtPriceX96 == step.sqrtPriceNextX96) {\n                if (step.initialized) {\n                    (uint256 feeGrowthGlobal0X128, uint256 feeGrowthGlobal1X128) = zeroForOne\n                        ? (step.feeGrowthGlobalX128, self.feeGrowthGlobal1X128)\n                        : (self.feeGrowthGlobal0X128, step.feeGrowthGlobalX128);\n                    int128 liquidityNet =\n                        Pool.crossTick(self, step.tickNext, feeGrowthGlobal0X128, feeGrowthGlobal1X128);\n                    unchecked {\n                        if (zeroForOne) liquidityNet = -liquidityNet;\n                    }\n                    result.liquidity = LiquidityMath.addDelta(result.liquidity, liquidityNet);\n                }\n                unchecked {\n                    result.tick = zeroForOne ? step.tickNext - 1 : step.tickNext;\n                }\n            } else if (result.sqrtPriceX96 != step.sqrtPriceStartX96) {\n                result.tick = TickMath.getTickAtSqrtPrice(result.sqrtPriceX96);\n            }\n        }\n        self.slot0 = slot0Start.setTick(result.tick).setSqrtPriceX96(result.sqrtPriceX96);\n        if (self.liquidity != result.liquidity) self.liquidity = result.liquidity;\n        if (!zeroForOne) {\n            self.feeGrowthGlobal1X128 = step.feeGrowthGlobalX128;\n        } else {\n            self.feeGrowthGlobal0X128 = step.feeGrowthGlobalX128;\n        }\n        unchecked {\n            if (zeroForOne != (params.amountSpecified < 0)) {\n                swapDelta = toBalanceDelta(\n                    amountCalculated.toInt128(), (params.amountSpecified - amountSpecifiedRemaining).toInt128()\n                );\n            } else {\n                swapDelta = toBalanceDelta(\n                    (params.amountSpecified - amountSpecifiedRemaining).toInt128(), amountCalculated.toInt128()\n                );\n            }\n        }\n    }"
+  ],
+  "Pool.donate": [
+    "function donate(State storage state, uint256 amount0, uint256 amount1) internal returns (BalanceDelta delta) {\n        uint128 liquidity = state.liquidity;\n        if (liquidity == 0) NoLiquidityToReceiveFees.selector.revertWith();\n        unchecked {\n            delta = toBalanceDelta(-(amount0.toInt128()), -(amount1.toInt128()));\n            if (amount0 > 0) {\n                state.feeGrowthGlobal0X128 += UnsafeMath.simpleMulDiv(amount0, FixedPoint128.Q128, liquidity);\n            }\n            if (amount1 > 0) {\n                state.feeGrowthGlobal1X128 += UnsafeMath.simpleMulDiv(amount1, FixedPoint128.Q128, liquidity);\n            }\n        }\n    }"
+  ],
+  "Pool.getFeeGrowthInside": [
+    "function getFeeGrowthInside(State storage self, int24 tickLower, int24 tickUpper)\n        internal\n        view\n        returns (uint256 feeGrowthInside0X128, uint256 feeGrowthInside1X128)\n    {\n        TickInfo storage lower = self.ticks[tickLower];\n        TickInfo storage upper = self.ticks[tickUpper];\n        int24 tickCurrent = self.slot0.tick();\n        unchecked {\n            if (tickCurrent < tickLower) {\n                feeGrowthInside0X128 = lower.feeGrowthOutside0X128 - upper.feeGrowthOutside0X128;\n                feeGrowthInside1X128 = lower.feeGrowthOutside1X128 - upper.feeGrowthOutside1X128;\n            } else if (tickCurrent >= tickUpper) {\n                feeGrowthInside0X128 = upper.feeGrowthOutside0X128 - lower.feeGrowthOutside0X128;\n                feeGrowthInside1X128 = upper.feeGrowthOutside1X128 - lower.feeGrowthOutside1X128;\n            } else {\n                feeGrowthInside0X128 =\n                    self.feeGrowthGlobal0X128 - lower.feeGrowthOutside0X128 - upper.feeGrowthOutside0X128;\n                feeGrowthInside1X128 =\n                    self.feeGrowthGlobal1X128 - lower.feeGrowthOutside1X128 - upper.feeGrowthOutside1X128;\n            }\n        }\n    }"
+  ],
+  "Pool.updateTick": [
+    "function updateTick(State storage self, int24 tick, int128 liquidityDelta, bool upper)\n        internal\n        returns (bool flipped, uint128 liquidityGrossAfter)\n    {\n        TickInfo storage info = self.ticks[tick];\n        uint128 liquidityGrossBefore = info.liquidityGross;\n        int128 liquidityNetBefore = info.liquidityNet;\n        liquidityGrossAfter = LiquidityMath.addDelta(liquidityGrossBefore, liquidityDelta);\n        flipped = (liquidityGrossAfter == 0) != (liquidityGrossBefore == 0);\n        if (liquidityGrossBefore == 0) {\n            if (tick <= self.slot0.tick()) {\n                info.feeGrowthOutside0X128 = self.feeGrowthGlobal0X128;\n                info.feeGrowthOutside1X128 = self.feeGrowthGlobal1X128;\n            }\n        }\n        int128 liquidityNet = upper ? liquidityNetBefore - liquidityDelta : liquidityNetBefore + liquidityDelta;\n        assembly (\"memory-safe\") {\n            sstore(\n                info.slot,\n                or(\n                    and(liquidityGrossAfter, 0xffffffffffffffffffffffffffffffff),\n                    shl(128, liquidityNet)\n                )\n            )\n        }\n    }"
+  ],
+  "Pool.tickSpacingToMaxLiquidityPerTick": [
+    "function tickSpacingToMaxLiquidityPerTick(int24 tickSpacing) internal pure returns (uint128 result) {\n        int24 MAX_TICK = TickMath.MAX_TICK;\n        int24 MIN_TICK = TickMath.MIN_TICK;\n        assembly (\"memory-safe\") {\n            tickSpacing := signextend(2, tickSpacing)\n            let minTick := sub(sdiv(MIN_TICK, tickSpacing), slt(smod(MIN_TICK, tickSpacing), 0))\n            let maxTick := sdiv(MAX_TICK, tickSpacing)\n            let numTicks := add(sub(maxTick, minTick), 1)\n            result := div(sub(shl(128, 1), 1), numTicks)\n        }\n    }"
+  ],
+  "Pool.checkPoolInitialized": [
+    "function checkPoolInitialized(State storage self) internal view {\n        if (self.slot0.sqrtPriceX96() == 0) PoolNotInitialized.selector.revertWith();\n    }"
+  ],
+  "Pool.clearTick": [
+    "function clearTick(State storage self, int24 tick) internal {\n        delete self.ticks[tick];\n    }"
+  ],
+  "Pool.crossTick": [
+    "function crossTick(State storage self, int24 tick, uint256 feeGrowthGlobal0X128, uint256 feeGrowthGlobal1X128)\n        internal\n        returns (int128 liquidityNet)\n    {\n        unchecked {\n            TickInfo storage info = self.ticks[tick];\n            info.feeGrowthOutside0X128 = feeGrowthGlobal0X128 - info.feeGrowthOutside0X128;\n            info.feeGrowthOutside1X128 = feeGrowthGlobal1X128 - info.feeGrowthOutside1X128;\n            liquidityNet = info.liquidityNet;\n        }\n    }"
+  ],
+  "BitMath.mostSignificantBit": [
+    "function mostSignificantBit(uint256 x) internal pure returns (uint8 r) {\n        require(x > 0);\n        assembly (\"memory-safe\") {\n            r := shl(7, lt(0xffffffffffffffffffffffffffffffff, x))\n            r := or(r, shl(6, lt(0xffffffffffffffff, shr(r, x))))\n            r := or(r, shl(5, lt(0xffffffff, shr(r, x))))\n            r := or(r, shl(4, lt(0xffff, shr(r, x))))\n            r := or(r, shl(3, lt(0xff, shr(r, x))))\n            r := or(r, byte(and(0x1f, shr(shr(r, x), 0x8421084210842108cc6318c6db6d54be)),\n                0x0706060506020500060203020504000106050205030304010505030400000000))\n        }\n    }"
+  ],
+  "BitMath.leastSignificantBit": [
+    "function leastSignificantBit(uint256 x) internal pure returns (uint8 r) {\n        require(x > 0);\n        assembly (\"memory-safe\") {\n            x := and(x, sub(0, x))\n            r := shl(5, shr(252, shl(shl(2, shr(250, mul(x,\n                0xb6db6db6ddddddddd34d34d349249249210842108c6318c639ce739cffffffff))),\n                0x8040405543005266443200005020610674053026020000107506200176117077)))\n            r := or(r, byte(and(div(0xd76453e0, shr(r, x)), 0x1f),\n                0x001f0d1e100c1d070f090b19131c1706010e11080a1a141802121b1503160405))\n        }\n    }"
+  ],
+  "NonzeroDeltaCount.read": [
+    "function read() internal view returns (uint256 count) {\n        assembly (\"memory-safe\") {\n            count := tload(NONZERO_DELTA_COUNT_SLOT)\n        }\n    }"
+  ],
+  "NonzeroDeltaCount.increment": [
+    "function increment() internal {\n        assembly (\"memory-safe\") {\n            let count := tload(NONZERO_DELTA_COUNT_SLOT)\n            count := add(count, 1)\n            tstore(NONZERO_DELTA_COUNT_SLOT, count)\n        }\n    }"
+  ],
+  "NonzeroDeltaCount.decrement": [
+    "function decrement() internal {\n        assembly (\"memory-safe\") {\n            let count := tload(NONZERO_DELTA_COUNT_SLOT)\n            count := sub(count, 1)\n            tstore(NONZERO_DELTA_COUNT_SLOT, count)\n        }\n    }"
+  ],
+  "TickMath.maxUsableTick": [
+    "function maxUsableTick(int24 tickSpacing) internal pure returns (int24) {\n        unchecked {\n            return (MAX_TICK / tickSpacing) * tickSpacing;\n        }\n    }"
+  ],
+  "TickMath.minUsableTick": [
+    "function minUsableTick(int24 tickSpacing) internal pure returns (int24) {\n        unchecked {\n            return (MIN_TICK / tickSpacing) * tickSpacing;\n        }\n    }"
+  ],
+  "TickMath.getSqrtPriceAtTick": [
+    "function getSqrtPriceAtTick(int24 tick) internal pure returns (uint160 sqrtPriceX96) {\n        unchecked {\n            uint256 absTick;\n            assembly (\"memory-safe\") {\n                tick := signextend(2, tick)\n                let mask := sar(255, tick)\n                absTick := xor(mask, add(mask, tick))\n            }\n            if (absTick > uint256(int256(MAX_TICK))) InvalidTick.selector.revertWith(tick);\n            uint256 price;\n            assembly (\"memory-safe\") {\n                price := xor(shl(128, 1), mul(xor(shl(128, 1), 0xfffcb933bd6fad37aa2d162d1a594001), and(absTick, 0x1)))\n            }\n            if (absTick & 0x2 != 0) price = (price * 0xfff97272373d413259a46990580e213a) >> 128;\n            if (absTick & 0x4 != 0) price = (price * 0xfff2e50f5f656932ef12357cf3c7fdcc) >> 128;\n            if (absTick & 0x8 != 0) price = (price * 0xffe5caca7e10e4e61c3624eaa0941cd0) >> 128;\n            if (absTick & 0x10 != 0) price = (price * 0xffcb9843d60f6159c9db58835c926644) >> 128;\n            if (absTick & 0x20 != 0) price = (price * 0xff973b41fa98c081472e6896dfb254c0) >> 128;\n            if (absTick & 0x40 != 0) price = (price * 0xff2ea16466c96a3843ec78b326b52861) >> 128;\n            if (absTick & 0x80 != 0) price = (price * 0xfe5dee046a99a2a811c461f1969c3053) >> 128;\n            if (absTick & 0x100 != 0) price = (price * 0xfcbe86c7900a88aedcffc83b479aa3a4) >> 128;\n            if (absTick & 0x200 != 0) price = (price * 0xf987a7253ac413176f2b074cf7815e54) >> 128;\n            if (absTick & 0x400 != 0) price = (price * 0xf3392b0822b70005940c7a398e4b70f3) >> 128;\n            if (absTick & 0x800 != 0) price = (price * 0xe7159475a2c29b7443b29c7fa6e889d9) >> 128;\n            if (absTick & 0x1000 != 0) price = (price * 0xd097f3bdfd2022b8845ad8f792aa5825) >> 128;\n            if (absTick & 0x2000 != 0) price = (price * 0xa9f746462d870fdf8a65dc1f90e061e5) >> 128;\n            if (absTick & 0x4000 != 0) price = (price * 0x70d869a156d2a1b890bb3df62baf32f7) >> 128;\n            if (absTick & 0x8000 != 0) price = (price * 0x31be135f97d08fd981231505542fcfa6) >> 128;\n            if (absTick & 0x10000 != 0) price = (price * 0x9aa508b5b7a84e1c677de54f3e99bc9) >> 128;\n            if (absTick & 0x20000 != 0) price = (price * 0x5d6af8dedb81196699c329225ee604) >> 128;\n            if (absTick & 0x40000 != 0) price = (price * 0x2216e584f5fa1ea926041bedfe98) >> 128;\n            if (absTick & 0x80000 != 0) price = (price * 0x48a170391f7dc42444e8fa2) >> 128;\n            assembly (\"memory-safe\") {\n                if sgt(tick, 0) { price := div(not(0), price) }\n                sqrtPriceX96 := shr(32, add(price, sub(shl(32, 1), 1)))\n            }\n        }\n    }"
+  ],
+  "TickMath.getTickAtSqrtPrice": [
+    "function getTickAtSqrtPrice(uint160 sqrtPriceX96) internal pure returns (int24 tick) {\n        unchecked {\n            if ((sqrtPriceX96 - MIN_SQRT_PRICE) > MAX_SQRT_PRICE_MINUS_MIN_SQRT_PRICE_MINUS_ONE) {\n                InvalidSqrtPrice.selector.revertWith(sqrtPriceX96);\n            }\n            uint256 price = uint256(sqrtPriceX96) << 32;\n            uint256 r = price;\n            uint256 msb = BitMath.mostSignificantBit(r);\n            if (msb >= 128) r = price >> (msb - 127);\n            else r = price << (127 - msb);\n            int256 log_2 = (int256(msb) - 128) << 64;\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(63, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(62, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(61, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(60, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(59, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(58, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(57, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(56, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(55, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(54, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(53, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(52, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(51, f))\n                r := shr(f, r)\n            }\n            assembly (\"memory-safe\") {\n                r := shr(127, mul(r, r))\n                let f := shr(128, r)\n                log_2 := or(log_2, shl(50, f))\n            }\n            int256 log_sqrt10001 = log_2 * 255738958999603826347141; \n            int24 tickLow = int24((log_sqrt10001 - 3402992956809132418596140100660247210) >> 128);\n            int24 tickHi = int24((log_sqrt10001 + 291339464771989622907027621153398088495) >> 128);\n            tick = tickLow == tickHi ? tickLow : getSqrtPriceAtTick(tickHi) <= sqrtPriceX96 ? tickHi : tickLow;\n        }\n    }"
+  ],
+  "CurrencyReserves.getSyncedCurrency": [
+    "function getSyncedCurrency() internal view returns (Currency currency) {\n        assembly (\"memory-safe\") {\n            currency := tload(CURRENCY_SLOT)\n        }\n    }"
+  ],
+  "CurrencyReserves.resetCurrency": [
+    "function resetCurrency() internal {\n        assembly (\"memory-safe\") {\n            tstore(CURRENCY_SLOT, 0)\n        }\n    }"
+  ],
+  "CurrencyReserves.syncCurrencyAndReserves": [
+    "function syncCurrencyAndReserves(Currency currency, uint256 value) internal {\n        assembly (\"memory-safe\") {\n            tstore(CURRENCY_SLOT, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))\n            tstore(RESERVES_OF_SLOT, value)\n        }\n    }"
+  ],
+  "CurrencyReserves.getSyncedReserves": [
+    "function getSyncedReserves() internal view returns (uint256 value) {\n        assembly (\"memory-safe\") {\n            value := tload(RESERVES_OF_SLOT)\n        }\n    }"
+  ],
+  "StateLibrary.getSlot0": [
+    "function getSlot0(IPoolManager manager, PoolId poolId)\n        internal\n        view\n        returns (uint160 sqrtPriceX96, int24 tick, uint24 protocolFee, uint24 lpFee)\n    {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 data = manager.extsload(stateSlot);\n        assembly (\"memory-safe\") {\n            sqrtPriceX96 := and(data, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\n            tick := signextend(2, shr(160, data))\n            protocolFee := and(shr(184, data), 0xFFFFFF)\n            lpFee := and(shr(208, data), 0xFFFFFF)\n        }\n    }"
+  ],
+  "StateLibrary.getTickInfo": [
+    "function getTickInfo(IPoolManager manager, PoolId poolId, int24 tick)\n        internal\n        view\n        returns (\n            uint128 liquidityGross,\n            int128 liquidityNet,\n            uint256 feeGrowthOutside0X128,\n            uint256 feeGrowthOutside1X128\n        )\n    {\n        bytes32 slot = _getTickInfoSlot(poolId, tick);\n        bytes32[] memory data = manager.extsload(slot, 3);\n        assembly (\"memory-safe\") {\n            let firstWord := mload(add(data, 32))\n            liquidityNet := sar(128, firstWord)\n            liquidityGross := and(firstWord, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\n            feeGrowthOutside0X128 := mload(add(data, 64))\n            feeGrowthOutside1X128 := mload(add(data, 96))\n        }\n    }"
+  ],
+  "StateLibrary.getTickLiquidity": [
+    "function getTickLiquidity(IPoolManager manager, PoolId poolId, int24 tick)\n        internal\n        view\n        returns (uint128 liquidityGross, int128 liquidityNet)\n    {\n        bytes32 slot = _getTickInfoSlot(poolId, tick);\n        bytes32 value = manager.extsload(slot);\n        assembly (\"memory-safe\") {\n            liquidityNet := sar(128, value)\n            liquidityGross := and(value, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\n        }\n    }"
+  ],
+  "StateLibrary.getTickFeeGrowthOutside": [
+    "function getTickFeeGrowthOutside(IPoolManager manager, PoolId poolId, int24 tick)\n        internal\n        view\n        returns (uint256 feeGrowthOutside0X128, uint256 feeGrowthOutside1X128)\n    {\n        bytes32 slot = _getTickInfoSlot(poolId, tick);\n        bytes32[] memory data = manager.extsload(bytes32(uint256(slot) + 1), 2);\n        assembly (\"memory-safe\") {\n            feeGrowthOutside0X128 := mload(add(data, 32))\n            feeGrowthOutside1X128 := mload(add(data, 64))\n        }\n    }"
+  ],
+  "StateLibrary.getFeeGrowthGlobals": [
+    "function getFeeGrowthGlobals(IPoolManager manager, PoolId poolId)\n        internal\n        view\n        returns (uint256 feeGrowthGlobal0, uint256 feeGrowthGlobal1)\n    {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 slot_feeGrowthGlobal0X128 = bytes32(uint256(stateSlot) + FEE_GROWTH_GLOBAL0_OFFSET);\n        bytes32[] memory data = manager.extsload(slot_feeGrowthGlobal0X128, 2);\n        assembly (\"memory-safe\") {\n            feeGrowthGlobal0 := mload(add(data, 32))\n            feeGrowthGlobal1 := mload(add(data, 64))\n        }\n    }"
+  ],
+  "StateLibrary.getLiquidity": [
+    "function getLiquidity(IPoolManager manager, PoolId poolId) internal view returns (uint128 liquidity) {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 slot = bytes32(uint256(stateSlot) + LIQUIDITY_OFFSET);\n        liquidity = uint128(uint256(manager.extsload(slot)));\n    }"
+  ],
+  "StateLibrary.getTickBitmap": [
+    "function getTickBitmap(IPoolManager manager, PoolId poolId, int16 tick)\n        internal\n        view\n        returns (uint256 tickBitmap)\n    {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 tickBitmapMapping = bytes32(uint256(stateSlot) + TICK_BITMAP_OFFSET);\n        bytes32 slot = keccak256(abi.encodePacked(int256(tick), tickBitmapMapping));\n        tickBitmap = uint256(manager.extsload(slot));\n    }"
+  ],
+  "StateLibrary.getPositionInfo": [
+    "function getPositionInfo(\n        IPoolManager manager,\n        PoolId poolId,\n        address owner,\n        int24 tickLower,\n        int24 tickUpper,\n        bytes32 salt\n    ) internal view returns (uint128 liquidity, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128) {\n        bytes32 positionKey = Position.calculatePositionKey(owner, tickLower, tickUpper, salt);\n        (liquidity, feeGrowthInside0LastX128, feeGrowthInside1LastX128) = getPositionInfo(manager, poolId, positionKey);\n    }",
+    "function getPositionInfo(IPoolManager manager, PoolId poolId, bytes32 positionId)\n        internal\n        view\n        returns (uint128 liquidity, uint256 feeGrowthInside0LastX128, uint256 feeGrowthInside1LastX128)\n    {\n        bytes32 slot = _getPositionInfoSlot(poolId, positionId);\n        bytes32[] memory data = manager.extsload(slot, 3);\n        assembly (\"memory-safe\") {\n            liquidity := mload(add(data, 32))\n            feeGrowthInside0LastX128 := mload(add(data, 64))\n            feeGrowthInside1LastX128 := mload(add(data, 96))\n        }\n    }"
+  ],
+  "StateLibrary.getPositionLiquidity": [
+    "function getPositionLiquidity(IPoolManager manager, PoolId poolId, bytes32 positionId)\n        internal\n        view\n        returns (uint128 liquidity)\n    {\n        bytes32 slot = _getPositionInfoSlot(poolId, positionId);\n        liquidity = uint128(uint256(manager.extsload(slot)));\n    }"
+  ],
+  "StateLibrary.getFeeGrowthInside": [
+    "function getFeeGrowthInside(IPoolManager manager, PoolId poolId, int24 tickLower, int24 tickUpper)\n        internal\n        view\n        returns (uint256 feeGrowthInside0X128, uint256 feeGrowthInside1X128)\n    {\n        (uint256 feeGrowthGlobal0X128, uint256 feeGrowthGlobal1X128) = getFeeGrowthGlobals(manager, poolId);\n        (uint256 lowerFeeGrowthOutside0X128, uint256 lowerFeeGrowthOutside1X128) =\n            getTickFeeGrowthOutside(manager, poolId, tickLower);\n        (uint256 upperFeeGrowthOutside0X128, uint256 upperFeeGrowthOutside1X128) =\n            getTickFeeGrowthOutside(manager, poolId, tickUpper);\n        (, int24 tickCurrent,,) = getSlot0(manager, poolId);\n        unchecked {\n            if (tickCurrent < tickLower) {\n                feeGrowthInside0X128 = lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;\n                feeGrowthInside1X128 = lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;\n            } else if (tickCurrent >= tickUpper) {\n                feeGrowthInside0X128 = upperFeeGrowthOutside0X128 - lowerFeeGrowthOutside0X128;\n                feeGrowthInside1X128 = upperFeeGrowthOutside1X128 - lowerFeeGrowthOutside1X128;\n            } else {\n                feeGrowthInside0X128 = feeGrowthGlobal0X128 - lowerFeeGrowthOutside0X128 - upperFeeGrowthOutside0X128;\n                feeGrowthInside1X128 = feeGrowthGlobal1X128 - lowerFeeGrowthOutside1X128 - upperFeeGrowthOutside1X128;\n            }\n        }\n    }"
+  ],
+  "StateLibrary._getPoolStateSlot": [
+    "function _getPoolStateSlot(PoolId poolId) internal pure returns (bytes32) {\n        return keccak256(abi.encodePacked(PoolId.unwrap(poolId), POOLS_SLOT));\n    }"
+  ],
+  "StateLibrary._getTickInfoSlot": [
+    "function _getTickInfoSlot(PoolId poolId, int24 tick) internal pure returns (bytes32) {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 ticksMappingSlot = bytes32(uint256(stateSlot) + TICKS_OFFSET);\n        return keccak256(abi.encodePacked(int256(tick), ticksMappingSlot));\n    }"
+  ],
+  "StateLibrary._getPositionInfoSlot": [
+    "function _getPositionInfoSlot(PoolId poolId, bytes32 positionId) internal pure returns (bytes32) {\n        bytes32 stateSlot = _getPoolStateSlot(poolId);\n        bytes32 positionMapping = bytes32(uint256(stateSlot) + POSITIONS_OFFSET);\n        return keccak256(abi.encodePacked(positionId, positionMapping));\n    }"
+  ],
+  "SqrtPriceMath.getNextSqrtPriceFromAmount0RoundingUp": [
+    "function getNextSqrtPriceFromAmount0RoundingUp(uint160 sqrtPX96, uint128 liquidity, uint256 amount, bool add)\n        internal\n        pure\n        returns (uint160)\n    {\n        if (amount == 0) return sqrtPX96;\n        uint256 numerator1 = uint256(liquidity) << FixedPoint96.RESOLUTION;\n        if (add) {\n            unchecked {\n                uint256 product = amount * sqrtPX96;\n                if (product / amount == sqrtPX96) {\n                    uint256 denominator = numerator1 + product;\n                    if (denominator >= numerator1) {\n                        return uint160(FullMath.mulDivRoundingUp(numerator1, sqrtPX96, denominator));\n                    }\n                }\n            }\n            return uint160(UnsafeMath.divRoundingUp(numerator1, (numerator1 / sqrtPX96) + amount));\n        } else {\n            unchecked {\n                uint256 product = amount * sqrtPX96;\n                assembly (\"memory-safe\") {\n                    if iszero(\n                        and(\n                            eq(div(product, amount), and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),\n                            gt(numerator1, product)\n                        )\n                    ) {\n                        mstore(0, 0xf5c787f1) \n                        revert(0x1c, 0x04)\n                    }\n                }\n                uint256 denominator = numerator1 - product;\n                return FullMath.mulDivRoundingUp(numerator1, sqrtPX96, denominator).toUint160();\n            }\n        }\n    }"
+  ],
+  "SqrtPriceMath.getNextSqrtPriceFromAmount1RoundingDown": [
+    "function getNextSqrtPriceFromAmount1RoundingDown(uint160 sqrtPX96, uint128 liquidity, uint256 amount, bool add)\n        internal\n        pure\n        returns (uint160)\n    {\n        if (add) {\n            uint256 quotient = (\n                amount <= type(uint160).max\n                    ? (amount << FixedPoint96.RESOLUTION) / liquidity\n                    : FullMath.mulDiv(amount, FixedPoint96.Q96, liquidity)\n            );\n            return (uint256(sqrtPX96) + quotient).toUint160();\n        } else {\n            uint256 quotient = (\n                amount <= type(uint160).max\n                    ? UnsafeMath.divRoundingUp(amount << FixedPoint96.RESOLUTION, liquidity)\n                    : FullMath.mulDivRoundingUp(amount, FixedPoint96.Q96, liquidity)\n            );\n            assembly (\"memory-safe\") {\n                if iszero(gt(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff), quotient)) {\n                    mstore(0, 0x4323a555) \n                    revert(0x1c, 0x04)\n                }\n            }\n            unchecked {\n                return uint160(sqrtPX96 - quotient);\n            }\n        }\n    }"
+  ],
+  "SqrtPriceMath.getNextSqrtPriceFromInput": [
+    "function getNextSqrtPriceFromInput(uint160 sqrtPX96, uint128 liquidity, uint256 amountIn, bool zeroForOne)\n        internal\n        pure\n        returns (uint160)\n    {\n        assembly (\"memory-safe\") {\n            if or(\n                iszero(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),\n                iszero(and(liquidity, 0xffffffffffffffffffffffffffffffff))\n            ) {\n                mstore(0, 0x4f2461b8) \n                revert(0x1c, 0x04)\n            }\n        }\n        return zeroForOne\n            ? getNextSqrtPriceFromAmount0RoundingUp(sqrtPX96, liquidity, amountIn, true)\n            : getNextSqrtPriceFromAmount1RoundingDown(sqrtPX96, liquidity, amountIn, true);\n    }"
+  ],
+  "SqrtPriceMath.getNextSqrtPriceFromOutput": [
+    "function getNextSqrtPriceFromOutput(uint160 sqrtPX96, uint128 liquidity, uint256 amountOut, bool zeroForOne)\n        internal\n        pure\n        returns (uint160)\n    {\n        assembly (\"memory-safe\") {\n            if or(\n                iszero(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),\n                iszero(and(liquidity, 0xffffffffffffffffffffffffffffffff))\n            ) {\n                mstore(0, 0x4f2461b8) \n                revert(0x1c, 0x04)\n            }\n        }\n        return zeroForOne\n            ? getNextSqrtPriceFromAmount1RoundingDown(sqrtPX96, liquidity, amountOut, false)\n            : getNextSqrtPriceFromAmount0RoundingUp(sqrtPX96, liquidity, amountOut, false);\n    }"
+  ],
+  "SqrtPriceMath.getAmount0Delta": [
+    "function getAmount0Delta(uint160 sqrtPriceAX96, uint160 sqrtPriceBX96, uint128 liquidity, bool roundUp)\n        internal\n        pure\n        returns (uint256)\n    {\n        unchecked {\n            if (sqrtPriceAX96 > sqrtPriceBX96) (sqrtPriceAX96, sqrtPriceBX96) = (sqrtPriceBX96, sqrtPriceAX96);\n            assembly (\"memory-safe\") {\n                if iszero(and(sqrtPriceAX96, 0xffffffffffffffffffffffffffffffffffffffff)) {\n                    mstore(0, 0x00bfc921) \n                    revert(0x1c, 0x04)\n                }\n            }\n            uint256 numerator1 = uint256(liquidity) << FixedPoint96.RESOLUTION;\n            uint256 numerator2 = sqrtPriceBX96 - sqrtPriceAX96;\n            return roundUp\n                ? UnsafeMath.divRoundingUp(FullMath.mulDivRoundingUp(numerator1, numerator2, sqrtPriceBX96), sqrtPriceAX96)\n                : FullMath.mulDiv(numerator1, numerator2, sqrtPriceBX96) / sqrtPriceAX96;\n        }\n    }",
+    "function getAmount0Delta(uint160 sqrtPriceAX96, uint160 sqrtPriceBX96, int128 liquidity)\n        internal\n        pure\n        returns (int256)\n    {\n        unchecked {\n            return liquidity < 0\n                ? getAmount0Delta(sqrtPriceAX96, sqrtPriceBX96, uint128(-liquidity), false).toInt256()\n                : -getAmount0Delta(sqrtPriceAX96, sqrtPriceBX96, uint128(liquidity), true).toInt256();\n        }\n    }"
+  ],
+  "SqrtPriceMath.absDiff": [
+    "function absDiff(uint160 a, uint160 b) internal pure returns (uint256 res) {\n        assembly (\"memory-safe\") {\n            let diff :=\n                sub(and(a, 0xffffffffffffffffffffffffffffffffffffffff), and(b, 0xffffffffffffffffffffffffffffffffffffffff))\n            let mask := sar(255, diff)\n            res := xor(mask, add(mask, diff))\n        }\n    }"
+  ],
+  "SqrtPriceMath.getAmount1Delta": [
+    "function getAmount1Delta(uint160 sqrtPriceAX96, uint160 sqrtPriceBX96, uint128 liquidity, bool roundUp)\n        internal\n        pure\n        returns (uint256 amount1)\n    {\n        uint256 numerator = absDiff(sqrtPriceAX96, sqrtPriceBX96);\n        uint256 denominator = FixedPoint96.Q96;\n        uint256 _liquidity = uint256(liquidity);\n        amount1 = FullMath.mulDiv(_liquidity, numerator, denominator);\n        assembly (\"memory-safe\") {\n            amount1 := add(amount1, and(gt(mulmod(_liquidity, numerator, denominator), 0), roundUp))\n        }\n    }",
+    "function getAmount1Delta(uint160 sqrtPriceAX96, uint160 sqrtPriceBX96, int128 liquidity)\n        internal\n        pure\n        returns (int256)\n    {\n        unchecked {\n            return liquidity < 0\n                ? getAmount1Delta(sqrtPriceAX96, sqrtPriceBX96, uint128(-liquidity), false).toInt256()\n                : -getAmount1Delta(sqrtPriceAX96, sqrtPriceBX96, uint128(liquidity), true).toInt256();\n        }\n    }"
+  ],
+  "CurrencyDelta._computeSlot": [
+    "function _computeSlot(address target, Currency currency) internal pure returns (bytes32 hashSlot) {\n        assembly (\"memory-safe\") {\n            mstore(0, and(target, 0xffffffffffffffffffffffffffffffffffffffff))\n            mstore(32, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))\n            hashSlot := keccak256(0, 64)\n        }\n    }"
+  ],
+  "CurrencyDelta.getDelta": [
+    "function getDelta(Currency currency, address target) internal view returns (int256 delta) {\n        bytes32 hashSlot = _computeSlot(target, currency);\n        assembly (\"memory-safe\") {\n            delta := tload(hashSlot)\n        }\n    }"
+  ],
+  "CurrencyDelta.applyDelta": [
+    "function applyDelta(Currency currency, address target, int128 delta)\n        internal\n        returns (int256 previous, int256 next)\n    {\n        bytes32 hashSlot = _computeSlot(target, currency);\n        assembly (\"memory-safe\") {\n            previous := tload(hashSlot)\n        }\n        next = previous + delta;\n        assembly (\"memory-safe\") {\n            tstore(hashSlot, next)\n        }\n    }"
+  ],
+  "LPFeeLibrary.isDynamicFee": [
+    "function isDynamicFee(uint24 self) internal pure returns (bool) {\n        return self == DYNAMIC_FEE_FLAG;\n    }"
+  ],
+  "LPFeeLibrary.isValid": [
+    "function isValid(uint24 self) internal pure returns (bool) {\n        return self <= MAX_LP_FEE;\n    }"
+  ],
+  "LPFeeLibrary.validate": [
+    "function validate(uint24 self) internal pure {\n        if (!self.isValid()) LPFeeTooLarge.selector.revertWith(self);\n    }"
+  ],
+  "LPFeeLibrary.getInitialLPFee": [
+    "function getInitialLPFee(uint24 self) internal pure returns (uint24) {\n        if (self.isDynamicFee()) return 0;\n        self.validate();\n        return self;\n    }"
+  ],
+  "LPFeeLibrary.isOverride": [
+    "function isOverride(uint24 self) internal pure returns (bool) {\n        return self & OVERRIDE_FEE_FLAG != 0;\n    }"
+  ],
+  "LPFeeLibrary.removeOverrideFlag": [
+    "function removeOverrideFlag(uint24 self) internal pure returns (uint24) {\n        return self & REMOVE_OVERRIDE_MASK;\n    }"
+  ],
+  "LPFeeLibrary.removeOverrideFlagAndValidate": [
+    "function removeOverrideFlagAndValidate(uint24 self) internal pure returns (uint24 fee) {\n        fee = self.removeOverrideFlag();\n        fee.validate();\n    }"
+  ],
+  "FullMath.mulDiv": [
+    "function mulDiv(uint256 a, uint256 b, uint256 denominator) internal pure returns (uint256 result) {\n        unchecked {\n            uint256 prod0 = a * b; \n            uint256 prod1; \n            assembly (\"memory-safe\") {\n                let mm := mulmod(a, b, not(0))\n                prod1 := sub(sub(mm, prod0), lt(mm, prod0))\n            }\n            require(denominator > prod1);\n            if (prod1 == 0) {\n                assembly (\"memory-safe\") {\n                    result := div(prod0, denominator)\n                }\n                return result;\n            }\n            uint256 remainder;\n            assembly (\"memory-safe\") {\n                remainder := mulmod(a, b, denominator)\n            }\n            assembly (\"memory-safe\") {\n                prod1 := sub(prod1, gt(remainder, prod0))\n                prod0 := sub(prod0, remainder)\n            }\n            uint256 twos = (0 - denominator) & denominator;\n            assembly (\"memory-safe\") {\n                denominator := div(denominator, twos)\n            }\n            assembly (\"memory-safe\") {\n                prod0 := div(prod0, twos)\n            }\n            assembly (\"memory-safe\") {\n                twos := add(div(sub(0, twos), twos), 1)\n            }\n            prod0 |= prod1 * twos;\n            uint256 inv = (3 * denominator) ^ 2;\n            inv *= 2 - denominator * inv; \n            inv *= 2 - denominator * inv; \n            inv *= 2 - denominator * inv; \n            inv *= 2 - denominator * inv; \n            inv *= 2 - denominator * inv; \n            inv *= 2 - denominator * inv; \n            result = prod0 * inv;\n            return result;\n        }\n    }"
+  ],
+  "FullMath.mulDivRoundingUp": [
+    "function mulDivRoundingUp(uint256 a, uint256 b, uint256 denominator) internal pure returns (uint256 result) {\n        unchecked {\n            result = mulDiv(a, b, denominator);\n            if (mulmod(a, b, denominator) != 0) {\n                require(++result > 0);\n            }\n        }\n    }"
+  ],
+  "SafeCast.toUint160": [
+    "function toUint160(uint256 x) internal pure returns (uint160 y) {\n        y = uint160(x);\n        if (y != x) SafeCastOverflow.selector.revertWith();\n    }"
+  ],
+  "SafeCast.toUint128": [
+    "function toUint128(uint256 x) internal pure returns (uint128 y) {\n        y = uint128(x);\n        if (x != y) SafeCastOverflow.selector.revertWith();\n    }",
+    "function toUint128(int128 x) internal pure returns (uint128 y) {\n        if (x < 0) SafeCastOverflow.selector.revertWith();\n        y = uint128(x);\n    }"
+  ],
+  "SafeCast.toInt128": [
+    "function toInt128(int256 x) internal pure returns (int128 y) {\n        y = int128(x);\n        if (y != x) SafeCastOverflow.selector.revertWith();\n    }",
+    "function toInt128(uint256 x) internal pure returns (int128) {\n        if (x >= 1 << 127) SafeCastOverflow.selector.revertWith();\n        return int128(int256(x));\n    }"
+  ],
+  "SafeCast.toInt256": [
+    "function toInt256(uint256 x) internal pure returns (int256 y) {\n        y = int256(x);\n        if (y < 0) SafeCastOverflow.selector.revertWith();\n    }"
+  ],
+  "UnsafeMath.divRoundingUp": [
+    "function divRoundingUp(uint256 x, uint256 y) internal pure returns (uint256 z) {\n        assembly (\"memory-safe\") {\n            z := add(div(x, y), gt(mod(x, y), 0))\n        }\n    }"
+  ],
+  "UnsafeMath.simpleMulDiv": [
+    "function simpleMulDiv(uint256 a, uint256 b, uint256 denominator) internal pure returns (uint256 result) {\n        assembly (\"memory-safe\") {\n            result := div(mul(a, b), denominator)\n        }\n    }"
+  ],
+  "SwapMath.getSqrtPriceTarget": [
+    "function getSqrtPriceTarget(bool zeroForOne, uint160 sqrtPriceNextX96, uint160 sqrtPriceLimitX96)\n        internal\n        pure\n        returns (uint160 sqrtPriceTargetX96)\n    {\n        assembly (\"memory-safe\") {\n            sqrtPriceNextX96 := and(sqrtPriceNextX96, 0xffffffffffffffffffffffffffffffffffffffff)\n            sqrtPriceLimitX96 := and(sqrtPriceLimitX96, 0xffffffffffffffffffffffffffffffffffffffff)\n            let nextOrLimit := xor(lt(sqrtPriceNextX96, sqrtPriceLimitX96), and(zeroForOne, 0x1))\n            let symDiff := xor(sqrtPriceNextX96, sqrtPriceLimitX96)\n            sqrtPriceTargetX96 := xor(sqrtPriceLimitX96, mul(symDiff, nextOrLimit))\n        }\n    }"
+  ],
+  "SwapMath.computeSwapStep": [
+    "function computeSwapStep(\n        uint160 sqrtPriceCurrentX96,\n        uint160 sqrtPriceTargetX96,\n        uint128 liquidity,\n        int256 amountRemaining,\n        uint24 feePips\n    ) internal pure returns (uint160 sqrtPriceNextX96, uint256 amountIn, uint256 amountOut, uint256 feeAmount) {\n        unchecked {\n            uint256 _feePips = feePips; \n            bool zeroForOne = sqrtPriceCurrentX96 >= sqrtPriceTargetX96;\n            bool exactIn = amountRemaining < 0;\n            if (exactIn) {\n                uint256 amountRemainingLessFee =\n                    FullMath.mulDiv(uint256(-amountRemaining), MAX_SWAP_FEE - _feePips, MAX_SWAP_FEE);\n                amountIn = zeroForOne\n                    ? SqrtPriceMath.getAmount0Delta(sqrtPriceTargetX96, sqrtPriceCurrentX96, liquidity, true)\n                    : SqrtPriceMath.getAmount1Delta(sqrtPriceCurrentX96, sqrtPriceTargetX96, liquidity, true);\n                if (amountRemainingLessFee >= amountIn) {\n                    sqrtPriceNextX96 = sqrtPriceTargetX96;\n                    feeAmount = _feePips == MAX_SWAP_FEE\n                        ? amountIn \n                        : FullMath.mulDivRoundingUp(amountIn, _feePips, MAX_SWAP_FEE - _feePips);\n                } else {\n                    amountIn = amountRemainingLessFee;\n                    sqrtPriceNextX96 = SqrtPriceMath.getNextSqrtPriceFromInput(\n                        sqrtPriceCurrentX96, liquidity, amountRemainingLessFee, zeroForOne\n                    );\n                    feeAmount = uint256(-amountRemaining) - amountIn;\n                }\n                amountOut = zeroForOne\n                    ? SqrtPriceMath.getAmount1Delta(sqrtPriceNextX96, sqrtPriceCurrentX96, liquidity, false)\n                    : SqrtPriceMath.getAmount0Delta(sqrtPriceCurrentX96, sqrtPriceNextX96, liquidity, false);\n            } else {\n                amountOut = zeroForOne\n                    ? SqrtPriceMath.getAmount1Delta(sqrtPriceTargetX96, sqrtPriceCurrentX96, liquidity, false)\n                    : SqrtPriceMath.getAmount0Delta(sqrtPriceCurrentX96, sqrtPriceTargetX96, liquidity, false);\n                if (uint256(amountRemaining) >= amountOut) {\n                    sqrtPriceNextX96 = sqrtPriceTargetX96;\n                } else {\n                    amountOut = uint256(amountRemaining);\n                    sqrtPriceNextX96 =\n                        SqrtPriceMath.getNextSqrtPriceFromOutput(sqrtPriceCurrentX96, liquidity, amountOut, zeroForOne);\n                }\n                amountIn = zeroForOne\n                    ? SqrtPriceMath.getAmount0Delta(sqrtPriceNextX96, sqrtPriceCurrentX96, liquidity, true)\n                    : SqrtPriceMath.getAmount1Delta(sqrtPriceCurrentX96, sqrtPriceNextX96, liquidity, true);\n                feeAmount = FullMath.mulDivRoundingUp(amountIn, _feePips, MAX_SWAP_FEE - _feePips);\n            }\n        }\n    }"
+  ],
+  "TransientStateLibrary.getSyncedReserves": [
+    "function getSyncedReserves(IPoolManager manager) internal view returns (uint256) {\n        if (getSyncedCurrency(manager).isAddressZero()) return 0;\n        return uint256(manager.exttload(CurrencyReserves.RESERVES_OF_SLOT));\n    }"
+  ],
+  "TransientStateLibrary.getSyncedCurrency": [
+    "function getSyncedCurrency(IPoolManager manager) internal view returns (Currency) {\n        return Currency.wrap(address(uint160(uint256(manager.exttload(CurrencyReserves.CURRENCY_SLOT)))));\n    }"
+  ],
+  "TransientStateLibrary.getNonzeroDeltaCount": [
+    "function getNonzeroDeltaCount(IPoolManager manager) internal view returns (uint256) {\n        return uint256(manager.exttload(NonzeroDeltaCount.NONZERO_DELTA_COUNT_SLOT));\n    }"
+  ],
+  "TransientStateLibrary.currencyDelta": [
+    "function currencyDelta(IPoolManager manager, address target, Currency currency) internal view returns (int256) {\n        bytes32 key;\n        assembly (\"memory-safe\") {\n            mstore(0, and(target, 0xffffffffffffffffffffffffffffffffffffffff))\n            mstore(32, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))\n            key := keccak256(0, 64)\n        }\n        return int256(uint256(manager.exttload(key)));\n    }"
+  ],
+  "TransientStateLibrary.isUnlocked": [
+    "function isUnlocked(IPoolManager manager) internal view returns (bool) {\n        return manager.exttload(Lock.IS_UNLOCKED_SLOT) != 0x0;\n    }"
+  ],
+  "IHooks.beforeInitialize": [
+    "function beforeInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96) external returns (bytes4);"
+  ],
+  "IHooks.afterInitialize": [
+    "function afterInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96, int24 tick)\n        external\n        returns (bytes4);"
+  ],
+  "IHooks.beforeAddLiquidity": [
+    "function beforeAddLiquidity(\n        address sender,\n        PoolKey calldata key,\n        ModifyLiquidityParams calldata params,\n        bytes calldata hookData\n    ) external returns (bytes4);"
+  ],
+  "IHooks.afterAddLiquidity": [
+    "function afterAddLiquidity(\n        address sender,\n        PoolKey calldata key,\n        ModifyLiquidityParams calldata params,\n        BalanceDelta delta,\n        BalanceDelta feesAccrued,\n        bytes calldata hookData\n    ) external returns (bytes4, BalanceDelta);"
+  ],
+  "IHooks.beforeRemoveLiquidity": [
+    "function beforeRemoveLiquidity(\n        address sender,\n        PoolKey calldata key,\n        ModifyLiquidityParams calldata params,\n        bytes calldata hookData\n    ) external returns (bytes4);"
+  ],
+  "IHooks.afterRemoveLiquidity": [
+    "function afterRemoveLiquidity(\n        address sender,\n        PoolKey calldata key,\n        ModifyLiquidityParams calldata params,\n        BalanceDelta delta,\n        BalanceDelta feesAccrued,\n        bytes calldata hookData\n    ) external returns (bytes4, BalanceDelta);"
+  ],
+  "IHooks.beforeSwap": [
+    "function beforeSwap(address sender, PoolKey calldata key, SwapParams calldata params, bytes calldata hookData)\n        external\n        returns (bytes4, BeforeSwapDelta, uint24);"
+  ],
+  "IHooks.afterSwap": [
+    "function afterSwap(\n        address sender,\n        PoolKey calldata key,\n        SwapParams calldata params,\n        BalanceDelta delta,\n        bytes calldata hookData\n    ) external returns (bytes4, int128);"
+  ],
+  "IHooks.beforeDonate": [
+    "function beforeDonate(\n        address sender,\n        PoolKey calldata key,\n        uint256 amount0,\n        uint256 amount1,\n        bytes calldata hookData\n    ) external returns (bytes4);"
+  ],
+  "IHooks.afterDonate": [
+    "function afterDonate(\n        address sender,\n        PoolKey calldata key,\n        uint256 amount0,\n        uint256 amount1,\n        bytes calldata hookData\n    ) external returns (bytes4);"
+  ],
+  "IPoolManager.unlock": [
+    "function unlock(bytes calldata data) external returns (bytes memory);"
+  ],
+  "IPoolManager.initialize": [
+    "function initialize(PoolKey memory key, uint160 sqrtPriceX96) external returns (int24 tick);"
+  ],
+  "IPoolManager.modifyLiquidity": [
+    "function modifyLiquidity(PoolKey memory key, ModifyLiquidityParams memory params, bytes calldata hookData)\n        external\n        returns (BalanceDelta callerDelta, BalanceDelta feesAccrued);"
+  ],
+  "IPoolManager.swap": [
+    "function swap(PoolKey memory key, SwapParams memory params, bytes calldata hookData)\n        external\n        returns (BalanceDelta swapDelta);"
+  ],
+  "IPoolManager.donate": [
+    "function donate(PoolKey memory key, uint256 amount0, uint256 amount1, bytes calldata hookData)\n        external\n        returns (BalanceDelta);"
+  ],
+  "IPoolManager.sync": [
+    "function sync(Currency currency) external;"
+  ],
+  "IPoolManager.take": [
+    "function take(Currency currency, address to, uint256 amount) external;"
+  ],
+  "IPoolManager.settle": [
+    "function settle() external payable returns (uint256 paid);"
+  ],
+  "IPoolManager.settleFor": [
+    "function settleFor(address recipient) external payable returns (uint256 paid);"
+  ],
+  "IPoolManager.clear": [
+    "function clear(Currency currency, uint256 amount) external;"
+  ],
+  "IPoolManager.mint": [
+    "function mint(address to, uint256 id, uint256 amount) external;"
+  ],
+  "IPoolManager.burn": [
+    "function burn(address from, uint256 id, uint256 amount) external;"
+  ],
+  "IPoolManager.updateDynamicLPFee": [
+    "function updateDynamicLPFee(PoolKey memory key, uint24 newDynamicLPFee) external;"
+  ],
+  "IExtsload.extsload": [
+    "function extsload(bytes32 slot) external view returns (bytes32 value);",
+    "function extsload(bytes32 startSlot, uint256 nSlots) external view returns (bytes32[] memory values);",
+    "function extsload(bytes32[] calldata slots) external view returns (bytes32[] memory values);"
+  ],
+  "IProtocolFees.protocolFeesAccrued": [
+    "function protocolFeesAccrued(Currency currency) external view returns (uint256 amount);"
+  ],
+  "IProtocolFees.setProtocolFee": [
+    "function setProtocolFee(PoolKey memory key, uint24 newProtocolFee) external;"
+  ],
+  "IProtocolFees.setProtocolFeeController": [
+    "function setProtocolFeeController(address controller) external;"
+  ],
+  "IProtocolFees.collectProtocolFees": [
+    "function collectProtocolFees(address recipient, Currency currency, uint256 amount)\n        external\n        returns (uint256 amountCollected);"
+  ],
+  "IProtocolFees.protocolFeeController": [
+    "function protocolFeeController() external view returns (address);"
+  ],
+  "IExttload.exttload": [
+    "function exttload(bytes32 slot) external view returns (bytes32 value);",
+    "function exttload(bytes32[] calldata slots) external view returns (bytes32[] memory values);"
+  ],
+  "IUnlockCallback.unlockCallback": [
+    "function unlockCallback(bytes calldata data) external returns (bytes memory);"
+  ],
+  "IERC20Minimal.balanceOf": [
+    "function balanceOf(address account) external view returns (uint256);"
+  ],
+  "IERC20Minimal.transfer": [
+    "function transfer(address recipient, uint256 amount) external returns (bool);"
+  ],
+  "IERC20Minimal.allowance": [
+    "function allowance(address owner, address spender) external view returns (uint256);"
+  ],
+  "IERC20Minimal.approve": [
+    "function approve(address spender, uint256 amount) external returns (bool);"
+  ],
+  "IERC20Minimal.transferFrom": [
+    "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);"
+  ],
+  "IERC6909Claims.balanceOf": [
+    "function balanceOf(address owner, uint256 id) external view returns (uint256 amount);"
+  ],
+  "IERC6909Claims.allowance": [
+    "function allowance(address owner, address spender, uint256 id) external view returns (uint256 amount);"
+  ],
+  "IERC6909Claims.isOperator": [
+    "function isOperator(address owner, address spender) external view returns (bool approved);"
+  ],
+  "IERC6909Claims.transfer": [
+    "function transfer(address receiver, uint256 id, uint256 amount) external returns (bool);"
+  ],
+  "IERC6909Claims.transferFrom": [
+    "function transferFrom(address sender, address receiver, uint256 id, uint256 amount) external returns (bool);"
+  ],
+  "IERC6909Claims.approve": [
+    "function approve(address spender, uint256 id, uint256 amount) external returns (bool);"
+  ],
+  "IERC6909Claims.setOperator": [
+    "function setOperator(address operator, bool approved) external returns (bool);"
+  ]
+}

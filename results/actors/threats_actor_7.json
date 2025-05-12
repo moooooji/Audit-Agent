@@ -1,242 +1,294 @@
 [
   {
-    "id": 24,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
-    },
-    "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
-    ],
-    "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 25,
+    "id": 34,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
+      "actor_id": 101,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Prepare Transaction via Hub Backend"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 1,
       "asset_ids": [
-        4
+        1,
+        3
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 6,
+      "data_description": "Transaction parameters prepared by backend for user signing"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 7,
+      "boundary_name": "Frontend/Backend Boundary",
       "between_component_ids": [
-        1,
-        9
+        2,
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote data can be manipulated during transmission without proper validation."
+      "availability_required": false,
+      "gap_description": "Transaction parameters prepared by the Hub Backend can be manipulated before user signing."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "overprivileged": true,
+      "description": "Malicious external user compromising Hub components."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Vote data is not validated for integrity before processing."
+      "rationale": "Compromised Hub preparing malicious transactions can lead to direct loss of user assets."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of vote messages.",
-      "The actor can intercept and modify vote messages during transmission."
+      "Hub Frontend (Component 2) or Backend (Component 3) can be compromised.",
+      "User signs transaction data prepared by the Hub without independent verification.",
+      "The process of generating transaction parameters is not secured against manipulation."
     ],
     "mitigation": {
-      "strategy": "Implement cryptographic integrity checks (e.g., message authentication codes) for vote data.",
+      "strategy": "Implement strong security for Hub infrastructure and transaction parameter generation; encourage off-Hub transaction verification.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may alter vote data before it reaches the governance contract.",
+    "description": "An attacker compromises the Berachain Hub Frontend or Backend to alter the parameters of transactions (like swaps, liquidity provision, or governance actions) before presenting them to the user for signing, causing users to execute unintended and potentially harmful operations.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/berahub.md#berachain-s-berahub-\ud83d\udc3b\u26d3\ufe0f",
+      "matched_capability": "Swap assets"
     }
   },
   {
-    "id": 26,
-    "stride_category": "Repudiation",
+    "id": 35,
+    "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 8,
+      "capability_match": "View Validator/Vault Information"
     },
     "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
+      "component_id": 2,
+      "asset_ids": []
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 8,
+      "data_flow_id": 7,
+      "data_description": "Validator/Vault information displayed in Hub UI"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 7,
+      "boundary_name": "Frontend/Backend Boundary",
       "between_component_ids": [
-        1,
-        9
+        2,
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote submission lacks mechanisms for non-repudiation."
+      "availability_required": false,
+      "gap_description": "Information fetched from the backend/chain and displayed in the UI is not integrity-checked."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "overprivileged": true,
+      "description": "Malicious external user compromising Hub components to spread misinformation."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 8,
       "risk_level": "Medium",
-      "rationale": "The system does not record verifiable evidence of the voter's identity and intent."
+      "rationale": "Misleading information can influence user decisions (boosting, staking) but doesn't directly compromise funds via this behavior."
     },
     "assumptions": [
-      "The governance contract does not employ mechanisms such as digital signatures or verifiable credentials to ensure non-repudiation.",
-      "The actor is able to successfully cast votes."
+      "Hub Frontend (Component 2) or Backend (Component 3) can be compromised.",
+      "Data fetched from chain/contracts is not integrity-protected before display."
     ],
     "mitigation": {
-      "strategy": "Implement digital signatures or verifiable credentials to ensure vote non-repudiation.",
+      "strategy": "Implement integrity verification for data displayed in the Hub UI.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes and subsequently deny responsibility for their actions.",
+    "description": "An attacker compromises the Berachain Hub Frontend or Backend to falsify data displayed about validators or reward vaults (e.g., showing inflated APRs or commission rates), manipulating users' decisions on where to boost or stake.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/berahub.md#berachain-s-berahub-\ud83d\udc3b\u26d3\ufe0f",
+      "matched_capability": "View Validators"
     }
   },
   {
-    "id": 27,
-    "stride_category": "Information Disclosure",
+    "id": 36,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "actor_id": 101,
+      "behavior_id": 1,
+      "capability_match": "Access Berachain Hub"
     },
     "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
+      "component_id": 2,
+      "asset_ids": []
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "User requests/traffic to Hub endpoints"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_name": "Network Boundary",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data is transmitted insecurely."
+      "availability_required": true,
+      "gap_description": "Hub infrastructure is vulnerable to overwhelming traffic."
     },
     "actor_risk": {
-      "actor_id": 1,
+      "actor_id": 101,
       "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "overprivileged": true,
+      "description": "Malicious external user launching a DoS attack."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 1,
       "risk_level": "Medium",
-      "rationale": "Vote transmission may be intercepted without confidentiality protections."
+      "rationale": "Prevents users from accessing critical Hub features, disrupting their ability to interact with PoL and dApps."
     },
     "assumptions": [
-      "The system does not employ encryption or other confidentiality measures to protect vote data during transmission.",
-      "The actor can intercept vote data during transmission."
+      "Hub infrastructure (Components 2, 3) has insufficient capacity or protection against DoS attacks."
     ],
     "mitigation": {
-      "strategy": "Encrypt vote data during transmission using TLS or other secure protocols.",
+      "strategy": "Deploy robust DoS protection and scale Hub infrastructure.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may intercept and obtain sensitive vote information.",
+    "description": "An attacker floods the Berachain Hub Frontend and Backend with excessive requests, rendering the service unavailable and preventing legitimate users from accessing staking, claiming, swapping, or governance functionalities provided by the Hub.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/berahub.md#berachain-s-berahub-\ud83d\udc3b\u26d3\ufe0f",
+      "matched_capability": "Access Berachain Hub"
+    }
+  },
+  {
+    "id": 37,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 101,
+      "behavior_id": 2,
+      "capability_match": "Request Claim Proof"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 6,
+      "data_description": "API requests for incentive claim proofs"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Berachain Hub Backend Boundary",
+      "between_component_ids": [
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Backend service providing claim proofs is vulnerable to DoS attacks."
+    },
+    "actor_risk": {
+      "actor_id": 101,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "Malicious external user targeting claim proof service."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "Medium",
+      "rationale": "Prevents users from claiming earned incentives, causing financial inconvenience and potential loss if they cannot redeploy capital."
+    },
+    "assumptions": [
+      "The specific backend service responsible for claim proof generation/provision has insufficient capacity or protection against DoS attacks."
+    ],
+    "mitigation": {
+      "strategy": "Implement specific DoS protection and scaling for the claim proof service.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker specifically targets the backend service responsible for providing proofs required to claim incentives, preventing users from obtaining these proofs and subsequently claiming their earned incentive tokens via the BGT Incentive Distributor contract.",
+    "trace_source": {
+      "doc_reference": "learn/guides/claim-incentives.md#how-to-claim-incentive-tokens",
+      "matched_capability": "Request Claim Proof"
+    }
+  },
+  {
+    "id": 38,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 101,
+      "behavior_id": 2,
+      "capability_match": "Submit Spoofed Claim Proof"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 3,
+      "data_description": "Claim transaction including fraudulent proof"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 5,
+      "boundary_name": "BGT Incentive Distributor Contract Boundary",
+      "between_component_ids": [
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "BGT Incentive Distributor contract's proof verification is insufficient, allowing claims with invalid proofs."
+    },
+    "actor_risk": {
+      "actor_id": 101,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "Malicious external user exploiting proof verification vulnerability."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "High",
+      "rationale": "Allows attackers to steal incentive tokens belonging to legitimate users or the protocol."
+    },
+    "assumptions": [
+      "A malicious external user can generate a proof that the BGT Incentive Distributor contract (Component 5) will accept as valid, despite the user not being eligible for the claim.",
+      "This proof generation capability exists due to a vulnerability in the backend (Component 3) or the contract's (Component 5) verification logic."
+    ],
+    "mitigation": {
+      "strategy": "Strengthen proof generation process and contract-side proof verification logic.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker crafts or obtains a fraudulent proof of incentive eligibility, potentially by exploiting weaknesses in the Berachain Hub Backend or the BGT Incentive Distributor contract, and uses it to claim incentive tokens that they are not entitled to, resulting in unauthorized asset loss for legitimate users.",
+    "trace_source": {
+      "doc_reference": "learn/guides/claim-incentives.md#how-to-claim-incentive-tokens",
+      "matched_capability": "Claim Incentive Tokens"
     }
   }
 ]

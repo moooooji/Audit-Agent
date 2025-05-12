@@ -1,242 +1,303 @@
 [
   {
-    "id": 40,
+    "id": 16,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 8,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Wallet connection handshake data"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 3,
+      "boundary_name": "User to Application",
       "between_component_ids": [
         1,
-        9
+        8
       ]
     },
     "security_gap": {
-      "confidentiality_required": false,
+      "confidentiality_required": true,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "gap_description": "User may connect to a malicious site impersonating the legitimate Hub, risking asset compromise."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Standard external user interacting with potentially untrusted application endpoint."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "behavior_id": 1,
+      "risk_level": "Medium",
+      "rationale": "Users are susceptible to phishing attacks targeting the wallet connection process."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "User does not verify the URL or authenticity of the Berachain Hub website.",
+      "An attacker can create a convincing fake Berachain Hub website."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
-      "type": "Technical Control",
-      "priority": "High"
+      "strategy": "Educate users about phishing risks and verifying site authenticity.",
+      "type": "Process Control",
+      "priority": "Medium"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An external user is tricked into connecting their wallet to a malicious website impersonating Berachain Hub, potentially leading to private key compromise or unauthorized transaction signing due to the spoofed application.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 41,
+    "id": 17,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 8,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Wallet connection data flow (e.g., RPC requests, signature requests)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 3,
+      "boundary_name": "User to Application",
       "between_component_ids": [
         1,
-        9
+        8
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote data may be altered without proper validation."
+      "availability_required": false,
+      "gap_description": "Data transmitted during wallet connection lacks sufficient integrity protection."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user whose connection attempt data may be tampered with."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system lacks input validation for vote data."
+      "behavior_id": 1,
+      "risk_level": "Medium",
+      "rationale": "Communication over the network can be intercepted and modified if not properly secured."
     },
     "assumptions": [
-      "The governance contract does not validate the integrity of vote data.",
-      "The actor can submit arbitrarily altered vote data."
+      "Communication between the user's wallet/browser and Berachain Hub is not encrypted (e.g., missing HTTPS).",
+      "An attacker can perform a man-in-the-middle attack."
     ],
     "mitigation": {
-      "strategy": "Implement robust input validation for vote data and hash verification.",
+      "strategy": "Enforce mandatory HTTPS/TLS for all communication with Berachain Hub.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may alter vote data to manipulate the outcome of governance proposals.",
+    "description": "An attacker intercepts and modifies the data exchanged between the external user's wallet and Berachain Hub during the connection process, potentially altering requested actions or parameters before they are processed.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 42,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote actions may not be auditable or verifiable."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system lacks a mechanism for non-repudiation of votes."
-    },
-    "assumptions": [
-      "The governance contract does not log vote data immutably.",
-      "The system lacks strong authentication to tie votes to specific users."
-    ],
-    "mitigation": {
-      "strategy": "Use a blockchain with strong immutability for vote logging, implement robust user authentication and authorization.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may cast votes and subsequently deny having done so.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 43,
+    "id": 18,
     "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 8,
       "asset_ids": [
-        4
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Wallet connection handshake data"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 3,
+      "boundary_name": "User to Application",
       "between_component_ids": [
         1,
-        9
+        8
       ]
     },
     "security_gap": {
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Vote data may be disclosed to unauthorized actors."
+      "gap_description": "Connection process or communication channel reveals sensitive wallet information."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "External user whose sensitive information may be disclosed."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 1,
       "risk_level": "Medium",
-      "rationale": "The system may lack appropriate access controls for vote data."
+      "rationale": "Connection data could be exposed if communication is unencrypted or endpoints are logging excessively."
     },
     "assumptions": [
-      "The system does not encrypt or securely store vote data.",
-      "The system does not restrict access to vote data to authorized personnel."
+      "The communication channel between the user's wallet/browser and Berachain Hub is not encrypted.",
+      "Berachain Hub logs expose sensitive connection details like wallet addresses and timestamps.",
+      "The user's local device environment is compromised allowing data capture."
     ],
     "mitigation": {
-      "strategy": "Implement encryption of vote data at rest and in transit, implement access controls to restrict access to vote data.",
+      "strategy": "Encrypt communication channel (HTTPS/TLS) and minimize logging of sensitive data.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to sensitive vote data.",
+    "description": "Sensitive details, such as the user's wallet address, connection timestamps, or potentially private keys (if the user's environment is compromised), are exposed during the process of connecting the wallet to Berachain Hub.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 19,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Excessive connection requests"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "User to Application",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Berachain Hub's connection endpoint is vulnerable to being overwhelmed by malicious connection attempts."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "External user performing a DoS attack against the Hub connection endpoint."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "Medium",
+      "rationale": "Connection endpoints are common targets for denial-of-service attacks."
+    },
+    "assumptions": [
+      "Berachain Hub connection endpoint lacks effective rate limiting or traffic filtering.",
+      "Attacker has sufficient resources to generate high volume traffic."
+    ],
+    "mitigation": {
+      "strategy": "Implement strong rate limiting and traffic filtering on connection endpoints.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An external user (attacker) initiates a large volume of connection requests to the Berachain Hub, consuming resources and preventing legitimate users from connecting their wallets.",
+    "trace_source": {
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 20,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Connection request, authentication/authorization handshake"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "User to Application",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Berachain Hub grants inappropriate permissions based on the connected wallet address or during the connection flow itself."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "External user attempting privilege escalation."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "High",
+      "rationale": "Successful privilege escalation compromises the application's security model."
+    },
+    "assumptions": [
+      "Berachain Hub has logic errors in its authorization system linked to wallet identities.",
+      "Authentication tokens issued after connection convey unintended permissions."
+    ],
+    "mitigation": {
+      "strategy": "Strictly implement the principle of least privilege and review auth logic.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An external user exploits a flaw in how Berachain Hub verifies or assigns privileges during the wallet connection process, gaining unauthorized access or control within the application beyond intended scope.",
+    "trace_source": {
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect Wallet"
     }
   }
 ]

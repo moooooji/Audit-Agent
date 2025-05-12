@@ -1,242 +1,735 @@
 [
   {
-    "id": 50,
+    "id": 30,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Wallet connection request and subsequent signing prompts presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User trusts the frontend's authenticity, allowing a spoofed site to request sensitive wallet operations or information."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "High",
+      "rationale": "A compromised frontend can trick the user into revealing sensitive information or signing malicious transactions upon wallet connection."
+    },
+    "assumptions": [
+      "User visits a malicious URL impersonating the Berachain Hub.",
+      "Wallet grants excessive permissions or signs transactions based on compromised frontend requests.",
+      "User is prompted for sensitive information like seed phrase by the malicious frontend."
+    ],
+    "mitigation": {
+      "strategy": "Educate users on phishing risks and wallet security best practices; wallet should clearly display requested permissions.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker spoofs the Berachain Hub frontend to trick the user into connecting their wallet to a malicious site, potentially leading to seed phrase compromise or signing unintended transactions.",
+    "trace_source": {
+      "doc_reference": "How To Connect A Wallet With Berachain \ud83d\udd0c",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 31,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 2,
+      "capability_match": "Boost Validator"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 3,
+      "data_description": "Boost transaction parameters (validator ID, BGT amount) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User relies on frontend to accurately present transaction details before signing; wallet display may not be sufficient for verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter boost transaction details leading to loss of control over BGT."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the validator ID or BGT amount in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear, verifiable details of the transaction being signed; users should be vigilant reviewing details.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for boosting a validator, causing the user to boost the wrong validator or an incorrect amount of BGT.",
+    "trace_source": {
+      "doc_reference": "guides/Boost A Validator With $BGT",
+      "matched_capability": "Boost Validator"
+    }
+  },
+  {
+    "id": 32,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 3,
+      "data_flow_id": 3,
+      "data_description": "Claim incentives transaction parameters (recipient address, amount) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Frontend dictates the recipient address for the claim transaction; user may not verify the address in the wallet prompt."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 3,
+      "risk_level": "High",
+      "rationale": "Compromised frontend can redirect claimed incentive tokens to an attacker's wallet."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend sets the recipient address in the claim transaction to the attacker's address.",
+      "User signs the transaction without verifying the recipient address."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should clearly display the recipient address for asset transfers; users should always verify the recipient address.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend spoofs the claim process, causing the user to claim their earned incentive tokens to an attacker's wallet instead of their own.",
+    "trace_source": {
+      "doc_reference": "guides/Claim Incentives",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 33,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Provide BEX Liquidity"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 4,
+      "data_flow_id": 3,
+      "data_description": "Add liquidity transaction parameters (pool address, token amounts) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User relies on frontend to select the correct pool and amounts; wallet display may not be sufficient for verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter liquidity provision details leading to potential asset loss in a malicious pool."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the pool address or token amounts in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify the contract address.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for providing BEX liquidity, causing the user to deposit assets into a malicious or incorrect liquidity pool.",
+    "trace_source": {
+      "doc_reference": "dapps/Berachain BEX",
+      "matched_capability": "Provide BEX Liquidity"
+    }
+  },
+  {
+    "id": 34,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Claim BGT Rewards"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 4,
       "asset_ids": [
-        4
+        2
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 3,
+      "data_description": "Claim BGT rewards transaction parameters (recipient address, amount) presented by frontend."
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "availability_required": false,
+      "gap_description": "Frontend dictates the recipient address for the claim transaction; user may not verify the address in the wallet prompt."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "User interaction relies heavily on the integrity of the frontend."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "rationale": "Compromised frontend can redirect claimed BGT rewards to an attacker's wallet."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend sets the recipient address in the claim transaction to the attacker's address.",
+      "User signs the transaction without verifying the recipient address."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Wallet should clearly display the recipient address for asset transfers; users should always verify the recipient address.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "A malicious Berachain Hub frontend spoofs the BGT claim process, causing the user to claim their earned BGT rewards to an attacker's wallet instead of their own.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/Berachain's BeraHub",
+      "matched_capability": "Claim earned $BGT rewards"
     }
   },
   {
-    "id": 51,
+    "id": 35,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 6,
+      "capability_match": "Stake Assets in Reward Vault"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 4,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 6,
+      "data_flow_id": 3,
+      "data_description": "Stake assets transaction parameters (vault address, token amounts) presented by frontend."
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote data may be manipulated during transmission."
+      "availability_required": false,
+      "gap_description": "User relies on frontend to select the correct vault and amounts; wallet display may not be sufficient for verification."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "User interaction relies heavily on the integrity of the frontend."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Data manipulation is possible due to lack of integrity checks."
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter staking details leading to potential asset loss in a malicious vault."
     },
     "assumptions": [
-      "The system lacks integrity checks on the vote data during transmission.",
-      "The actor can intercept and modify the vote data before it reaches the contract."
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the reward vault address or token amounts in the transaction request.",
+      "User signs the manipulated transaction without noticing."
     ],
     "mitigation": {
-      "strategy": "Implement robust data integrity checks and use secure channels for vote submission.",
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify the contract address.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker may alter the vote data to influence the outcome of the governance process.",
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for staking assets in a reward vault, causing the user to stake into a malicious or incorrect vault.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/Reward Vaults",
+      "matched_capability": "Staking With A Reward Vault"
     }
   },
   {
-    "id": 52,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Lack of accountability for votes submitted."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not provide sufficient audit trail for votes."
-    },
-    "assumptions": [
-      "The system does not log vote submissions with sufficient detail to identify the voter.",
-      "The contract does not support verifiable vote tracking."
-    ],
-    "mitigation": {
-      "strategy": "Implement non-repudiation mechanisms, such as digital signatures and robust audit logs.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may cast votes without accountability, making it difficult to trace the origin of malicious votes.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 53,
+    "id": 36,
     "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 7,
+      "capability_match": "Review Active Reward Vaults"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 2,
       "asset_ids": [
-        4
+        6
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 7,
+      "data_flow_id": 6,
+      "data_description": "Displayed list data and associated metadata for reward vaults."
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
       "between_component_ids": [
         1,
-        9
+        2
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Vote data may be exposed during transmission or storage."
+      "gap_description": "User trusts the frontend to accurately display public on-chain data; no independent verification of list contents."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "User interaction relies heavily on the integrity of the frontend."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 7,
       "risk_level": "Medium",
-      "rationale": "Sensitive data is transmitted without appropriate protection."
+      "rationale": "Malicious frontend can display fake vault details leading to user interacting with malicious entities in subsequent steps."
     },
     "assumptions": [
-      "The system does not encrypt vote data during transmission or storage.",
-      "The actor can access the network and capture vote data."
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend intercepts or modifies the display of public on-chain data.",
+      "User makes decisions based on the false information."
     ],
     "mitigation": {
-      "strategy": "Implement encryption for vote data during transmission and storage.",
+      "strategy": "Provide alternative, trusted sources for reviewing vaults; wallet could potentially verify interacted contract addresses against trusted lists.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may intercept vote data during transmission or access stored vote data, revealing sensitive information about voters and their choices.",
+    "description": "A malicious Berachain Hub frontend displays false information about active reward vaults (e.g., fake addresses, incorrect APRs) to trick the user into interacting with malicious entities.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "dapps/Berachain's BeraHub",
+      "matched_capability": "Review active Reward Vaults"
+    }
+  },
+  {
+    "id": 37,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Review Active Validators"
+    },
+    "threat_target": {
+      "component_id": 2,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 6,
+      "data_description": "Displayed list data and associated metadata for validators."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "User trusts the frontend to accurately display public on-chain data; no independent verification of list contents."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "Medium",
+      "rationale": "Malicious frontend can display fake validator details leading to user interacting with malicious entities in subsequent steps (e.g., boosting)."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend intercepts or modifies the display of public on-chain data.",
+      "User makes decisions based on the false information."
+    ],
+    "mitigation": {
+      "strategy": "Provide alternative, trusted sources for reviewing validators; wallet could potentially verify interacted contract addresses against trusted lists.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "A malicious Berachain Hub frontend displays false information about active validators (e.g., fake addresses, incorrect commission rates) to trick the user into interacting with malicious entities.",
+    "trace_source": {
+      "doc_reference": "dapps/Berachain's BeraHub",
+      "matched_capability": "Review active Validators"
+    }
+  },
+  {
+    "id": 38,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Redeem BGT for BERA"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        2,
+        5
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 3,
+      "data_description": "Redeem BGT transaction parameters (amount, recipient address for BERA) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User relies on frontend to accurately present redemption details; wallet display may not be sufficient for verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 9,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter redeem transaction details leading to loss of BGT or BERA."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the BGT amount or the recipient address for BERA in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify the recipient address.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for redeeming BGT for BERA, causing the user to redeem an incorrect amount or send the resulting BERA to an attacker's address.",
+    "trace_source": {
+      "doc_reference": "dapps/Berachain's BeraHub",
+      "matched_capability": "Redeem $BGT for $BERA"
+    }
+  },
+  {
+    "id": 39,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Swap Assets"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 3,
+      "data_description": "Swap transaction parameters (token addresses, amounts, slippage, pool) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User relies on frontend to accurately present swap details; wallet display may not be sufficient for complex parameter verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter swap parameters (tokens, amounts, slippage) leading to unexpected token swaps or significant loss through slippage."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters swap parameters in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify swap details and expected outcomes.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for swapping assets, causing the user to swap incorrect tokens, amounts, or accept excessive slippage.",
+    "trace_source": {
+      "doc_reference": "dapps/Berachain BEX",
+      "matched_capability": "Swap assets"
+    }
+  },
+  {
+    "id": 40,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 11,
+      "capability_match": "Participate in Governance"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 11,
+      "data_flow_id": 3,
+      "data_description": "Governance transaction parameters (proposal ID, vote choice, proposal details) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User relies on frontend to accurately present governance action details; wallet display may be insufficient for verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 11,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter governance action details, causing the user to vote against their will or propose harmful changes."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the proposal ID, vote choice, or proposal content in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify governance action details.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for participating in governance, causing the user to vote on the wrong proposal, cast the wrong vote, or submit a malicious proposal.",
+    "trace_source": {
+      "doc_reference": "dapps/Berachain's BeraHub",
+      "matched_capability": "Participate in Governance"
+    }
+  },
+  {
+    "id": 41,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 12,
+      "capability_match": "Add Incentives for Reward Vault"
+    },
+    "threat_target": {
+      "component_id": 4,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 12,
+      "data_flow_id": 3,
+      "data_description": "Add incentive transaction parameters (vault address, token address, amount, rate) presented by frontend."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User (Token Manager) relies on frontend to accurately present incentive details; wallet display may not be sufficient for verification."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User interaction relies heavily on the integrity of the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 12,
+      "risk_level": "High",
+      "rationale": "Malicious frontend can alter incentive addition details leading to misdirected tokens or incorrect rates."
+    },
+    "assumptions": [
+      "User interacts with a malicious Berachain Hub frontend.",
+      "The malicious frontend alters the vault address, token address, amount, or rate in the transaction request.",
+      "User signs the manipulated transaction without noticing."
+    ],
+    "mitigation": {
+      "strategy": "Wallet should provide clear details of the contract interaction and parameters; users should verify incentive details (vault, token, amount, rate).",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A malicious Berachain Hub frontend tampers with the transaction details for adding incentives to a reward vault, causing the user to deposit tokens into the wrong vault, deposit the wrong token/amount, or set an incorrect rate.",
+    "trace_source": {
+      "doc_reference": "guides/Add Incentives For Reward Vault",
+      "matched_capability": "Add Incentives for Reward Vault"
     }
   }
 ]
