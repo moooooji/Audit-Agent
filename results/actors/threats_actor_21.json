@@ -1,242 +1,236 @@
 [
   {
-    "id": 77,
+    "id": 17,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Wallet Connection"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 7,
+      "data_description": "Connection request"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_name": "User/External System Boundary",
       "between_component_ids": [
-        1,
-        9
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
+      "availability_required": false,
+      "gap_description": "Lack of strong authentication/verification for connection requests."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Actor attempts to impersonate a legitimate user to the system."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
+      "risk_level": "Medium",
+      "rationale": "Successful spoofing could allow unauthorized access to wallet data or actions if upstream checks relying on connection are weak."
     },
     "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
+      "System relies solely on wallet address or easily forgeable data for identity during connection within Component 3.",
+      "No cryptographic proof of wallet ownership is required during the connection handshake."
     ],
     "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
+      "strategy": "Implement challenge-response authentication requiring wallet signature for connection.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+    "description": "An external user spoofs a wallet connection request to impersonate a legitimate user connecting to the system.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 78,
+    "id": 18,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Wallet Connection"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 7,
+      "data_description": "Connection request"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_name": "User/External System Boundary",
       "between_component_ids": [
-        1,
-        9
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be tampered with without detection."
+      "availability_required": false,
+      "gap_description": "Connection request data is not protected against modification in transit."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system lacks mechanisms to detect or prevent vote tampering."
-    },
-    "assumptions": [
-      "The governance contract does not validate the integrity of vote messages.",
-      "The actor is able to access and modify the vote data before submission."
-    ],
-    "mitigation": {
-      "strategy": "Implement tamper-evident mechanisms for vote messages.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may alter the content of a vote before it is processed by the contract.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 79,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Votes may be submitted anonymously, making repudiation possible."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Actor modifies connection request data during transmission."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The voting process lacks mechanisms to ensure accountability."
+      "rationale": "Tampered connection data could lead to incorrect state or unauthorized actions if data integrity is not validated upon receipt by Component 3."
     },
     "assumptions": [
-      "The system does not require user authentication or identification during voting.",
-      "The vote submission process is not logged or traceable to individual users."
+      "Connection request data is sent without integrity checks (e.g., hash, signature) across the boundary.",
+      "Communication channel is susceptible to modification by the actor."
     ],
     "mitigation": {
-      "strategy": "Implement a logging mechanism to record votes and link them to user identities.",
+      "strategy": "Implement integrity checks (e.g., digital signatures or secure channel) for connection data.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may cast votes and then deny their involvement.",
+    "description": "An external user intercepts and modifies the wallet connection request data being sent to the system.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 80,
+    "id": 19,
     "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Initiate Wallet Connection"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 3,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "data_flow_id": 7,
+      "data_description": "Connection request"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_name": "User/External System Boundary",
       "between_component_ids": [
-        1,
-        9
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": true,
       "integrity_required": false,
       "availability_required": false,
-      "gap_description": "Vote data may be exposed during transmission or storage."
+      "gap_description": "Sensitive information within the connection process is transmitted unencrypted."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Actor intercepts communication channel to reveal sensitive information."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "The system lacks protection against unauthorized access to vote data."
+      "rationale": "Exposure of sensitive connection data (e.g., wallet identifiers, session details) could aid further attacks or compromise user privacy."
     },
     "assumptions": [
-      "Vote data is transmitted over an insecure channel.",
-      "The system's database is vulnerable to unauthorized access."
+      "Communication channel between user client and Component 3 is not encrypted (e.g., not using TLS).",
+      "Sensitive information is present in the connection request data."
     ],
     "mitigation": {
-      "strategy": "Encrypt vote data during transmission and storage.",
+      "strategy": "Enforce encrypted communication (e.g., TLS/SSL) for all connection data flows.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "Sensitive information about the votes may be revealed to unauthorized entities.",
+    "description": "Sensitive information (e.g., wallet address, connection details) is disclosed during an unencrypted wallet connection process.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 20,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Initiate Wallet Connection"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 7,
+      "data_description": "Connection request"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User/External System Boundary",
+      "between_component_ids": [
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Component is susceptible to resource exhaustion from excessive connection requests."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Actor sends excessive connection requests to overload the target component."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "Successful DoS attack on the connection endpoint prevents legitimate users from connecting and interacting with the system."
+    },
+    "assumptions": [
+      "Component 3 has no effective rate limiting or request filtering for connection attempts.",
+      "Component 3's resources are insufficient to handle a high volume of malicious requests."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust rate limiting, request filtering, and potential IP blocking on the connection endpoint.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An external user performs a denial of service attack by flooding the wallet connector component with excessive connection requests.",
+    "trace_source": {
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
     }
   }
 ]

@@ -1,302 +1,557 @@
 [
   {
-    "id": 21,
+    "id": 6,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Boost Validator"
+      "behavior_id": 21,
+      "capability_match": "Swap Tokens on BEX"
     },
     "threat_target": {
-      "component_id": 7,
+      "component_id": 12,
       "asset_ids": [
-        4
+        1,
+        6
+      ],
+      "component_details": {
+        "id": 12,
+        "name": "Governance Contract",
+        "description": "Smart contract managing governance proposals, voting, and delegation.",
+        "trust_level": "High",
+        "assets_managed": [
+          2,
+          6,
+          11
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 1,
+          "name": "$BERA",
+          "description": "Native gas and staking token.",
+          "type": "Token",
+          "sensitivity": "High"
+        },
+        {
+          "id": 6,
+          "name": "Voting Power",
+          "description": "Influence in governance decisions, derived from BGT holdings/delegation.",
+          "type": "Voting Power",
+          "sensitivity": "High"
+        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 1,
-      "data_description": "Boost parameters (validator ID, amount)"
+      "behavior_id": 21,
+      "data_flow_id": 31,
+      "data_description": "Swap parameters and signed transaction",
+      "behavior_details": {
+        "id": 21,
+        "name": "Submit Governance Proposal",
+        "initiator_type": "Actor",
+        "initiator_id": 3,
+        "target_id": 12,
+        "action": "submit_proposal",
+        "description": "Protocol submits a governance proposal, typically for whitelisting a Reward Vault or Incentive Token."
+      },
+      "data_flow_details": {
+        "id": 31,
+        "source_id": 4,
+        "destination_id": 12,
+        "data": "Proposal Cancellation Data",
+        "description": "Guardian cancels a malicious governance proposal during the timelock.",
+        "security_properties": {
+          "confidentiality_required": true,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "External User to Native dApp",
+      "boundary_id": 2,
+      "boundary_name": "External User to Smart Contract",
       "between_component_ids": [
         1,
-        7
-      ]
+        12
+      ],
+      "boundary_details": {
+        "id": 2,
+        "name": "Berachain Bridge to Berachain",
+        "between_ids": [
+          6,
+          1
+        ],
+        "description": "Separates the external bridging service from the core blockchain network.",
+        "validation_required": true
+      }
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Unauthorized BGT delegation possible if identity verification is weak."
+      "availability_required": true,
+      "gap_description": "An attacker could potentially initiate transactions as the user if the user's wallet or session is compromised."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Unauthenticated external user attempting unauthorized actions."
+      "description": "The actor's primary risk is the potential compromise of their interaction method (e.g., wallet).",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 6,
+      "behavior_id": 21,
       "risk_level": "High",
-      "rationale": "Unauthorized delegation impacts validator economics and user rewards distribution, undermining the PoL mechanism."
+      "rationale": "Unauthorized swaps can lead to direct financial loss for the user."
     },
     "assumptions": [
-      "The system does not strictly verify the identity of the request initiator beyond basic authentication/signing.",
-      "An attacker can forge or replay signed requests."
+      "The user's wallet seed phrase or private key is compromised.",
+      "The user's active session with a dApp interface is hijacked."
     ],
     "mitigation": {
-      "strategy": "Implement strong authentication and unique transaction signing tied to identity for all BGT delegation actions.",
+      "strategy": "Educate users on wallet security best practices; implement session security measures in UIs.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker impersonates a BGT holder to delegate their BGT to a validator without authorization, affecting reward distribution and validator boost metrics.",
+    "description": "An attacker impersonates the user to execute unauthorized token swaps on the BEX, leading to financial loss.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost Validator"
+      "doc_reference": "dapps/bex.md#berachain-bex-\ud83d\udc3b\u26d3\ufe0f",
+      "matched_capability": "Trading via swapping"
     }
   },
   {
-    "id": 22,
+    "id": 7,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Swap Assets"
+      "behavior_id": 24,
+      "capability_match": "Mint HONEY"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 13,
       "asset_ids": [
-        3
+        5,
+        6
+      ],
+      "component_details": {
+        "id": 13,
+        "name": "HoneyFactory (Smart Contract)",
+        "description": "Central smart contract hub for $HONEY minting, connecting vaults.",
+        "trust_level": "High",
+        "assets_managed": [
+          3,
+          9,
+          15
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 5,
+          "name": "Private Key",
+          "description": "Cryptographic key used to access and control assets in a wallet.",
+          "type": "Key",
+          "sensitivity": "High"
+        },
+        {
+          "id": 6,
+          "name": "Voting Power",
+          "description": "Influence in governance decisions, derived from BGT holdings/delegation.",
+          "type": "Voting Power",
+          "sensitivity": "High"
+        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 1,
-      "data_description": "Swap parameters (token in, token out, amount, recipient)"
+      "behavior_id": 24,
+      "data_flow_id": 34,
+      "data_description": "Mint parameters (collateral type/amount, desired HONEY amount) and signed transaction",
+      "behavior_details": {
+        "id": 24,
+        "name": "Increase Incentive Rate",
+        "initiator_type": "Actor",
+        "initiator_id": 5,
+        "target_id": 11,
+        "action": "increase_rate",
+        "description": "Incentive Token Manager increases the rate at which incentive tokens are distributed from a Reward Vault."
+      },
+      "data_flow_details": {
+        "id": 34,
+        "source_id": 5,
+        "destination_id": 11,
+        "data": "Incentive Token Data (Adding/Updating)",
+        "description": "Incentive Token Manager adds or updates incentive tokens/rate in a Reward Vault.",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "External User to Native dApp",
+      "boundary_id": 2,
+      "boundary_name": "External User to Smart Contract",
       "between_component_ids": [
         1,
-        5
-      ]
+        13
+      ],
+      "boundary_details": {
+        "id": 2,
+        "name": "Berachain Bridge to Berachain",
+        "between_ids": [
+          6,
+          1
+        ],
+        "description": "Separates the external bridging service from the core blockchain network.",
+        "validation_required": true
+      }
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Manipulation of swap details leads to incorrect token exchange or loss."
+      "availability_required": true,
+      "gap_description": "Transaction parameters could be altered client-side or in transit before signing, leading to incorrect minting details or fees."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user interacting with DEX swap function."
+      "description": "The actor is interacting with a dApp via a potentially compromisable interface.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "High",
-      "rationale": "Tampering with swap parameters can lead to significant financial loss for the user or protocol if not properly validated."
-    },
-    "assumptions": [
-      "The system allows modification of transaction parameters after signing or during transmission.",
-      "The target component does not validate swap parameters against the original user intent."
-    ],
-    "mitigation": {
-      "strategy": "Ensure transaction signing covers all critical swap parameters and implement strict server-side and smart contract validation.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker intercepts and modifies a user's swap transaction to change the token amounts, pair, or destination address before execution.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap Assets"
-    }
-  },
-  {
-    "id": 23,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Claim BGT Rewards"
-    },
-    "threat_target": {
-      "component_id": 7,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 1,
-      "data_description": "Claim proof/request"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "External User to Native dApp",
-      "between_component_ids": [
-        1,
-        7
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "User can deny claiming rewards after they have been transferred if action isn't unequivocally linked."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User claiming earned rewards through the system."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 24,
       "risk_level": "Medium",
-      "rationale": "Lack of strong evidence linking a claim action to the user could allow repudiation, potentially causing disputes regarding reward distribution or unauthorized access claims."
+      "rationale": "Tampering with mint parameters could result in unexpected token amounts or fees for the user."
     },
     "assumptions": [
-      "The claim process, involving proofs and API interaction, does not produce sufficient non-repudiable on-chain evidence strongly linking the claim action to the specific user.",
-      "The user's interaction method allows plausible deniability."
+      "The user interface (e.g., Berachain Hub) used for minting is compromised.",
+      "A malicious browser extension or software intercepts and alters transaction data before signing."
     ],
     "mitigation": {
-      "strategy": "Ensure all reward claim actions are initiated via signed transactions on-chain, explicitly linked to the user's address and recorded in an immutable log.",
+      "strategy": "Ensure transaction details are clearly and securely displayed for user confirmation before signing; use secure connection protocols.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "A user claims BGT rewards but later denies having done so, potentially alleging unauthorized access or disputing the reward amount if the claim action cannot be definitively attributed.",
+    "description": "An attacker tampers with the parameters of a HONEY minting transaction before it is signed by the user's wallet.",
     "trace_source": {
-      "doc_reference": "guides/claim-incentives.md",
-      "matched_capability": "Claim BGT Rewards"
+      "doc_reference": "dapps/honey_swap.md#berachain-honey-swap-\ud83d\udc3b\u26d3\ufe0f",
+      "matched_capability": "Trade assets for $HONEY"
     }
   },
   {
-    "id": 24,
+    "id": 8,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Swap Assets"
+      "behavior_id": 21,
+      "capability_match": "Swap Tokens on BEX"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 12,
       "asset_ids": [
-        3
+        1
+      ],
+      "component_details": {
+        "id": 12,
+        "name": "Governance Contract",
+        "description": "Smart contract managing governance proposals, voting, and delegation.",
+        "trust_level": "High",
+        "assets_managed": [
+          2,
+          6,
+          11
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 1,
+          "name": "$BERA",
+          "description": "Native gas and staking token.",
+          "type": "Token",
+          "sensitivity": "High"
+        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 1,
-      "data_description": "Swap requests"
+      "behavior_id": 21,
+      "data_flow_id": 40,
+      "data_description": "Transaction requests targeting the BEX contract",
+      "behavior_details": {
+        "id": 21,
+        "name": "Submit Governance Proposal",
+        "initiator_type": "Actor",
+        "initiator_id": 3,
+        "target_id": 12,
+        "action": "submit_proposal",
+        "description": "Protocol submits a governance proposal, typically for whitelisting a Reward Vault or Incentive Token."
+      },
+      "data_flow_details": {}
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "External User to Native dApp",
+      "boundary_id": 2,
+      "boundary_name": "External User to Smart Contract",
       "between_component_ids": [
         1,
-        5
-      ]
+        12
+      ],
+      "boundary_details": {
+        "id": 2,
+        "name": "Berachain Bridge to Berachain",
+        "between_ids": [
+          6,
+          1
+        ],
+        "description": "Separates the external bridging service from the core blockchain network.",
+        "validation_required": true
+      }
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Excessive requests disrupt normal trading operations or increase costs for legitimate users."
+      "gap_description": "A high volume of transactions (even failed ones) can increase gas costs or temporarily block contract access for legitimate users."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user flooding the DEX with transaction requests."
+      "description": "An actor can submit a large number of transactions, consuming network resources.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 2,
+      "behavior_id": 21,
       "risk_level": "Medium",
-      "rationale": "Flooding the swap function can degrade performance, increase network congestion, or drive up gas prices for all users, impacting availability."
+      "rationale": "The BEX contract processes individual swap requests, and high volume can impact availability/cost."
     },
     "assumptions": [
-      "The target component (BEX) or underlying network lacks sufficient rate limiting or DoS protection mechanisms.",
-      "Transaction fees (gas) are not a significant deterrent for the attacker."
+      "The attacker has sufficient $BERA to pay for transaction fees.",
+      "The network or contract has processing limits that can be reached by transaction volume."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting at the application and network layers, monitor for unusual transaction patterns, and ensure transaction fees effectively deter spam.",
+      "strategy": "Implement transaction rate limits at the node/RPC level; ensure contract gas costs scale efficiently; dynamic gas pricing.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker sends a large volume of swap requests to the BEX, potentially overwhelming the service or increasing transaction costs for other users, disrupting normal trading.",
+    "description": "An attacker floods the BEX smart contract with transaction requests, attempting to disrupt service or inflate gas costs for other users.",
     "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap Assets"
+      "doc_reference": "help/faqs.md#what-do-berachain-s-performance-metrics-look-like",
+      "matched_capability": "Transactions per Second (TPS)"
     }
   },
   {
-    "id": 25,
+    "id": 9,
     "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 7,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 27,
+      "capability_match": "Claim Incentive Tokens"
     },
     "threat_target": {
-      "component_id": 7,
+      "component_id": 15,
       "asset_ids": [
-        4
+        6,
+        7
+      ],
+      "component_details": {
+        "id": 15,
+        "name": "BGTIncentiveDistributor (Smart Contract)",
+        "description": "Smart contract managing the distribution and claiming of Incentive Tokens for Boosters.",
+        "trust_level": "High",
+        "assets_managed": [
+          10
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 6,
+          "name": "Voting Power",
+          "description": "Influence in governance decisions, derived from BGT holdings/delegation.",
+          "type": "Voting Power",
+          "sensitivity": "High"
+        },
+        {
+          "id": 7,
+          "name": "Liquidity",
+          "description": "Tokens available in liquidity pools for trading.",
+          "type": "Liquidity",
+          "sensitivity": "High"
+        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 1,
-      "data_description": "Vote parameters (proposal ID, vote choice)"
+      "behavior_id": 27,
+      "data_flow_id": 37,
+      "data_description": "Claim request and cryptographic proof of entitlement",
+      "behavior_details": {
+        "id": 27,
+        "name": "Distribute Incentive Tokens",
+        "initiator_type": "Component",
+        "initiator_id": 15,
+        "target_id": 1,
+        "action": "distribute",
+        "description": "BGTIncentiveDistributor distributes incentive tokens to eligible users on the chain."
+      },
+      "data_flow_details": {
+        "id": 37,
+        "source_id": 5,
+        "destination_id": 14,
+        "data": "Claim dApp Fee Transaction Data",
+        "description": "User Wallet claims dApp Fees directly from the FeeCollector smart contract.",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "External User to Native dApp",
+      "boundary_id": 2,
+      "boundary_name": "External User to Smart Contract",
       "between_component_ids": [
         1,
-        7
-      ]
+        15
+      ],
+      "boundary_details": {
+        "id": 2,
+        "name": "Berachain Bridge to Berachain",
+        "between_ids": [
+          6,
+          1
+        ],
+        "description": "Separates the external bridging service from the core blockchain network.",
+        "validation_required": true
+      }
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Actor votes or proposes without meeting the minimum BGT stake/delegation requirement."
+      "gap_description": "The BGT Incentive Distributor relies on cryptographic proofs generated off-chain. Flaws in proof generation or validation could allow claiming unearned incentives."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": true,
-      "description": "External user attempting to influence governance without meeting BGT stake/delegation requirements."
+      "description": "The actor attempts to claim resources they are not entitled to by exploiting the claim mechanism.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 7,
+      "behavior_id": 27,
       "risk_level": "High",
-      "rationale": "Successful unauthorized voting or proposing can compromise the integrity of the governance process and chain decision-making."
+      "rationale": "Successful exploitation leads to theft of incentive tokens belonging to others."
     },
     "assumptions": [
-      "The governance smart contract does not correctly enforce BGT stake/delegation requirements for voting or proposal creation.",
-      "An attacker finds a bypass in the access control logic of the governance contract."
+      "There is a vulnerability in the off-chain service that generates incentive proofs.",
+      "There is a vulnerability in the BGT Incentive Distributor contract's proof validation logic."
     ],
     "mitigation": {
-      "strategy": "Strictly enforce BGT stake/delegation requirements within the governance smart contract for all voting and proposal creation actions.",
+      "strategy": "Implement robust and audited proof generation and on-chain validation logic; use widely accepted cryptographic primitives.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker attempts to vote on or propose a governance proposal using the vote function without possessing the necessary BGT stake or delegation required by the protocol rules.",
+    "description": "An attacker attempts to claim incentive tokens belonging to other users by providing a fraudulent or manipulated cryptographic proof to the BGT Incentive Distributor contract.",
     "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claim Incentive token rewards"
     }
   }
 ]

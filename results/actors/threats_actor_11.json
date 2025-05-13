@@ -1,303 +1,642 @@
 [
   {
-    "id": 16,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 8,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Wallet connection handshake data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "User to Application",
-      "between_component_ids": [
-        1,
-        8
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "User may connect to a malicious site impersonating the legitimate Hub, risking asset compromise."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Standard external user interacting with potentially untrusted application endpoint."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "Users are susceptible to phishing attacks targeting the wallet connection process."
-    },
-    "assumptions": [
-      "User does not verify the URL or authenticity of the Berachain Hub website.",
-      "An attacker can create a convincing fake Berachain Hub website."
-    ],
-    "mitigation": {
-      "strategy": "Educate users about phishing risks and verifying site authenticity.",
-      "type": "Process Control",
-      "priority": "Medium"
-    },
-    "description": "An external user is tricked into connecting their wallet to a malicious website impersonating Berachain Hub, potentially leading to private key compromise or unauthorized transaction signing due to the spoofed application.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "Connect Wallet"
-    }
-  },
-  {
-    "id": 17,
+    "id": 1,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
+      "behavior_id": 43,
+      "capability_match": "Claim earned $BGT rewards or incentives"
     },
     "threat_target": {
-      "component_id": 8,
+      "component_id": 7,
       "asset_ids": [
-        3
+        11,
+        13
+      ],
+      "component_details": {
+        "id": 7,
+        "name": "Centralized Exchange",
+        "description": "External platform for trading crypto assets.",
+        "trust_level": "Low",
+        "assets_managed": [
+          1
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 11,
+          "name": "Governance Proposal",
+          "description": "Proposed changes to the Berachain protocol or dApp parameters.",
+          "type": "Data",
+          "sensitivity": "High"
+        },
+        {
+          "id": 13,
+          "name": "MEV",
+          "description": "Miner Extractable Value, earned by validators from transaction ordering.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Wallet connection data flow (e.g., RPC requests, signature requests)"
+      "behavior_id": 43,
+      "data_flow_id": 23,
+      "data_description": "Claim transaction including entitlement proof",
+      "behavior_details": {},
+      "data_flow_details": {
+        "id": 23,
+        "source_id": 3,
+        "destination_id": 11,
+        "data": "Incentive Token Data (Offering)",
+        "description": "Protocol offers incentive tokens to a Reward Vault.",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "User to Application",
+      "boundary_id": 32,
+      "boundary_name": "Node to Smart Contract",
       "between_component_ids": [
-        1,
-        8
-      ]
+        3,
+        7
+      ],
+      "boundary_details": {}
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Data transmitted during wallet connection lacks sufficient integrity protection."
+      "availability_required": true,
+      "gap_description": "The integrity of the off-chain proof system for reward claiming may be compromised."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user whose connection attempt data may be tampered with."
+      "description": "An unauthenticated external user interacting with the claiming mechanism.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "Communication over the network can be intercepted and modified if not properly secured."
+      "behavior_id": 43,
+      "risk_level": "High",
+      "rationale": "A flaw in the off-chain proof generation or on-chain verification could allow unauthorized claiming of significant value."
     },
     "assumptions": [
-      "Communication between the user's wallet/browser and Berachain Hub is not encrypted (e.g., missing HTTPS).",
-      "An attacker can perform a man-in-the-middle attack."
+      "The backend service generating claim proofs is compromised.",
+      "The smart contract verification logic for the claim proof is flawed or insufficient.",
+      "The attacker can obtain or forge valid-looking proofs for illegitimate claims."
     ],
     "mitigation": {
-      "strategy": "Enforce mandatory HTTPS/TLS for all communication with Berachain Hub.",
+      "strategy": "Implement robust cryptographic proof generation and strictly verify proofs on-chain.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker intercepts and modifies the data exchanged between the external user's wallet and Berachain Hub during the connection process, potentially altering requested actions or parameters before they are processed.",
+    "description": "An attacker might tamper with or forge the off-chain proof required to claim BGT or Incentive tokens from Reward Vaults, leading to unauthorized reward distribution.",
     "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "Connect Wallet"
+      "doc_reference": "guides/claim_incentives.md, pol/incentives.md#incentive-distribution-flow",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
-    "id": 18,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 8,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Wallet connection handshake data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "User to Application",
-      "between_component_ids": [
-        1,
-        8
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Connection process or communication channel reveals sensitive wallet information."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user whose sensitive information may be disclosed."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "Connection data could be exposed if communication is unencrypted or endpoints are logging excessively."
-    },
-    "assumptions": [
-      "The communication channel between the user's wallet/browser and Berachain Hub is not encrypted.",
-      "Berachain Hub logs expose sensitive connection details like wallet addresses and timestamps.",
-      "The user's local device environment is compromised allowing data capture."
-    ],
-    "mitigation": {
-      "strategy": "Encrypt communication channel (HTTPS/TLS) and minimize logging of sensitive data.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "Sensitive details, such as the user's wallet address, connection timestamps, or potentially private keys (if the user's environment is compromised), are exposed during the process of connecting the wallet to Berachain Hub.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "Connect Wallet"
-    }
-  },
-  {
-    "id": 19,
+    "id": 2,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
+      "behavior_id": 44,
+      "capability_match": "Participate in Governance (Propose/Vote)"
     },
     "threat_target": {
       "component_id": 8,
       "asset_ids": [
-        3
+        16
+      ],
+      "component_details": {
+        "id": 8,
+        "name": "BEX (DEX)",
+        "description": "Berachain's native decentralized exchange.",
+        "trust_level": "High",
+        "assets_managed": [
+          7,
+          12,
+          14
+        ]
+      },
+      "asset_details": [
+        {}
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Excessive connection requests"
+      "behavior_id": 44,
+      "data_flow_id": 24,
+      "data_description": "Governance proposal or vote transaction",
+      "behavior_details": {},
+      "data_flow_details": {
+        "id": 24,
+        "source_id": 3,
+        "destination_id": 12,
+        "data": "Governance Proposal Data",
+        "description": "Protocol submits a governance proposal (e.g., for whitelisting).",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "User to Application",
+      "boundary_id": 32,
+      "boundary_name": "Node to Smart Contract",
       "between_component_ids": [
-        1,
+        3,
         8
-      ]
+      ],
+      "boundary_details": {}
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Berachain Hub's connection endpoint is vulnerable to being overwhelmed by malicious connection attempts."
+      "gap_description": "The governance system may be vulnerable to disruption through high volumes of transactions."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user performing a DoS attack against the Hub connection endpoint."
+      "description": "An actor with the ability to submit transactions to the network.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 44,
       "risk_level": "Medium",
-      "rationale": "Connection endpoints are common targets for denial-of-service attacks."
+      "rationale": "Spamming transactions consumes network resources and can disrupt the governance process, although transaction costs provide some barrier."
     },
     "assumptions": [
-      "Berachain Hub connection endpoint lacks effective rate limiting or traffic filtering.",
-      "Attacker has sufficient resources to generate high volume traffic."
+      "Transaction fees are not prohibitively high for a determined attacker.",
+      "The governance contract or network infrastructure lacks sufficient rate limiting or spam mitigation."
     ],
     "mitigation": {
-      "strategy": "Implement strong rate limiting and traffic filtering on connection endpoints.",
+      "strategy": "Implement transaction-based rate limiting and potentially stake-and-slash requirements for proposal submission.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An external user (attacker) initiates a large volume of connection requests to the Berachain Hub, consuming resources and preventing legitimate users from connecting their wallets.",
+    "description": "An attacker could spam the network with numerous governance proposals or voting transactions, consuming network resources and hindering legitimate governance participation.",
     "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "Connect Wallet"
+      "doc_reference": "learn/governance.md",
+      "matched_capability": "Creating your Governance Proposal, Monitor and Participate"
     }
   },
   {
-    "id": 20,
-    "stride_category": "Elevation of Privilege",
+    "id": 3,
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
+      "behavior_id": 45,
+      "capability_match": "Access and view data via BeraHub Frontend"
     },
     "threat_target": {
-      "component_id": 8,
-      "asset_ids": [
-        3
-      ]
+      "component_id": 9,
+      "asset_ids": [],
+      "component_details": {
+        "id": 9,
+        "name": "Honey Swap",
+        "description": "Native dApp for trading assets for $HONEY and minting $HONEY.",
+        "trust_level": "High",
+        "assets_managed": [
+          3,
+          9,
+          12,
+          15
+        ]
+      },
+      "asset_details": []
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Connection request, authentication/authorization handshake"
+      "behavior_id": 45,
+      "data_flow_id": -1,
+      "data_description": "Accessing the web application URL",
+      "behavior_details": {},
+      "data_flow_details": {}
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "User to Application",
+      "boundary_id": 33,
+      "boundary_name": "User to Frontend",
       "between_component_ids": [
         1,
-        8
-      ]
+        9
+      ],
+      "boundary_details": {}
     },
     "security_gap": {
       "confidentiality_required": true,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Berachain Hub grants inappropriate permissions based on the connected wallet address or during the connection flow itself."
+      "gap_description": "Users may be tricked into visiting a malicious replica of the BeraHub frontend."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
-      "overprivileged": true,
-      "description": "External user attempting privilege escalation."
+      "overprivileged": false,
+      "description": "A user attempting to access the legitimate BeraHub application.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 45,
       "risk_level": "High",
-      "rationale": "Successful privilege escalation compromises the application's security model."
+      "rationale": "A spoofed frontend can steal user credentials or trick users into signing malicious transactions, leading to direct asset loss."
     },
     "assumptions": [
-      "Berachain Hub has logic errors in its authorization system linked to wallet identities.",
-      "Authentication tokens issued after connection convey unintended permissions."
+      "An attacker can create a convincing replica of the BeraHub website.",
+      "Users may not verify the website URL or security certificate.",
+      "Attacker can use phishing techniques to direct users to the fake site."
     ],
     "mitigation": {
-      "strategy": "Strictly implement the principle of least privilege and review auth logic.",
+      "strategy": "Educate users about phishing risks, verify site authenticity, and promote official links.",
+      "type": "Process Control",
+      "priority": "High"
+    },
+    "description": "An attacker could host a fake version of the Berachain Hub frontend to phish users' private keys or trick them into approving malicious transactions.",
+    "trace_source": {
+      "doc_reference": "dapps/berahub.md",
+      "matched_capability": "Access Berachain Hub URL"
+    }
+  },
+  {
+    "id": 4,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 45,
+      "capability_match": "View Data via BeraHub Frontend"
+    },
+    "threat_target": {
+      "component_id": 9,
+      "asset_ids": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "component_details": {
+        "id": 9,
+        "name": "Honey Swap",
+        "description": "Native dApp for trading assets for $HONEY and minting $HONEY.",
+        "trust_level": "High",
+        "assets_managed": [
+          3,
+          9,
+          12,
+          15
+        ]
+      },
+      "asset_details": [
+        {
+          "id": 10,
+          "name": "Incentive Token",
+          "description": "Tokens offered by protocols to validators/boosters to attract BGT emissions.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 11,
+          "name": "Governance Proposal",
+          "description": "Proposed changes to the Berachain protocol or dApp parameters.",
+          "type": "Data",
+          "sensitivity": "High"
+        },
+        {
+          "id": 12,
+          "name": "Transaction Fee",
+          "description": "Cost paid in $BERA to execute a transaction on the network.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 13,
+          "name": "MEV",
+          "description": "Miner Extractable Value, earned by validators from transaction ordering.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 14,
+          "name": "LP Token",
+          "description": "Receipt token specifically for providing liquidity in BEX pools.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        }
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 45,
+      "data_flow_id": 25,
+      "data_description": "Blockchain data displayed on the frontend (balances, APYs, validator stats)",
+      "behavior_details": {},
+      "data_flow_details": {
+        "id": 25,
+        "source_id": 5,
+        "destination_id": 12,
+        "data": "BGT Delegation Data",
+        "description": "User delegates BGT voting power to a validator.",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 34,
+      "boundary_name": "Frontend to Node",
+      "between_component_ids": [
+        9,
+        3
+      ],
+      "boundary_details": {}
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Data fetched from the blockchain and displayed on the frontend may be manipulated."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "A user relying on information displayed on the BeraHub frontend.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
+    },
+    "behavioral_risk": {
+      "behavior_id": 45,
+      "risk_level": "Medium",
+      "rationale": "Manipulated display data can lead users to make incorrect decisions (e.g., about staking pools or swaps)."
+    },
+    "assumptions": [
+      "The connection between the frontend and the RPC node is compromised.",
+      "The frontend application server is compromised, allowing data modification before display.",
+      "Users do not verify critical information via an independent block explorer."
+    ],
+    "mitigation": {
+      "strategy": "Fetch critical data from trusted sources and implement integrity checks. Educate users to verify important information independently.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could tamper with data displayed on the BeraHub frontend (e.g., token balances, pool APYs, validator stats) by compromising the data source or frontend code.",
+    "trace_source": {
+      "doc_reference": "dapps/berahub.md",
+      "matched_capability": "Review active Reward Vaults/Validators/etc."
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 40,
+      "capability_match": "Submit transaction via User Wallet"
+    },
+    "threat_target": {
+      "component_id": 2,
+      "asset_ids": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "component_details": {
+        "id": 2,
+        "name": "EVM Execution Client",
+        "description": "Software responsible for executing smart contracts and managing state changes.",
+        "trust_level": "High",
+        "assets_managed": []
+      },
+      "asset_details": [
+        {
+          "id": 10,
+          "name": "Incentive Token",
+          "description": "Tokens offered by protocols to validators/boosters to attract BGT emissions.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 11,
+          "name": "Governance Proposal",
+          "description": "Proposed changes to the Berachain protocol or dApp parameters.",
+          "type": "Data",
+          "sensitivity": "High"
+        },
+        {
+          "id": 12,
+          "name": "Transaction Fee",
+          "description": "Cost paid in $BERA to execute a transaction on the network.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 13,
+          "name": "MEV",
+          "description": "Miner Extractable Value, earned by validators from transaction ordering.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        },
+        {
+          "id": 14,
+          "name": "LP Token",
+          "description": "Receipt token specifically for providing liquidity in BEX pools.",
+          "type": "Token",
+          "sensitivity": "Medium"
+        }
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 40,
+      "data_flow_id": 20,
+      "data_description": "Signed transaction data sent to RPC endpoint",
+      "behavior_details": {},
+      "data_flow_details": {
+        "id": 20,
+        "source_id": 11,
+        "destination_id": 15,
+        "data": "Incentive Token Data for Distribution",
+        "description": "Reward Vault sends incentive tokens to the distribution contract.",
+        "security_properties": {
+          "confidentiality_required": false,
+          "integrity_required": true,
+          "availability_required": true
+        }
+      }
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 31,
+      "boundary_name": "Wallet to Node",
+      "between_component_ids": [
+        2,
+        3
+      ],
+      "boundary_details": {}
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "User wallet may connect to an untrusted blockchain node."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "A user whose wallet is configured to connect to a potentially malicious RPC endpoint.",
+      "actor_details": {
+        "id": 1,
+        "name": "External User",
+        "type": "External User",
+        "description": "General user interacting with the Berachain ecosystem.",
+        "capabilities": [
+          "Connect wallet",
+          "Check airdrop allocation",
+          "Claim airdrop tokens",
+          "Trade tokens",
+          "Swap assets",
+          "Provide liquidity",
+          "Stake assets",
+          "Withdraw staked assets",
+          "View info (BeraHub)",
+          "Claim rewards (BGT, Incentives, Fees)",
+          "Create governance proposal",
+          "Vote on governance proposal",
+          "Delegate BGT",
+          "Mint HONEY",
+          "Burn HONEY",
+          "Bridge NFTs",
+          "Redeem BGT for BERA"
+        ]
+      }
+    },
+    "behavioral_risk": {
+      "behavior_id": 40,
+      "risk_level": "High",
+      "rationale": "A malicious RPC can return false data, fail to broadcast transactions, or potentially attempt to compromise the user's wallet depending on RPC capabilities."
+    },
+    "assumptions": [
+      "User manually configures wallet to use an untrusted or compromised RPC endpoint.",
+      "The wallet software does not sufficiently validate RPC responses or provide clear warnings.",
+      "Attacker controls a malicious RPC endpoint that users connect to."
+    ],
+    "mitigation": {
+      "strategy": "Educate users on using trusted RPCs. Provide official, secure RPC endpoints. Wallet software should implement security checks and warnings.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An external user exploits a flaw in how Berachain Hub verifies or assigns privileges during the wallet connection process, gaining unauthorized access or control within the application beyond intended scope.",
+    "description": "A user connects their wallet to a malicious RPC endpoint, which could tamper with returned data, provide false confirmations, or fail to broadcast transactions, potentially leading to loss or manipulation of funds.",
     "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "Connect Wallet"
+      "doc_reference": "learn/connect-to-berachain.md",
+      "matched_capability": "Berachain Mainnet/Bepolia Testnet RPC"
     }
   }
 ]

@@ -1189,3 +1189,19 @@ CHECKLIST_CONFIG = types.GenerateContentConfig(
             },
         ),
     )
+
+CODE_BINDING_TEMPLATE = """
+**System**:
+You are a security engineer.
+You are given a JSON object that contains one or more `threats`, following this schema:
+
+`{Checklist}`
+"""
+
+CODE_BINDING_CONFIG = types.GenerateContentConfig(
+    response_mime_type="application/json",
+    response_schema=genai.types.Schema(
+        type = genai.types.Type.OBJECT,
+        required = ["code_binding"],
+    ),
+)

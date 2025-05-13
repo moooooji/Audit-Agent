@@ -1,248 +1,449 @@
 [
   {
-    "id": 30,
+    "id": 46,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Claim Incentive (via transaction initiation)"
+      "behavior_id": 6,
+      "capability_match": "Claim Airdrop"
     },
     "threat_target": {
-      "component_id": 3,
+      "component_id": 8,
       "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Claim transaction data including proof"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "User Wallet to Berachain Node",
-      "between_component_ids": [
-        1,
         1
       ]
     },
+    "attack_surface": {
+      "behavior_id": 6,
+      "data_flow_id": 6,
+      "data_description": "Claim request (proof + TX signature)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "User to AirdropClaimer",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Weaknesses in the off-chain proof generation or on-chain verification could allow unauthorized claims."
+      "gap_description": "Airdrop eligibility proof may be forged or misused, allowing unauthorized claims."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker leveraging compromised key or system vulnerability to impersonate another user's claim."
+      "description": "An external actor attempts to claim BERA tokens they are not entitled to."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 6,
       "risk_level": "High",
-      "rationale": "Successful spoofing allows an attacker to steal another user's earned incentive tokens."
+      "rationale": "Successful spoofing leads to unauthorized acquisition of the native asset ($BERA)."
     },
     "assumptions": [
-      "The backend generating claim proofs is vulnerable to compromise.",
-      "The on-chain proof verification logic is flawed.",
-      "An attacker obtains a user's private key."
+      "The mechanism for verifying airdrop eligibility (e.g., NFT ownership, social link proof) has a vulnerability.",
+      "An attacker can obtain, forge, or reuse eligibility proofs belonging to others."
     ],
     "mitigation": {
-      "strategy": "Implement robust off-chain security for proof generation and formally verified on-chain proof verification.",
+      "strategy": "Strengthen eligibility verification logic; implement unique, non-reusable claim proofs.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could spoof another user's identity to steal their incentive tokens by exploiting vulnerabilities in the proof generation or verification process associated with their claim transaction.",
+    "description": "An attacker may impersonate an eligible user or exploit a vulnerability in the claim process to claim BERA airdrop tokens allocated to others.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive"
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Claim $BERA Airdrop"
     }
   },
   {
-    "id": 31,
+    "id": 47,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Claim Incentive (via transaction initiation)"
+      "behavior_id": 7,
+      "capability_match": "Swap Asset"
     },
     "threat_target": {
-      "component_id": 3,
+      "component_id": 5,
       "asset_ids": [
-        3
+        1,
+        6,
+        3,
+        4,
+        9,
+        10
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Claim transaction data including proof"
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Swap parameters + TX signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "User Wallet to Berachain Node",
+      "boundary_id": 2,
+      "boundary_name": "User to BEX",
       "between_component_ids": [
         1,
-        1
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Weaknesses in the off-chain proof or on-chain verification could allow claim data tampering."
+      "availability_required": false,
+      "gap_description": "DEX smart contract may not sufficiently validate swap parameters (e.g., slippage) or protect against flash loan attacks."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker leveraging compromised key or system vulnerability to alter claim data."
+      "description": "An external actor attempts to manipulate swap execution or outcomes."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 7,
       "risk_level": "High",
-      "rationale": "Successful tampering could allow an attacker to claim more incentive tokens than entitled or claim different tokens."
+      "rationale": "Successful tampering can lead to unfair swap prices, asset loss for users, or liquidity pool drain."
     },
     "assumptions": [
-      "The backend generating claim proofs is vulnerable to compromise.",
-      "The on-chain proof verification or claim logic is flawed.",
-      "An attacker obtains a user's private key."
+      "The BEX smart contract has a vulnerability related to swap execution, pricing, or parameter validation.",
+      "An attacker can craft a transaction to exploit this vulnerability."
     ],
     "mitigation": {
-      "strategy": "Implement robust off-chain security for proof generation and formally verified on-chain proof/claim verification logic.",
+      "strategy": "Implement stringent slippage checks, utilize robust price oracles, and apply reentrancy guards.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could tamper with their claim transaction or proof to claim more incentive tokens than entitled by exploiting vulnerabilities in the proof generation or verification process.",
+    "description": "An attacker may exploit vulnerabilities in the BEX smart contract to tamper with swap parameters or execution, leading to manipulated prices or unauthorized access to liquidity.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap assets"
     }
   },
   {
-    "id": 32,
+    "id": 48,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Initiate Transaction (for DoS attack)"
+      "behavior_id": 7,
+      "capability_match": "Swap Asset"
     },
     "threat_target": {
-      "component_id": 1,
+      "component_id": 5,
       "asset_ids": [
         1,
-        2,
-        3
+        6,
+        3,
+        4,
+        9,
+        10
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "High volume of transaction data"
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Swap parameters + TX signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "User Wallet to Berachain Node",
+      "boundary_id": 2,
+      "boundary_name": "User to BEX",
       "between_component_ids": [
         1,
-        1
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "The network or target contracts may be overwhelmed by excessive transaction volume."
+      "gap_description": "High transaction volume or large swaps can exhaust liquidity or congest the BEX contract, preventing legitimate users from trading."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "An attacker sending a high volume of transactions."
+      "description": "An external actor attempts to disrupt BEX operations through excessive transactions or liquidity manipulation."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 7,
       "risk_level": "Medium",
-      "rationale": "High transaction volume can overload network resources, but gas costs provide a natural barrier."
+      "rationale": "Successful DoS impairs the core functionality of the BEX for all users."
     },
     "assumptions": [
-      "Gas costs are sufficiently low to make spamming economically feasible for an attacker.",
-      "The network nodes or smart contracts lack effective rate limiting or transaction prioritization mechanisms."
+      "The BEX smart contract or underlying blockchain infrastructure is susceptible to resource exhaustion from high transaction volume or specific swap patterns.",
+      "An attacker has sufficient resources (e.g., capital for large swaps, BERA for gas) to execute a DoS attack."
     ],
     "mitigation": {
-      "strategy": "Ensure sufficient gas costs for transactions and implement rate limiting at the node or contract level.",
+      "strategy": "Implement transaction rate limits or dynamic fees; ensure sufficient liquidity and network capacity.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could attempt to degrade network performance or disrupt the functionality of smart contracts (like boosting or claiming) by flooding the chain with transactions.",
+    "description": "An attacker could flood the BEX with transactions or execute large, strategic swaps to deplete liquidity pools or congest the network, causing a denial of service for other users.",
     "trace_source": {
-      "doc_reference": "help/faqs.md#what-do-berachain-s-performance-metrics-look-like",
-      "matched_capability": "Initiate Transaction"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap assets"
     }
   },
   {
-    "id": 33,
-    "stride_category": "Information Disclosure",
+    "id": 49,
+    "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Initiate Transaction (revealing activity)"
+      "behavior_id": 5,
+      "capability_match": "Mint HONEY"
     },
     "threat_target": {
-      "component_id": 1,
+      "component_id": 7,
       "asset_ids": [
-        1,
-        2,
-        3
+        6,
+        3,
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Public transaction data"
+      "behavior_id": 5,
+      "data_flow_id": 5,
+      "data_description": "Mint/Redeem parameters + TX signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 1,
-      "boundary_name": "User Wallet to Berachain Node",
+      "boundary_id": 4,
+      "boundary_name": "User to HoneySwap",
       "between_component_ids": [
         1,
-        1
+        7
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": false,
+      "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Transaction details including sender, receiver, asset types, and amounts are visible on the public ledger."
+      "gap_description": "HoneySwap vault or factory smart contract may allow manipulation of minting/redemption amounts or bypass collateral requirements."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Any external observer of the blockchain."
+      "description": "An external actor attempts to mint HONEY without sufficient collateral or manipulate redemption amounts."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Low",
-      "rationale": "Blockchain transparency inherently reveals transaction details, which may include sensitive information about user activity."
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "Successful tampering leads to unauthorized HONEY creation or theft of deposited collateral."
     },
     "assumptions": [
-      "The blockchain is public and designed for transparency.",
-      "Users may not be fully aware of the extent of data publicly recorded."
+      "The HoneySwap vault or factory smart contract contains a vulnerability in its minting or redemption logic.",
+      "An attacker can craft a transaction to exploit this vulnerability."
     ],
     "mitigation": {
-      "strategy": "Educate users about blockchain transparency and explore privacy-enhancing technologies (e.g., mixers) as opt-in features.",
-      "type": "Process Control",
-      "priority": "Low"
+      "strategy": "Rigorously validate mint/redeem parameters against collateral amounts and rates; perform extensive smart contract audits.",
+      "type": "Technical Control",
+      "priority": "High"
     },
-    "description": "Sensitive information about user activities, such as asset holdings, transaction counterparties, and participation in specific dApps (boosting/claiming), can be inferred from publicly available transaction data.",
+    "description": "An attacker could exploit vulnerabilities in the HoneySwap smart contracts to tamper with the minting or redemption process, potentially minting unauthorized HONEY or stealing collateral.",
     "trace_source": {
-      "doc_reference": "help/faqs.md#what-is-liquidity",
-      "matched_capability": "Initiate Transaction"
+      "doc_reference": "dapps/honey-swap.md",
+      "matched_capability": "Mint HONEY"
+    }
+  },
+  {
+    "id": 50,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Provide Liquidity"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        1,
+        6,
+        3,
+        4,
+        9,
+        10
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 8,
+      "data_description": "Liquidity pool parameters + TX signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to BEX",
+      "between_component_ids": [
+        1,
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "BEX smart contract may allow manipulating liquidity provision parameters or calculations, leading to incorrect LP token issuance or asset distribution."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external actor attempts to manipulate the liquidity provision process for personal gain."
+    },
+    "behavioral_risk": {
+      "behavior_id": 9,
+      "risk_level": "Medium",
+      "rationale": "Successful tampering could result in unfair distribution of LP tokens or affect pool integrity."
+    },
+    "assumptions": [
+      "The BEX smart contract has a vulnerability in the logic for adding liquidity and calculating LP tokens.",
+      "An attacker can submit crafted parameters to exploit this vulnerability."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust validation and auditing for liquidity addition calculations and LP token issuance.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could tamper with the liquidity provision process on BEX by exploiting flaws in the smart contract logic, potentially receiving an unfair amount of LP tokens or disrupting the pool's balance.",
+    "trace_source": {
+      "doc_reference": "help/faqs.md#once-you-ve-provided-liquidity-into-an-eligible-pool-in-bex-or-some-other-pol-eligible-pool-how-do-you-get-bgt",
+      "matched_capability": "Provide Liquidity"
+    }
+  },
+  {
+    "id": 51,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Withdraw Liquidity"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        1,
+        6,
+        3,
+        4,
+        9,
+        10
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 9,
+      "data_description": "LP token amount + TX signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to BEX",
+      "between_component_ids": [
+        1,
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "BEX smart contract may not sufficiently verify ownership or validity of LP tokens during withdrawal."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external actor attempts to withdraw liquidity using LP tokens they do not legitimately own."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "High",
+      "rationale": "Successful spoofing allows unauthorized removal of assets from liquidity pools."
+    },
+    "assumptions": [
+      "The BEX smart contract has a vulnerability allowing withdrawal with invalid or stolen LP token proofs.",
+      "An attacker can acquire or forge proofs of LP token ownership for tokens they don't own."
+    ],
+    "mitigation": {
+      "strategy": "Enforce strict verification of LP token ownership via standard ERC-20 mechanisms within the withdrawal logic.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could potentially impersonate a legitimate liquidity provider by spoofing LP token ownership to withdraw assets from BEX liquidity pools they are not entitled to.",
+    "trace_source": {
+      "doc_reference": "help/faqs.md#once-you-ve-provided-liquidity-into-an-eligible-pool-in-bex-or-some-other-pol-eligible-pool-how-do-you-get-bgt",
+      "matched_capability": "Withdraw Liquidity"
+    }
+  },
+  {
+    "id": 52,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Withdraw Liquidity"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        1,
+        6,
+        3,
+        4,
+        9,
+        10
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 9,
+      "data_description": "LP token amount + TX signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to BEX",
+      "between_component_ids": [
+        1,
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "BEX smart contract may allow manipulation of withdrawal calculations or asset distribution based on LP tokens."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external actor attempts to manipulate liquidity withdrawal amounts or asset distribution."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "High",
+      "rationale": "Successful tampering can lead to over-withdrawal of assets or unfair distribution from pools."
+    },
+    "assumptions": [
+      "The BEX smart contract has a vulnerability in the logic for withdrawing liquidity and calculating asset returns based on LP tokens.",
+      "An attacker can submit crafted parameters to exploit this vulnerability."
+    ],
+    "mitigation": {
+      "strategy": "Rigorously validate withdrawal amounts against LP token balance and apply accurate calculations for asset returns.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could tamper with the liquidity withdrawal process on BEX by exploiting flaws in the smart contract logic, potentially withdrawing more assets than their LP tokens entitle them to.",
+    "trace_source": {
+      "doc_reference": "help/faqs.md#once-you-ve-provided-liquidity-into-an-eligible-pool-in-bex-or-some-other-pol-eligible-pool-how-do-you-get-bgt",
+      "matched_capability": "Withdraw Liquidity"
     }
   }
 ]

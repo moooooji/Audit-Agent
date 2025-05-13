@@ -27,7 +27,7 @@ builder.add_node(assess_architecture)
 builder.add_node(analyze_threats)
 builder.add_node(generate_checklist)
 builder.add_node(init_db)
-# builder.add_node(code_binding)
+builder.add_node(code_binding)
 
 # define edges
 builder.add_edge("__start__", "analyze_architecture")
@@ -39,7 +39,8 @@ builder.add_edge("assess_architecture", "analyze_architecture")
 builder.add_edge("analyze_threats", "init_db")
 builder.add_edge("init_db", "__end__")
 builder.add_edge("analyze_threats", "generate_checklist")
-builder.add_edge("generate_checklist", "__end__")
+builder.add_edge("generate_checklist", "code_binding")
+builder.add_edge("code_binding", "__end__")
 
 # Compile the builder into an executable graph
 graph = builder.compile(name="Audit Agent")

@@ -1,242 +1,372 @@
 [
   {
-    "id": 70,
+    "id": 6,
     "stride_category": "Spoofing",
     "origin": {
-      "from_chunk": true,
+      "from_chunk": false,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 2,
+      "capability_match": "Interact with dApp UI"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 70,
       "asset_ids": [
-        4
+        100,
+        101,
+        102,
+        103,
+        104
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
+      "behavior_id": 2,
+      "data_flow_id": 1001,
+      "data_description": "User interaction and input data (credentials, transaction parameters)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 1001,
+      "boundary_name": "External User to Web UI",
       "between_component_ids": [
         1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
-    },
-    "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
-    ],
-    "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 71,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote data may be modified without detection."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system does not validate the integrity of vote messages."
-    },
-    "assumptions": [
-      "The governance contract does not validate vote data integrity.",
-      "The actor can intercept and modify vote messages before reaching the contract."
-    ],
-    "mitigation": {
-      "strategy": "Implement data integrity checks for vote messages.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may modify vote data to alter the outcome of the voting process.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 72,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Votes lack verifiable attribution."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system does not provide mechanisms to verify the origin of votes."
-    },
-    "assumptions": [
-      "The governance contract does not track the identity of voters.",
-      "The actor can cast votes anonymously."
-    ],
-    "mitigation": {
-      "strategy": "Implement a system to authenticate voters and record their identity with votes.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may cast votes and deny their involvement.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 73,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
+        70
       ]
     },
     "security_gap": {
       "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote data may be exposed to unauthorized actors."
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Lack of inherent trust and verification for web interfaces."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
+      "description": "Standard user interacting with web interfaces."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "The system may not protect vote data from unauthorized access."
+      "behavior_id": 2,
+      "risk_level": "High",
+      "rationale": "Malicious website can trick users into revealing sensitive information or signing malicious transactions."
     },
     "assumptions": [
-      "The governance contract does not properly protect vote data.",
-      "The actor can access the database or network traffic containing vote data."
+      "User accesses a malicious website URL.",
+      "The malicious website mimics a legitimate dApp interface.",
+      "The user's wallet does not provide sufficient warnings about the transaction's true nature."
     ],
     "mitigation": {
-      "strategy": "Implement access controls to protect vote data.",
+      "strategy": "User education on phishing risks, use of trusted links, wallet transaction simulation.",
+      "type": "Process Control",
+      "priority": "High"
+    },
+    "description": "An attacker hosts a fake Berachain dApp UI (e.g., BeraHub, BEX, HoneySwap) to spoof the legitimate service and deceive users into submitting private keys or signing malicious transactions.",
+    "trace_source": {
+      "doc_reference": "dapps/berahub.md",
+      "matched_capability": "Access BeraHub functionalities"
+    }
+  },
+  {
+    "id": 7,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": false,
+      "actor_id": 1,
+      "behavior_id": 13,
+      "capability_match": "Interact with RPC"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 13,
+      "data_flow_id": 1000,
+      "data_description": "Raw transaction data submitted to RPC endpoint"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1000,
+      "boundary_name": "External User to Berachain Node/RPC",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Transaction data can be intercepted and modified by a compromised RPC provider before reaching the validator."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User relies on the integrity of the configured RPC endpoint."
+    },
+    "behavioral_risk": {
+      "behavior_id": 13,
+      "risk_level": "High",
+      "rationale": "A malicious RPC can alter transaction details (recipient, amount, contract parameters) without the user's explicit consent."
+    },
+    "assumptions": [
+      "User is connected to a compromised RPC endpoint.",
+      "The user's wallet does not detect the transaction modification.",
+      "The transaction is not fully integrity-protected end-to-end."
+    ],
+    "mitigation": {
+      "strategy": "Use trusted and verified RPC providers, implement transaction simulation/verification in wallet.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A user's signed transaction is intercepted and modified by a malicious RPC provider before being broadcast to the network, altering the intended outcome.",
+    "trace_source": {
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Connect wallet with Berachain RPC"
+    }
+  },
+  {
+    "id": 8,
+    "stride_category": "Repudiation",
+    "origin": {
+      "from_chunk": false,
+      "actor_id": 1,
+      "behavior_id": 11,
+      "capability_match": "Vote on Governance Proposal"
+    },
+    "threat_target": {
+      "component_id": 20,
+      "asset_ids": [
+        106
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 11,
+      "data_flow_id": 1002,
+      "data_description": "Transaction submitting vote data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1002,
+      "boundary_name": "External User/Web UI to Smart Contract",
+      "between_component_ids": [
+        1,
+        20
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Possibility for user to deny initiating a specific action on-chain."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Standard user performing governance actions."
+    },
+    "behavioral_risk": {
+      "behavior_id": 11,
+      "risk_level": "Low",
+      "rationale": "Blockchain transactions are cryptographically signed, providing strong evidence of origin, but user might deny intent/context."
+    },
+    "assumptions": [
+      "User successfully submitted a signed transaction for the action.",
+      "Off-chain context or intent (e.g., coercion) is being repudiated, not the on-chain signature itself."
+    ],
+    "mitigation": {
+      "strategy": "Rely on cryptographic signatures and on-chain transaction records as irrefutable proof of action initiation.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker may gain access to vote data.",
+    "description": "A user successfully casts a vote on a governance proposal but later claims they did not perform the action or that the action was not intended.",
     "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on governance proposals"
+    }
+  },
+  {
+    "id": 9,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": false,
+      "actor_id": 1,
+      "behavior_id": 12,
+      "capability_match": "Access public blockchain data"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        100,
+        101,
+        102,
+        103,
+        104
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 12,
+      "data_flow_id": 1000,
+      "data_description": "Public blockchain data (balances, transactions, contract interactions)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1000,
+      "boundary_name": "External User to Berachain Node/RPC",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Blockchain data is inherently public."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Any external party can read public chain data."
+    },
+    "behavioral_risk": {
+      "behavior_id": 12,
+      "risk_level": "Low",
+      "rationale": "This is a feature of public blockchains, not a specific vulnerability."
+    },
+    "assumptions": [
+      "The user's wallet address can be linked to their real-world identity through off-chain information.",
+      "All relevant transaction and balance data is recorded on the public chain."
+    ],
+    "mitigation": {
+      "strategy": "Use privacy-enhancing techniques (e.g., Tornado Cash on Ethereum L1 before bridging, fresh addresses for sensitive activities), user education on blockchain privacy.",
+      "type": "Process Control",
+      "priority": "Low"
+    },
+    "description": "An external party can view a user's public wallet address on the blockchain and track all associated transactions, balances, and interactions, potentially linking them to real-world identity if off-chain information is available.",
+    "trace_source": {
+      "doc_reference": "help/faqs.md",
+      "matched_capability": "Check transaction history on block explorer"
+    }
+  },
+  {
+    "id": 10,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": false,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Create Governance Proposal"
+    },
+    "threat_target": {
+      "component_id": 20,
+      "asset_ids": [
+        105
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 1002,
+      "data_description": "Transaction submitting proposal data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1002,
+      "boundary_name": "External User/Web UI to Smart Contract",
+      "between_component_ids": [
+        1,
+        20
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Lack of sufficient economic cost or rate limits for proposal creation."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User with required minimum $BGT to create a proposal (10k $BGT)."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "Medium",
+      "rationale": "Spam proposals can degrade the usability and effectiveness of the governance system."
+    },
+    "assumptions": [
+      "The gas cost for proposal submission is low enough to be economically feasible for an attacker.",
+      "The required 10,000 $BGT threshold is not a significant barrier for an attacker.",
+      "There are no other rate limits or reputation requirements for proposal creation."
+    ],
+    "mitigation": {
+      "strategy": "Review and potentially adjust the $BGT proposal threshold and gas costs, implement reputation systems or quadratic voting for proposals.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker submits a large volume of low-quality or nonsensical governance proposals to overwhelm the system, making it difficult for the community to manage and discuss legitimate proposals.",
+    "trace_source": {
+      "doc_reference": "governance.md",
+      "matched_capability": "Create a governance proposal"
+    }
+  },
+  {
+    "id": 11,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": false,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Delegate $BGT to Validator"
+    },
+    "threat_target": {
+      "component_id": 40,
+      "asset_ids": [
+        101,
+        107
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 1002,
+      "data_description": "Transaction data for $BGT delegation"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1002,
+      "boundary_name": "External User/Web UI to Smart Contract",
+      "between_component_ids": [
+        1,
+        40
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Compromise of user credentials or contract vulnerability allows unauthorized control over $BGT delegation."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "Attacker gains unauthorized ability to control a user's $BGT delegation or voting power."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Unauthorized delegation can redirect reward streams and influence validator boost/governance power."
+    },
+    "assumptions": [
+      "User's private key is compromised (e.g., via phishing, malware).",
+      "OR A vulnerability exists in the delegation smart contract allowing unauthorized delegation."
+    ],
+    "mitigation": {
+      "strategy": "Implement strong wallet security practices, conduct rigorous smart contract audits, consider multi-factor authentication for high-value actions.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker compromises a user's wallet or exploits a vulnerability to delegate the user's $BGT to a validator controlled by the attacker, redirecting potential rewards and governance influence.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost a Validator With $BGT"
     }
   }
 ]
