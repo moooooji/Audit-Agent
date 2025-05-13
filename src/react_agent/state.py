@@ -17,8 +17,8 @@ class State(InputState):
     is_feedback_architecture_analysis: bool = field(default=False)
     is_threat_analysis: bool = field(default=False)
     is_checklist_analysis: bool = field(default=False)
-    is_code_binding: bool = field(default=False)
     is_init_db: bool = field(default=False)
+    is_code_binding: bool = field(default=False)
     threat_prompt: str = field(default="")
     checklist_prompt: str = field(default="")
     
