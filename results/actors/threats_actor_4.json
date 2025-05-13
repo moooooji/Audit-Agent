@@ -1,62 +1,422 @@
 [
   {
-    "id": 7,
+    "id": 1,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 10,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "User vote selection and associated data"
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Claim proof (e.g., Merkle proof) and parameters (amount, user address)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 5,
+      "boundary_name": "Berachain Hub to BGT Incentive Distributor",
       "between_component_ids": [
-        1,
-        9
+        8,
+        10
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Voting mechanism may accept votes spoofing a legitimate user's identity if not properly authenticated."
+      "gap_description": "Claim proof is forged or inaccurate, allowing attacker to claim incentives for others."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is an external user initiating a core governance behavior (voting)."
+      "description": "An external user could potentially use a forged proof to claim entitlements they do not own."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Successful spoofing leads to theft of incentive tokens from legitimate users."
+    },
+    "assumptions": [
+      "The BGT Incentive Distributor contract's proof verification is faulty or can be bypassed.",
+      "An attacker can obtain or generate a valid-looking forged proof for another user's claim."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust Merkle proof verification in the smart contract.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker spoofs a user's claim entitlement by providing a forged proof to the BGT Incentive Distributor contract, stealing incentive tokens.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 2,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Claim transaction data (amount, recipient address, proof)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 5,
+      "boundary_name": "Berachain Hub to BGT Incentive Distributor",
+      "between_component_ids": [
+        8,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Claim transaction parameters (e.g., amount) are altered in transit."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could potentially alter claim details to steal more or redirect funds if the transaction is not properly signed and verified."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Tampering with claim transactions can lead to theft or incorrect distribution of assets."
+    },
+    "assumptions": [
+      "The claim transaction is not signed over all critical parameters.",
+      "An attacker can intercept and modify the transaction before it reaches the network."
+    ],
+    "mitigation": {
+      "strategy": "Ensure all critical transaction parameters are included in the signature.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker tampers with the claim transaction data to alter the amount claimed or redirect incentives to their own address.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 3,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Claim transaction and proof"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 5,
+      "boundary_name": "Berachain Hub to BGT Incentive Distributor",
+      "between_component_ids": [
+        8,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Insufficient validation allows claiming more than entitled or claiming for others."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could gain unauthorized privilege to claim assets they are not entitled to or claim assets belonging to others."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Exploiting validation flaws leads to unauthorized access and theft of assets."
+    },
+    "assumptions": [
+      "The BGT Incentive Distributor contract lacks sufficient checks on claim proof validity or claimed amounts.",
+      "The contract does not correctly enforce that the claimant is the rightful owner of the entitlement."
+    ],
+    "mitigation": {
+      "strategy": "Implement strict access control and validation logic in the smart contract for claiming.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker elevates their privilege to claim incentives they are not entitled to or claim incentives belonging to other users.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 4,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Queue Validator Boost"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 17,
+      "data_description": "Queue Boost transaction details (validator, BGT amount, user address)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
+      "between_component_ids": [
+        8,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Transaction is initiated without proper authentication/signature from the legitimate user."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could attempt to initiate queue boost transactions on behalf of others."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Spoofing votes can directly undermine the integrity and legitimacy of the governance process."
+      "rationale": "Spoofed transactions can lead to unauthorized manipulation of BGT boosting and validator influence."
     },
     "assumptions": [
-      "The governance contract or voting interface does not adequately verify the identity of the voter.",
-      "An attacker can acquire or simulate credentials or information needed to appear as another user."
+      "The transaction is not properly signed by the user's wallet.",
+      "The Governance Contract fails to verify the transaction sender against the intended user."
     ],
     "mitigation": {
-      "strategy": "Implement strong cryptographic signature verification for all vote submissions, linked to the BGT holding/delegation address.",
+      "strategy": "Require standard EVM transaction signing for all actions and verify sender address in contract.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker impersonates a legitimate user to cast fraudulent votes on governance proposals, potentially influencing the outcome of critical decisions.",
+    "description": "An attacker spoofs a user's identity to queue a validator boost using their BGT without authorization.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Queue Validator Boost"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Queue Validator Boost"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 17,
+      "data_description": "Queue Boost transaction data (validator, BGT amount)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
+      "between_component_ids": [
+        8,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Transaction parameters (validator, amount) are altered in transit."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could attempt to alter the details of a queue boost transaction initiated by someone else."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "Tampering with queue boost transactions can lead to misallocation of BGT boosts."
+    },
+    "assumptions": [
+      "The queue boost transaction is not signed over all critical parameters.",
+      "An attacker can intercept and modify the transaction before it reaches the network."
+    ],
+    "mitigation": {
+      "strategy": "Ensure all critical transaction parameters are included in the signature.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker tampers with a user's queue boost transaction to change the target validator or the amount of BGT being queued.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Queue Validator Boost"
+    }
+  },
+  {
+    "id": 6,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Queue Validator Boost"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 17,
+      "data_description": "Queue Boost transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
+      "between_component_ids": [
+        8,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Insufficient validation allows queuing boosts for others, without sufficient BGT, or bypassing limits."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could gain unauthorized privilege to queue boosts for arbitrary addresses, with arbitrary amounts, or bypass contract-defined limits."
+    },
+    "behavioral_risk": {
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "Exploiting validation flaws allows manipulation of the BGT boosting mechanism."
+    },
+    "assumptions": [
+      "The Governance Contract lacks sufficient checks on the sender's identity or BGT balance when queuing boosts.",
+      "The contract does not enforce limits on the amount of BGT that can be queued."
+    ],
+    "mitigation": {
+      "strategy": "Implement strict access control, balance checks, and limit enforcement in the smart contract for queuing boosts.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker elevates their privilege to queue validator boosts on behalf of other users, queue excessive amounts of BGT, or bypass other restrictions.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Queue Validator Boost"
+    }
+  },
+  {
+    "id": 7,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 6,
+      "capability_match": "Activate Queued Boost"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 6,
+      "data_flow_id": 17,
+      "data_description": "Activate Boost transaction details (user address, target validator, amount)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
+      "between_component_ids": [
+        8,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Transaction is initiated without proper authentication/signature from the legitimate user."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user could attempt to initiate activate boost transactions on behalf of others."
+    },
+    "behavioral_risk": {
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "Spoofed activation leads to unauthorized manipulation of BGT boosting, potentially at an inopportune time for the user."
+    },
+    "assumptions": [
+      "The transaction is not properly signed by the user's wallet.",
+      "The Governance Contract fails to verify the transaction sender against the intended user."
+    ],
+    "mitigation": {
+      "strategy": "Require standard EVM transaction signing for all actions and verify sender address in contract.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker spoofs a user's identity to activate their queued validator boost without authorization.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Activate Queued Boost"
     }
   },
   {
@@ -65,174 +425,176 @@
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 6,
+      "capability_match": "Activate Queued Boost"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 11,
       "asset_ids": [
         4
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "User vote selection and associated data transmission"
+      "behavior_id": 6,
+      "data_flow_id": 17,
+      "data_description": "Activate Boost transaction data (user address, target validator)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
       "between_component_ids": [
-        1,
-        9
+        8,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Vote data transmitted from the user may be modified in transit if not protected by integrity checks."
+      "availability_required": true,
+      "gap_description": "Transaction parameters (target validator) are altered in transit."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is an external user with the ability to interact with the voting data flow."
+      "description": "An external user could attempt to alter the details of an activate boost transaction initiated by someone else."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Modification of votes can distort governance outcomes, but requires intercepting the data flow."
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "Tampering with activate boost transactions can lead to misallocation of BGT boosts."
     },
     "assumptions": [
-      "The data flow carrying vote information is susceptible to man-in-the-middle attacks.",
-      "The vote data is not signed or encrypted in a way that prevents undetectable modification."
+      "The activate boost transaction is not signed over all critical parameters.",
+      "An attacker can intercept and modify the transaction before it reaches the network."
     ],
     "mitigation": {
-      "strategy": "Implement integrity checks (e.g., digital signatures) on vote data and enforce secure communication channels (e.g., TLS/SSL).",
+      "strategy": "Ensure all critical transaction parameters are included in the signature.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker intercepts a user's vote submission, modifies the vote content (e.g., changing the choice or weight), and forwards the altered vote.",
+    "description": "An attacker tampers with a user's activate boost transaction to change the target validator.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Activate Queued Boost"
     }
   },
   {
     "id": 9,
-    "stride_category": "Repudiation",
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 6,
+      "capability_match": "Activate Queued Boost"
     },
     "threat_target": {
-      "component_id": 9,
-      "asset_ids": []
+      "component_id": 11,
+      "asset_ids": [
+        4
+      ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "User vote submission confirmation"
+      "behavior_id": 6,
+      "data_flow_id": 17,
+      "data_description": "Activate Boost transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
       "between_component_ids": [
-        1,
-        9
+        8,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The system may lack mechanisms to definitively prove a user cast a specific vote, allowing repudiation."
+      "availability_required": true,
+      "gap_description": "Insufficient validation allows activating boosts for others or bypassing the queue time."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is an external user who casts a vote."
+      "description": "An external user could gain unauthorized privilege to activate queued boosts belonging to other users or activate boosts before the required queue time has elapsed."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Low",
-      "rationale": "Repudiation complicates auditing but may not directly alter immediate outcomes if votes are recorded transparently."
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "Exploiting validation flaws allows manipulation of the BGT boosting process, affecting validator selection and user rewards."
     },
     "assumptions": [
-      "The voting process does not create a verifiable, non-repudiable record linked to the user's identity.",
-      "The user has a motive to deny or falsely claim a vote."
+      "The Governance Contract lacks sufficient checks on the sender's identity when activating boosts.",
+      "The contract does not correctly enforce the queue time requirement before allowing activation."
     ],
     "mitigation": {
-      "strategy": "Ensure all votes are cryptographically signed by the user's private key and permanently recorded on-chain.",
+      "strategy": "Implement strict access control and state checks (queue time elapsed) in the smart contract for activating boosts.",
       "type": "Technical Control",
-      "priority": "Low"
+      "priority": "High"
     },
-    "description": "A user casts a vote on a proposal but later denies having done so, or claims they cast a vote they did not, potentially disrupting auditability or challenging results.",
+    "description": "An attacker elevates their privilege to activate queued validator boosts on behalf of other users or bypass the mandatory queueing period.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Activate Queued Boost"
     }
   },
   {
     "id": 10,
-    "stride_category": "Information Disclosure",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 10,
       "asset_ids": []
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Vote transaction metadata or associated data"
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Claim transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 5,
+      "boundary_name": "Berachain Hub to BGT Incentive Distributor",
       "between_component_ids": [
-        1,
-        9
+        8,
+        10
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Sensitive information might be leaked through the voting transaction data or related communication."
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "The smart contract is susceptible to resource exhaustion from excessive malicious requests."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is an external user interacting with the voting system who could potentially observe transaction data."
+      "description": "An external user can send excessive transactions to the contract, potentially consuming all available gas or exploiting expensive operations."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Low",
-      "rationale": "Public blockchain data is generally transparent, but unintended information leakage could occur through transaction metadata or related data flows."
+      "behavior_id": 7,
+      "risk_level": "Medium",
+      "rationale": "A DoS attack can prevent legitimate users from claiming their earned incentives."
     },
     "assumptions": [
-      "The voting transaction or related data flow includes information not intended for public viewing.",
-      "An attacker can monitor or access this data flow."
+      "The BGT Incentive Distributor contract's claim function is computationally expensive or vulnerable to spam.",
+      "The blockchain network cannot handle a large volume of malicious transactions targeted at this contract."
     ],
     "mitigation": {
-      "strategy": "Minimize the inclusion of sensitive information in on-chain transactions; ensure off-chain components handling sensitive data are secure.",
+      "strategy": "Optimize contract functions for gas efficiency; Implement state rent or other layer 1 anti-DoS measures.",
       "type": "Technical Control",
-      "priority": "Low"
+      "priority": "Medium"
     },
-    "description": "Sensitive information (e.g., identity details linked to a vote, strategic voting patterns) is inadvertently exposed through the voting process or related communication.",
+    "description": "An attacker floods the BGT Incentive Distributor contract with transactions, causing denial of service and preventing users from claiming incentives.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
@@ -242,115 +604,55 @@
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Queue/Activate Validator Boost"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 11,
       "asset_ids": []
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Volume of vote transactions"
+      "data_flow_id": 17,
+      "data_description": "Queue/Activate Boost transactions"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 4,
+      "boundary_name": "Berachain Hub to Governance Contract",
       "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "The governance system or underlying network infrastructure can be overwhelmed by excessive voting activity."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is an external user who can submit transactions to the network."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Preventing legitimate users from voting undermines the democratic nature of governance."
-    },
-    "assumptions": [
-      "The transaction fees (gas) are not prohibitively expensive for an attacker to flood the network or contract.",
-      "The governance contract or network infrastructure has resource limitations or vulnerabilities susceptible to transaction spam."
-    ],
-    "mitigation": {
-      "strategy": "Rely on gas fees as a primary deterrent; implement contract-level rate limits or anti-spam measures if necessary; ensure robust underlying infrastructure.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker floods the network or the governance contract with a large volume of transactions related to voting, preventing legitimate users from casting their votes or delaying proposal processing.",
-    "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 12,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Vote submission and BGT balance/delegation check"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
+        8,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Vulnerabilities in the governance contract logic may allow users to vote with more weight than their BGT holdings or gain unauthorized access to privileged functions."
+      "availability_required": true,
+      "gap_description": "The smart contract is susceptible to resource exhaustion from excessive malicious requests."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is an external user attempting to gain unauthorized influence or control within the governance system."
+      "description": "An external user can send excessive transactions to the contract, potentially consuming all available gas or exploiting expensive operations."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Unauthorized privilege escalation directly compromises the core security and control mechanisms of the governance system."
+      "risk_level": "Medium",
+      "rationale": "A DoS attack can prevent legitimate users from queueing or activating boosts, disrupting the boosting mechanism."
     },
     "assumptions": [
-      "The governance contract contains logical errors or vulnerabilities in validating BGT balances, delegation, or function access control.",
-      "An attacker can craft malicious transactions to exploit these vulnerabilities."
+      "The Governance Contract's queue/activate functions are computationally expensive or vulnerable to spam.",
+      "The blockchain network cannot handle a large volume of malicious transactions targeted at this contract."
     ],
     "mitigation": {
-      "strategy": "Conduct thorough smart contract audits; implement strict validation of BGT holdings/delegation for voting power; use multi-sig or timelocks for sensitive administrative functions.",
+      "strategy": "Optimize contract functions for gas efficiency; Implement state rent or other layer 1 anti-DoS measures.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker exploits a vulnerability in the governance contract to vote with illegitimate voting power (more than their BGT allows) or gains unauthorized access to administrative capabilities.",
+    "description": "An attacker floods the Governance Contract with queue/activate boost transactions, causing denial of service and preventing users from managing their boosts.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Vote on Proposal"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Queue/Activate Validator Boost"
     }
   }
 ]

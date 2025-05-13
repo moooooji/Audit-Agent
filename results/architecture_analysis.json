@@ -4,71 +4,79 @@
       "id": 1,
       "name": "User",
       "type": "External User",
-      "description": "General external user interacting with the Berachain ecosystem.",
+      "description": "Interacts with the Berachain ecosystem, dApps, and governance.",
       "capabilities": [
-        "Connect wallet",
-        "Check airdrop allocation",
-        "Claim airdrop",
-        "Bridge NFTs",
-        "Bridge tokens",
+        "Claim Airdrop",
+        "Connect Wallet",
         "Get BERA",
-        "Provide liquidity",
-        "Stake assets (in Reward Vaults)",
-        "Earn BGT",
-        "Delegate BGT (Boost validator)",
+        "Swap Assets",
+        "Provide Liquidity",
+        "Stake Assets",
+        "Delegate BGT",
+        "Boost Validators",
         "Claim Incentives",
-        "Swap assets",
-        "Mint HONEY",
-        "Burn HONEY",
-        "Vote on governance proposals",
-        "Create governance proposals (if sufficient BGT)"
+        "Claim Fees",
+        "Create Governance Proposal",
+        "Vote on Governance Proposal",
+        "Redeem BGT",
+        "Submit RFRV",
+        "Contribute Incentive Tokens"
       ]
     },
     {
       "id": 2,
       "name": "Validator Operator",
       "type": "Internal Service",
-      "description": "Entity running a validator node to secure the network.",
+      "description": "Operates a validator node to secure the network and participate in PoL.",
       "capabilities": [
         "Stake BERA",
-        "Operate validator node",
-        "Propose blocks",
-        "Receive BERA rewards (gas/priority fees)",
-        "Receive BGT rewards (base emission)",
-        "Direct BGT emissions (to Reward Vaults)",
-        "Receive Incentive rewards (commission)",
-        "Set Incentive commission rate"
+        "Propose Blocks",
+        "Direct BGT Emissions",
+        "Set Incentive Commission",
+        "Receive Incentives",
+        "Receive Fees"
       ]
     },
     {
       "id": 3,
-      "name": "Protocol/Ecosystem Project",
+      "name": "Protocol/Project",
       "type": "Partner System",
-      "description": "Entity deploying dApps and Reward Vaults on Berachain.",
+      "description": "Develops dApps and participates in PoL to attract users and liquidity.",
       "capabilities": [
-        "Deploy dApp",
-        "Deploy Reward Vault",
-        "Submit RFRV (Request for Reward Vault)"
+        "Create Reward Vault",
+        "Submit Governance Proposal",
+        "Supply Incentive Tokens"
       ]
     },
     {
       "id": 4,
-      "name": "Guardian Multisig",
+      "name": "Guardian",
       "type": "Internal Service",
-      "description": "Group of elected signers providing oversight for governance proposals during timelock.",
+      "description": "Provides oversight and can cancel malicious governance proposals.",
       "capabilities": [
-        "Cancel malicious governance proposals"
+        "Cancel Governance Proposal",
+        "Review RFRV proposals"
       ]
     },
     {
       "id": 5,
       "name": "Incentive Token Manager",
       "type": "External User",
-      "description": "Wallet or entity authorized to manage incentive token deposits and rates for a specific Reward Vault.",
+      "description": "Manages and supplies incentive tokens for a specific Reward Vault.",
       "capabilities": [
-        "Offer Incentive Tokens (deposit)",
+        "Add Incentive Tokens",
+        "Set Incentive Rate",
         "Increase Incentive Rate",
-        "Manage Incentive Rates"
+        "Set Lower Incentive Rate (when exhausted)"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "BGT Foundation",
+      "type": "Internal Service",
+      "description": "Entity involved in reviewing RFRV proposals.",
+      "capabilities": [
+        "Review RFRV proposals"
       ]
     }
   ],
@@ -90,360 +98,393 @@
     {
       "id": 3,
       "name": "$HONEY",
-      "description": "Native stablecoin soft-pegged to 1 USDC.",
+      "description": "Native stablecoin.",
       "type": "Token",
       "sensitivity": "High"
     },
     {
       "id": 4,
-      "name": "Berachain NFTs",
-      "description": "Official NFT collections.",
+      "name": "Official Berachain NFTs",
+      "description": "NFTs representing early community participation.",
       "type": "NFT",
       "sensitivity": "Medium"
     },
     {
       "id": 5,
-      "name": "Incentive Tokens",
-      "description": "Whitelisted ERC20 tokens offered by protocols to validators/boosters.",
+      "name": "LP Token (Receipt Token)",
+      "description": "Represents a user's share in a liquidity pool or other productive activity.",
       "type": "Token",
       "sensitivity": "Medium"
     },
     {
       "id": 6,
-      "name": "LP Tokens",
-      "description": "Receipt tokens representing a user's share in a BEX liquidity pool.",
+      "name": "Incentive Token",
+      "description": "ERC20 tokens offered by protocols to incentivize BGT emissions.",
       "type": "Token",
       "sensitivity": "Medium"
     },
     {
       "id": 7,
-      "name": "Receipt Tokens (PoL)",
-      "description": "Tokens received for productive activity, stakeable in Reward Vaults.",
-      "type": "Token",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 8,
       "name": "Private Keys",
-      "description": "Used by wallets to access assets.",
+      "description": "Cryptographic keys used to control wallet access and sign transactions.",
       "type": "Key",
       "sensitivity": "High"
     },
     {
-      "id": 9,
+      "id": 8,
       "name": "Voting Power",
-      "description": "Governance power derived from holding/delegating BGT.",
+      "description": "The ability to vote on governance proposals, derived from BGT holdings/delegation.",
       "type": "Voting Power",
-      "sensitivity": "Medium"
+      "sensitivity": "High"
+    },
+    {
+      "id": 9,
+      "name": "Governance Proposal",
+      "description": "A formal proposal for changes to the Berachain protocol or dApps.",
+      "type": "Data",
+      "sensitivity": "High"
     },
     {
       "id": 10,
-      "name": "Governance Proposals",
-      "description": "Data representing proposed changes to the protocol.",
+      "name": "Proof of Entitlement",
+      "description": "Off-chain data used to verify a user's eligibility to claim incentives/fees.",
       "type": "Data",
       "sensitivity": "Medium"
     },
     {
       "id": 11,
-      "name": "Incentive Entitlement Proofs",
-      "description": "Data used to prove eligibility for claiming incentives/fees.",
-      "type": "Data",
+      "name": "Transaction Fees (BERA)",
+      "description": "Fees paid in BERA for processing transactions on the network.",
+      "type": "Token",
       "sensitivity": "Medium"
     },
     {
       "id": 12,
-      "name": "$USDC",
-      "description": "Stablecoin collateral asset for HONEY.",
+      "name": "USDC",
+      "description": "USD-pegged stablecoin used as collateral for HONEY.",
       "type": "Token",
       "sensitivity": "High"
     },
     {
       "id": 13,
-      "name": "$BYUSD",
-      "description": "Stablecoin collateral asset for HONEY.",
+      "name": "BYUSD (pyUSD)",
+      "description": "USD-pegged stablecoin used as collateral for HONEY.",
       "type": "Token",
       "sensitivity": "High"
     },
     {
       "id": 14,
-      "name": "$WETH",
-      "description": "Token used in BEX liquidity pools.",
+      "name": "WETH",
+      "description": "Wrapped Ether, used in BEX liquidity pools.",
       "type": "Token",
-      "sensitivity": "Medium"
+      "sensitivity": "High"
     },
     {
       "id": 15,
-      "name": "$WBTC",
-      "description": "Token used in BEX liquidity pools.",
+      "name": "WBTC",
+      "description": "Wrapped Bitcoin, used in BEX liquidity pools.",
       "type": "Token",
-      "sensitivity": "Medium"
+      "sensitivity": "High"
     },
     {
       "id": 16,
-      "name": "HONEY Vault Shares",
-      "description": "Represents user deposits in HONEY vaults.",
+      "name": "Vault Shares",
+      "description": "Represents a user's share of collateral deposited in a HONEY vault.",
       "type": "Token",
       "sensitivity": "Medium"
     },
     {
       "id": 17,
-      "name": "Reward Allocation Data",
-      "description": "Configuration data specifying how a validator directs BGT emissions.",
+      "name": "Testnet User RFA Allocations",
+      "description": "Allocations for testnet users eligible for airdrop.",
       "type": "Data",
-      "sensitivity": "Low"
+      "sensitivity": "Medium"
     },
     {
       "id": 18,
-      "name": "$WBERA",
-      "description": "Wrapped BERA token.",
-      "type": "Token",
-      "sensitivity": "High"
+      "name": "Ecosystem NFTs (Airdrop)",
+      "description": "NFTs from ecosystem projects eligible for airdrop.",
+      "type": "NFT",
+      "sensitivity": "Medium"
     },
     {
       "id": 19,
-      "name": "Fee Shares",
-      "description": "Represents a portion of fees collected.",
+      "name": "stgUSDC",
+      "description": "USD-pegged stablecoin used as collateral for HONEY.",
       "type": "Token",
-      "sensitivity": "Low"
-    },
-    {
-      "id": 20,
-      "name": "Incentive Distribution Data",
-      "description": "Data about incentive distribution and user entitlements.",
-      "type": "Data",
-      "sensitivity": "Low"
+      "sensitivity": "High"
     }
   ],
   "components": [
     {
       "id": 1,
-      "name": "Berachain L1 Blockchain",
-      "description": "High-performance EVM-Identical Layer 1 utilizing Proof-of-Liquidity.",
-      "trust_level": "High",
-      "assets_managed": []
-    },
-    {
-      "id": 2,
-      "name": "Validator Node",
-      "description": "Participates in consensus, proposes blocks, directs emissions.",
+      "name": "Berachain Network",
+      "description": "The core blockchain infrastructure.",
       "trust_level": "High",
       "assets_managed": [
-        1,
-        2,
-        5,
-        17,
-        18
-      ]
-    },
-    {
-      "id": 3,
-      "name": "User Wallet",
-      "description": "Allows users to access and manage assets on Berachain.",
-      "trust_level": "High",
-      "assets_managed": [
-        8,
         1,
         2,
         3,
         4,
         5,
         6,
-        7,
+        11,
         12,
         13,
         14,
         15,
         16,
-        18
+        18,
+        19
       ]
     },
     {
-      "id": 4,
+      "id": 2,
+      "name": "Wallet",
+      "description": "User-controlled software for managing keys and interacting with the network.",
+      "trust_level": "Low",
+      "assets_managed": [
+        7
+      ]
+    },
+    {
+      "id": 3,
       "name": "Berachain Bridge",
-      "description": "Transfers tokens and NFTs between chains.",
+      "description": "Cross-chain bridge for transferring assets.",
       "trust_level": "High",
       "assets_managed": [
         1,
         4,
+        6,
         12,
         13,
         14,
-        15
+        15,
+        18,
+        19
+      ]
+    },
+    {
+      "id": 4,
+      "name": "BEX",
+      "description": "Native DEX dApp for swapping and providing liquidity.",
+      "trust_level": "Medium",
+      "assets_managed": [
+        1,
+        3,
+        5,
+        12,
+        13,
+        14,
+        15,
+        19
       ]
     },
     {
       "id": 5,
-      "name": "Berachain BEX (Smart Contracts)",
-      "description": "Native DEX for trading and liquidity provision.",
-      "trust_level": "High",
+      "name": "Honey Swap",
+      "description": "Native dApp for minting, burning, and trading HONEY.",
+      "trust_level": "Medium",
       "assets_managed": [
-        1,
         3,
-        6,
-        14,
-        15
+        12,
+        13,
+        16,
+        19
       ]
     },
     {
       "id": 6,
-      "name": "Berachain Honey Swap (Smart Contracts)",
-      "description": "Native dApp for minting, burning, and swapping HONEY.",
-      "trust_level": "High",
-      "assets_managed": [
-        3,
-        12,
-        13
-      ]
-    },
-    {
-      "id": 7,
-      "name": "Berachain BeraHub (Frontend)",
-      "description": "Web interface for interacting with dApps and PoL features.",
+      "name": "BeraHub",
+      "description": "Frontend interface for interacting with Berachain dApps and PoL features.",
       "trust_level": "Low",
       "assets_managed": []
     },
     {
+      "id": 7,
+      "name": "Reward Vault",
+      "description": "Smart contract for staking PoL-eligible assets and distributing BGT/Incentives.",
+      "trust_level": "Medium",
+      "assets_managed": [
+        2,
+        5,
+        6
+      ]
+    },
+    {
       "id": 8,
-      "name": "Reward Vault (Smart Contract)",
-      "description": "Contract for staking PoL-eligible assets to earn BGT.",
+      "name": "Governance Contract",
+      "description": "Manages the on-chain governance process.",
       "trust_level": "High",
       "assets_managed": [
-        6,
-        7,
         2,
-        5
+        8,
+        9
       ]
     },
     {
       "id": 9,
-      "name": "Governance Contract",
-      "description": "Manages the governance process, proposals, voting, and execution.",
+      "name": "HoneyFactory",
+      "description": "Core contract for minting and redeeming HONEY.",
       "trust_level": "High",
       "assets_managed": [
-        10,
-        9,
-        2
+        3,
+        16,
+        12,
+        13,
+        19
       ]
     },
     {
       "id": 10,
-      "name": "HoneyFactory (Smart Contract)",
-      "description": "Central contract for HONEY minting and burning.",
-      "trust_level": "High",
-      "assets_managed": [
-        16,
-        3,
-        12,
-        13,
-        19
-      ]
-    },
-    {
-      "id": 11,
-      "name": "HONEY Vault (Smart Contract)",
-      "description": "Collateral-specific vault holding assets for HONEY minting/redemption.",
-      "trust_level": "High",
-      "assets_managed": [
-        12,
-        13,
-        16,
-        19
-      ]
-    },
-    {
-      "id": 12,
-      "name": "FeeCollector (Smart Contract)",
-      "description": "Collects dApp fees and distributes them to BGT Boosters.",
+      "name": "FeeCollector",
+      "description": "Collects fees from native dApps and distributes them.",
       "trust_level": "High",
       "assets_managed": [
         1,
         3,
-        18,
-        19
+        11
+      ]
+    },
+    {
+      "id": 11,
+      "name": "BGTIncentiveDistributor",
+      "description": "Manages the distribution and claiming of incentives and fees to BGT boosters.",
+      "trust_level": "High",
+      "assets_managed": [
+        1,
+        6,
+        11
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Backend Service",
+      "description": "Off-chain service supporting incentive claiming proofs.",
+      "trust_level": "Medium",
+      "assets_managed": [
+        10
       ]
     },
     {
       "id": 13,
-      "name": "BGTIncentiveDistributor (Smart Contract)",
-      "description": "Manages distribution and claiming of Incentive Tokens and fees for Boosters.",
+      "name": "Validator Node",
+      "description": "Software/hardware operated by validators to participate in consensus.",
       "trust_level": "High",
       "assets_managed": [
-        5,
-        18,
-        20
+        1,
+        2,
+        11
       ]
     },
     {
       "id": 14,
-      "name": "Incentive Distribution Backend Service",
-      "description": "Off-chain service managing proofs of entitlement for incentive claiming.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        11,
-        20
-      ]
+      "name": "CometBFT",
+      "description": "The consensus algorithm engine.",
+      "trust_level": "High",
+      "assets_managed": []
     },
     {
       "id": 15,
-      "name": "CometBFT",
-      "description": "General-purpose blockchain consensus engine.",
+      "name": "BeaconKit",
+      "description": "Modular framework integrating CometBFT with EVM execution.",
       "trust_level": "High",
       "assets_managed": []
     },
     {
       "id": 16,
-      "name": "BeaconKit",
-      "description": "Modular consensus layer framework integrating Execution Client with CometBFT.",
-      "trust_level": "High",
-      "assets_managed": []
-    },
-    {
-      "id": 17,
-      "name": "Execution Client (EVM)",
-      "description": "Executes transactions and manages the EVM state.",
+      "name": "EVM Execution Client",
+      "description": "Software responsible for executing transactions and managing state.",
       "trust_level": "High",
       "assets_managed": [
         1,
-        2,
         3,
-        4,
-        5,
-        6,
-        7,
-        9,
-        10,
         11,
         12,
         13,
         14,
         15,
+        19
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Honey Vault",
+      "description": "Smart contract that stores collateral for minting HONEY.",
+      "trust_level": "High",
+      "assets_managed": [
+        12,
+        13,
         16,
-        17,
-        18,
-        19,
-        20
+        19
+      ]
+    },
+    {
+      "id": 18,
+      "name": "BeraChef Contract",
+      "description": "Contract involved in Reward Vault whitelisting.",
+      "trust_level": "High",
+      "assets_managed": [
+        7
+      ]
+    },
+    {
+      "id": 19,
+      "name": "BlockRewardController Contract",
+      "description": "Manages BGT emission constants.",
+      "trust_level": "High",
+      "assets_managed": [
+        2
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Auto-Incentivizer",
+      "description": "Automatically offers incentives from foundation vault fees.",
+      "trust_level": "High",
+      "assets_managed": [
+        6,
+        11
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Reward Vault Factory Contract",
+      "description": "Contract for permissionlessly creating Reward Vaults.",
+      "trust_level": "High",
+      "assets_managed": [
+        7
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Governance Forum",
+      "description": "Platform for discussing governance proposals.",
+      "trust_level": "Low",
+      "assets_managed": [
+        9
       ]
     }
   ],
   "data_flows": [
     {
       "id": 1,
-      "source_id": 3,
-      "destination_id": 1,
-      "data": "Transaction Data",
-      "description": "User sends transaction to the network",
+      "source_id": 1,
+      "destination_id": 2,
+      "data": "Private Key",
+      "description": "User accesses/stores private key in wallet.",
       "security_properties": {
-        "confidentiality_required": false,
+        "confidentiality_required": true,
         "integrity_required": true,
-        "availability_required": true
+        "availability_required": false
       }
     },
     {
       "id": 2,
-      "source_id": 3,
-      "destination_id": 4,
-      "data": "Tokens/NFTs",
-      "description": "User initiates bridging of assets",
+      "source_id": 2,
+      "destination_id": 1,
+      "data": "Transaction data",
+      "description": "Signed transaction sent from wallet to network.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -452,10 +493,10 @@
     },
     {
       "id": 3,
-      "source_id": 4,
-      "destination_id": 1,
-      "data": "Tokens/NFTs",
-      "description": "Bridge deposits assets onto Berachain",
+      "source_id": 1,
+      "destination_id": 3,
+      "data": "NFT (Official Berachain NFTs)",
+      "description": "User transfers NFT to the bridge.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -465,9 +506,9 @@
     {
       "id": 4,
       "source_id": 3,
-      "destination_id": 5,
-      "data": "Tokens",
-      "description": "User provides liquidity or swaps tokens on BEX",
+      "destination_id": 1,
+      "data": "NFT (Official Berachain NFTs)",
+      "description": "Bridge transfers/mints NFT on Berachain.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -476,10 +517,10 @@
     },
     {
       "id": 5,
-      "source_id": 5,
+      "source_id": 1,
       "destination_id": 3,
-      "data": "Tokens/LP Tokens",
-      "description": "BEX sends swapped tokens or LP tokens to user",
+      "data": "Tokens",
+      "description": "User transfers tokens to the bridge.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -489,9 +530,9 @@
     {
       "id": 6,
       "source_id": 3,
-      "destination_id": 6,
+      "destination_id": 1,
       "data": "Tokens",
-      "description": "User deposits collateral to mint HONEY or swaps tokens",
+      "description": "Bridge transfers/mints tokens on Berachain.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -500,22 +541,22 @@
     },
     {
       "id": 7,
-      "source_id": 6,
-      "destination_id": 3,
-      "data": "HONEY/Tokens",
-      "description": "Honey Swap sends minted HONEY or swapped tokens to user",
+      "source_id": 1,
+      "destination_id": 2,
+      "data": "Network configuration",
+      "description": "User adds Berachain network details to wallet.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true
+        "availability_required": false
       }
     },
     {
       "id": 8,
-      "source_id": 3,
-      "destination_id": 8,
-      "data": "LP/Receipt Tokens",
-      "description": "User stakes assets in a Reward Vault",
+      "source_id": 1,
+      "destination_id": 4,
+      "data": "Swap/Liquidity parameters",
+      "description": "User interacts with BEX for swapping or providing liquidity.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -524,10 +565,10 @@
     },
     {
       "id": 9,
-      "source_id": 8,
-      "destination_id": 3,
-      "data": "BGT",
-      "description": "User claims earned BGT from Reward Vault",
+      "source_id": 1,
+      "destination_id": 5,
+      "data": "Mint/Burn/Trade parameters",
+      "description": "User interacts with Honey Swap for HONEY operations.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -536,22 +577,22 @@
     },
     {
       "id": 10,
-      "source_id": 3,
-      "destination_id": 9,
-      "data": "BGT/Voting Power/Proposal Data",
-      "description": "User delegates BGT, votes, or submits governance proposal",
+      "source_id": 1,
+      "destination_id": 6,
+      "data": "User input, displayed data",
+      "description": "User interacts with the BeraHub frontend.",
       "security_properties": {
-        "confidentiality_required": false,
+        "confidentiality_required": true,
         "integrity_required": true,
         "availability_required": true
       }
     },
     {
       "id": 11,
-      "source_id": 3,
-      "destination_id": 13,
-      "data": "Incentive Entitlement Proofs",
-      "description": "User provides proof to claim incentives/fees",
+      "source_id": 1,
+      "destination_id": 7,
+      "data": "Token amount (LP Token)",
+      "description": "User stakes LP/Receipt tokens in a Reward Vault.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -560,10 +601,10 @@
     },
     {
       "id": 12,
-      "source_id": 13,
-      "destination_id": 3,
-      "data": "Incentive Tokens",
-      "description": "User receives claimed Incentive Tokens",
+      "source_id": 2,
+      "destination_id": 7,
+      "data": "Allocation weights",
+      "description": "Validator operator configures BGT emission allocation weights for Reward Vaults.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -572,10 +613,10 @@
     },
     {
       "id": 13,
-      "source_id": 2,
-      "destination_id": 1,
-      "data": "Proposed Block Data",
-      "description": "Validator proposes a new block to the network",
+      "source_id": 3,
+      "destination_id": 7,
+      "data": "Incentive Token amount, rate",
+      "description": "Protocol supplies incentive tokens to their Reward Vault.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -584,10 +625,10 @@
     },
     {
       "id": 14,
-      "source_id": 1,
-      "destination_id": 2,
-      "data": "BERA (Fees)",
-      "description": "Validator receives transaction fees from the network",
+      "source_id": 5,
+      "destination_id": 7,
+      "data": "Incentive Token amount, rate",
+      "description": "Incentive Token Manager adds incentives to a Reward Vault.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -596,10 +637,10 @@
     },
     {
       "id": 15,
-      "source_id": 1,
-      "destination_id": 2,
-      "data": "BGT (Base Emission)",
-      "description": "Validator receives base BGT emission for block production",
+      "source_id": 12,
+      "destination_id": 11,
+      "data": "Proof data (Proof of Entitlement)",
+      "description": "Backend service updates proofs for incentive claiming.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -608,10 +649,10 @@
     },
     {
       "id": 16,
-      "source_id": 2,
-      "destination_id": 8,
-      "data": "BGT (Variable Emission)",
-      "description": "Validator directs variable BGT emissions to chosen Reward Vaults",
+      "source_id": 1,
+      "destination_id": 11,
+      "data": "Claim request, Proof",
+      "description": "User claims incentives or fees from the distributor.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -620,10 +661,10 @@
     },
     {
       "id": 17,
-      "source_id": 8,
-      "destination_id": 2,
-      "data": "Incentive Tokens (Commission)",
-      "description": "Validator receives commission on incentives from Reward Vault",
+      "source_id": 1,
+      "destination_id": 8,
+      "data": "Proposal details / Vote",
+      "description": "User creates or votes on a governance proposal.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -632,10 +673,10 @@
     },
     {
       "id": 18,
-      "source_id": 5,
-      "destination_id": 12,
-      "data": "BERA/HONEY (Fees)",
-      "description": "BEX sends collected fees to FeeCollector",
+      "source_id": 1,
+      "destination_id": 2,
+      "data": "BGT amount",
+      "description": "User delegates BGT to a validator operator.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -644,10 +685,10 @@
     },
     {
       "id": 19,
-      "source_id": 6,
-      "destination_id": 12,
-      "data": "BERA/HONEY (Fees)",
-      "description": "Honey Swap sends collected fees to FeeCollector",
+      "source_id": 13,
+      "destination_id": 1,
+      "data": "Block data",
+      "description": "Validator node proposes a block to the network.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -656,10 +697,10 @@
     },
     {
       "id": 20,
-      "source_id": 12,
-      "destination_id": 13,
-      "data": "WBERA (Fees)",
-      "description": "FeeCollector distributes fees (auctioned for WBERA) to the Distributor",
+      "source_id": 13,
+      "destination_id": 10,
+      "data": "Fee amount",
+      "description": "Validator node sends collected dApp fees to the FeeCollector.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -668,10 +709,10 @@
     },
     {
       "id": 21,
-      "source_id": 13,
-      "destination_id": 3,
-      "data": "WBERA (Claimed Fees)",
-      "description": "User claims their share of dApp fees from the Distributor",
+      "source_id": 10,
+      "destination_id": 11,
+      "data": "WBERA amount",
+      "description": "FeeCollector sends WBERA from auctioned fees to the distributor.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -680,10 +721,10 @@
     },
     {
       "id": 22,
-      "source_id": 3,
-      "destination_id": 10,
-      "data": "Tokens (Collateral)",
-      "description": "User deposits collateral to HoneyFactory for minting",
+      "source_id": 11,
+      "destination_id": 1,
+      "data": "Token amount (WBERA / Incentive Tokens)",
+      "description": "Distributor makes WBERA or Incentive Tokens claimable by users.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -692,10 +733,10 @@
     },
     {
       "id": 23,
-      "source_id": 10,
-      "destination_id": 11,
-      "data": "Tokens (Collateral)",
-      "description": "HoneyFactory routes collateral to specific HONEY Vault",
+      "source_id": 1,
+      "destination_id": 1,
+      "data": "BGT amount",
+      "description": "User burns BGT via the network.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -704,10 +745,10 @@
     },
     {
       "id": 24,
-      "source_id": 11,
-      "destination_id": 10,
-      "data": "HONEY Vault Shares",
-      "description": "HONEY Vault issues shares to HoneyFactory",
+      "source_id": 1,
+      "destination_id": 9,
+      "data": "Collateral amount (USDC / BYUSD / stgUSDC)",
+      "description": "User deposits collateral into HoneyFactory to mint HONEY.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -716,10 +757,10 @@
     },
     {
       "id": 25,
-      "source_id": 10,
-      "destination_id": 3,
-      "data": "HONEY (Minted)",
-      "description": "HoneyFactory mints and sends HONEY to user",
+      "source_id": 9,
+      "destination_id": 17,
+      "data": "Collateral / Share amount",
+      "description": "HoneyFactory transfers collateral to vault and receives shares.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -728,10 +769,10 @@
     },
     {
       "id": 26,
-      "source_id": 3,
-      "destination_id": 10,
-      "data": "HONEY (for burning/redemption)",
-      "description": "User sends HONEY to HoneyFactory for burning/redemption",
+      "source_id": 9,
+      "destination_id": 1,
+      "data": "HONEY amount",
+      "description": "HoneyFactory mints and transfers HONEY to user.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -740,10 +781,10 @@
     },
     {
       "id": 27,
-      "source_id": 10,
-      "destination_id": 11,
-      "data": "HONEY (for redemption)",
-      "description": "HoneyFactory routes HONEY to HONEY Vault for redemption",
+      "source_id": 1,
+      "destination_id": 9,
+      "data": "HONEY amount",
+      "description": "User sends HONEY to HoneyFactory to redeem collateral.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -752,10 +793,10 @@
     },
     {
       "id": 28,
-      "source_id": 11,
-      "destination_id": 10,
-      "data": "Tokens (Redeemed Collateral)",
-      "description": "HONEY Vault releases collateral to HoneyFactory",
+      "source_id": 9,
+      "destination_id": 1,
+      "data": "Collateral / Share amount",
+      "description": "HoneyFactory transfers collateral or shares back to user upon redemption.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -764,10 +805,10 @@
     },
     {
       "id": 29,
-      "source_id": 10,
-      "destination_id": 3,
-      "data": "Tokens (Redeemed Collateral)",
-      "description": "HoneyFactory sends redeemed collateral to user",
+      "source_id": 16,
+      "destination_id": 15,
+      "data": "Block data, execution results",
+      "description": "Communication between execution and consensus layers (Engine API).",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -776,10 +817,10 @@
     },
     {
       "id": 30,
-      "source_id": 17,
-      "destination_id": 15,
-      "data": "Block Data (Execution Result)",
-      "description": "Execution Client provides executed block data to CometBFT",
+      "source_id": 15,
+      "destination_id": 14,
+      "data": "Block data, consensus messages",
+      "description": "Communication within the consensus layer.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -788,10 +829,10 @@
     },
     {
       "id": 31,
-      "source_id": 15,
-      "destination_id": 17,
-      "data": "Consensus Data (Block Proposal/Validation)",
-      "description": "CometBFT provides consensus data to the Execution Client",
+      "source_id": 13,
+      "destination_id": 16,
+      "data": "Transactions, block template",
+      "description": "Validator node provides data to the execution client.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -800,10 +841,10 @@
     },
     {
       "id": 32,
-      "source_id": 2,
-      "destination_id": 17,
-      "data": "Transaction Data",
-      "description": "Validator Node provides transactions to the Execution Client for processing",
+      "source_id": 13,
+      "destination_id": 15,
+      "data": "Block proposal, votes",
+      "description": "Validator node participates in consensus.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -812,10 +853,10 @@
     },
     {
       "id": 33,
-      "source_id": 17,
-      "destination_id": 2,
-      "data": "Executed Block Data",
-      "description": "Execution Client returns executed block data to the Validator Node",
+      "source_id": 1,
+      "destination_id": 13,
+      "data": "BGT block rewards",
+      "description": "Network distributes BGT block rewards to the validator node.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -824,10 +865,10 @@
     },
     {
       "id": 34,
-      "source_id": 14,
-      "destination_id": 3,
-      "data": "Incentive Entitlement Proofs",
-      "description": "Backend service provides proofs to the user's wallet",
+      "source_id": 1,
+      "destination_id": 13,
+      "data": "Gas fees/Priority fees",
+      "description": "Network distributes transaction fees to the validator node.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -836,10 +877,10 @@
     },
     {
       "id": 35,
-      "source_id": 5,
-      "destination_id": 3,
-      "data": "LP Tokens",
-      "description": "BEX issues LP tokens to users",
+      "source_id": 4,
+      "destination_id": 1,
+      "data": "LP Token",
+      "description": "User receives LP/Receipt token after providing liquidity to BEX.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -848,10 +889,10 @@
     },
     {
       "id": 36,
-      "source_id": 11,
-      "destination_id": 10,
-      "data": "Fee Shares",
-      "description": "HONEY Vault sends fee shares to HoneyFactory",
+      "source_id": 7,
+      "destination_id": 11,
+      "data": "Accumulated BGT rewards",
+      "description": "Reward Vault sends accumulated BGT rewards to the Incentive Distributor.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -860,10 +901,10 @@
     },
     {
       "id": 37,
-      "source_id": 10,
-      "destination_id": 12,
-      "data": "Fee Shares",
-      "description": "HoneyFactory sends fee shares to the fee receiver (FeeCollector)",
+      "source_id": 11,
+      "destination_id": 2,
+      "data": "Incentive commission",
+      "description": "BGT Incentive Distributor sends incentive commission to the validator operator.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -872,10 +913,10 @@
     },
     {
       "id": 38,
-      "source_id": 8,
-      "destination_id": 13,
-      "data": "Incentive Tokens",
-      "description": "Reward Vault sends incentives to distributor for boosters",
+      "source_id": 1,
+      "destination_id": 1,
+      "data": "BERA",
+      "description": "User receives BERA from the network after burning BGT.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -884,10 +925,10 @@
     },
     {
       "id": 39,
-      "source_id": 13,
-      "destination_id": 3,
-      "data": "WBERA (Claimed Fees)",
-      "description": "User claims their share of dApp fees from the Distributor",
+      "source_id": 9,
+      "destination_id": 10,
+      "data": "Fee shares",
+      "description": "HoneyFactory transfers fee shares to the FeeCollector.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -896,10 +937,34 @@
     },
     {
       "id": 40,
-      "source_id": 13,
-      "destination_id": 14,
-      "data": "Incentive Distribution Data",
-      "description": "BGTIncentiveDistributor provides data to the backend service for calculating and generating incentive entitlement proofs",
+      "source_id": 8,
+      "destination_id": 1,
+      "data": "Execution command",
+      "description": "Governance Contract sends execution command to the network.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 41,
+      "source_id": 4,
+      "destination_id": 8,
+      "data": "Cancellation command",
+      "description": "Guardian sends cancellation command to the Governance Contract.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 42,
+      "source_id": 1,
+      "destination_id": 22,
+      "data": "RFRV discussion/post",
+      "description": "User submits discussion or post on the Governance Forum.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -912,411 +977,611 @@
       "id": 1,
       "name": "User Wallet Boundary",
       "between_ids": [
-        3,
+        2,
         1
       ],
-      "description": "Protects user's private keys and assets from the public network",
+      "description": "Separates the user's local wallet environment from the public blockchain network.",
       "validation_required": true
     },
     {
       "id": 2,
-      "name": "Berachain Network Perimeter",
+      "name": "Bridge Ingress Boundary",
       "between_ids": [
-        1,
         3,
-        4
+        1
       ],
-      "description": "Protects the core blockchain network from external interactions",
+      "description": "Separates the cross-chain bridge component from the Berachain L1.",
       "validation_required": true
     },
     {
       "id": 3,
-      "name": "Bridge Trust Boundary",
+      "name": "Off-chain Service Boundary",
       "between_ids": [
-        4,
-        1
+        12,
+        11
       ],
-      "description": "Separates Berachain from external chains via the bridge",
+      "description": "Separates the off-chain backend service from the on-chain incentive distributor contract.",
       "validation_required": true
     },
     {
       "id": 4,
-      "name": "Smart Contract Interaction Boundary",
+      "name": "Governance Boundary",
       "between_ids": [
-        1,
-        5,
-        6,
         8,
+        7,
         9,
         10,
         11,
-        12,
-        13
+        17,
+        18,
+        19,
+        20,
+        21
       ],
-      "description": "Protects smart contract logic and state from direct external manipulation",
+      "description": "Separates the governance system from the core dApp and protocol contracts it governs.",
       "validation_required": true
     },
     {
       "id": 5,
-      "name": "Governance Timelock Security",
+      "name": "Validator Node Boundary",
       "between_ids": [
-        9,
-        4
+        13,
+        1
       ],
-      "description": "Provides a delay for Guardian oversight before proposal execution",
+      "description": "Separates the validator's operational environment from the rest of the network.",
       "validation_required": true
     },
     {
       "id": 6,
-      "name": "Incentive Proof Boundary",
+      "name": "Execution/Consensus Boundary",
       "between_ids": [
-        14,
-        13
+        16,
+        15
       ],
-      "description": "Separates off-chain proof generation from on-chain incentive claiming",
+      "description": "Separates the transaction execution layer from the consensus layer within the network.",
       "validation_required": true
     },
     {
       "id": 7,
-      "name": "Consensus-Execution Boundary",
+      "name": "Protocol/Project Boundary",
       "between_ids": [
-        17,
-        15
+        3,
+        1
       ],
-      "description": "Defines the interface and trust between transaction execution and block finality",
+      "description": "Separates external protocols/projects from the core Berachain network.",
+      "validation_required": true
+    },
+    {
+      "id": 8,
+      "name": "Incentive Token Manager Boundary",
+      "between_ids": [
+        5,
+        1
+      ],
+      "description": "Separates the external incentive token manager from the core Berachain network.",
+      "validation_required": true
+    },
+    {
+      "id": 9,
+      "name": "Guardian Boundary",
+      "between_ids": [
+        4,
+        8
+      ],
+      "description": "Separates the Guardian multisig from the Governance Contract.",
+      "validation_required": true
+    },
+    {
+      "id": 10,
+      "name": "BeraHub Frontend Boundary",
+      "between_ids": [
+        6,
+        1
+      ],
+      "description": "Separates the untrusted BeraHub frontend from the core Berachain network.",
+      "validation_required": false
+    },
+    {
+      "id": 11,
+      "name": "Reward Vault / Distributor Boundary",
+      "between_ids": [
+        7,
+        11
+      ],
+      "description": "Separates the Reward Vault contract from the BGT Incentive Distributor contract.",
+      "validation_required": true
+    },
+    {
+      "id": 12,
+      "name": "FeeCollector / Distributor Boundary",
+      "between_ids": [
+        10,
+        11
+      ],
+      "description": "Separates the FeeCollector contract from the BGT Incentive Distributor contract.",
+      "validation_required": true
+    },
+    {
+      "id": 13,
+      "name": "HoneyFactory / Honey Vault Boundary",
+      "between_ids": [
+        9,
+        17
+      ],
+      "description": "Separates the HoneyFactory contract from the specific Honey Vault contracts.",
       "validation_required": true
     }
   ],
   "behaviors": [
     {
       "id": 1,
-      "name": "Connect Wallet",
+      "name": "Claim Airdrop",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 3,
-      "action": "connect",
-      "description": "User connects their wallet to interact with dApps/network",
+      "target_id": 1,
+      "action": "Claim",
+      "description": "User accepts airdrop tokens.",
       "risk_level": "Low"
     },
     {
       "id": 2,
-      "name": "Interact with Frontend",
+      "name": "Connect Wallet",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 7,
-      "action": "interact",
-      "description": "User uses the BeraHub interface",
+      "target_id": 2,
+      "action": "Connect",
+      "description": "User configures wallet software to interact with the chain RPC.",
       "risk_level": "Low"
     },
     {
       "id": 3,
-      "name": "Bridge Assets",
+      "name": "Get BERA via Bridging",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 4,
-      "action": "bridge",
-      "description": "User transfers assets via the bridge",
+      "target_id": 3,
+      "action": "Bridge",
+      "description": "User transfers tokens from another chain to Berachain using the bridge.",
       "risk_level": "Medium"
     },
     {
       "id": 4,
-      "name": "Swap Tokens (BEX)",
+      "name": "Provide Liquidity",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 5,
-      "action": "swap",
-      "description": "User exchanges tokens on BEX",
+      "target_id": 4,
+      "action": "Provide Liquidity",
+      "description": "User deposits tokens into a BEX pool.",
       "risk_level": "Low"
     },
     {
       "id": 5,
-      "name": "Provide Liquidity (BEX)",
+      "name": "Swap Assets on BEX",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 5,
-      "action": "provide liquidity",
-      "description": "User deposits tokens into BEX liquidity pool",
+      "target_id": 4,
+      "action": "Swap",
+      "description": "User exchanges tokens on the DEX.",
       "risk_level": "Low"
     },
     {
       "id": 6,
-      "name": "Mint HONEY",
+      "name": "Swap Assets on Honey Swap",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 6,
-      "action": "mint",
-      "description": "User deposits collateral to mint HONEY",
+      "target_id": 5,
+      "action": "Swap",
+      "description": "User exchanges assets for HONEY or vice versa.",
       "risk_level": "Low"
     },
     {
       "id": 7,
-      "name": "Burn HONEY",
+      "name": "Mint HONEY",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 6,
-      "action": "burn",
-      "description": "User redeems collateral by burning HONEY",
+      "target_id": 5,
+      "action": "Mint",
+      "description": "User deposits collateral to create HONEY.",
       "risk_level": "Low"
     },
     {
       "id": 8,
-      "name": "Stake Assets (Reward Vault)",
+      "name": "Burn HONEY",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 8,
-      "action": "stake",
-      "description": "User stakes PoL-eligible assets in a Reward Vault",
+      "target_id": 5,
+      "action": "Burn",
+      "description": "User redeems HONEY for collateral.",
       "risk_level": "Low"
     },
     {
       "id": 9,
-      "name": "Claim BGT",
+      "name": "Stake LP/Receipt Token",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 8,
-      "action": "claim",
-      "description": "User claims earned BGT from a Reward Vault",
+      "target_id": 7,
+      "action": "Stake",
+      "description": "User deposits PoL-eligible tokens to earn BGT.",
       "risk_level": "Low"
     },
     {
       "id": 10,
-      "name": "Delegate BGT (Boost)",
+      "name": "Delegate BGT",
       "initiator_type": "Actor",
       "initiator_id": 1,
       "target_id": 2,
-      "action": "delegate",
-      "description": "User delegates BGT to a validator to boost emissions",
+      "action": "Delegate",
+      "description": "User assigns BGT voting/boost power to a validator operator.",
       "risk_level": "Low"
     },
     {
       "id": 11,
-      "name": "Vote on Proposal",
+      "name": "Boost Validator",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 9,
-      "action": "vote",
-      "description": "User casts a vote on a governance proposal",
+      "target_id": 2,
+      "action": "Boost",
+      "description": "User's delegation influences validator rewards.",
       "risk_level": "Low"
     },
     {
       "id": 12,
-      "name": "Create Proposal",
+      "name": "Claim Incentives/Fees",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 9,
-      "action": "create proposal",
-      "description": "User submits a new governance proposal",
+      "target_id": 11,
+      "action": "Claim",
+      "description": "User retrieves earned incentive tokens or dApp fees.",
       "risk_level": "Low"
     },
     {
       "id": 13,
-      "name": "Claim Incentives/Fees",
+      "name": "Create Governance Proposal",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 13,
-      "action": "claim",
-      "description": "User claims earned Incentive Tokens or dApp fees by providing proof",
+      "target_id": 8,
+      "action": "Propose",
+      "description": "User initiates a change proposal using BGT voting power.",
       "risk_level": "Low"
     },
     {
       "id": 14,
-      "name": "Operate Validator Node",
+      "name": "Vote on Governance Proposal",
       "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 2,
-      "action": "operate",
-      "description": "Validator operator runs the validator software",
+      "initiator_id": 1,
+      "target_id": 8,
+      "action": "Vote",
+      "description": "User casts a vote on an active proposal using BGT voting power.",
       "risk_level": "Low"
     },
     {
       "id": 15,
-      "name": "Propose Block",
-      "initiator_type": "Component",
-      "initiator_id": 2,
+      "name": "Redeem BGT for BERA",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
       "target_id": 1,
-      "action": "propose block",
-      "description": "Validator node creates and proposes a new block for consensus",
+      "action": "Redeem/Burn",
+      "description": "User converts BGT to BERA (one-way).",
       "risk_level": "Low"
     },
     {
       "id": 16,
-      "name": "Direct BGT Emissions",
-      "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 8,
-      "action": "direct emissions",
-      "description": "Validator node allocates BGT emissions to chosen Reward Vaults",
-      "risk_level": "Low"
-    },
-    {
-      "id": 17,
-      "name": "Set Commission Rate",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 2,
-      "action": "configure",
-      "description": "Validator operator sets their incentive commission rate on the node",
-      "risk_level": "Low"
-    },
-    {
-      "id": 18,
-      "name": "Deploy Reward Vault",
-      "initiator_type": "Actor",
-      "initiator_id": 3,
-      "target_id": 1,
-      "action": "deploy",
-      "description": "Protocol deploys a new Reward Vault contract onto the blockchain",
-      "risk_level": "Low"
-    },
-    {
-      "id": 19,
-      "name": "Submit RFRV Proposal",
-      "initiator_type": "Actor",
-      "initiator_id": 3,
-      "target_id": 9,
-      "action": "submit proposal",
-      "description": "Protocol submits a proposal to whitelist a Reward Vault",
-      "risk_level": "Low"
-    },
-    {
-      "id": 20,
-      "name": "Deposit Incentives",
-      "initiator_type": "Actor",
-      "initiator_id": 5,
-      "target_id": 8,
-      "action": "deposit",
-      "description": "Token Manager adds incentive tokens to a Reward Vault",
-      "risk_level": "Low"
-    },
-    {
-      "id": 21,
-      "name": "Cancel Governance Proposal",
-      "initiator_type": "Actor",
-      "initiator_id": 4,
-      "target_id": 9,
-      "action": "cancel",
-      "description": "Guardians cancel a malicious governance proposal during timelock",
-      "risk_level": "High"
-    },
-    {
-      "id": 22,
-      "name": "Generate Incentive Proofs",
-      "initiator_type": "Component",
-      "initiator_id": 14,
-      "target_id": 11,
-      "action": "generate",
-      "description": "Backend service generates proofs of entitlement for incentive claiming",
-      "risk_level": "Low"
-    },
-    {
-      "id": 23,
-      "name": "Execute Transaction",
-      "initiator_type": "Component",
-      "initiator_id": 17,
-      "target_id": 1,
-      "action": "execute",
-      "description": "Execution Client processes and executes transactions on the blockchain state",
-      "risk_level": "Low"
-    },
-    {
-      "id": 24,
-      "name": "Achieve Consensus",
-      "initiator_type": "Component",
-      "initiator_id": 15,
-      "target_id": 1,
-      "action": "finalize",
-      "description": "CometBFT finalizes blocks and achieves consensus on the blockchain state",
-      "risk_level": "Low"
-    },
-    {
-      "id": 25,
-      "name": "Receive Transaction Fees",
-      "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "receive",
-      "description": "Validator receives transaction fees for including transactions in blocks",
-      "risk_level": "Low"
-    },
-    {
-      "id": 26,
-      "name": "Receive Base BGT Emission",
-      "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "receive",
-      "description": "Validator receives base BGT emission for proposing a block",
-      "risk_level": "Low"
-    },
-    {
-      "id": 27,
-      "name": "Receive Incentive Commission",
-      "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 8,
-      "action": "receive",
-      "description": "Validator receives commission on incentive tokens from Reward Vaults",
-      "risk_level": "Low"
-    },
-    {
-      "id": 29,
-      "name": "Collect Fees (BEX)",
-      "initiator_type": "Component",
-      "initiator_id": 5,
-      "target_id": 12,
-      "action": "collect",
-      "description": "BEX collects fees from user interactions and sends them to the FeeCollector",
-      "risk_level": "Low"
-    },
-    {
-      "id": 30,
-      "name": "Collect Fees (Honey Swap)",
-      "initiator_type": "Component",
-      "initiator_id": 6,
-      "target_id": 12,
-      "action": "collect",
-      "description": "Honey Swap collects fees from user interactions and sends them to the FeeCollector",
-      "risk_level": "Low"
-    },
-    {
-      "id": 31,
-      "name": "Distribute Fees",
-      "initiator_type": "Component",
-      "initiator_id": 12,
-      "target_id": 13,
-      "action": "distribute",
-      "description": "FeeCollector distributes collected fees (as WBERA) to the BGTIncentiveDistributor",
-      "risk_level": "Low"
-    },
-    {
-      "id": 32,
-      "name": "Distribute Incentives/Fees",
-      "initiator_type": "Component",
-      "initiator_id": 13,
-      "target_id": 1,
-      "action": "distribute",
-      "description": "BGTIncentiveDistributor makes incentives and fees available for users to claim",
-      "risk_level": "Low"
-    },
-    {
-      "id": 33,
       "name": "Stake BERA",
       "initiator_type": "Actor",
       "initiator_id": 2,
       "target_id": 1,
-      "action": "stake",
-      "description": "Validator operator stakes BERA to become eligible for the active set",
+      "action": "Stake",
+      "description": "Validator operator locks BERA to participate in consensus.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 17,
+      "name": "Propose Block",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 1,
+      "action": "Propose Block",
+      "description": "Validator operator's node creates and submits a new block for consensus.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 18,
+      "name": "Direct BGT Emissions",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 7,
+      "action": "Direct Emissions",
+      "description": "Validator operator allocates earned BGT emissions to chosen reward vaults.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 19,
+      "name": "Receive Incentives",
+      "initiator_type": "Component",
+      "initiator_id": 11,
+      "target_id": 2,
+      "action": "Receive",
+      "description": "Validator operator receives incentive tokens commission from the distributor.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 20,
+      "name": "Receive dApp Fees",
+      "initiator_type": "Component",
+      "initiator_id": 11,
+      "target_id": 2,
+      "action": "Receive",
+      "description": "Validator operator receives a share of collected dApp fees from the distributor.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 21,
+      "name": "Create Reward Vault",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 21,
+      "action": "Create",
+      "description": "Protocol deploys a new Reward Vault contract via the factory.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 22,
+      "name": "Supply Incentive Tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 7,
+      "action": "Supply",
+      "description": "Protocol deposits tokens into their Reward Vault to incentivize validators.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 23,
+      "name": "Add Incentives",
+      "initiator_type": "Actor",
+      "initiator_id": 5,
+      "target_id": 7,
+      "action": "Add Incentives",
+      "description": "Token manager deposits incentive tokens into a whitelisted vault.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 24,
+      "name": "Cancel Malicious Proposal",
+      "initiator_type": "Actor",
+      "initiator_id": 4,
+      "target_id": 8,
+      "action": "Cancel",
+      "description": "Guardian prevents execution of a harmful governance proposal.",
+      "risk_level": "High"
+    },
+    {
+      "id": 25,
+      "name": "Update Proofs",
+      "initiator_type": "Component",
+      "initiator_id": 12,
+      "target_id": 11,
+      "action": "Update Proofs",
+      "description": "Off-chain service provides data for claiming.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 26,
+      "name": "Execute Transactions",
+      "initiator_type": "Component",
+      "initiator_id": 16,
+      "target_id": 1,
+      "action": "Execute",
+      "description": "Execution client processes transaction logic and state changes on the network.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 27,
+      "name": "Manage Consensus",
+      "initiator_type": "Component",
+      "initiator_id": 15,
+      "target_id": 1,
+      "action": "Manage Consensus",
+      "description": "BeaconKit coordinates validator agreement on block order and validity for the network.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 28,
+      "name": "Provide Consensus Algorithm",
+      "initiator_type": "Component",
+      "initiator_id": 14,
+      "target_id": 15,
+      "action": "Provide Consensus",
+      "description": "CometBFT implements the core consensus logic for BeaconKit.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 29,
+      "name": "Validator Node receives BGT block rewards",
+      "initiator_type": "Component",
+      "initiator_id": 1,
+      "target_id": 13,
+      "action": "Receive",
+      "description": "The network distributes BGT block rewards to the validator node.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 30,
+      "name": "Validator Node receives Gas fees/Priority fees",
+      "initiator_type": "Component",
+      "initiator_id": 1,
+      "target_id": 13,
+      "action": "Receive",
+      "description": "The network distributes transaction fees to the validator node.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 31,
+      "name": "User receives LP/Receipt token",
+      "initiator_type": "Component",
+      "initiator_id": 4,
+      "target_id": 1,
+      "action": "Receive",
+      "description": "User receives LP/Receipt token from BEX after providing liquidity.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 32,
+      "name": "User receives BGT rewards (claimable)",
+      "initiator_type": "Component",
+      "initiator_id": 11,
+      "target_id": 1,
+      "action": "Receive",
+      "description": "User receives claimable BGT rewards from the Incentive Distributor.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 33,
+      "name": "Validator Operator receives Incentive commission",
+      "initiator_type": "Component",
+      "initiator_id": 11,
+      "target_id": 2,
+      "action": "Receive",
+      "description": "Validator operator receives incentive commission from the BGT Incentive Distributor.",
       "risk_level": "Low"
     },
     {
       "id": 34,
-      "name": "Manage Incentive Rates",
+      "name": "Validator Operator receives dApp Fees",
+      "initiator_type": "Component",
+      "initiator_id": 11,
+      "target_id": 2,
+      "action": "Receive",
+      "description": "Validator operator receives a share of dApp fees from the BGT Incentive Distributor.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 35,
+      "name": "User receives BERA after burning BGT",
+      "initiator_type": "Component",
+      "initiator_id": 1,
+      "target_id": 1,
+      "action": "Receive",
+      "description": "User receives BERA from the network after burning BGT.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 36,
+      "name": "HoneyFactory transfers fee shares",
+      "initiator_type": "Component",
+      "initiator_id": 9,
+      "target_id": 10,
+      "action": "Transfer",
+      "description": "HoneyFactory transfers fee shares generated from mint/burn to the FeeCollector.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 37,
+      "name": "Validator Operator sets/queues incentive commission rate",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 13,
+      "action": "Set Rate",
+      "description": "Validator operator configures their incentive commission rate on their node.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 38,
+      "name": "User submits RFRV discussion/post",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 22,
+      "action": "Submit",
+      "description": "User posts discussion or RFRV details on the Governance Forum.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 39,
+      "name": "BGT Foundation reviews RFRV proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 6,
+      "target_id": 9,
+      "action": "Review",
+      "description": "BGT Foundation reviews governance proposals (RFRVs).",
+      "risk_level": "Low"
+    },
+    {
+      "id": 40,
+      "name": "Guardian reviews RFRV proposals",
+      "initiator_type": "Actor",
+      "initiator_id": 4,
+      "target_id": 9,
+      "action": "Review",
+      "description": "Guardian reviews governance proposals (RFRVs).",
+      "risk_level": "Low"
+    },
+    {
+      "id": 41,
+      "name": "Governance proposal is Executed",
+      "initiator_type": "Component",
+      "initiator_id": 8,
+      "target_id": 1,
+      "action": "Execute",
+      "description": "The Governance Contract executes a passed proposal on the network.",
+      "risk_level": "High"
+    },
+    {
+      "id": 42,
+      "name": "Incentive Token Manager sets Incentive Rate",
       "initiator_type": "Actor",
       "initiator_id": 5,
-      "target_id": 8,
-      "action": "manage",
-      "description": "Incentive Token Manager deposits incentives and sets/updates incentive rates for a Reward Vault",
-      "risk_level": "Medium"
+      "target_id": 7,
+      "action": "Set Rate",
+      "description": "Incentive Token Manager defines the rate for incentive distribution from a Reward Vault.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 43,
+      "name": "User contributes Incentive Token amount",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 7,
+      "action": "Contribute",
+      "description": "Any user can contribute incentive tokens to a Reward Vault (to be applied by manager).",
+      "risk_level": "Low"
+    },
+    {
+      "id": 44,
+      "name": "Validator Node provides data to Execution Client",
+      "initiator_type": "Component",
+      "initiator_id": 13,
+      "target_id": 16,
+      "action": "Provide Data",
+      "description": "Validator node sends transactions and block templates to the execution client.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 45,
+      "name": "HoneyFactory transfers collateral to vault",
+      "initiator_type": "Component",
+      "initiator_id": 9,
+      "target_id": 17,
+      "action": "Transfer",
+      "description": "HoneyFactory sends deposited collateral to the specific Honey Vault.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 46,
+      "name": "Honey Vault transfers shares to HoneyFactory",
+      "initiator_type": "Component",
+      "initiator_id": 17,
+      "target_id": 9,
+      "action": "Transfer",
+      "description": "Honey Vault issues and sends shares representing collateral to the HoneyFactory.",
+      "risk_level": "Low"
+    },
+    {
+      "id": 47,
+      "name": "HoneyFactory transfers collateral/shares back to user",
+      "initiator_type": "Component",
+      "initiator_id": 9,
+      "target_id": 1,
+      "action": "Transfer",
+      "description": "HoneyFactory sends collateral or shares to the user upon HONEY redemption.",
+      "risk_level": "Low"
     }
   ]
 }

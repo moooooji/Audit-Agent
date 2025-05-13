@@ -1,150 +1,408 @@
 {
   "evaluation_summary": {
-    "actors": "The extracted actors cover the main roles described in the documentation (Users, Validators, Protocols, Guardians, Token Managers). The descriptions and capabilities align well with the text. No significant missing actors were identified.",
-    "assets": "The extracted assets cover the key tokens, NFTs, and data types mentioned. The descriptions are accurate. Sensitivity levels are inferred but reasonable. No significant missing assets were identified.",
-    "components": "The extracted components cover the main systems, dApps, and smart contracts described. The descriptions are accurate. References in `assets_managed` are generally correct, although some components manage assets not explicitly listed in their `assets_managed` array (e.g., BEX manages BERA/HONEY/WETH/WBTC pools, but only LP tokens are listed). This is a minor inconsistency in completeness within the component definition, not an invalid reference.",
-    "data_flows": "The extracted data flows capture many of the interactions described between components and actors. The descriptions align with the documentation. References between components/actors are valid. Security properties are inferred but appropriate for a public blockchain context. Some flows are missing, particularly internal flows within the blockchain layer (e.g., between consensus/execution clients, validator interactions beyond block proposal).",
-    "trust_boundaries": "The extracted trust boundaries identify key separation points based on the system architecture described. The descriptions are relevant. References between components are valid. Validation requirements are inferred and appropriate. No significant missing boundaries were identified based on the level of detail in the document.",
-    "behaviors": "The extracted behaviors cover the main actions performed by actors and components as described in the documentation. The descriptions are accurate. References to actors and components are valid. Some behaviors are missing, particularly internal system behaviors (e.g., fee collection, incentive distribution processing)."
+    "actors": "The extracted actors list is mostly complete and traceable to the documentation. One actor type mentioned in the documentation (BGT Foundation) was not explicitly extracted as a distinct actor but is mentioned in the context of governance review.",
+    "assets": "The extracted assets list is comprehensive and well-supported by the documentation. All listed assets are explicitly mentioned or clearly implied as distinct entities within the system description.",
+    "components": "The extracted components list is largely accurate and traceable. However, some components mentioned in the documentation, particularly specific smart contracts, were not extracted. The trust levels assigned are not explicitly defined in the documentation but are reasonable inferences.",
+    "data_flows": "The extracted data flows capture many key interactions described in the documentation. However, some flows are missing, and the security properties assigned are inferences not explicitly stated in the text.",
+    "trust_boundaries": "The extracted trust boundaries identify logical separations within the system based on the documentation. The boundaries are reasonable interpretations of the system architecture described.",
+    "behaviors": "The extracted behaviors cover many user and system actions described. Some behaviors are missing, and the level of detail varies. The mapping of initiators and targets is generally correct based on the documentation."
   },
   "findings": [
     {
-      "category": "components",
-      "type": "inconsistent",
-      "id": 5,
-      "description": "Component 'Berachain BEX (Smart Contracts)' manages BERA, HONEY, WETH, WBTC (implied by pool descriptions) but these are not listed in 'assets_managed'."
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "The 'BGT Foundation' is mentioned as reviewing RFRV proposals but is not included as a distinct actor."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Testnet user RFA allocations are mentioned in the airdrop section but not included as a distinct asset type."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Ecosystem NFTs are mentioned in the airdrop section but not included as a distinct asset type."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Collateral assets other than USDC and BYUSD (e.g., stgUSDC mentioned in FAQ) are not explicitly listed as assets, although the Honey Swap section mentions 'approved stables and assets'."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 6,
-      "description": "Component 'Berachain Honey Swap (Smart Contracts)' manages HONEY and collateral assets (USDC, BYUSD) but these are not listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "Specific EVM Execution Clients (Geth, Reth, Erigon, Nethermind, Besu) are mentioned as components but not extracted."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 8,
-      "description": "Component 'Reward Vault (Smart Contract)' manages staked PoL-eligible assets (LP/Receipt Tokens) and BGT, but only BGT is listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "The BeraChef contract is mentioned in the context of Reward Vault whitelisting but is not extracted as a component."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 9,
-      "description": "Component 'Governance Contract' manages BGT (for voting power) and Governance Proposals, but only Governance Proposals and Voting Power are listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "The BlockRewardController contract is mentioned in Proof of Liquidity Updates but is not extracted as a component."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 10,
-      "description": "Component 'HoneyFactory (Smart Contract)' manages HONEY, collateral tokens (via vaults), and HONEY Vault Shares, but only HONEY Vault Shares and HONEY are listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "The Honey Paper is mentioned as a document but not extracted as a component (if considered documentation asset)."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 11,
-      "description": "Component 'HONEY Vault (Smart Contract)' manages collateral tokens (USDC, BYUSD) and HONEY Vault Shares, but only collateral tokens and HONEY Vault Shares are listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "The Governance Forum (hub.forum.berachain.com) is mentioned as a platform for RFRV discussion but is not extracted as a component."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 12,
-      "description": "Component 'FeeCollector (Smart Contract)' manages collected fees (BERA/HONEY) and WBERA (after auction), but only BERA and HONEY are listed in 'assets_managed'."
+      "type": "missing",
+      "id": null,
+      "description": "The Auto-Incentivizer is mentioned as a feature/component in PoL updates but is not extracted."
     },
     {
       "category": "components",
-      "type": "inconsistent",
-      "id": 13,
-      "description": "Component 'BGTIncentiveDistributor (Smart Contract)' manages Incentive Tokens and WBERA (from FeeCollector), but only Incentive Tokens and BERA are listed in 'assets_managed'."
-    },
-    {
-      "category": "components",
-      "type": "inconsistent",
-      "id": 17,
-      "description": "Component 'Execution Client (EVM)' manages the state of all assets on the chain, but the 'assets_managed' list is incomplete."
+      "type": "missing",
+      "id": null,
+      "description": "The Reward Vault Factory contract is mentioned in Vault Creation but is not extracted as a component."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow representing Validator receiving Incentive Tokens (non-commission) for distribution to Boosters is missing."
+      "description": "Flow: Validator receives BGT block rewards from the network."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow representing Validator receiving dApp fees (via FeeCollector/Distributor) is missing."
+      "description": "Flow: Validator receives gas fees/priority fees from the network."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow representing the backend service (14) receiving data about incentive distribution/entitlements from on-chain contracts (e.g., BGTIncentiveDistributor 13) is missing."
+      "description": "Flow: User receives LP/Receipt token after providing liquidity."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow representing the FeeCollector (12) auctioning fees for WBERA is missing."
+      "description": "Flow: User receives BGT rewards from the Reward Vault (claimable)."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow representing the HoneyFactory (10) transferring fee shares to the FeeCollector (12) is missing."
+      "description": "Flow: Validator receives incentive commission from the BGTIncentiveDistributor."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: User receives BERA after burning BGT."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: HoneyFactory transfers fee shares to the fee receiver."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: FeeCollector auctions fees for WBERA."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Validator sets/queues incentive commission rate."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Governance proposal is submitted to the Governance Contract."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Guardian cancels a proposal via the Governance Contract."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Governance proposal is executed."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Validator node communicates with Execution Client (transactions, block template)."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Execution Client communicates with Consensus Layer (block data, execution results)."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Consensus Layer communicates with CometBFT (consensus messages)."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: Validator node communicates with Consensus Layer (block proposal, votes)."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Flow: HoneyFactory interacts with Honey Vault (transfer collateral/shares)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the Protocol/Project (Actor 3) and the Berachain Network (Component 1)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the Incentive Token Manager (Actor 5) and the Berachain Network (Component 1)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the Guardian (Actor 4) and the Governance Contract (Component 8)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the BeraHub frontend (Component 6) and the Berachain Network (Component 1)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the Reward Vault (Component 7) and the BGTIncentiveDistributor (Component 11)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the FeeCollector (Component 10) and the BGTIncentiveDistributor (Component 11)."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Boundary between the HoneyFactory (Component 9) and the Honey Vault (Component 17)."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Receive Transaction Fees' for Validator Node (2) is missing."
+      "description": "Validator receives BGT block rewards."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Receive Base BGT Emission' for Validator Node (2) is missing."
+      "description": "Validator receives gas fees/priority fees."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Receive Incentive Commission' for Validator Node (2) is missing."
+      "description": "User receives LP/Receipt token."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Receive dApp Fees' for User (1) is missing."
+      "description": "User receives BGT rewards (claimable)."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Collect Fees' for BEX (5) and Honey Swap (6) is missing."
+      "description": "Validator receives incentive commission."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Distribute Fees' for FeeCollector (12) is missing."
+      "description": "User receives BERA after burning BGT."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Distribute Incentives/Fees' for BGTIncentiveDistributor (13) is missing."
+      "description": "HoneyFactory transfers fee shares."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Stake BERA' for Validator Operator (2) is missing."
+      "description": "FeeCollector auctions fees."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Manage Incentive Rates' for Incentive Token Manager (5) is missing."
+      "description": "Validator sets/queues incentive commission rate."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "User submits RFRV form/post."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "BGT Foundation/Guardians review RFRV proposals."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Governance proposal enters Pending state."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Governance proposal enters Active Voting state."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Governance proposal reaches Outcome (Succeeded/Defeated)."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Governance proposal enters Timelock state."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Governance proposal is Executed."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Guardian cancels a proposal."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Incentive Token Manager sets Incentive Rate."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Incentive Token Manager increases Incentive Rate."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Incentive Token Manager sets lower Incentive Rate (when exhausted)."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "User contributes Incentive Token amount (to be applied by manager)."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Validator node provides data to Execution Client."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Execution Client executes transactions."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "BeaconKit manages consensus."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "CometBFT provides consensus algorithm."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "HoneyFactory transfers collateral to vault."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "HoneyFactory receives shares from vault."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "HoneyFactory transfers collateral/shares back to user."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Basket Mode activates."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "User redeems for proportional share of collateral (Basket Mode)."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "User provides proportional amounts of collateral to mint (Basket Mode)."
     }
   ]
 }

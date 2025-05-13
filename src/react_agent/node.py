@@ -26,11 +26,11 @@ from react_agent.variables import (
     data_flows_map,
     trust_boundaries_map,
     behaviors_map,
-    all_threats,
     threats_list
 )
 
 from react_agent.prompt import THREAT_ANALYSIS_TEMPLATE, CHECKLIST_TEMPLATE
+from langgraph.types import Send
 
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
@@ -49,9 +49,7 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed first architecture analysis")
         
-        state.is_initial_architecture_analysis = False
-        
-        return state
+        return {"is_initial_architecture_analysis": False}
     else:
         print("feedback loop architecture analysis ...")
         state.is_feedback_architecture_analysis = True
@@ -65,9 +63,7 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed feedback loop architecture analysis")
         
-        state.is_feedback_architecture_analysis = False
-        
-        return state
+        return {"is_feedback_architecture_analysis": False}
     
 # assessment node
 def assess_architecture(state: State) -> State:
@@ -81,11 +77,10 @@ def assess_architecture(state: State) -> State:
     save_json(response_dict, "results/assessment.json")
     print("completed assessing architecture")
     
-    # feedback loop count
-    state.architecture_feedback_loop_count += 1
-    state.is_assessment_analysis = False
-    
-    return state
+    return {
+        "is_assessment_analysis": False, 
+        "architecture_feedback_loop_count": state.architecture_feedback_loop_count+1
+        }
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
@@ -95,40 +90,32 @@ def analyze_threats(state: State) -> State:
     target_docs = load_file(state.target_docs_path)
     # read architecture_correction file
     architecture_correction = load_file("results/architecture_analysis.json")
-        
-    for actor_number in range(len(actors_map)):
-        cur_actor = build_llm_chunk(architecture_correction, actor_number + 1)
-
-        prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chuck}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
-        state.threat_prompt = prompt
-        response = generate_llm_response(state)
-        # parsing response and save to file
-        response_dict = json_str_to_dict(response.text)
-        for i in response_dict["threats"]:
-            i["id"] = id_weight
-            id_weight += 1
-            
-        threats_list.append(response_dict["threats"])
-        print(f"{actor_number}번 actor의 threats {len(response_dict['threats'])}건 추출 완료. 총 {id_weight}개")
-    print(f"총 actor {len(threats_list)}명의 threat {id_weight}개 추출 완료")
     
-    for i, actor_threat in enumerate(threats_list):
-        # save actors' threats
-        save_json(actor_threat, f'results/actors/threats_actor_{i+1}.json')
-        print(f"Saved threats for actor {i+1}")
+    cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
+    
+    prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chuck}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
+    state.threat_prompt = prompt
+    response = generate_llm_response(state)
+    # parsing response and save to file
+    response_dict = json_str_to_dict(response.text)
+    for i in response_dict["threats"]:
+        i["id"] = id_weight
+        id_weight += 1
         
-        # append to all threats list actor_threat
-        all_threats.extend(actor_threat)
-        
-    save_json({ "threats": all_threats }, 'results/all_threats.json')
+    threats_list.append(response_dict["threats"])
+    
+    save_json(response_dict["threats"], f'results/actors/threats_actor_{state.current_actor_id+1}.json')
+    print(f"Saved threats for actor {state.current_actor_id+1}")
+    
+    return {"is_threat_analysis": False}
+
+def generate_checklist(state: State) -> State:
+    
+    # threat logic
+    save_json({ "threats": threats_list }, 'results/all_threats.json')
     print("Saved all threats in 'all_threats.json'")
     print("completed analyzing threats")
     
-    state.is_threat_analysis = False
-    
-    return state
-
-def generate_checklist(state: State) -> State:
     print("generating checklist ...")
     state.is_checklist_analysis = True
     # read target docs file
@@ -188,9 +175,7 @@ def generate_checklist(state: State) -> State:
     print("Saved checklist in 'results/checklist.json'")
     print("completed generating checklist")
     
-    state.is_checklist_analysis = False
-    
-    return state
+    return {"is_checklist_analysis": False}
 
 def verify_checklist(state: State) -> State:
     print("verifying checklist ...")
@@ -200,10 +185,7 @@ def verify_checklist(state: State) -> State:
     
     print("completed verifying checklist")
     
-    state.checklist_feedback_loop_count += 1
-    state.is_verify_checklist = False
-    
-    return state
+    return {"is_verify_checklist": False, "checklist_feedback_loop_count": state.checklist_feedback_loop_count+1}
 
 def init_db(state: State) -> State:
     print("initializing vector db ...")
@@ -225,16 +207,14 @@ def code_binding(state: State) -> State:
     
     print("completed code binding")
     
-    state.is_code_binding = False
-    
-    return state
+    return {"is_code_binding": False}
 
 def verify_checklist_with_code(state: State) -> State:
     state.is_verify_checklist_with_code = True
     
     _verify_checklist_with_code(state)
     
-    state.checklist_with_code_feedback_loop_count += 1
-    state.is_verify_checklist_with_code = False
-    
-    return state
+    return {
+        "is_verify_checklist_with_code": False, 
+        "checklist_with_code_feedback_loop_count": state.checklist_with_code_feedback_loop_count+1
+        }

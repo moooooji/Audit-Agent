@@ -11,15 +11,23 @@ from react_agent.node import (
     verify_checklist_with_code
 )
 # dataset/berachain_docs_merged.md
-from react_agent.variables import ARCHITECTURE_FEEDBACK_LOOP_COUNT, CHECKLIST_FEEDBACK_LOOP_COUNT, CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT
+from react_agent.variables import (
+    ARCHITECTURE_FEEDBACK_LOOP_COUNT, 
+    CHECKLIST_FEEDBACK_LOOP_COUNT, 
+    CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT,
+    actors_map
+    )
+
+from langgraph.types import Send
 
 def architecture_feedback_loop_edge(state: State):
     print(state)
-    if state.architecture_feedback_loop_count  < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
+    if state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
         return "assess_architecture"
     else:
-        return "analyze_threats"
-    
+        # 피드백 루프가 끝나면 병렬 처리 시작
+        return parallel_threats_processing(state)
+
 def checklist_feedback_loop_edge(state: State):
     if state.checklist_feedback_loop_count  < CHECKLIST_FEEDBACK_LOOP_COUNT:
         return "verify_checklist"
@@ -31,6 +39,27 @@ def checklist_with_code_feedback_loop_edge(state: State):
         return "verify_checklist_with_code"
     else:
         return "__end__"
+    
+def parallel_threats_processing(state: State):
+    # update current_actor_id
+    return [Send("analyze_threats", State(
+        target_docs_path=state.target_docs_path,
+        current_actor_id=i,
+        is_threat_analysis=True,
+        architecture_feedback_loop_count=state.architecture_feedback_loop_count,
+        checklist_feedback_loop_count=state.checklist_feedback_loop_count,
+        checklist_with_code_feedback_loop_count=state.checklist_with_code_feedback_loop_count,
+        is_initial_architecture_analysis=state.is_initial_architecture_analysis,
+        is_assessment_analysis=state.is_assessment_analysis,
+        is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
+        is_checklist_analysis=state.is_checklist_analysis,
+        is_code_binding=state.is_code_binding,
+        is_init_db=state.is_init_db,
+        is_verify_checklist=state.is_verify_checklist,
+        is_verify_checklist_with_code=state.is_verify_checklist_with_code,
+        threat_prompt=state.threat_prompt,
+        checklist_prompt=state.checklist_prompt
+    )) for i in range(len(actors_map))]
 
 # define a new graph
 builder = StateGraph(State, input=InputState)

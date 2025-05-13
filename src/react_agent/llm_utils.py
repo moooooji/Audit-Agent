@@ -352,7 +352,7 @@ def _init_db():
     
     # parse target directory
     print("parsing target directory ...")
-    functions = FunctionParser.process_directory("./src/react_agent/Utils/v4-core/src", "functions.json")
+    functions = FunctionParser.process_directory("./src/react_agent/Utils/contracts/src", "functions.json")
     print("completed parsing target directory")
     
     # set redis
@@ -362,7 +362,7 @@ def _init_db():
     
     # Parsing storage
     print("parsing storage ...")
-    storage = StorageParser.extract_storage("./src/react_agent/Utils/v4-core/src")
+    storage = StorageParser.extract_storage("./src/react_agent/Utils/contracts/src")
     print("completed parsing storage")
     
     # set redis
