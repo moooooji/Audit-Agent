@@ -1,542 +1,431 @@
 [
   {
-    "id": 53,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 302,
-      "capability_match": "Send Boost Request"
-    },
-    "threat_target": {
-      "component_id": 101,
-      "asset_ids": [
-        201
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 302,
-      "data_flow_id": 402,
-      "data_description": "Validator ID, BGT amount, transaction data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
-      "between_component_ids": [
-        1,
-        101
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Request origin is not verified, allowing spoofing."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Unauthenticated external user sending requests."
-    },
-    "behavioral_risk": {
-      "behavior_id": 302,
-      "risk_level": "High",
-      "rationale": "Requests may lack proper authentication or signature verification, critical for financial actions."
-    },
-    "assumptions": [
-      "Attacker can forge requests appearing to come from a user.",
-      "Hub endpoint or smart contract does not verify sender identity cryptographically."
-    ],
-    "mitigation": {
-      "strategy": "Implement request signing and verification on sensitive actions.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker sends a boost request appearing to originate from another user, potentially causing incorrect validator boosts or BGT transfers.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Queue Boost"
-    }
-  },
-  {
-    "id": 54,
+    "id": 7,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 302,
-      "capability_match": "Modify Boost Request"
+      "behavior_id": 2,
+      "capability_match": "Swap Tokens"
     },
     "threat_target": {
-      "component_id": 101,
+      "component_id": 5,
       "asset_ids": [
-        201
+        3,
+        4,
+        13,
+        14,
+        16,
+        17,
+        18
       ]
     },
     "attack_surface": {
-      "behavior_id": 302,
-      "data_flow_id": 402,
-      "data_description": "Validator ID, BGT amount, transaction data"
+      "behavior_id": 2,
+      "data_flow_id": 4,
+      "data_description": "Token pair, amount in, min amount out, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        101
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Request payload can be altered in transit."
+      "gap_description": "Swap transaction parameters (amounts, price calculation) may be manipulated by exploiting a contract vulnerability."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User or attacker manipulating transaction data."
+      "description": "An external user interacting with the BEX contract."
     },
     "behavioral_risk": {
-      "behavior_id": 302,
+      "behavior_id": 2,
       "risk_level": "High",
-      "rationale": "Request payload might not be integrity-protected (signed over content), allowing manipulation of amount or target."
+      "rationale": "A vulnerability in the swap logic could lead to significant financial loss for users or the protocol."
     },
     "assumptions": [
-      "Attacker can intercept and modify the request payload.",
-      "Hub endpoint or smart contract accepts modified payload without detecting tampering."
+      "The BEX contract's swap logic contains a vulnerability (e.g., precision error, re-entrancy in a non-guarded function, flash loan exploit vulnerability) that allows token amounts or price to be manipulated after signing."
     ],
     "mitigation": {
-      "strategy": "Implement request signing covering the entire payload hash.",
+      "strategy": "Conduct thorough smart contract audits focusing on arithmetic, re-entrancy, and external calls in swap logic.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker intercepts a boost request and modifies the validator ID or BGT amount before it is processed.",
+    "description": "An attacker may tamper with swap execution or outcomes by exploiting vulnerabilities in the BEX smart contract.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Queue Boost"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap execution"
     }
   },
   {
-    "id": 55,
-    "stride_category": "Elevation of Privilege",
+    "id": 8,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 302,
-      "capability_match": "Queue/Activate Boost for another user"
+      "behavior_id": 4,
+      "capability_match": "Stake BGT"
     },
     "threat_target": {
-      "component_id": 101,
+      "component_id": 6,
       "asset_ids": [
-        201
+        4,
+        15
       ]
     },
     "attack_surface": {
-      "behavior_id": 302,
-      "data_flow_id": 402,
-      "data_description": "Validator ID, BGT amount, transaction data"
+      "behavior_id": 4,
+      "data_flow_id": 6,
+      "data_description": "BGT amount, Reward Vault ID, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
+      "boundary_id": 3,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        101
+        6
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
+      "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Authorization check fails to ensure action is on behalf of authenticated user with ownership."
+      "gap_description": "Users may be unable to stake or unstake BGT due to a vulnerability in the Reward Vault contract logic that locks funds."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
-      "overprivileged": true,
-      "description": "Attacker gains ability to act as another user regarding BGT boosting."
+      "overprivileged": false,
+      "description": "An external user interacting with the Reward Vault contract."
     },
     "behavioral_risk": {
-      "behavior_id": 302,
+      "behavior_id": 4,
       "risk_level": "High",
-      "rationale": "Weak authorization allows unauthorized cross-user BGT actions."
+      "rationale": "If funds become locked, users cannot participate in staking/boosting or access their BGT, severely impacting the PoL system."
     },
     "assumptions": [
-      "Authentication mechanism is weak (e.g., session hijacking).",
-      "Request processing does not verify BGT ownership against the authenticated user ID before action."
+      "The Reward Vault contract contains a vulnerability (e.g., infinite loop, re-entrancy affecting state updates, faulty access control) that prevents users from interacting with their staked BGT."
     ],
     "mitigation": {
-      "strategy": "Enforce strong authentication and verify BGT ownership against authenticated user ID for boost actions.",
+      "strategy": "Conduct thorough smart contract audits focusing on state transitions and external interactions in staking/unstaking functions.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker exploits weak authorization or authentication to queue or activate a BGT boost using another user's BGT balance.",
+    "description": "An attacker could trigger a vulnerability in a Reward Vault contract to lock users' staked BGT, causing a denial of service for staking/unstaking.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Queue Boost, Activate Boost"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Staking/Unstaking BGT"
     }
   },
   {
-    "id": 56,
+    "id": 9,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 303,
-      "capability_match": "Send forged vote"
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 102,
+      "component_id": 7,
       "asset_ids": [
-        201
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 303,
-      "data_flow_id": 403,
-      "data_description": "Proposal ID, vote choice, signature"
+      "behavior_id": 5,
+      "data_flow_id": 7,
+      "data_description": "Proposal ID, vote choice, BGT weight used, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 502,
-      "boundary_name": "User to Governance Contract",
+      "boundary_id": 4,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        102
+        7
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Vote origin or signature verification is weak."
+      "gap_description": "Governance contract may accept votes spoofing a user's identity and BGT weight if signature validation is insufficient or bypassed."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker sending fraudulent votes."
+      "description": "An external user attempting to vote on governance proposals."
     },
     "behavioral_risk": {
-      "behavior_id": 303,
+      "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Votes determine governance outcomes; lack of strong cryptographic verification is critical."
+      "rationale": "Successful spoofing of votes could manipulate governance outcomes, impacting the entire protocol."
     },
     "assumptions": [
-      "Governance contract doesn't verify the signature against the BGT holder's address.",
-      "Attacker can generate signatures for arbitrary addresses."
+      "The governance contract's signature verification process is flawed or can be bypassed.",
+      "An attacker can submit votes attributed to a victim user without their valid authorization."
     ],
     "mitigation": {
-      "strategy": "Governance contract must cryptographically verify vote signatures against BGT holder addresses with sufficient voting power.",
+      "strategy": "Implement robust signature validation strictly tied to the address holding/delegating the BGT weight for voting.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker submits a vote to the governance contract using a forged signature or identity, potentially influencing proposal outcomes.",
+    "description": "An attacker may impersonate a legitimate user to cast fraudulent votes on governance proposals, potentially altering outcomes.",
     "trace_source": {
       "doc_reference": "governance.md",
-      "matched_capability": "Submit the Proposal"
+      "matched_capability": "Vote submission authentication"
     }
   },
   {
-    "id": 57,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 303,
-      "capability_match": "Modify vote in transit"
-    },
-    "threat_target": {
-      "component_id": 102,
-      "asset_ids": [
-        201
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 303,
-      "data_flow_id": 403,
-      "data_description": "Proposal ID, vote choice, signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 502,
-      "boundary_name": "User to Governance Contract",
-      "between_component_ids": [
-        1,
-        102
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote payload can be altered after signing but before contract processing."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Attacker modifying a legitimate vote."
-    },
-    "behavioral_risk": {
-      "behavior_id": 303,
-      "risk_level": "High",
-      "rationale": "Tampering with votes corrupts the governance process; signature must cover entire payload."
-    },
-    "assumptions": [
-      "Signature on the vote message does not cover the entire, unencrypted payload being processed by the contract.",
-      "Attacker can intercept and modify the payload."
-    ],
-    "mitigation": {
-      "strategy": "Ensure vote messages are signed using a hash of the entire payload (proposal ID, vote choice, etc.).",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker intercepts a user's vote submission and alters the vote choice (e.g., from 'Yes' to 'No') before it reaches the governance contract, provided the signature doesn't cover the change.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Submit the Proposal"
-    }
-  },
-  {
-    "id": 58,
+    "id": 10,
     "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 303,
-      "capability_match": "Cast vote using unauthorized BGT"
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 102,
+      "component_id": 7,
       "asset_ids": [
-        201
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 303,
-      "data_flow_id": 403,
-      "data_description": "Proposal ID, vote choice, signature"
+      "behavior_id": 5,
+      "data_flow_id": 7,
+      "data_description": "Proposal ID, vote choice, BGT weight used, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 502,
-      "boundary_name": "User to Governance Contract",
+      "boundary_id": 4,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        102
+        7
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Contract allows voting using BGT balance not controlled by the sender/signer."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": true,
-      "description": "Attacker votes using another user's delegated or owned BGT voting power."
-    },
-    "behavioral_risk": {
-      "behavior_id": 303,
-      "risk_level": "High",
-      "rationale": "Unauthorized voting undermines governance integrity; control of voting power must be strictly enforced."
-    },
-    "assumptions": [
-      "Governance contract does not correctly check that the address casting the vote controls the claimed BGT voting power (either directly or via delegation).",
-      "Attacker can submit a transaction claiming voting power they don't control."
-    ],
-    "mitigation": {
-      "strategy": "Governance contract must strictly verify that the voting power used for a vote belongs to the address signing/submitting the vote.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker exploits vulnerabilities to cast votes in governance proposals, leveraging the voting power of BGT owned or delegated to other users.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Ensure Sufficient Voting Power, Delegate $BGT, Submit the Proposal"
-    }
-  },
-  {
-    "id": 59,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 304,
-      "capability_match": "Send forged claim proof"
-    },
-    "threat_target": {
-      "component_id": 101,
-      "asset_ids": [
-        203
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 304,
-      "data_flow_id": 404,
-      "data_description": "Incentive IDs, claim amount, Merkle proof, signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
-      "between_component_ids": [
-        1,
-        101
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Claim proof verification system is vulnerable to forgery."
+      "gap_description": "A user might gain unauthorized voting power or influence governance outcomes beyond their entitled BGT weight due to flawed access control."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker generating fraudulent proofs to claim unearned rewards."
+      "description": "An external user attempting to vote, potentially with unauthorized privileges."
     },
     "behavioral_risk": {
-      "behavior_id": 304,
+      "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Weak proof verification allows claiming unearned rewards, leading to theft of assets."
+      "rationale": "Unauthorized increase in voting power or manipulation of vote counting directly undermines decentralized governance."
     },
     "assumptions": [
-      "The proof generation or verification mechanism has vulnerabilities allowing forgery (e.g., Merkle proof attack, predictable proof elements).",
-      "Attacker can submit forged proofs through the Hub or directly to the distribution contract."
+      "The governance contract's access control logic for vote casting or BGT weight calculation is flawed.",
+      "An attacker can exploit the flaw to cast votes with higher weight than their BGT holdings/delegation allows."
     ],
     "mitigation": {
-      "strategy": "Ensure the proof system (e.g., Merkle tree) is cryptographically secure and verified on-chain or via trusted oracle.",
+      "strategy": "Conduct thorough smart contract audits focusing on access control and BGT weight calculation in the governance contract.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker forges a proof of entitlement to incentives and submits it to claim rewards they did not earn.",
+    "description": "An attacker could exploit a vulnerability to gain unauthorized voting power or manipulate vote counting in the governance contract.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
+      "doc_reference": "governance.md",
+      "matched_capability": "Access control for voting"
     }
   },
   {
-    "id": 60,
+    "id": 11,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 304,
-      "capability_match": "Modify Claim Incentives Request/Proof"
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 101,
+      "component_id": 8,
       "asset_ids": [
-        203
+        12
       ]
     },
     "attack_surface": {
-      "behavior_id": 304,
-      "data_flow_id": 404,
-      "data_description": "Incentive IDs, claim amount, Merkle proof, signature"
+      "behavior_id": 7,
+      "data_flow_id": 9,
+      "data_description": "Incentive token ID, amount, proof, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
+      "boundary_id": 5,
+      "boundary_name": "User to Validator",
       "between_component_ids": [
         1,
-        101
+        8
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Claim request details or proof payload can be altered after signing/generation but before processing."
+      "gap_description": "Claim amount or entitlement proof may be tampered with due to vulnerability in proof verification or claim contract."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker modifying claim details in transit."
+      "description": "An external user attempting to claim earned incentives."
     },
     "behavioral_risk": {
-      "behavior_id": 304,
+      "behavior_id": 7,
       "risk_level": "High",
-      "rationale": "Tampering with claims leads to incorrect distribution of valuable incentive tokens."
+      "rationale": "Tampering with claim logic or proofs could allow attackers to steal incentives belonging to other users."
     },
     "assumptions": [
-      "The claim request or the proof itself can be modified without invalidating the signature or proof verification.",
-      "Attacker can intercept the request."
+      "The contract or off-chain service verifying the claim proof is vulnerable.",
+      "An attacker can forge or manipulate a proof to claim more incentives than entitled or incentives belonging to others."
     ],
     "mitigation": {
-      "strategy": "Ensure claim requests and associated proofs are signed or integrity-protected end-to-end.",
+      "strategy": "Ensure robust and secure merkle proof generation and on-chain verification logic.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker intercepts a legitimate claim request and modifies the incentive IDs, amount, or proof to claim more or different tokens than entitled.",
+    "description": "An attacker may tamper with claim proofs or exploit the claim contract to claim incentives they are not entitled to.",
     "trace_source": {
       "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
+      "matched_capability": "Claim proof verification"
     }
   },
   {
-    "id": 61,
+    "id": 12,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Provide Liquidity"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        13,
+        14,
+        16,
+        17,
+        18
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 3,
+      "data_flow_id": 5,
+      "data_description": "Token amounts, pool ID, min LP tokens out, signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Users may be unable to provide or withdraw liquidity from BEX pools due to a contract vulnerability that locks funds."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user interacting with the BEX liquidity provision functions."
+    },
+    "behavioral_risk": {
+      "behavior_id": 3,
+      "risk_level": "High",
+      "rationale": "Locking liquidity prevents users from accessing their funds and disrupts the DEX's core function."
+    },
+    "assumptions": [
+      "The BEX contract's liquidity management logic contains a vulnerability (e.g., re-entrancy, faulty accounting) that prevents users from depositing or withdrawing liquidity."
+    ],
+    "mitigation": {
+      "strategy": "Conduct thorough smart contract audits focusing on liquidity deposit and withdrawal functions.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could exploit a vulnerability in the BEX contract to lock liquidity provided by users, causing a denial of service for LP actions.",
+    "trace_source": {
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Liquidity Provision/Withdrawal"
+    }
+  },
+  {
+    "id": 13,
     "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 304,
-      "capability_match": "Submit another user's claim proof"
+      "behavior_id": 4,
+      "capability_match": "Stake BGT"
     },
     "threat_target": {
-      "component_id": 101,
+      "component_id": 6,
       "asset_ids": [
-        203
+        4,
+        15
       ]
     },
     "attack_surface": {
-      "behavior_id": 304,
-      "data_flow_id": 404,
-      "data_description": "Incentive IDs, claim amount, Merkle proof, signature"
+      "behavior_id": 4,
+      "data_flow_id": 6,
+      "data_description": "BGT amount, Reward Vault ID, signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 501,
-      "boundary_name": "User to Hub",
+      "boundary_id": 3,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        101
+        6
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Claim verification does not strictly tie proof to the claiming address."
+      "gap_description": "An attacker might gain unauthorized ability to withdraw staked BGT from the Reward Vault belonging to other users."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
-      "overprivileged": true,
-      "description": "Attacker claims rewards entitled to other users."
+      "overprivileged": false,
+      "description": "An external user interacting with the Reward Vault, potentially seeking unauthorized access to funds."
     },
     "behavioral_risk": {
-      "behavior_id": 304,
+      "behavior_id": 4,
       "risk_level": "High",
-      "rationale": "Allows theft of user rewards by submitting proofs belonging to others."
+      "rationale": "Unauthorized withdrawal of staked BGT from the vault leads to direct financial loss for victims and loss of trust in the system."
     },
     "assumptions": [
-      "The proof of entitlement is not correctly linked to the user's wallet address that is submitting the claim.",
-      "Attacker can obtain valid proofs for other users (e.g., API vulnerability, proof leak)."
+      "The Reward Vault contract has a flawed access control check or logic error in its withdrawal function.",
+      "An attacker can exploit this flaw to bypass ownership checks and withdraw others' staked BGT."
     ],
     "mitigation": {
-      "strategy": "Ensure proof generation and verification strictly link the proof to the entitled wallet address. Require claim transaction to be signed by entitled address.",
+      "strategy": "Conduct thorough smart contract audits focusing on access control and withdrawal logic in the Reward Vault contract.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker obtains or generates a valid proof for another user's incentive entitlement and uses it to claim those incentives on their own address.",
+    "description": "An attacker could exploit a vulnerability in the Reward Vault contract to withdraw staked BGT belonging to other users.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Access control for withdrawals"
     }
   }
 ]

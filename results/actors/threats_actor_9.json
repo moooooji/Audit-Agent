@@ -1,916 +1,724 @@
 [
   {
-    "id": 53,
+    "id": 19,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 15,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
     },
     "threat_target": {
-      "component_id": 16,
+      "component_id": 1,
       "asset_ids": [
-        17
-      ],
-      "component_details": {
-        "id": 16,
-        "name": "BeraChef contract (Smart Contract)",
-        "description": "Smart contract related to Reward Vault whitelisting.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "asset_details": [
-        {}
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 15,
-      "data_flow_id": 18,
-      "data_description": "Claim request including off-chain proof",
-      "behavior_details": {
-        "id": 15,
-        "name": "Stake BERA",
-        "initiator_type": "Actor",
-        "initiator_id": 2,
-        "target_id": 1,
-        "action": "stake",
-        "description": "Validator stakes BERA to participate in consensus."
-      },
-      "data_flow_details": {
-        "id": 18,
-        "source_id": 2,
-        "destination_id": 1,
-        "data": "Staked BERA Data",
-        "description": "Validator stakes BERA on the chain.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
-      "between_component_ids": [
         1,
-        16
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Off-chain proof used for claiming incentives may be vulnerable to spoofing or tampering, allowing unauthorized claims."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "An external user with potential malicious intent interacting with the claiming mechanism.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
-    },
-    "behavioral_risk": {
-      "behavior_id": 15,
-      "risk_level": "High",
-      "rationale": "The claiming process relies on off-chain data which can be a point of compromise if not securely generated and verified."
-    },
-    "assumptions": [
-      "The off-chain proof generation or storage system is vulnerable to unauthorized access or modification.",
-      "The on-chain claiming contract relies solely on the provided proof without sufficient on-chain cross-validation."
-    ],
-    "mitigation": {
-      "strategy": "Implement stronger cryptographic verification of off-chain proofs tied to on-chain actions, or move proof generation/validation fully on-chain if feasible.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may spoof an off-chain proof to claim incentive tokens belonging to other users who boosted validators.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md",
-      "matched_capability": "Claim Incentive token rewards"
-    }
-  },
-  {
-    "id": 54,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 19,
-      "capability_match": "Stake/Withdraw from Reward Vault"
-    },
-    "threat_target": {
-      "component_id": 12,
-      "asset_ids": [
-        20
-      ],
-      "component_details": {
-        "id": 12,
-        "name": "Governance Contract",
-        "description": "Smart contract managing governance proposals, voting, and delegation.",
-        "trust_level": "High",
-        "assets_managed": [
-          2,
-          6,
-          11
-        ]
-      },
-      "asset_details": [
-        {}
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 19,
-      "data_flow_id": 21,
-      "data_description": "Stake or withdrawal transaction",
-      "behavior_details": {
-        "id": 19,
-        "name": "Collect Fees/MEV",
-        "initiator_type": "Actor",
-        "initiator_id": 2,
-        "target_id": 14,
-        "action": "collect_fees",
-        "description": "Validator collects transaction fees and MEV and sends them to the FeeCollector."
-      },
-      "data_flow_details": {
-        "id": 21,
-        "source_id": 15,
-        "destination_id": 2,
-        "data": "Incentive Token Commission Data",
-        "description": "Incentive distributor sends commission to the validator.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
-      "between_component_ids": [
-        1,
-        12
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Frequent or malicious staking/withdrawal actions might disrupt the reward vault's functionality or calculations."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "An external user attempting to grief the reward vault.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
-    },
-    "behavioral_risk": {
-      "behavior_id": 19,
-      "risk_level": "Medium",
-      "rationale": "Reward vaults relying on dynamic state (like total supply for APR) might be vulnerable to manipulation disrupting availability or perceived yield."
-    },
-    "assumptions": [
-      "The reward vault contract logic does not adequately prevent griefing attacks through frequent low-value deposits/withdrawals.",
-      "Calculations based on total supply or dynamic state are susceptible to manipulation affecting others."
-    ],
-    "mitigation": {
-      "strategy": "Implement minimum deposit/withdrawal amounts, add fees for frequent interactions, and ensure calculations are robust against state changes.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may perform griefing attacks on a reward vault by repeatedly staking and withdrawing small amounts, potentially disrupting its function or reported metrics.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Stake/Withdraw from Reward Vault"
-    }
-  },
-  {
-    "id": 55,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 22,
-      "capability_match": "Create Governance Proposal"
-    },
-    "threat_target": {
-      "component_id": 10,
-      "asset_ids": [
+        2,
+        3,
         4
-      ],
-      "component_details": {
-        "id": 10,
-        "name": "BeraHub (Frontend)",
-        "description": "Web interface for managing $BGT, accessing liquidity, and participating in governance.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "asset_details": [
-        {
-          "id": 4,
-          "name": "NFT",
-          "description": "Official Berachain or ecosystem NFTs.",
-          "type": "NFT",
-          "sensitivity": "Medium"
-        }
       ]
     },
     "attack_surface": {
-      "behavior_id": 22,
-      "data_flow_id": 23,
-      "data_description": "Governance proposal data including encoded actions",
-      "behavior_details": {
-        "id": 22,
-        "name": "Offer Incentive Tokens",
-        "initiator_type": "Actor",
-        "initiator_id": 3,
-        "target_id": 11,
-        "action": "offer_incentives",
-        "description": "Protocol offers incentive tokens to a Reward Vault to attract BGT emissions."
-      },
-      "data_flow_details": {
-        "id": 23,
-        "source_id": 3,
-        "destination_id": 11,
-        "data": "Incentive Token Data (Offering)",
-        "description": "Protocol offers incentive tokens to a Reward Vault.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
+      "behavior_id": 1,
+      "data_flow_id": 2,
+      "data_description": "Wallet connection request/response"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
+      "boundary_name": "User to Contract/Frontend",
       "between_component_ids": [
         1,
-        10
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Maliciously crafted proposal actions could disrupt the governance process or execution phase."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "An external user with sufficient BGT attempting to disrupt governance.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
-    },
-    "behavioral_risk": {
-      "behavior_id": 22,
-      "risk_level": "High",
-      "rationale": "Exploiting vulnerabilities in proposal execution logic can halt or delay critical network upgrades or changes."
-    },
-    "assumptions": [
-      "The governance contract's execution logic for proposals is vulnerable to malformed or malicious input actions.",
-      "Guardian oversight or automated checks do not fully prevent disruptive proposals from reaching or failing in the execution phase."
-    ],
-    "mitigation": {
-      "strategy": "Implement rigorous validation and sandboxing for proposal execution, enhance guardian monitoring and emergency cancellation capabilities.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may create a malicious governance proposal designed to cause the execution phase to fail or disrupt the governance contract, leading to denial of service.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Create a governance proposal"
-    }
-  },
-  {
-    "id": 56,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 22,
-      "capability_match": "Create Governance Proposal"
-    },
-    "threat_target": {
-      "component_id": 10,
-      "asset_ids": [
-        25
-      ],
-      "component_details": {
-        "id": 10,
-        "name": "BeraHub (Frontend)",
-        "description": "Web interface for managing $BGT, accessing liquidity, and participating in governance.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "asset_details": [
-        {}
+        2
       ]
-    },
-    "attack_surface": {
-      "behavior_id": 22,
-      "data_flow_id": 23,
-      "data_description": "Governance proposal data aiming to alter parameters or contract ownership",
-      "behavior_details": {
-        "id": 22,
-        "name": "Offer Incentive Tokens",
-        "initiator_type": "Actor",
-        "initiator_id": 3,
-        "target_id": 11,
-        "action": "offer_incentives",
-        "description": "Protocol offers incentive tokens to a Reward Vault to attract BGT emissions."
-      },
-      "data_flow_details": {
-        "id": 23,
-        "source_id": 3,
-        "destination_id": 11,
-        "data": "Incentive Token Data (Offering)",
-        "description": "Protocol offers incentive tokens to a Reward Vault.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
-      "between_component_ids": [
-        1,
-        10
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "A malicious proposal could, if passed and executed, grant excessive privileges or alter critical system parameters unfairly."
+      "gap_description": "Malicious frontend could capture private key or trick user into signing transactions."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "An external user attempting to manipulate governance outcomes for illicit gain.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
+      "description": "User interacts with potentially malicious frontend."
     },
     "behavioral_risk": {
-      "behavior_id": 22,
+      "behavior_id": 1,
       "risk_level": "High",
-      "rationale": "Successful exploitation allows attacker to gain unauthorized control or benefit by subverting governance."
+      "rationale": "Phishing via malicious frontend is a common attack vector against wallet connection."
     },
     "assumptions": [
-      "Voting power distribution is concentrated enough for a malicious actor/coalition to potentially meet quorum.",
-      "Guardian oversight or timelock delay is insufficient to detect and cancel all malicious proposals.",
-      "Vulnerabilities exist in how proposals are processed or executed that could be exploited for privilege escalation."
+      "User is directed to a malicious website posing as the legitimate frontend.",
+      "The wallet connection protocol does not provide sufficient verification of the remote party."
     ],
     "mitigation": {
-      "strategy": "Maintain decentralized BGT distribution, ensure active and vigilant guardians, implement robust timelock procedures, and conduct thorough code reviews of proposal actions.",
+      "strategy": "Educate users, implement wallet security features like URL verification and transaction simulation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may propose a governance change that, if successfully passed and executed, grants them unauthorized privileges or alters network parameters to their advantage.",
+    "description": "An attacker creates a fake Berachain Hub frontend to trick users into connecting their wallet, aiming to steal credentials or trick them into signing harmful transactions.",
     "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 57,
+    "id": 20,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
+    },
+    "threat_target": {
+      "component_id": 1,
+      "asset_ids": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 2,
+      "data_description": "Wallet connection request/response"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract/Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Connection parameters could be altered to point to a malicious network or endpoint."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Attacker compromises user's network connection to the frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "Medium",
+      "rationale": "Requires man-in-the-middle attack on the connection channel."
+    },
+    "assumptions": [
+      "Communication between wallet and frontend is not fully protected against tampering (e.g., lack of strict HTTPS enforcement)."
+    ],
+    "mitigation": {
+      "strategy": "Enforce secure communication protocols (HTTPS) for all connections.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker intercepts and modifies the data exchanged during the wallet connection process, potentially redirecting the user to a malicious endpoint or altering connection parameters.",
+    "trace_source": {
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 21,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
+    },
+    "threat_target": {
+      "component_id": 1,
+      "asset_ids": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 2,
+      "data_description": "Wallet connection request/response, account details"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract/Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Sensitive wallet information is disclosed to an untrusted party."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Malicious frontend requests sensitive wallet data."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "Low",
+      "rationale": "Standard wallet protocols usually require explicit user consent for sensitive info."
+    },
+    "assumptions": [
+      "A vulnerability in the wallet or connection protocol allows the frontend to access excessive or sensitive information without explicit user authorization."
+    ],
+    "mitigation": {
+      "strategy": "Ensure wallet requires explicit user permission for all sensitive data access requests.",
+      "type": "Technical Control",
+      "priority": "Low"
+    },
+    "description": "A malicious frontend could exploit vulnerabilities or user confusion to obtain sensitive information from the user's wallet during the connection process.",
+    "trace_source": {
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 22,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 26,
-      "capability_match": "Redeem BGT for BERA"
+      "behavior_id": 1,
+      "capability_match": "Connect Wallet"
     },
     "threat_target": {
-      "component_id": 27,
-      "asset_ids": [
-        5
-      ],
-      "component_details": {},
-      "asset_details": [
-        {
-          "id": 5,
-          "name": "Private Key",
-          "description": "Cryptographic key used to access and control assets in a wallet.",
-          "type": "Key",
-          "sensitivity": "High"
-        }
-      ]
+      "component_id": 1,
+      "asset_ids": []
     },
     "attack_surface": {
-      "behavior_id": 26,
-      "data_flow_id": 28,
-      "data_description": "BGT redemption transaction",
-      "behavior_details": {
-        "id": 26,
-        "name": "Execute Governance Proposal",
-        "initiator_type": "Component",
-        "initiator_id": 12,
-        "target_id": 1,
-        "action": "execute_proposal",
-        "description": "Governance contract executes the changes defined in a passed proposal on the blockchain."
-      },
-      "data_flow_details": {
-        "id": 28,
-        "source_id": 2,
-        "destination_id": 1,
-        "data": "Block Proposal Data",
-        "description": "Validator proposes a new block to the chain.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
+      "behavior_id": 1,
+      "data_flow_id": 2,
+      "data_description": "Wallet connection requests"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
+      "boundary_name": "User to Contract/Frontend",
       "between_component_ids": [
         1,
-        27
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
+        2
+      ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "The BGT redemption mechanism might be vulnerable to attacks preventing users from converting BGT to BERA."
+      "gap_description": "Malicious frontend floods wallet with requests."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "An external user attempting to disrupt the BGT redemption service.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
+      "description": "Malicious frontend attempts to disrupt wallet."
     },
     "behavioral_risk": {
-      "behavior_id": 26,
-      "risk_level": "Medium",
-      "rationale": "Disrupting the primary exit mechanism for BGT holders impacts user trust and network utility."
+      "behavior_id": 1,
+      "risk_level": "Low",
+      "rationale": "Wallets typically have built-in rate limiting or OS protections."
     },
     "assumptions": [
-      "The BGT redemption contract has vulnerabilities (e.g., reentrancy, resource limits) that can be exploited by an attacker.",
-      "The process linking BGT burn to BERA minting/transfer is susceptible to jamming."
+      "The user's wallet application is vulnerable to denial-of-service attacks from excessive or malformed connection requests initiated by a malicious frontend."
     ],
     "mitigation": {
-      "strategy": "Thoroughly audit redemption contract logic, implement circuit breakers or rate limiting if necessary.",
+      "strategy": "Implement robust request rate limiting and input validation within the wallet application.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "Low"
     },
-    "description": "An attacker may attempt to cause a denial of service on the BGT to BERA redemption mechanism, preventing users from swapping their BGT.",
+    "description": "A malicious frontend attempts to cause a denial of service for the user by flooding their wallet application with excessive connection requests.",
     "trace_source": {
-      "doc_reference": "pol/tokens/bgt.md",
-      "matched_capability": "Redeem BGT For BERA"
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
     }
   },
   {
-    "id": 58,
+    "id": 23,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 2,
+      "capability_match": "View Data"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 3,
+      "data_description": "Validator/Vault data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Public API reveals potentially exploitable timing-sensitive information."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Actor accesses public network data via frontend or directly via RPC."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "Low",
+      "rationale": "Data is generally public on a blockchain, but timing/precision might create opportunities for sophisticated attackers."
+    },
+    "assumptions": [
+      "Network RPC or indexer provides real-time, high-granularity data that can be used to predict or front-run on-chain events.",
+      "Attackers actively monitor public data endpoints for such opportunities."
+    ],
+    "mitigation": {
+      "strategy": "Carefully consider the timing, precision, and aggregation level of data exposed via public RPC endpoints and APIs.",
+      "type": "Technical Control",
+      "priority": "Low"
+    },
+    "description": "Accessing detailed, real-time data on validators or reward vaults from the network could potentially reveal timing-sensitive information exploitable for micro-arbitrage or prediction.",
+    "trace_source": {
+      "doc_reference": "doc_13",
+      "matched_capability": "Review active Reward Vaults"
+    }
+  },
+  {
+    "id": 24,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 2,
+      "capability_match": "View Data"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 3,
+      "data_description": "Data requests"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Public endpoints susceptible to request flooding."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Attacker abuses public API access."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "Medium",
+      "rationale": "Standard web/network DoS vectors apply to public endpoints."
+    },
+    "assumptions": [
+      "Public RPC endpoints or the frontend's data fetching layer lack sufficient rate limiting and DoS protection mechanisms."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust rate limiting, WAFs, and CDN protection for public endpoints.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker floods the Berachain Hub frontend or network RPC endpoints with data requests, causing denial of service and preventing legitimate users from viewing information.",
+    "trace_source": {
+      "doc_reference": "doc_13",
+      "matched_capability": "Review active Reward Vaults"
+    }
+  },
+  {
+    "id": 25,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Sign Transaction"
+    },
+    "threat_target": {
+      "component_id": 1,
+      "asset_ids": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 4,
+      "data_flow_id": 4,
+      "data_description": "Transaction signature request"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract/Frontend",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "User is prompted to sign a transaction they do not intend."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User is targeted via social engineering or compromised frontend."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "High",
+      "rationale": "Malicious frontends tricking users into signing harmful transactions is a major threat vector in web3."
+    },
+    "assumptions": [
+      "User interacts with a malicious website posing as the legitimate frontend.",
+      "The wallet does not adequately display or simulate the true effects of the transaction being signed."
+    ],
+    "mitigation": {
+      "strategy": "Educate users on verifying frontend authenticity, implement clear signing and transaction simulation features in wallets.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker tricks the user into signing a malicious transaction (e.g., token transfer, unlimited approval) by presenting it through a fake Berachain Hub frontend, leading to potential loss of assets.",
+    "trace_source": {
+      "doc_reference": "doc_13",
+      "matched_capability": "Boost validators with $BGT"
+    }
+  },
+  {
+    "id": 26,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 29,
-      "capability_match": "Swap Assets"
+      "behavior_id": 4,
+      "capability_match": "Sign Transaction"
     },
     "threat_target": {
-      "component_id": 13,
+      "component_id": 3,
       "asset_ids": [
-        5,
-        6
-      ],
-      "component_details": {
-        "id": 13,
-        "name": "HoneyFactory (Smart Contract)",
-        "description": "Central smart contract hub for $HONEY minting, connecting vaults.",
-        "trust_level": "High",
-        "assets_managed": [
-          3,
-          9,
-          15
-        ]
-      },
-      "asset_details": [
-        {
-          "id": 5,
-          "name": "Private Key",
-          "description": "Cryptographic key used to access and control assets in a wallet.",
-          "type": "Key",
-          "sensitivity": "High"
-        },
-        {
-          "id": 6,
-          "name": "Voting Power",
-          "description": "Influence in governance decisions, derived from BGT holdings/delegation.",
-          "type": "Voting Power",
-          "sensitivity": "High"
-        }
+        1,
+        2,
+        3,
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 29,
-      "data_flow_id": 30,
-      "data_description": "Swap transaction visible in mempool",
-      "behavior_details": {
-        "id": 29,
-        "name": "Distribute Block Rewards",
-        "initiator_type": "Component",
-        "initiator_id": 1,
-        "target_id": 2,
-        "action": "distribute_rewards",
-        "description": "Berachain distributes BGT emissions and collected fees/MEV to the block-proposing validator."
-      },
-      "data_flow_details": {
-        "id": 30,
-        "source_id": 12,
-        "destination_id": 1,
-        "data": "Proposal Execution Data",
-        "description": "Governance contract executes a passed proposal on the chain.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
+      "behavior_id": 4,
+      "data_flow_id": 5,
+      "data_description": "Signed Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 31,
-      "boundary_name": "User to Validator/Block Builder",
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
       "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Transaction details are altered after signing but before execution on chain."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Attacker compromises communication channel to the network."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "Medium",
+      "rationale": "Requires man-in-the-middle attack on the network communication layer."
+    },
+    "assumptions": [
+      "The communication channel between the broadcasting client (frontend/wallet) and the network RPC endpoint is compromised, allowing modification of the signed transaction data.",
+      "The network's transaction validation does not catch the tampering (unlikely if signed data is included)."
+    ],
+    "mitigation": {
+      "strategy": "Enforce secure and encrypted communication channels for broadcasting transactions to the network.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker intercepts and modifies the signed transaction data while it is being broadcast to the Berachain network, attempting to change the transaction's parameters before it is processed.",
+    "trace_source": {
+      "doc_reference": "doc_13",
+      "matched_capability": "Boost validators with $BGT"
+    }
+  },
+  {
+    "id": 27,
+    "stride_category": "Repudiation",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Sign Transaction"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 4,
+      "data_flow_id": 5,
+      "data_description": "Transaction Broadcast"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Actor denies having performed a specific action despite initiating it."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Actor attempts to deny transaction initiation."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "Low",
+      "rationale": "Blockchain finality makes transactions non-repudiable once included. Threat is low because it relies on pre-finality issues."
+    },
+    "assumptions": [
+      "Transaction fails to finalize on-chain due to network issues or validator censorship.",
+      "Off-chain evidence of the user's intent to initiate the transaction is lost or inconclusive."
+    ],
+    "mitigation": {
+      "strategy": "Rely on blockchain finality for non-repudiation; implement robust logging of transaction broadcasts on reliable nodes.",
+      "type": "Technical Control",
+      "priority": "Low"
+    },
+    "description": "An actor attempts to deny initiating a transaction if it encounters issues before being finalized on-chain (e.g., dropped by a malicious validator), claiming they never intended the action.",
+    "trace_source": {
+      "doc_reference": "doc_18",
+      "matched_capability": "What is a Validator?"
+    }
+  },
+  {
+    "id": 28,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Sign Transaction"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
         1,
-        11
-      ],
-      "boundary_details": {}
+        3,
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 5,
+      "data_description": "Transaction Broadcast to Mempool"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Transaction intent is publicly visible before execution, enabling front-running."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Actor's transaction broadcast exposes their intent."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "Medium",
+      "rationale": "Mempool visibility is standard but enables MEV/front-running attacks, particularly for DEX trades."
+    },
+    "assumptions": [
+      "Transaction is broadcast to a public mempool.",
+      "Attackers (including malicious validators or bots) monitor the mempool to identify and exploit profitable transaction opportunities (e.g., large swaps)."
+    ],
+    "mitigation": {
+      "strategy": "Explore options for private transaction relays; implement MEV-resistant pool designs where applicable.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker monitors the public transaction mempool to identify pending swap or liquidity provision transactions and executes their own transactions to profit from the victim's activity (front-running or sandwiching).",
+    "trace_source": {
+      "doc_reference": "doc_11",
+      "matched_capability": "Swap assets"
+    }
+  },
+  {
+    "id": 29,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Sign Transaction"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 4,
+      "data_flow_id": 5,
+      "data_description": "Transaction Broadcast"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "Frontend to Network",
+      "between_component_ids": [
+        2,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Network capacity is consumed by excessive or malicious transactions, or validators censor transactions."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Attacker spams network or acts as a malicious validator."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "High",
+      "rationale": "Network congestion and validator censorship directly impact network usability and reliability."
+    },
+    "assumptions": [
+      "The network's transaction processing capacity is insufficient to handle a large volume of spam transactions.",
+      "A significant portion of validators collude to censor specific transactions or users."
+    ],
+    "mitigation": {
+      "strategy": "Tune gas pricing mechanisms; encourage validator decentralization and implement slashing conditions for verifiable censorship.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker disrupts the Berachain network's availability by spamming transactions to overload its capacity or by a group of malicious validators selectively censoring transactions (e.g., preventing users from claiming rewards or boosting validators).",
+    "trace_source": {
+      "doc_reference": "doc_18",
+      "matched_capability": "What do Berachain's performance metrics look like?"
+    }
+  },
+  {
+    "id": 30,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Sign Transaction"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 5,
+      "data_description": "Transaction Call Data"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "Network Internal",
+      "between_component_ids": [
+        3,
+        3
+      ]
     },
     "security_gap": {
       "confidentiality_required": true,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Transaction visibility in the mempool allows malicious actors to front-run or sandwich swaps, affecting execution price."
+      "gap_description": "Attacker gains unauthorized permissions or access within a smart contract."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "A malicious actor (potentially a bot) monitoring the mempool for profitable swaps.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
+      "description": "Actor attempts to exploit contract vulnerabilities."
     },
     "behavioral_risk": {
-      "behavior_id": 29,
+      "behavior_id": 9,
       "risk_level": "High",
-      "rationale": "Mempool manipulation directly impacts the fairness and predictability of asset swaps, potentially causing significant losses for users."
+      "rationale": "Smart contract vulnerabilities can lead to critical failures, loss of funds, or unauthorized control of the protocol."
     },
     "assumptions": [
-      "Transaction details are publicly broadcast before block inclusion.",
-      "Validators or block builders can reorder transactions to exploit price movements."
+      "The target smart contract (e.g., Governance, Reward Vault, BEX, HoneySwap) contains a vulnerability (e.g., logic error, re-entrancy, incorrect access control)."
     ],
     "mitigation": {
-      "strategy": "Implement MEV-resistant transaction relay methods or protocol-level MEV smoothing/redistribution.",
+      "strategy": "Conduct thorough smart contract audits, utilize formal verification, implement bug bounty programs, follow secure coding best practices.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker can front-run or sandwich legitimate swap transactions by observing them in the mempool, manipulating the price, and profiting at the expense of the user.",
+    "description": "An attacker exploits a vulnerability in a smart contract (e.g., Governance, BEX, Reward Vault) to perform actions requiring higher privileges or unauthorized access, such as proposing/voting without sufficient BGT, stealing funds from pools/vaults, or manipulating protocol logic.",
     "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap assets"
-    }
-  },
-  {
-    "id": 59,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 32,
-      "capability_match": "Mint/Burn HONEY"
-    },
-    "threat_target": {
-      "component_id": 14,
-      "asset_ids": [
-        6,
-        33
-      ],
-      "component_details": {
-        "id": 14,
-        "name": "FeeCollector (Smart Contract)",
-        "description": "Smart contract collecting dApp fees and distributing them to $BGT holders.",
-        "trust_level": "High",
-        "assets_managed": [
-          1,
-          12,
-          13
-        ]
-      },
-      "asset_details": [
-        {
-          "id": 6,
-          "name": "Voting Power",
-          "description": "Influence in governance decisions, derived from BGT holdings/delegation.",
-          "type": "Voting Power",
-          "sensitivity": "High"
-        },
-        {}
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 32,
-      "data_flow_id": 34,
-      "data_description": "HONEY minting or burning transaction",
-      "behavior_details": {
-        "id": 32,
-        "name": "Stake on Behalf of User",
-        "initiator_type": "Actor",
-        "initiator_id": 7,
-        "target_id": 11,
-        "action": "stake_on_behalf",
-        "description": "Developer stakes assets in a Reward Vault on behalf of a user."
-      },
-      "data_flow_details": {
-        "id": 34,
-        "source_id": 5,
-        "destination_id": 11,
-        "data": "Incentive Token Data (Adding/Updating)",
-        "description": "Incentive Token Manager adds or updates incentive tokens/rate in a Reward Vault.",
-        "security_properties": {
-          "confidentiality_required": false,
-          "integrity_required": true,
-          "availability_required": true
-        }
-      }
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Berachain Core",
-      "between_component_ids": [
-        1,
-        14
-      ],
-      "boundary_details": {
-        "id": 2,
-        "name": "Berachain Bridge to Berachain",
-        "between_ids": [
-          6,
-          1
-        ],
-        "description": "Separates the external bridging service from the core blockchain network.",
-        "validation_required": true
-      }
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Vulnerabilities or state dependencies in the mint/burn process, especially during Basket Mode transitions, could allow for temporary or permanent disruption."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "An external user attempting to exploit stablecoin mechanics for disruption.",
-      "actor_details": {
-        "id": 1,
-        "name": "External User",
-        "type": "External User",
-        "description": "General user interacting with the Berachain ecosystem.",
-        "capabilities": [
-          "Connect wallet",
-          "Check airdrop allocation",
-          "Claim airdrop tokens",
-          "Trade tokens",
-          "Swap assets",
-          "Provide liquidity",
-          "Stake assets",
-          "Withdraw staked assets",
-          "View info (BeraHub)",
-          "Claim rewards (BGT, Incentives, Fees)",
-          "Create governance proposal",
-          "Vote on governance proposal",
-          "Delegate BGT",
-          "Mint HONEY",
-          "Burn HONEY",
-          "Bridge NFTs",
-          "Redeem BGT for BERA"
-        ]
-      }
-    },
-    "behavioral_risk": {
-      "behavior_id": 32,
-      "risk_level": "Medium",
-      "rationale": "Disrupting the stablecoin's core function undermines its utility and trust in the ecosystem."
-    },
-    "assumptions": [
-      "The HoneySwap/Factory/Vault contracts contain vulnerabilities related to handling collateral state or Basket Mode logic.",
-      "Timing attacks or race conditions around Basket Mode activation/deactivation can disrupt minting or burning."
-    ],
-    "mitigation": {
-      "strategy": "Conduct extensive testing and auditing of stablecoin contract logic, particularly for edge cases and state transitions like Basket Mode.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may attempt to disrupt the HONEY minting or burning process, potentially by exploiting vulnerabilities related to collateral depegging or Basket Mode state changes.",
-    "trace_source": {
-      "doc_reference": "pol/tokens/honey.md",
-      "matched_capability": "How To Get HONEY"
+      "doc_reference": "doc_3",
+      "matched_capability": "Participate in Governance"
     }
   }
 ]

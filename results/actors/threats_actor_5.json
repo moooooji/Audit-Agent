@@ -1,1260 +1,363 @@
 [
   {
-    "id": 25,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Submit delegation request"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        8
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 2,
-      "data_description": "Validator ID, amount of BGT to delegate"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Validator Interaction",
-      "between_component_ids": [
-        1,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Delegation request parameters are not fully tamper-proof or validated against user intent."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the validator."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "Modification of delegation amounts or targets could disrupt validator ranking and reward distribution."
-    },
-    "assumptions": [
-      "The delegation request allows modification after signing or before validation.",
-      "The validator node or contract does not fully validate all input parameters against user context."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all delegation request parameters are cryptographically bound to the user's signature and strictly validated.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker tampers with the delegation request to change the amount of BGT delegated or the target validator.",
-    "trace_source": {
-      "doc_reference": "pol/participants.md#earning-and-delegating-bgt",
-      "matched_capability": "Delegate BGT"
-    }
-  },
-  {
-    "id": 26,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Submit delegation request"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        8
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 2,
-      "data_description": "Validator ID, amount of BGT to delegate"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Validator Interaction",
-      "between_component_ids": [
-        1,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The delegation action is not sufficiently logged or cryptographically signed to prevent denial."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the validator."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Low",
-      "rationale": "Blockchain transactions are generally non-repudiable if properly signed and recorded."
-    },
-    "assumptions": [
-      "The delegation transaction might not be permanently recorded or cryptographically linked to the user in a way that prevents denial."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all delegation transactions are recorded on-chain with user signatures.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An actor denies having delegated BGT to a specific validator.",
-    "trace_source": {
-      "doc_reference": "pol/participants.md#earning-and-delegating-bgt",
-      "matched_capability": "Delegate BGT"
-    }
-  },
-  {
-    "id": 27,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Submit delegation request"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        8
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 2,
-      "data_description": "Validator ID, amount of BGT to delegate"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Validator Interaction",
-      "between_component_ids": [
-        1,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the validator node or network against excessive requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the validator."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "A high volume of delegation requests could degrade validator performance or network availability."
-    },
-    "assumptions": [
-      "The validator node or network infrastructure lacks sufficient rate limiting.",
-      "Processing delegation requests consumes significant validator resources."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and resource protection measures on validator nodes and network infrastructure.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker floods the validator with delegation requests, potentially disrupting its operation or the network.",
-    "trace_source": {
-      "doc_reference": "pol/participants.md#earning-and-delegating-bgt",
-      "matched_capability": "Delegate BGT"
-    }
-  },
-  {
-    "id": 28,
+    "id": 13,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Submit claim request with proof"
+      "behavior_id": 9,
+      "capability_match": "Vote on Governance Proposal"
     },
     "threat_target": {
-      "component_id": 4,
+      "component_id": 10,
       "asset_ids": [
-        9
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 3,
-      "data_description": "Claim proof, token amounts, recipient address"
+      "behavior_id": 9,
+      "data_flow_id": 15,
+      "data_description": "User's vote choice and potential weight."
     },
     "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Distributor Interaction",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Weak proof generation or validation allows an attacker to forge claims."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the distributor."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "High",
-      "rationale": "Successful spoofing can lead to the theft of incentive tokens belonging to other users."
-    },
-    "assumptions": [
-      "The cryptographic proof required for claiming can be forged or replayed.",
-      "The claim validation process in the contract or off-chain service is flawed."
-    ],
-    "mitigation": {
-      "strategy": "Strengthen claim proof generation and validation to prevent forgery and replay attacks.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker forges a claim proof to steal incentive tokens belonging to another user by impersonating them.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 29,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Submit claim request with proof"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        9
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 3,
-      "data_description": "Claim proof, token amounts, recipient address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Distributor Interaction",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Claim request parameters are not fully covered by the proof/signature or validated against the user's entitlement."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the distributor."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to the theft of incentive tokens or inflation of claimed amounts."
-    },
-    "assumptions": [
-      "The claim proof does not cryptographically bind all relevant claim parameters (e.g., amount, recipient).",
-      "The contract or off-chain service does not fully validate all parameters against the proof or entitlement."
-    ],
-    "mitigation": {
-      "strategy": "Ensure the claim proof cryptographically covers all critical claim parameters and implement strict validation on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker modifies the claim request to change the amount of incentive tokens claimed or the recipient address.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 30,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Submit claim request with proof"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        9
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 3,
-      "data_description": "Claim proof, token amounts, recipient address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Distributor Interaction",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The claim action is not sufficiently logged or cryptographically signed to prevent denial."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the distributor."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Low",
-      "rationale": "Blockchain transactions are generally non-repudiable if properly signed and recorded."
-    },
-    "assumptions": [
-      "The claim transaction might not be permanently recorded or cryptographically linked to the user in a way that prevents denial."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all claim transactions are recorded on-chain with user signatures.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An actor denies having claimed incentive tokens.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 31,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Submit claim request with proof"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        9
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 3,
-      "data_description": "Claim proof, token amounts, recipient address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Distributor Interaction",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the distributor contract/API against excessive requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the distributor."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Medium",
-      "rationale": "A high volume of claim requests could disrupt the claiming process for legitimate users."
-    },
-    "assumptions": [
-      "The distributor contract or its interface lacks sufficient rate limiting for claim submissions.",
-      "Processing claim requests consumes significant resources."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting for claim submissions and optimize claim processing logic.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker floods the incentive distributor with claim requests, potentially disrupting the claiming process for others.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md#incentive-distribution-flow",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 32,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 3,
-      "capability_match": "Submit vote"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        8,
-        12
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 4,
-      "data_description": "Proposal ID, vote option, voting power"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Governance Interaction",
-      "between_component_ids": [
-        1,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Lack of proper authentication/signature verification for voting allows impersonation."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the governance contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "High",
-      "rationale": "Spoofed votes can manipulate governance outcomes, impacting the entire network."
-    },
-    "assumptions": [
-      "The governance contract or voting interface does not require cryptographic signatures for votes.",
-      "An attacker can submit votes on behalf of other BGT holders or their delegates."
-    ],
-    "mitigation": {
-      "strategy": "Require cryptographic signatures for all votes and verify voter identity/delegated power.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker impersonates a legitimate voter to cast fraudulent votes, influencing governance decisions.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Governance Proposal"
-    }
-  },
-  {
-    "id": 33,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 3,
-      "capability_match": "Submit vote"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        12
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 4,
-      "data_description": "Proposal ID, vote option, voting power"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Governance Interaction",
-      "between_component_ids": [
-        1,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote parameters are not tamper-proof after submission."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the governance contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "High",
-      "rationale": "Tampering with votes can alter governance outcomes."
-    },
-    "assumptions": [
-      "Vote data is mutable after submission.",
-      "The vote's integrity is not cryptographically verified against potential modifications."
-    ],
-    "mitigation": {
-      "strategy": "Ensure vote data is immutable after recording and use cryptographic signatures that cover all parameters.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker modifies a vote after it has been cast, potentially changing the outcome of a governance proposal.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Governance Proposal"
-    }
-  },
-  {
-    "id": 34,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 3,
-      "capability_match": "Submit vote"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        12
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 4,
-      "data_description": "Proposal ID, vote option, voting power"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Governance Interaction",
-      "between_component_ids": [
-        1,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The vote action is not sufficiently logged or cryptographically signed to prevent denial."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the governance contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "Low",
-      "rationale": "Blockchain records mitigate repudiation risks for on-chain actions."
-    },
-    "assumptions": [
-      "The voting record might not be permanently stored on-chain or linked cryptographically to the user in a way that prevents denial."
-    ],
-    "mitigation": {
-      "strategy": "Record all votes on-chain with associated voter signatures.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An actor denies having cast a specific vote on a governance proposal.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Governance Proposal"
-    }
-  },
-  {
-    "id": 35,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 3,
-      "capability_match": "Submit vote"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        12
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 4,
-      "data_description": "Proposal ID, vote option, voting power"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Governance Interaction",
-      "between_component_ids": [
-        1,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the governance contract/API against excessive submissions."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the governance contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "Medium",
-      "rationale": "Spamming vote submissions could prevent legitimate users from participating or disrupt vote tallying."
-    },
-    "assumptions": [
-      "The governance contract or its interface lacks sufficient rate limiting for vote submissions.",
-      "Processing vote submissions consumes significant resources."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting for vote submissions and optimize vote processing.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker floods the governance system with vote submissions, potentially preventing legitimate users from voting or disrupting the tallying process.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Governance Proposal"
-    }
-  },
-  {
-    "id": 36,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 4,
-      "capability_match": "Submit staking request"
-    },
-    "threat_target": {
-      "component_id": 6,
-      "asset_ids": [
         10
       ]
     },
-    "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 5,
-      "data_description": "Vault ID, asset type, amount to stake"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
-      "between_component_ids": [
-        1,
-        6
-      ]
-    },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Staking request parameters are not fully tamper-proof or validated against user intent."
+      "gap_description": "Ability for unauthorized party to cast votes on behalf of legitimate BGT holders."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
+      "description": "An external user interacts with the governance contract."
     },
     "behavioral_risk": {
-      "behavior_id": 4,
-      "risk_level": "Medium",
-      "rationale": "Tampering could lead to staking incorrect assets/amounts or into the wrong vault, potentially impacting user funds and BGT rewards."
+      "behavior_id": 9,
+      "risk_level": "High",
+      "rationale": "Unauthorized votes can subvert the decentralized governance process."
     },
     "assumptions": [
-      "The staking request allows modification of parameters after signing or before validation.",
-      "The reward vault contract does not fully validate all input parameters against user intent or asset ownership."
+      "The mechanism for verifying voter identity and BGT balance/delegation is insecure or missing.",
+      "The voting interface does not strongly authenticate the user."
     ],
     "mitigation": {
-      "strategy": "Ensure all staking request parameters are cryptographically bound to the user's signature and strictly validated on-chain.",
+      "strategy": "Implement strong authentication and signature verification for all vote submissions.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker modifies a staking request to stake a different amount or asset than intended, or stake into a different vault.",
+    "description": "An attacker may forge vote messages or impersonate legitimate BGT holders to manipulate the outcome of governance proposals.",
     "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#staking-with-a-reward-vault",
-      "matched_capability": "Stake Assets in Reward Vault"
+      "doc_reference": "governance.md",
+      "matched_capability": "Participate in Governance"
     }
   },
   {
-    "id": 37,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 4,
-      "capability_match": "Submit staking request"
-    },
-    "threat_target": {
-      "component_id": 6,
-      "asset_ids": [
-        10
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 5,
-      "data_description": "Vault ID, asset type, amount to stake"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
-      "between_component_ids": [
-        1,
-        6
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The staking action is not sufficiently logged or cryptographically signed to prevent denial."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
-    },
-    "behavioral_risk": {
-      "behavior_id": 4,
-      "risk_level": "Low",
-      "rationale": "Blockchain transactions are generally non-repudiable if properly signed and recorded."
-    },
-    "assumptions": [
-      "The staking transaction might not be permanently recorded or cryptographically linked to the user in a way that prevents denial."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all staking transactions are recorded on-chain with user signatures.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An actor denies having staked assets in a specific reward vault.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#staking-with-a-reward-vault",
-      "matched_capability": "Stake Assets in Reward Vault"
-    }
-  },
-  {
-    "id": 38,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 4,
-      "capability_match": "Submit staking request"
-    },
-    "threat_target": {
-      "component_id": 6,
-      "asset_ids": [
-        10
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 5,
-      "data_description": "Vault ID, asset type, amount to stake"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
-      "between_component_ids": [
-        1,
-        6
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the reward vault contract/API against excessive requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
-    },
-    "behavioral_risk": {
-      "behavior_id": 4,
-      "risk_level": "Medium",
-      "rationale": "A high volume of staking requests could clog the contract or network, preventing others from staking."
-    },
-    "assumptions": [
-      "The reward vault contract or its interface lacks sufficient rate limiting for staking submissions.",
-      "Processing staking requests consumes significant resources."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting for staking requests and optimize staking logic.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker floods the reward vault with staking requests, potentially disrupting the staking process for legitimate users.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#staking-with-a-reward-vault",
-      "matched_capability": "Stake Assets in Reward Vault"
-    }
-  },
-  {
-    "id": 39,
+    "id": 14,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Submit liquidity provision data"
+      "capability_match": "Boost Validator"
     },
     "threat_target": {
-      "component_id": 7,
+      "component_id": 2,
       "asset_ids": [
-        10,
-        11
+        3,
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 6,
-      "data_description": "Asset pair, amounts to provide"
+      "data_flow_id": 11,
+      "data_description": "Amount of BGT to delegate and target validator address."
     },
     "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to BEX Interaction",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        7
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Liquidity provision parameters are not fully tamper-proof or validated against user intent."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the BEX contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to loss of user funds by providing incorrect assets/amounts or interacting with the wrong pool."
-    },
-    "assumptions": [
-      "The liquidity provision data allows modification after signing or before validation.",
-      "The BEX contract does not fully validate all input parameters against user intent or asset ownership."
-    ],
-    "mitigation": {
-      "strategy": "Ensure liquidity provision data is cryptographically bound to the user's signature and strictly validated on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker modifies the liquidity provision data to provide different assets or amounts than intended, or provide liquidity to a different pool.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide Liquidity on BEX"
-    }
-  },
-  {
-    "id": 40,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Submit liquidity provision data"
-    },
-    "threat_target": {
-      "component_id": 7,
-      "asset_ids": [
-        10,
-        11
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 6,
-      "data_description": "Asset pair, amounts to provide"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to BEX Interaction",
-      "between_component_ids": [
-        1,
-        7
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "The liquidity provision action is not sufficiently logged or cryptographically signed to prevent denial."
+      "gap_description": "Ability for an attacker to alter delegation amounts or target validators in flight or via front-running."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is a standard user interacting with the BEX contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Low",
-      "rationale": "Blockchain transactions are generally non-repudiable if properly signed and recorded."
-    },
-    "assumptions": [
-      "The liquidity provision transaction might not be permanently recorded or cryptographically linked to the user in a way that prevents denial."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all liquidity provision transactions are recorded on-chain with user signatures.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An actor denies having provided liquidity to a specific pool on BEX.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide Liquidity on BEX"
-    }
-  },
-  {
-    "id": 41,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Submit liquidity provision data"
-    },
-    "threat_target": {
-      "component_id": 7,
-      "asset_ids": [
-        10,
-        11
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 6,
-      "data_description": "Asset pair, amounts to provide"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to BEX Interaction",
-      "between_component_ids": [
-        1,
-        7
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the BEX contract/API against excessive requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the BEX contract."
+      "description": "An external user interacts with the boosting mechanism."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "A high volume of liquidity provision requests could clog the contract or network, impacting trading or other liquidity providers."
+      "rationale": "Tampering with boosting could affect incentive distribution and validator economics."
     },
     "assumptions": [
-      "The BEX contract or its interface lacks sufficient rate limiting for liquidity provision submissions.",
-      "Processing liquidity provision requests consumes significant resources."
+      "The data flow for boosting is susceptible to modification before reaching the contract.",
+      "The contract logic does not fully validate input parameters against the user's state."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting for liquidity provision requests and optimize contract logic.",
+      "strategy": "Ensure transaction integrity via standard blockchain security practices and validate inputs strictly on-chain.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker floods the BEX with liquidity provision requests, potentially disrupting the exchange or specific pools.",
+    "description": "An attacker could tamper with the data sent by a user trying to boost a validator, changing the amount of BGT delegated or the target validator.",
     "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide Liquidity on BEX"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost A Validator With $BGT"
     }
   },
   {
-    "id": 42,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Submit BGT claim request"
-    },
-    "threat_target": {
-      "component_id": 6,
-      "asset_ids": [
-        8
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 7,
-      "data_description": "Claim amount, recipient address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
-      "between_component_ids": [
-        1,
-        6
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Lack of proper authentication/signature verification for claiming BGT rewards allows impersonation."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "High",
-      "rationale": "Successful spoofing can lead to the theft of BGT rewards belonging to other users."
-    },
-    "assumptions": [
-      "The reward vault contract or claiming interface does not require cryptographic signatures for claims.",
-      "An attacker can submit BGT claims on behalf of other stakers."
-    ],
-    "mitigation": {
-      "strategy": "Require cryptographic signatures for all BGT claim requests and verify claimant identity/entitlement.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker impersonates another user to claim their accumulated BGT rewards from a reward vault.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#earning-bgt",
-      "matched_capability": "Claim BGT Rewards"
-    }
-  },
-  {
-    "id": 43,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Submit BGT claim request"
-    },
-    "threat_target": {
-      "component_id": 6,
-      "asset_ids": [
-        8
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 7,
-      "data_description": "Claim amount, recipient address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
-      "between_component_ids": [
-        1,
-        6
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Claim request parameters are not fully tamper-proof or validated against user entitlement."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to theft of BGT rewards or inflation of claimed amounts."
-    },
-    "assumptions": [
-      "The BGT claim request allows modification of parameters after signing or before validation.",
-      "The contract does not validate claim parameters against accumulated rewards or intended recipient."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all BGT claim request parameters are cryptographically bound to the user's signature and strictly validated.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker modifies a BGT claim request to change the amount of BGT claimed or the recipient address.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#earning-bgt",
-      "matched_capability": "Claim BGT Rewards"
-    }
-  },
-  {
-    "id": 44,
+    "id": 15,
     "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Submit BGT claim request"
+      "behavior_id": 7,
+      "capability_match": "Claim BGT Rewards"
     },
     "threat_target": {
-      "component_id": 6,
+      "component_id": 9,
       "asset_ids": [
-        8
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 7,
-      "data_description": "Claim amount, recipient address"
+      "behavior_id": 7,
+      "data_flow_id": 13,
+      "data_description": "Request to claim BGT rewards."
     },
     "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        6
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "The claim action is not sufficiently logged or cryptographically signed to prevent denial."
+      "gap_description": "Possibility for a user to falsely deny having claimed BGT rewards if the claim process isn't definitively logged."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
+      "description": "An external user interacts with a Reward Vault."
     },
     "behavioral_risk": {
-      "behavior_id": 6,
+      "behavior_id": 7,
       "risk_level": "Low",
-      "rationale": "Blockchain transactions are generally non-repudiable if properly signed and recorded."
+      "rationale": "Repudiation of claiming rewards is less impactful than other threats, primarily affecting auditing/dispute resolution."
     },
     "assumptions": [
-      "The BGT claim transaction might not be permanently recorded or cryptographically linked to the user in a way that prevents denial."
+      "The claim transaction is not permanently and immutably recorded on the blockchain in a way directly attributable to the user.",
+      "Off-chain logs could potentially be manipulated or lost."
     ],
     "mitigation": {
-      "strategy": "Ensure all BGT claim transactions are recorded on-chain with user signatures.",
+      "strategy": "Ensure all claim actions are immutably logged as events on the blockchain.",
       "type": "Technical Control",
       "priority": "Low"
     },
-    "description": "An actor denies having claimed BGT rewards from a specific reward vault.",
+    "description": "A user might deny having claimed BGT rewards from a vault if the transaction or the record of the claim is not sufficiently persistent and attributable.",
     "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#earning-bgt",
-      "matched_capability": "Claim BGT Rewards"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Earning BGT"
     }
   },
   {
-    "id": 45,
-    "stride_category": "Denial of Service",
+    "id": 16,
+    "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 6,
-      "capability_match": "Submit BGT claim request"
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 6,
+      "component_id": 2,
       "asset_ids": [
-        8
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 6,
-      "data_flow_id": 7,
-      "data_description": "Claim amount, recipient address"
+      "data_flow_id": 12,
+      "data_description": "Requesting proof for claimable incentives."
     },
     "trust_boundary_risk": {
-      "boundary_id": 99,
-      "boundary_name": "User to Reward Vault Interaction",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        6
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Exposure of user's claimable incentive amounts to unauthorized parties."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "An external user interacts with the incentive claiming mechanism."
+    },
+    "behavioral_risk": {
+      "behavior_id": 6,
+      "risk_level": "Medium",
+      "rationale": "Disclosure of claimable amounts could expose user's financial activity or make them a target."
+    },
+    "assumptions": [
+      "The backend service providing claim proofs is accessible without proper authorization.",
+      "The API endpoint for retrieving claim status/proofs is vulnerable to enumeration or unauthorized access."
+    ],
+    "mitigation": {
+      "strategy": "Implement strict authentication and authorization for accessing claimable incentive information via the backend API.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could gain access to information about a user's accumulated and claimable incentive tokens by exploiting vulnerabilities in the backend service or API.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "How To Claim Incentive Tokens"
+    }
+  },
+  {
+    "id": 17,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Boost Validator"
+    },
+    "threat_target": {
+      "component_id": 2,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 5,
+      "data_flow_id": 11,
+      "data_description": "Sending delegation transactions."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Insufficient rate limiting or resource protection on the reward vault contract/API against excessive claim requests."
+      "gap_description": "Inability for legitimate users to queue or activate BGT boosts due to network congestion or contract resource exhaustion attacks."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is a standard user interacting with the reward vault."
+      "description": "An external user interacts with the boosting mechanism."
     },
     "behavioral_risk": {
-      "behavior_id": 6,
+      "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "A high volume of claim requests could clog the contract or network, preventing others from claiming rewards."
+      "rationale": "DoS on boosting disrupts Proof-of-Liquidity mechanics and user participation."
     },
     "assumptions": [
-      "The reward vault contract or its interface lacks sufficient rate limiting for claims.",
-      "Processing BGT claim requests consumes significant resources."
+      "The smart contract or the blockchain layer is susceptible to resource exhaustion from excessive transactions.",
+      "An attacker can generate a high volume of boosting-related transactions at low cost."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting for claim requests and optimize contract logic.",
+      "strategy": "Ensure contract functions are efficient and consider rate limiting or gas-based protections if applicable.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker floods the reward vault with BGT claim requests, potentially disrupting the process for legitimate users.",
+    "description": "An attacker could flood the network or the BGT Incentive Distributor contract with excessive boost requests, preventing legitimate users from boosting validators.",
     "trace_source": {
-      "doc_reference": "pol/rewardvaults.md#earning-bgt",
-      "matched_capability": "Claim BGT Rewards"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost A Validator With $BGT"
+    }
+  },
+  {
+    "id": 18,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Vote on Governance Proposal"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 15,
+      "data_description": "Vote submission transaction."
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Ability for an attacker to vote with more weight than their entitled BGT or vote without holding/delegating BGT."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": true,
+      "description": "An external user potentially bypasses BGT ownership/delegation requirements to cast votes."
+    },
+    "behavioral_risk": {
+      "behavior_id": 9,
+      "risk_level": "High",
+      "rationale": "Unauthorized voting power grants an attacker control over governance decisions, undermining decentralization."
+    },
+    "assumptions": [
+      "The governance contract does not correctly verify the voter's BGT balance or delegated voting power.",
+      "An attacker can find a loophole to call the voting function with arbitrary parameters."
+    ],
+    "mitigation": {
+      "strategy": "Implement strict on-chain validation of voter identity and corresponding BGT voting power for every vote.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could potentially vote on governance proposals with higher voting power than they rightfully possess, or vote without holding/delegating any BGT, by exploiting flaws in the governance contract's validation logic.",
+    "trace_source": {
+      "doc_reference": "governance.md",
+      "matched_capability": "Ensure Sufficient Voting Power"
     }
   }
 ]

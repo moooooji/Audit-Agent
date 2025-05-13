@@ -1,393 +1,85 @@
 [
   {
-    "id": 16,
-    "stride_category": "Tampering",
+    "id": 4,
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 101,
-      "capability_match": "Initiate Swap"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        8,
-        10
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 101,
-      "data_flow_id": 201,
-      "data_description": "Swap transaction parameters (input/output token, amounts, recipient)"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
-      "between_component_ids": [
-        1,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Transaction parameters can be altered via a compromised interface before signing."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacts with a dApp interface (e.g., BeraHub) to initiate a swap."
-    },
-    "behavioral_risk": {
-      "behavior_id": 101,
-      "risk_level": "Medium",
-      "rationale": "Reliance on the integrity of the dApp interface for critical transaction details."
-    },
-    "assumptions": [
-      "User interacts with a potentially compromised BeraHub or dApp interface.",
-      "Wallet does not provide clear, itemized breakdown of signed transaction details.",
-      "Attacker controls the interface presented to the user."
-    ],
-    "mitigation": {
-      "strategy": "Implement strong interface security measures.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker tampers with swap parameters (e.g., recipient address) via a compromised interface, redirecting funds.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swapping assets"
-    }
-  },
-  {
-    "id": 17,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 102,
-      "capability_match": "Deposit/Withdraw Liquidity"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        11
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 102,
-      "data_flow_id": 202,
-      "data_description": "Liquidity deposit/withdrawal transaction parameters"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
-      "between_component_ids": [
-        1,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Excessive transactions can congest contract processing or increase gas costs for others."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User sends a high volume of small transactions to the liquidity pool."
-    },
-    "behavioral_risk": {
-      "behavior_id": 102,
-      "risk_level": "Low",
-      "rationale": "Potential for minor network or contract congestion and increased transaction costs."
-    },
-    "assumptions": [
-      "Transaction fees are low enough to make spamming economically feasible for an attacker.",
-      "The BEX contract processing is sensitive to transaction volume or frequency.",
-      "Network capacity is limited."
-    ],
-    "mitigation": {
-      "strategy": "Implement transaction rate limiting or dynamic fees.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An attacker spams small liquidity deposit and withdrawal operations on BEX, causing congestion.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide liquidity"
-    }
-  },
-  {
-    "id": 18,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 103,
-      "capability_match": "Claim Earned BGT"
+      "behavior_id": 6,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
       "component_id": 6,
-      "asset_ids": [
-        9
-      ]
+      "asset_ids": []
     },
     "attack_surface": {
-      "behavior_id": 103,
-      "data_flow_id": 203,
-      "data_description": "Claim transaction details (amount, source vault)"
+      "behavior_id": 6,
+      "data_flow_id": 11,
+      "data_description": "Claim transaction with proof data"
     },
     "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        1,
+        3,
         6
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Transaction data is publicly visible on the blockchain explorer."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User participates in BGT earning activities."
-    },
-    "behavioral_risk": {
-      "behavior_id": 103,
-      "risk_level": "Low",
-      "rationale": "This is an inherent characteristic of a public blockchain."
-    },
-    "assumptions": [
-      "User desires privacy regarding their specific BGT earning sources and amounts.",
-      "Blockchain explorers make this on-chain data easily accessible."
-    ],
-    "mitigation": {
-      "strategy": "Educate users about blockchain transparency.",
-      "type": "Process Control",
-      "priority": "Low"
-    },
-    "description": "User's BGT claiming activity, including amount and source Reward Vault, is publicly visible on-chain.",
-    "trace_source": {
-      "doc_reference": "learn/pol/rewardvaults.md",
-      "matched_capability": "Earning BGT"
-    }
-  },
-  {
-    "id": 19,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 104,
-      "capability_match": "Delegate $BGT$"
-    },
-    "threat_target": {
-      "component_id": 7,
-      "asset_ids": [
-        9
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 104,
-      "data_flow_id": 204,
-      "data_description": "BGT delegation transaction details (amount, target validator)"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
-      "between_component_ids": [
-        1,
-        7
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Transaction data is publicly visible on the blockchain explorer."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User delegates BGT to validators."
-    },
-    "behavioral_risk": {
-      "behavior_id": 104,
-      "risk_level": "Low",
-      "rationale": "This is an inherent characteristic of a public blockchain."
-    },
-    "assumptions": [
-      "User desires privacy for their BGT delegation strategy and amounts.",
-      "Blockchain explorers make this on-chain data easily accessible."
-    ],
-    "mitigation": {
-      "strategy": "Educate users about blockchain transparency.",
-      "type": "Process Control",
-      "priority": "Low"
-    },
-    "description": "User's BGT delegation activity, including amount and target validator, is publicly visible on-chain.",
-    "trace_source": {
-      "doc_reference": "learn/guides/boost-a-validator.md",
-      "matched_capability": "Boost A Validator With $BGT$"
-    }
-  },
-  {
-    "id": 20,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 105,
-      "capability_match": "Claim Incentive Tokens"
-    },
-    "threat_target": {
-      "component_id": 13,
-      "asset_ids": [
-        12
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 105,
-      "data_flow_id": 205,
-      "data_description": "Incentive claim proof (e.g., Merkle proof) and associated claim details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
-      "between_component_ids": [
-        1,
-        13
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Claim relies on proofs generated by a potentially compromised off-chain backend service."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacts with the incentive claiming mechanism."
-    },
-    "behavioral_risk": {
-      "behavior_id": 105,
-      "risk_level": "High",
-      "rationale": "Compromise of the off-chain proof generation system could lead to theft of user assets (Incentive Tokens)."
-    },
-    "assumptions": [
-      "The backend service responsible for generating incentive claim proofs is compromised.",
-      "The on-chain verification relies on the integrity of the provided proof (e.g., Merkle proof).",
-      "An attacker can generate valid-looking proofs for claims they are not entitled to."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust security controls for the backend proof generation service.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker compromises the proof generation backend to forge claim proofs and steal other users' incentive tokens.",
-    "trace_source": {
-      "doc_reference": "learn/pol/incentives.md",
-      "matched_capability": "Claim Incentive Token rewards"
-    }
-  },
-  {
-    "id": 21,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 104,
-      "capability_match": "Manipulate $BGT$ Delegation"
-    },
-    "threat_target": {
-      "component_id": 7,
-      "asset_ids": [
-        9
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 104,
-      "data_flow_id": 204,
-      "data_description": "Rapid BGT delegation/undelegation transactions"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
-      "between_component_ids": [
-        1,
-        7
-      ]
-    },
-    "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Rapid changes in delegation disrupt voting power calculations and potentially governance processes."
+      "gap_description": "Claim authorization depends on backend proof which might be forgeable or compromised."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": true,
-      "description": "User controls a significant amount of BGT."
+      "description": "Attacker gains unauthorized ability to claim incentives belonging to other users."
     },
     "behavioral_risk": {
-      "behavior_id": 104,
-      "risk_level": "Medium",
-      "rationale": "Potential to disrupt the stability and predictability of governance voting power."
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "Exploiting the claim mechanism allows direct theft of user funds (incentive tokens)."
     },
     "assumptions": [
-      "Attacker controls a substantial amount of BGT.",
-      "The system allows rapid delegation changes without significant penalty (e.g., cooldowns, high fees).",
-      "Governance processes are sensitive to sudden shifts in total delegated BGT or voting power distribution."
+      "The backend system generates claim proofs used by the contract for authorization.",
+      "The proof generation or verification mechanism is flawed (e.g., forgeable, guessable, replayable)."
     ],
     "mitigation": {
-      "strategy": "Implement cooldown periods or increased costs for frequent BGT delegation changes.",
+      "strategy": "Strengthen claim proof generation and verification, bind proof to transaction details.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker with significant BGT disrupts governance by rapidly changing their delegation across validators.",
+    "description": "An attacker exploits a vulnerability in the incentive claim proof mechanism to claim incentive tokens belonging to another user from the BGT Incentive Distributor Contract.",
     "trace_source": {
-      "doc_reference": "learn/governance.md",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "pol/incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
-    "id": 22,
+    "id": 5,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 106,
-      "capability_match": "Redeem $BGT$"
+      "behavior_id": 2,
+      "capability_match": "View Validators"
     },
     "threat_target": {
       "component_id": 2,
       "asset_ids": [
-        9,
-        8
+        1
       ]
     },
     "attack_surface": {
-      "behavior_id": 106,
-      "data_flow_id": 206,
-      "data_description": "Redemption transaction parameters (BGT amount, BERA recipient address)"
+      "behavior_id": 2,
+      "data_flow_id": 3,
+      "data_description": "Validator list data displayed on frontend"
     },
     "trust_boundary_risk": {
-      "boundary_id": 14,
-      "boundary_name": "User to Berachain Network",
+      "boundary_id": 1,
+      "boundary_name": "External User to Berachain Hub Frontend",
       "between_component_ids": [
         1,
         2
@@ -397,33 +89,91 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Transaction parameters can be altered via a compromised interface before signing."
+      "gap_description": "Frontend displays data received from RPC without integrity verification."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User interacts with the redemption interface (e.g., BeraHub)."
+      "description": "User trusts the frontend to display accurate information for decision-making."
     },
     "behavioral_risk": {
-      "behavior_id": 106,
+      "behavior_id": 2,
       "risk_level": "Medium",
-      "rationale": "Reliance on the integrity of the dApp interface for a high-value operation."
+      "rationale": "Misleading validator or portfolio data can cause users to make financially detrimental decisions (e.g., boosting wrong validator)."
     },
     "assumptions": [
-      "User interacts with a potentially compromised BeraHub interface.",
-      "Wallet does not provide clear, itemized breakdown of signed transaction details.",
-      "Attacker controls the interface presented to the user."
+      "Attacker can compromise the Berachain Hub frontend or the data flow (Hub -> RPC) it relies on.",
+      "The frontend does not cryptographically verify the integrity of data received before display."
     ],
     "mitigation": {
-      "strategy": "Implement strong interface security measures.",
+      "strategy": "Ensure secure frontend hosting, validate data integrity before display, use HTTPS.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker tampers with BGT redemption parameters (e.g., BERA recipient address) via a compromised interface.",
+    "description": "An attacker compromises the Berachain Hub frontend to alter the data displayed to users (e.g., validator stats, portfolio), influencing their actions.",
     "trace_source": {
-      "doc_reference": "learn/pol/tokens/bgt.md",
-      "matched_capability": "Redeem $BGT$ For $BERA$"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "View Validators"
+    }
+  },
+  {
+    "id": 6,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Queue $BGT Boost"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": []
+    },
+    "attack_surface": {
+      "behavior_id": 3,
+      "data_flow_id": 5,
+      "data_description": "RPC transaction request traffic"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        3,
+        4,
+        6
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "RPC node resources are limited and can be overwhelmed by high request volume."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Any external user can send requests to the public RPC endpoint."
+    },
+    "behavioral_risk": {
+      "behavior_id": 3,
+      "risk_level": "Medium",
+      "rationale": "Disrupting the RPC node prevents users from interacting with the chain, including submitting transactions or querying data."
+    },
+    "assumptions": [
+      "The RPC endpoint lacks sufficient rate limiting or distributed denial-of-service (DDoS) protection.",
+      "An attacker can generate a high volume of requests targeting the RPC endpoint."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust rate limiting, deploy DDoS protection services, distribute RPC access points.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker floods the public Berachain RPC endpoint with excessive requests, overwhelming its capacity and preventing legitimate users from accessing the blockchain.",
+    "trace_source": {
+      "doc_reference": "connect_to_berachain.md",
+      "matched_capability": "Interact via RPC"
     }
   }
 ]
