@@ -19,17 +19,21 @@ from react_agent.llm_utils import (
 from react_agent.variables import (
     actors_map,
     threats_list,
-    threat_count,
-    checklist_count
 )
 
-from time import sleep
+threat_count = 0
+checklist_count = 0
 
+from time import sleep
+from react_agent.Utils.RedisUtil import RedisUtil
+from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
+    print("1. state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     # not feedback loop
     if state.architecture_feedback_loop_count == 0:
+        print("1. state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
         # print("completed initializing state")
         # state = init_state(state)
         print("first architecture analysis ...")
@@ -61,6 +65,7 @@ def analyze_architecture(state: State) -> State:
 # assessment node
 def assess_architecture(state: State) -> State:
     """architecture assessment node"""
+    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_assessment_analysis = True
     # generate llm response
     response = generate_llm_response(state)
@@ -77,6 +82,7 @@ def assess_architecture(state: State) -> State:
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
+    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_threat_analysis = True
     id_weight = 1
     
@@ -86,10 +92,9 @@ def analyze_threats(state: State) -> State:
     for i in response_dict["threats"]:
         i["id"] = id_weight
         id_weight += 1
-        
-    threats_list.append(response_dict["threats"])
+        threats_list.append(i)
+        save_json(i, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
     
-    save_json(response_dict["threats"], f'results/actors/threats_actor_{state.current_actor_id+1}.json')
     print(f"Saved threats for actor {state.current_actor_id+1}")
     
     global threat_count
@@ -108,6 +113,7 @@ def analyze_threats(state: State) -> State:
 def generate_checklist(state: State) -> State:
     
     state.is_initial_checklist_analysis = True
+    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
         
     id_weight = 1
     checklist_items = []
@@ -145,6 +151,7 @@ def generate_checklist(state: State) -> State:
 
 def assess_checklist(state: State) -> State:
     print("verifying checklist ...")
+    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_assessment_checklist = True
     
     generate_llm_response(state)
@@ -163,8 +170,22 @@ def init_db(state: State) -> State:
     state.is_init_db = False
     
 def code_binding(state: State) -> State:
+    
+    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
+    
     if state.checklist_with_code_feedback_loop_count == 0:
         print("initial code binding ...")
+        
+        with open("results/checklist.json", "r") as f:
+            checklist = json.load(f)
+        
+        similar_functions_list = []
+        for item in checklist["checklist_items"]:
+            function_description = item["description"]
+            similar_functions = AnalyzeSolidity.search(function_description, 3)
+            print("[+] similar_functions: ", similar_functions)
+            similar_functions_list.append(similar_functions)
+        print("[+] similar_functions_list: ", similar_functions_list)
         state.is_initial_code_binding = True
         response = generate_llm_response(state)
         print("completed initial code binding")
