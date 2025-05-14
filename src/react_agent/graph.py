@@ -7,8 +7,8 @@ from react_agent.node import (
     generate_checklist,
     init_db,
     code_binding,
-    verify_checklist,
-    verify_checklist_with_code
+    assess_checklist,
+    assess_checklist_with_code
 )
 
 threat_count = 0
@@ -31,13 +31,13 @@ def architecture_feedback_loop_edge(state: State):
 
 def checklist_feedback_loop_edge(state: State):
     if state.checklist_feedback_loop_count  < CHECKLIST_FEEDBACK_LOOP_COUNT:
-        return "verify_checklist"
+        return "assess_checklist"
     else:
         return "code_binding"
 
 def checklist_with_code_feedback_loop_edge(state: State):
     if state.checklist_with_code_feedback_loop_count  < CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT:
-        return "verify_checklist_with_code"
+        return "assess_checklist_with_code"
     else:
         return "__end__"
     
@@ -54,23 +54,19 @@ def parallel_threats_processing(state: State):
         is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
         is_initial_checklist_analysis=state.is_initial_checklist_analysis,
         is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
-        is_code_binding=state.is_code_binding,
+        is_initial_code_binding=state.is_initial_code_binding,
+        is_feedback_code_binding=state.is_feedback_code_binding,
         is_init_db=state.is_init_db,
-        is_verify_checklist=state.is_verify_checklist,
-        is_verify_checklist_with_code=state.is_verify_checklist_with_code,
-        threat_prompt=state.threat_prompt,
-        checklist_prompt=state.checklist_prompt
+        is_assessment_checklist=state.is_assessment_checklist,
+        is_assessment_checklist_with_code=state.is_assessment_checklist_with_code,
     )) for i in range(len(actors_map))]
     
 def parallel_checklist_processing(state: State):
     
     global threat_count
     threat_count += 1
-    print("threat_count: ", threat_count)
-    print("len(actors_map): ", len(actors_map))
     
     if threat_count == len(actors_map):
-        print("================")
         return [Send("generate_checklist", State(
             target_docs_path=state.target_docs_path,
             current_actor_id=i,
@@ -83,12 +79,11 @@ def parallel_checklist_processing(state: State):
             is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
             is_initial_checklist_analysis=state.is_initial_checklist_analysis,
             is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
-            is_code_binding=state.is_code_binding,
+            is_initial_code_binding=state.is_initial_code_binding,
+            is_feedback_code_binding=state.is_feedback_code_binding,
             is_init_db=state.is_init_db,
-            is_verify_checklist=state.is_verify_checklist,
-            is_verify_checklist_with_code=state.is_verify_checklist_with_code,
-            threat_prompt=state.threat_prompt,
-            checklist_prompt=state.checklist_prompt
+            is_assessment_checklist=state.is_assessment_checklist,
+            is_assessment_checklist_with_code=state.is_assessment_checklist_with_code,
         )) for i in range(len(actors_map))]
     else:
         return "__end__"
@@ -103,8 +98,8 @@ builder.add_node(analyze_threats)
 builder.add_node(generate_checklist)
 builder.add_node(init_db)
 builder.add_node(code_binding)
-builder.add_node(verify_checklist)
-builder.add_node(verify_checklist_with_code)
+builder.add_node(assess_checklist)
+builder.add_node(assess_checklist_with_code)
 
 # define edges
 builder.add_edge("__start__", "analyze_architecture")
@@ -115,10 +110,10 @@ builder.add_edge("assess_architecture", "analyze_architecture")
 # parallel edges
 builder.add_edge("analyze_threats", "init_db")
 builder.add_conditional_edges("analyze_threats", parallel_checklist_processing, ["generate_checklist", "__end__"])
-builder.add_conditional_edges("generate_checklist", checklist_feedback_loop_edge, ["verify_checklist", "code_binding"])
-builder.add_edge("verify_checklist", "generate_checklist")
-builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["verify_checklist_with_code", "__end__"])
-builder.add_edge("verify_checklist_with_code", "code_binding")
+builder.add_conditional_edges("generate_checklist", checklist_feedback_loop_edge, ["assess_checklist", "code_binding"])
+builder.add_edge("assess_checklist", "generate_checklist")
+builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["assess_checklist_with_code", "__end__"])
+builder.add_edge("assess_checklist_with_code", "code_binding")
 builder.add_edge("init_db", "__end__")
 
 # Compile the builder into an executable graph

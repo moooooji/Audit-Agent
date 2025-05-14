@@ -8,8 +8,6 @@ from langgraph.prebuilt import ToolNode
     
 def parallel_handler(a, b):
     """parallel handler for state"""
-    print("a: ", a)
-    print("b: ", b)
     
 @dataclass
 class InputState():
@@ -30,9 +28,10 @@ class State(InputState):
     is_initial_checklist_analysis: Annotated[bool, parallel_handler] = field(default=False)
     is_feedback_checklist_analysis: Annotated[bool, parallel_handler] = field(default=False)
     is_init_db: bool = field(default=False)
-    is_code_binding: bool = field(default=False)
-    is_verify_checklist: bool = field(default=False)
-    is_verify_checklist_with_code: bool = field(default=False)
+    is_initial_code_binding: bool = field(default=False)
+    is_feedback_code_binding: bool = field(default=False)
+    is_assessment_checklist: bool = field(default=False)
+    is_assessment_checklist_with_code: bool = field(default=False)
     
     # node info
     current_actor_id: int = field(default=0)
