@@ -52,7 +52,8 @@ def parallel_threats_processing(state: State):
         is_initial_architecture_analysis=state.is_initial_architecture_analysis,
         is_assessment_analysis=state.is_assessment_analysis,
         is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
-        is_checklist_analysis=state.is_checklist_analysis,
+        is_initial_checklist_analysis=state.is_initial_checklist_analysis,
+        is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
         is_code_binding=state.is_code_binding,
         is_init_db=state.is_init_db,
         is_verify_checklist=state.is_verify_checklist,
@@ -68,8 +69,6 @@ def parallel_checklist_processing(state: State):
     print("threat_count: ", threat_count)
     print("len(actors_map): ", len(actors_map))
     
-    
-    
     if threat_count == len(actors_map):
         print("================")
         return [Send("generate_checklist", State(
@@ -82,7 +81,8 @@ def parallel_checklist_processing(state: State):
             is_initial_architecture_analysis=state.is_initial_architecture_analysis,
             is_assessment_analysis=state.is_assessment_analysis,
             is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
-            is_checklist_analysis=state.is_checklist_analysis,
+            is_initial_checklist_analysis=state.is_initial_checklist_analysis,
+            is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
             is_code_binding=state.is_code_binding,
             is_init_db=state.is_init_db,
             is_verify_checklist=state.is_verify_checklist,
