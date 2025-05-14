@@ -16,11 +16,10 @@ from react_agent.prompt import (
     ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE, ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG
 )
 
-from react_agent.Utils.ProjectAnalyzer import ProjectAnalyzer
 from react_agent.Utils.ExtractEntryFunctions import ExtractEntryFunctions
 from react_agent.Utils.FunctionParser import FunctionParser
 from react_agent.Utils.StorageParser import StorageParser
-from react_agent.Utils.redis_util import RedisUtil
+from react_agent.Utils.RedisUtil import RedisUtil
 from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 
 from react_agent.variables import (
