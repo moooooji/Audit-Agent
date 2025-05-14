@@ -13,25 +13,16 @@ from react_agent.llm_utils import (
     generate_llm_response,
     build_llm_chunk,
     _init_db,
-    _code_binding,
-    _verify_checklist,
-    _verify_checklist_with_code
 )
 
 # import variables
 from react_agent.variables import (
-    components_map,
     actors_map,
-    assets_map,
-    data_flows_map,
-    trust_boundaries_map,
-    behaviors_map,
     threats_list,
     threat_count,
     checklist_count
 )
 
-from react_agent.prompt import THREAT_ANALYSIS_TEMPLATE, CHECKLIST_TEMPLATE
 from time import sleep
 
 # architecture analysis node
@@ -39,8 +30,8 @@ def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
     # not feedback loop
     if state.architecture_feedback_loop_count == 0:
-        print("completed initializing state")
-        state = init_state(state)
+        # print("completed initializing state")
+        # state = init_state(state)
         print("first architecture analysis ...")
         state.is_initial_architecture_analysis = True
         # generate llm response
@@ -116,44 +107,21 @@ def analyze_threats(state: State) -> State:
 
 def generate_checklist(state: State) -> State:
     
-    print("[+] generating checklist ...")
     state.is_initial_checklist_analysis = True
         
     id_weight = 1
     checklist_items = []
-    theats_list_copy = threats_list.copy()
-    
-    context = []
-    prev_threat = []
-    for threat in theats_list_copy[state.current_actor_id]:
-        prev_threat.append(threat.copy())
-        actor_id = threat["actor_risk"]["actor_id"]
-        threat["actor_risk"]["actor_details"] = actors_map.get(actor_id, {})
-        
-        # Add threat target component and assets
-        threat["threat_target"]["component_details"] = components_map.get(threat["threat_target"]["component_id"], {})
-        threat["threat_target"]["asset_details"] = [assets_map.get(aid, {}) for aid in threat["threat_target"]["asset_ids"]]
-
-        # Add behavior context
-        behavior_id = threat["attack_surface"]["behavior_id"]
-        threat["attack_surface"]["behavior_details"] = behaviors_map.get(behavior_id, {})
-
-        # Add data flow context
-        df_id = threat["attack_surface"]["data_flow_id"]
-        threat["attack_surface"]["data_flow_details"] = data_flows_map.get(df_id, {})
-
-        # Add trust boundary context
-        tb_id = threat["trust_boundary_risk"]["boundary_id"]
-        threat["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
-        
-        context.append(threat)
         
     if state.checklist_feedback_loop_count == 0:
+        print("initial checklist analysis ...")
         state.is_initial_checklist_analysis = True
         response = generate_llm_response(state)
+        print("completed initial checklist analysis")
     else:
+        print("feedback loop checklist analysis ...")
         state.is_feedback_checklist_analysis = True
         response = generate_llm_response(state)
+        print("completed feedback loop checklist analysis")
         
     # parsing response and save to file
     response_dict = json_str_to_dict(response.text)
@@ -164,6 +132,7 @@ def generate_checklist(state: State) -> State:
         checklist_items.append(checklist_item)
     print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
     
+    global checklist_count
     checklist_count += 1
     
     if checklist_count == len(actors_map):
@@ -174,15 +143,15 @@ def generate_checklist(state: State) -> State:
     
     return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
 
-def verify_checklist(state: State) -> State:
+def assess_checklist(state: State) -> State:
     print("verifying checklist ...")
-    state.is_verify_checklist = True
+    state.is_assessment_checklist = True
     
-    _verify_checklist(state)
+    generate_llm_response(state)
     
     print("completed verifying checklist")
     
-    return {"is_verify_checklist": False, "checklist_feedback_loop_count": state.checklist_feedback_loop_count+1}
+    return {"is_assessment_checklist": False, "checklist_feedback_loop_count": state.checklist_feedback_loop_count+1}
 
 def init_db(state: State) -> State:
     print("initializing vector db ...")
@@ -194,24 +163,28 @@ def init_db(state: State) -> State:
     state.is_init_db = False
     
 def code_binding(state: State) -> State:
+    if state.checklist_with_code_feedback_loop_count == 0:
+        print("initial code binding ...")
+        state.is_initial_code_binding = True
+        response = generate_llm_response(state)
+        print("completed initial code binding")
+    else:
+        print("feedback loop code binding ...")
+        state.is_feedback_code_binding = True
+        response = generate_llm_response(state)
+        print("completed feedback loop code binding")
     
-    # 피드백 루프를 구분하는 분기문 필요
-    
-    print("code binding ...")
-    state.is_code_binding = True
-    
-    _code_binding(state)
-    
-    print("completed code binding")
-    
-    return {"is_code_binding": False}
+    return {"is_initial_code_binding": False, "is_feedback_code_binding": False}
 
-def verify_checklist_with_code(state: State) -> State:
-    state.is_verify_checklist_with_code = True
+def assess_checklist_with_code(state: State) -> State:
+    print("assessing checklist with code ...")
+    state.is_assessment_checklist_with_code = True
     
-    _verify_checklist_with_code(state)
+    generate_llm_response(state)
+    
+    print("completed assessing checklist with code")
     
     return {
-        "is_verify_checklist_with_code": False, 
+        "is_assessment_checklist_with_code": False, 
         "checklist_with_code_feedback_loop_count": state.checklist_with_code_feedback_loop_count+1
         }

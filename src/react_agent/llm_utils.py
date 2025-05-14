@@ -9,16 +9,11 @@ from react_agent.prompt import (
     ARCHITECTURE_ANALYSIS_TEMPLATE, ARCHITECTURE_RESPONSE_CONFIG, 
     ASSESSMENT_TEMPLATE, ASSESSMENT_CONFIG, 
     ARCHITECTURE_CORRECTION_TEMPLATE, ARCHITECTURE_CORRECTION_CONFIG,
-    THREAT_ANALYSIS_TEMPLATE,
-    THREAT_ANALYSIS_CONFIG,
-    CHECKLIST_TEMPLATE,
-    CHECKLIST_CONFIG,
-    CODE_BINDING_TEMPLATE,
-    CODE_BINDING_CONFIG,
-    VERIFY_CHECKLIST_TEMPLATE,
-    VERIFY_CHECKLIST_CONFIG,
-    VERIFY_CHECKLIST_WITH_CODE_TEMPLATE,
-    VERIFY_CHECKLIST_WITH_CODE_CONFIG
+    THREAT_ANALYSIS_TEMPLATE, THREAT_ANALYSIS_CONFIG,
+    CHECKLIST_TEMPLATE, CHECKLIST_CONFIG,
+    CODE_BINDING_TEMPLATE, CODE_BINDING_CONFIG,
+    ASSESSMENT_CHECKLIST_TEMPLATE, ASSESSMENT_CHECKLIST_CONFIG,
+    ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE, ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG
 )
 
 from react_agent.Utils.ProjectAnalyzer import ProjectAnalyzer
@@ -45,9 +40,6 @@ from react_agent.variables import (
 
 def init_state(state: State) -> State:
     """initialize state"""
-    state.is_initial_architecture_analysis = True
-    state.is_assessment_analysis = False
-    state.is_feedback_architecture_analysis = False
     state.is_threat_analysis = False
     state.is_checklist_analysis = False
     state.is_code_binding = False
@@ -273,8 +265,8 @@ def generate_llm_response(state: State) -> str:
         return response
     
     # verify checklist node
-    elif state.is_verify_checklist and state.checklist_feedback_loop_count < CHECKLIST_FEEDBACK_LOOP_COUNT:
-        print("=============verify checklist node=============")
+    elif state.is_assessment_checklist and state.checklist_feedback_loop_count < CHECKLIST_FEEDBACK_LOOP_COUNT:
+        print("=============assess checklist node=============")
         # prompt = VERIFY_CHECKLIST_TEMPLATE.replace(
         #     "{checklist}", state.checklist_prompt
         # )
@@ -296,7 +288,7 @@ def generate_llm_response(state: State) -> str:
         return
         
     # verify checklist with code
-    elif state.is_code_binding:
+    elif state.is_initial_code_binding:
         print("=============code binding node=============")
         # checklist = load_file("results/checklist.json")
         
@@ -317,9 +309,12 @@ def generate_llm_response(state: State) -> str:
         #     config=CODE_BINDING_CONFIG,
         # )
         
+    elif state.is_feedback_code_binding:
+        print("=============feedback code binding node=============")
+        
     # feedback loop verify checklist with code
-    elif state.is_verify_checklist_with_code and state.checklist_with_code_feedback_loop_count < CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT:
-        print("=============verify checklist with code node=============")
+    elif state.is_assessment_checklist_with_code and state.checklist_with_code_feedback_loop_count < CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT:
+        print("=============assess checklist with code node=============")
         
         # prompt = VERIFY_CHECKLIST_WITH_CODE_TEMPLATE.replace(
         #     "{checklist}", state.checklist_prompt
@@ -404,54 +399,4 @@ def _init_db():
     
     return
 
-def _verify_checklist(state: State) -> str:
-    """verify checklist"""
-    print("verifying checklist ...")
     
-    generate_llm_response(state)
-    
-    # with open("results/checklist.json", "w") as f:
-    #     f.write(response.text)
-    
-    return
-    
-    
-    
-def _code_binding(state: State):
-    """code binding with redis
-    1. search simirality in vertor db (parse description)
-    2. get code from redis
-    3. prompt engineering for code binding
-    4. generate code binding
-    """
-    print("searching similarity in vector db ...")
-    
-    # with open("results/checklist.json", "r") as f:
-    #     checklist = json.load(f)
-    
-    # for item in checklist["checklist_items"]:
-    #     description = "function description: " + item["description"]
-    #     print(description)
-    #     match_functions = AnalyzeSolidity.search(description)
-    #     print("match_functions : ", match_functions)
-    
-    # match_functions = AnalyzeSolidity.search(state.threat_analysis)
-    generate_llm_response(state)
-    
-    
-    print("completed code binding with redis")
-    
-    return
-    
-def _verify_checklist_with_code(state: State):
-    """verify checklist with code"""
-    print("verifying checklist with code ...")
-    
-    generate_llm_response(state)
-    
-    # with open("results/checklist_with_code.json", "w") as f:
-    #     f.write(response.text)
-    
-    print("completed verifying checklist with code")
-    
-    return

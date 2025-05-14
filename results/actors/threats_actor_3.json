@@ -4,179 +4,179 @@
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet to Berachain Hub"
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 9,
       "asset_ids": [
-        6
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 4,
-      "data_description": "Connection signature"
+      "behavior_id": 5,
+      "data_flow_id": 18,
+      "data_description": "Vote data (proposal ID, vote choice)"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "Client to Service",
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        3,
-        5
+        1,
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "BeraHub might not robustly verify connection signatures or manage sessions."
+      "gap_description": "Identity of the voter not cryptographically verified, allowing impersonation."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor interacts with BeraHub authentication mechanism."
+      "description": "Untrusted external actor performing a sensitive governance action."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
+      "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Compromised connection/session could lead to unauthorized actions."
+      "rationale": "If voter identity is not strongly authenticated, attacker can influence governance outcomes by voting as others."
     },
     "assumptions": [
-      "An attacker can intercept or forge communication containing the connection signature.",
-      "BeraHub's connection handling does not fully validate the signature or source."
+      "The governance contract does not require cryptographic signatures tied to the voter's address for voting transactions.",
+      "An attacker can initiate transactions using another user's purported address without their private key."
     ],
     "mitigation": {
-      "strategy": "Require strong signature verification linked to on-chain identity and secure session management.",
+      "strategy": "Implement cryptographic signature verification for all voting transactions.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could spoof a legitimate user's wallet connection signature to impersonate them on BeraHub.",
+    "description": "An attacker could impersonate a legitimate user to cast fraudulent votes on governance proposals, potentially altering proposal outcomes.",
     "trace_source": {
-      "doc_reference": "connect_to_berachain.md",
-      "matched_capability": "How To Connect A Wallet With Berachain \ud83d\udd0c"
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on Proposal"
     }
   },
   {
     "id": 2,
-    "stride_category": "Information Disclosure",
+    "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 2,
-      "capability_match": "Review Active Reward Vaults"
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 9,
       "asset_ids": [
-        5
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 9,
-      "data_description": "List of vaults"
+      "behavior_id": 5,
+      "data_flow_id": 18,
+      "data_description": "Vote data (proposal ID, vote choice)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        9
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
+      "confidentiality_required": false,
+      "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Sensitive or internal data might be included in the publicly accessible list of Reward Vaults."
+      "gap_description": "Vote data is susceptible to alteration during transmission."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is performing a standard read operation."
+      "description": "Attacker controlling the network path between user and contract."
     },
     "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Low",
-      "rationale": "Standard information query, but sensitive data could be exposed."
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "Altered votes can disrupt governance accuracy."
     },
     "assumptions": [
-      "BeraHub's API endpoint for retrieving vault lists does not filter out sensitive data.",
-      "Sensitive configuration or user data is stored alongside public vault information."
+      "The data flow carrying the vote transaction is not sufficiently protected against modification in transit.",
+      "An intermediate network node is compromised and can intercept/modify transaction data."
     ],
     "mitigation": {
-      "strategy": "Filter sensitive data from public API responses for vault lists.",
+      "strategy": "Ensure vote transaction payload is signed and verified by the contract; use secure communication channels (HTTPS/WSS).",
       "type": "Technical Control",
-      "priority": "Low"
+      "priority": "Medium"
     },
-    "description": "BeraHub may inadvertently expose sensitive data about Reward Vaults to any user requesting the list.",
+    "description": "An attacker could intercept and modify the contents of a vote transaction (e.g., changing the vote choice) before it is processed by the governance contract.",
     "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Review active Reward Vaults"
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on Proposal"
     }
   },
   {
     "id": 3,
-    "stride_category": "Information Disclosure",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 3,
-      "capability_match": "Review Active Validators"
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 9,
       "asset_ids": [
-        7
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 11,
-      "data_description": "List of validators"
+      "behavior_id": 5,
+      "data_flow_id": 18,
+      "data_description": "Vote transaction submission"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        9
       ]
     },
     "security_gap": {
-      "confidentiality_required": true,
+      "confidentiality_required": false,
       "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Sensitive or internal data might be included in the publicly accessible list of Validators."
+      "availability_required": true,
+      "gap_description": "System resources can be exhausted by malicious transaction volume."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor is performing a standard read operation."
+      "description": "Untrusted external actor who can submit transactions."
     },
     "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "Low",
-      "rationale": "Standard information query, but sensitive data could be exposed."
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "Prevents legitimate participation in governance."
     },
     "assumptions": [
-      "BeraHub's API endpoint for retrieving validator lists does not filter out sensitive data.",
-      "Sensitive configuration or operational data about validators is stored alongside public information."
+      "The cost of submitting voting transactions is low enough for an attacker to send a large volume.",
+      "The network or the governance contract has limitations on transaction processing that can be overwhelmed."
     ],
     "mitigation": {
-      "strategy": "Filter sensitive data from public API responses for validator lists.",
+      "strategy": "Implement transaction rate limiting or minimum stake requirements for voting beyond basic gas fees.",
       "type": "Technical Control",
-      "priority": "Low"
+      "priority": "Medium"
     },
-    "description": "BeraHub may inadvertently expose sensitive data about Validators (e.g., operational details, internal IDs) to any user requesting the list.",
+    "description": "An attacker could flood the network or the governance contract with excessive voting transactions, preventing legitimate users from casting their votes.",
     "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Review active Validators"
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on Proposal"
     }
   },
   {
@@ -184,58 +184,56 @@
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 4,
+      "actor_id": 1,
+      "behavior_id": 6,
       "capability_match": "Boost Validator with $BGT"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 10,
       "asset_ids": [
-        2,
-        7
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 12,
-      "data_description": "Boost request + BGT amount"
+      "behavior_id": 6,
+      "data_flow_id": 19,
+      "data_description": "$BGT delegation transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        10
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying contract may not fully authenticate the boost request originates from the legitimate BGT owner."
+      "availability_required": true,
+      "gap_description": "Delegation action not cryptographically verified to originate from the BGT holder."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor attempting to control another user's assets/actions."
     },
     "behavioral_risk": {
-      "behavior_id": 4,
+      "behavior_id": 6,
       "risk_level": "High",
-      "rationale": "Successful spoofing leads to unauthorized use of user's BGT and incorrect validator boosting."
+      "rationale": "Attacker could steal BGT delegation power and associated rewards/rights."
     },
     "assumptions": [
-      "An attacker can forge a boost request that BeraHub or the contract accepts as valid.",
-      "Authentication/authorization checks for the boost action are insufficient.",
-      "Communication channels are not fully protected against injection."
+      "Standard blockchain transaction signing is not effectively enforced or is bypassed.",
+      "An attacker can somehow initiate a transaction from another user's address without their private key."
     ],
     "mitigation": {
-      "strategy": "Require signed transactions for boosting actions and verify BGT ownership on-chain.",
+      "strategy": "Rely on fundamental blockchain security properties: standard transaction signing and private key protection.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could spoof a request to BeraHub to boost a validator using a legitimate user's $BGT without their authorization.",
+    "description": "An attacker could impersonate a user to delegate or undelegate their $BGT from a validator without their permission, affecting their potential rewards.",
     "trace_source": {
       "doc_reference": "guides/boost_a_validator.md",
       "matched_capability": "Boost A Validator With $BGT"
@@ -243,1951 +241,361 @@
   },
   {
     "id": 5,
-    "stride_category": "Tampering",
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 4,
-      "capability_match": "Boost Validator with $BGT"
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 12,
       "asset_ids": [
-        2,
-        7
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 12,
-      "data_description": "Boost request + BGT amount"
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Incentive claim request data (proof, amount)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 4,
+      "boundary_name": "Contract to Backend/Service",
       "between_component_ids": [
-        2,
-        5
+        12
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Boost request parameters could be modified in transit."
+      "gap_description": "Claiming mechanism (e.g., merkle proof) is vulnerable to manipulation, allowing unauthorized claims."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor attempting to claim unearned assets."
     },
     "behavioral_risk": {
-      "behavior_id": 4,
+      "behavior_id": 7,
       "risk_level": "High",
-      "rationale": "Tampering could lead to BGT being delegated to the wrong validator or in incorrect amounts."
+      "rationale": "Attacker could steal incentive tokens earned by other users or the protocol."
     },
     "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request (e.g., via signature)."
+      "The off-chain backend service generating claim proofs is compromised or has a vulnerability.",
+      "The on-chain contract verifying claim proofs has logic flaws that can be exploited.",
+      "The mapping between user addresses and earned incentives is flawed."
     ],
     "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
+      "strategy": "Secure backend infrastructure; employ robust merkle tree generation and verification; conduct smart contract audits.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could intercept and modify a user's request to boost a validator, changing the target validator or the amount of $BGT delegated.",
+    "description": "An attacker could exploit vulnerabilities in the incentive claim mechanism (e.g., manipulating proofs or contract logic) to claim incentive tokens they have not legitimately earned or that belong to others.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost A Validator With $BGT"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
     "id": 6,
-    "stride_category": "Repudiation",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 4,
-      "capability_match": "Boost Validator with $BGT"
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 12,
       "asset_ids": [
-        2,
-        7
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 12,
-      "data_description": "Boost request + BGT amount"
+      "behavior_id": 7,
+      "data_flow_id": 20,
+      "data_description": "Incentive claim request transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 4,
+      "boundary_name": "Contract to Backend/Service",
       "between_component_ids": [
-        2,
-        5
+        12
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Boosting action might not be definitively attributable to the user on-chain."
+      "gap_description": "Backend service providing claim proofs is susceptible to being overwhelmed."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor attempting to disrupt service availability."
     },
     "behavioral_risk": {
-      "behavior_id": 4,
+      "behavior_id": 7,
       "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over delegation or incentive claims."
+      "rationale": "Prevents users from accessing earned rewards."
     },
     "assumptions": [
-      "The boosting action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
+      "The backend service is a centralized point of failure for generating or serving claim proofs.",
+      "The backend service lacks sufficient DoS protection measures."
     ],
     "mitigation": {
-      "strategy": "Ensure all boosting actions are recorded as signed transactions on the blockchain.",
+      "strategy": "Implement robust DoS protection for the backend service; explore decentralized methods for proof generation/distribution.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "A user performs a validator boost action via BeraHub but later denies having done so.",
+    "description": "An attacker could launch a DoS attack against the backend service responsible for generating incentive claim proofs, preventing users from claiming their rewards.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost A Validator With $BGT"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
     "id": 7,
-    "stride_category": "Denial of Service",
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 4,
-      "capability_match": "Boost Validator with $BGT"
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Stake LP Tokens in Reward Vault"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 11,
       "asset_ids": [
-        2,
-        7
+        6
       ]
     },
     "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 12,
-      "data_description": "Boost request + BGT amount"
+      "behavior_id": 8,
+      "data_flow_id": 21,
+      "data_description": "LP token staking transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": false,
+      "integrity_required": true,
       "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying contract is vulnerable to request flooding."
+      "gap_description": "Staking action not cryptographically verified to originate from the LP token holder."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor attempting to control another user's assets/actions."
     },
     "behavioral_risk": {
-      "behavior_id": 4,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from boosting validators."
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Attacker could steal LP tokens or prevent user from earning BGT."
     },
     "assumptions": [
-      "BeraHub's boosting endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a boosting action is low enough for an attacker to spam."
+      "Standard blockchain transaction signing is not effectively enforced or is bypassed.",
+      "An attacker can somehow initiate a transaction from another user's address without their private key."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for boosting transactions.",
+      "strategy": "Rely on fundamental blockchain security properties: standard transaction signing and private key protection.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker could flood BeraHub or the underlying contract with boost requests, causing a denial of service for legitimate users.",
+    "description": "An attacker could impersonate a user to stake or unstake their LP tokens in a reward vault without their permission, affecting their ability to earn $BGT.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost A Validator With $BGT"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Staking With A Reward Vault"
     }
   },
   {
     "id": 8,
-    "stride_category": "Spoofing",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 5,
-      "capability_match": "Redeem $BGT for $BERA"
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Stake LP Tokens in Reward Vault"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 11,
       "asset_ids": [
-        2,
-        1
+        6
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 13,
-      "data_description": "Redemption request + BGT amount"
+      "behavior_id": 8,
+      "data_flow_id": 21,
+      "data_description": "LP token staking/unstaking transactions"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying contract may not fully authenticate the redemption request originates from the legitimate BGT owner."
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "System resources can be exhausted by malicious staking/unstaking transaction volume."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor who can submit transactions."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss of user's BGT and misdirection of BERA."
+      "behavior_id": 8,
+      "risk_level": "Medium",
+      "rationale": "Prevents legitimate users from managing their LP token stakes and earning BGT."
     },
     "assumptions": [
-      "An attacker can forge a redemption request that BeraHub or the contract accepts as valid.",
-      "Authentication/authorization checks for the redemption action are insufficient.",
-      "Communication channels are not fully protected against injection."
+      "The cost of submitting staking/unstaking transactions is low enough for an attacker to send a large volume.",
+      "The network or the reward vault contract has limitations on transaction processing that can be overwhelmed."
     ],
     "mitigation": {
-      "strategy": "Require signed transactions for redemption actions and verify BGT ownership on-chain.",
+      "strategy": "Implement transaction rate limiting or dynamic gas pricing to disincentivize spam.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker could spoof a request to BeraHub to redeem a legitimate user's $BGT for $BERA, redirecting the $BERA to an attacker-controlled wallet.",
+    "description": "An attacker could flood the network or the reward vault contract with excessive LP staking or unstaking transactions, preventing legitimate users from managing their deposits.",
     "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Redeem $BGT for $BERA"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Staking With A Reward Vault"
     }
   },
   {
     "id": 9,
-    "stride_category": "Tampering",
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 5,
-      "capability_match": "Redeem $BGT for $BERA"
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Claim Earned $BGT"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 11,
       "asset_ids": [
-        2,
-        1
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 13,
-      "data_description": "Redemption request + BGT amount"
+      "behavior_id": 9,
+      "data_flow_id": 22,
+      "data_description": "$BGT claim request transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Redemption request parameters could be modified in transit."
+      "gap_description": "$BGT claim logic allows claiming more than earned or claiming others' BGT."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor attempting to claim unearned assets."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 9,
       "risk_level": "High",
-      "rationale": "Tampering could lead to incorrect redemption amounts or redirection of BERA."
+      "rationale": "Attacker could steal BGT earned by other users or the protocol."
     },
     "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request (e.g., via signature)."
+      "The reward vault contract's internal accounting or claim logic is vulnerable.",
+      "The mechanism tracking earned BGT per user is flawed."
     ],
     "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
+      "strategy": "Thoroughly audit the reward vault smart contract for vulnerabilities in claim logic.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could intercept and modify a user's request to redeem $BGT, changing the amount or the destination address for the resulting $BERA.",
+    "description": "An attacker could exploit vulnerabilities in the reward vault contract's claim function to claim more $BGT than they are entitled to or claim $BGT belonging to other users.",
     "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Redeem $BGT for $BERA"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Earning BGT"
     }
   },
   {
     "id": 10,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 5,
-      "capability_match": "Redeem $BGT for $BERA"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2,
-        1
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 13,
-      "data_description": "Redemption request + BGT amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Redemption action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over asset ownership."
-    },
-    "assumptions": [
-      "The redemption action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all redemption actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user redeems $BGT for $BERA via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Redeem $BGT for $BERA"
-    }
-  },
-  {
-    "id": 11,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 5,
-      "capability_match": "Redeem $BGT for $BERA"
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Claim Earned $BGT"
     },
     "threat_target": {
-      "component_id": 5,
+      "component_id": 11,
       "asset_ids": [
-        2,
-        1
+        2
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 13,
-      "data_description": "Redemption request + BGT amount"
+      "behavior_id": 9,
+      "data_flow_id": 22,
+      "data_description": "$BGT claim transaction submission"
     },
     "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        2,
-        5
+        1,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying contract is vulnerable to request flooding."
+      "gap_description": "System resources can be exhausted by malicious claim transaction volume."
     },
     "actor_risk": {
-      "actor_id": 2,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
+      "description": "Untrusted external actor who can submit transactions."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 9,
       "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from redeeming BGT."
+      "rationale": "Prevents users from accessing earned BGT rewards."
     },
     "assumptions": [
-      "BeraHub's redemption endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a redemption action is low enough for an attacker to spam."
+      "The cost of submitting claim transactions is low enough for an attacker to send a large volume.",
+      "The network or the reward vault contract has limitations on transaction processing that can be overwhelmed by claim requests."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for redemption transactions.",
+      "strategy": "Implement transaction rate limiting or dynamic gas pricing to disincentivize spam.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could flood BeraHub or the underlying contract with redemption requests, causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "dapps/berahub.md",
-      "matched_capability": "Redeem $BGT for $BERA"
-    }
-  },
-  {
-    "id": 12,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 6,
-      "capability_match": "Claim Earned $BGT Rewards"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 14,
-      "data_description": "Claim request"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying contract may not fully authenticate the claim request or validate the associated off-chain proof."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss of user's earned BGT rewards."
-    },
-    "assumptions": [
-      "An attacker can forge a claim request or a valid-looking off-chain proof.",
-      "Authentication/authorization checks for the claim action are insufficient.",
-      "The mechanism validating the off-chain proof on-chain is weak or absent."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for claiming actions and robustly validate the off-chain proof on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a claim request or tamper with the off-chain proof to claim a legitimate user's earned $BGT rewards.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 13,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 6,
-      "capability_match": "Claim Earned $BGT Rewards"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 14,
-      "data_description": "Claim request"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Claim request parameters or the associated off-chain proof could be modified."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to incorrect reward amounts being claimed or redirection of funds."
-    },
-    "assumptions": [
-      "The communication channel is vulnerable to interception and modification.",
-      "The off-chain proof generation/distribution mechanism is vulnerable to tampering.",
-      "The on-chain contract does not fully verify the integrity of the proof."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels, the off-chain proof mechanism is secure, and proof integrity is verified on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's claim request or tamper with the associated off-chain proof to claim a different amount or redirect rewards.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 14,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 6,
-      "capability_match": "Claim Earned $BGT Rewards"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 14,
-      "data_description": "Claim request"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Claiming action might not be definitively attributable to the user on-chain, especially if tied to an off-chain proof."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over claimed rewards."
-    },
-    "assumptions": [
-      "The claim action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction verifying the proof).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all claim actions are recorded as signed transactions on the blockchain, including validation of the associated proof.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user claims earned $BGT rewards via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 15,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 6,
-      "capability_match": "Claim Earned $BGT Rewards"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 14,
-      "data_description": "Claim request"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying contract is vulnerable to request flooding (including invalid proofs)."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from claiming rewards."
-    },
-    "assumptions": [
-      "BeraHub's claiming endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a claiming action is low enough for an attacker to spam, or validation of invalid proofs is cheap.",
-      "The off-chain proof distribution service can be targeted."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for claim transactions; ensure efficient/costly validation of proofs.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood BeraHub or the underlying contract with claim requests (including invalid proofs), causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 16,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 7,
-      "capability_match": "Swap Assets on BEX via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 15,
-      "data_description": "Swap request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying BEX contract may not fully authenticate the swap request originates from the legitimate asset owner."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss/misdirection of user's assets."
-    },
-    "assumptions": [
-      "An attacker can forge a swap request that BeraHub or the BEX contract accepts as valid.",
-      "Authentication/authorization checks for the swap action are insufficient.",
-      "Communication channels are not fully protected against injection."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for swap actions and verify asset ownership/allowances on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a request to BeraHub to swap a legitimate user's assets without their authorization, redirecting output tokens.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap assets"
-    }
-  },
-  {
-    "id": 17,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 7,
-      "capability_match": "Swap Assets on BEX via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 15,
-      "data_description": "Swap request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Swap request parameters could be modified in transit."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to incorrect swap execution, unexpected token pairs, or loss of assets."
-    },
-    "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request (e.g., via signature or strict parameter checks)."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's swap request, altering the token pair, amount, or recipient address.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap assets"
-    }
-  },
-  {
-    "id": 18,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 7,
-      "capability_match": "Swap Assets on BEX via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 15,
-      "data_description": "Swap request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Swap action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over transactions."
-    },
-    "assumptions": [
-      "The swap action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all swap actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user performs a swap via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap assets"
-    }
-  },
-  {
-    "id": 19,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 7,
-      "capability_match": "Swap Assets on BEX via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 15,
-      "data_description": "Swap request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying BEX contract is vulnerable to request flooding."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from swapping assets."
-    },
-    "assumptions": [
-      "BeraHub's swap endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a swap action is low enough for an attacker to spam."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for swap transactions.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood BeraHub or the underlying BEX contract with swap requests, causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap assets"
-    }
-  },
-  {
-    "id": 20,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 8,
-      "capability_match": "Provide BEX Liquidity via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Liquidity provision request + amounts"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying BEX contract may not fully authenticate the request originates from the legitimate asset owner."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss/misdirection of user's assets and LP tokens."
-    },
-    "assumptions": [
-      "An attacker can forge a liquidity provision request that BeraHub or the BEX contract accepts as valid.",
-      "Authentication/authorization checks for the action are insufficient.",
-      "Communication channels are not fully protected against injection."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for liquidity provision and verify asset ownership/allowances on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a request to BeraHub to provide liquidity using a user's assets without their authorization, redirecting resulting LP tokens.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide BEX liquidity"
-    }
-  },
-  {
-    "id": 21,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 8,
-      "capability_match": "Provide BEX Liquidity via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Liquidity provision request + amounts"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Liquidity provision request parameters could be modified in transit."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to incorrect asset deposits into unintended pools or wrong LP token amounts."
-    },
-    "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's liquidity provision request, altering the amounts or target pool.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide BEX liquidity"
-    }
-  },
-  {
-    "id": 22,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 8,
-      "capability_match": "Provide BEX Liquidity via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Liquidity provision request + amounts"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Liquidity provision action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over LP token ownership or pool contributions."
-    },
-    "assumptions": [
-      "The liquidity provision action is processed off-chain or without a strong on-chain link to the user's identity.",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all liquidity provision actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user provides BEX liquidity via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide BEX liquidity"
-    }
-  },
-  {
-    "id": 23,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 8,
-      "capability_match": "Provide BEX Liquidity via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        1,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Liquidity provision request + amounts"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying BEX contract is vulnerable to request flooding."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from providing liquidity."
-    },
-    "assumptions": [
-      "BeraHub's liquidity provision endpoint lacks sufficient rate limiting.",
-      "The transaction cost for this action is low enough for an attacker to spam."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for liquidity provision transactions.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood BeraHub or the underlying BEX contract with liquidity provision requests, causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide BEX liquidity"
-    }
-  },
-  {
-    "id": 24,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 9,
-      "capability_match": "Participate in Governance (Propose/Vote) via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 17,
-      "data_description": "Governance action request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the Governance contract may not fully authenticate the request originates from the legitimate BGT holder with sufficient voting power/proposal threshold."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates state-changing governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "High",
-      "rationale": "Successful spoofing can manipulate governance outcomes, impacting chain parameters or whitelisted vaults."
-    },
-    "assumptions": [
-      "An attacker can forge a governance request that BeraHub or the Governance contract accepts as valid.",
-      "Authentication/authorization checks (including BGT balance/delegation) for governance actions are insufficient.",
-      "Communication channels are not fully protected against injection."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for governance actions and verify BGT ownership/delegation and thresholds on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a request to BeraHub to vote on or propose a governance action on behalf of a legitimate user.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 25,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 9,
-      "capability_match": "Participate in Governance (Propose/Vote) via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 17,
-      "data_description": "Governance action request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Governance action parameters could be modified in transit."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates state-changing governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "High",
-      "rationale": "Tampering could manipulate vote outcomes or alter proposal details, impacting chain parameters."
-    },
-    "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request (e.g., via signature)."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's governance action request, changing their vote or altering the contents of a proposal.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 26,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 9,
-      "capability_match": "Participate in Governance (Propose/Vote) via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 17,
-      "data_description": "Governance action request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Governance action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates state-changing governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "High",
-      "rationale": "Repudiation could cause disputes over governance outcomes or accountability."
-    },
-    "assumptions": [
-      "The governance action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all governance actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "A user participates in governance (proposes/votes) via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 27,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 9,
-      "capability_match": "Participate in Governance (Propose/Vote) via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 17,
-      "data_description": "Governance action request + details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the Governance contract is vulnerable to request flooding."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates state-changing governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "High",
-      "rationale": "Flooding could prevent legitimate users from participating in governance, disrupting the democratic process."
-    },
-    "assumptions": [
-      "BeraHub's governance endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a governance action is low enough for an attacker to spam.",
-      "The minimum BGT required to propose is too low."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for governance transactions; set a sufficient minimum BGT threshold for proposals.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could flood BeraHub or the underlying Governance contract with requests, causing a denial of service for legitimate governance participants.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 28,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 10,
-      "capability_match": "Stake LP Tokens in Reward Vaults via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        14,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 10,
-      "data_flow_id": 18,
-      "data_description": "Staking request + LP token amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying contract may not fully authenticate the request originates from the legitimate LP token owner."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 10,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss/misdirection of user's LP tokens and BGT earning potential."
-    },
-    "assumptions": [
-      "An attacker can forge a staking request that BeraHub or the contract accepts as valid.",
-      "Authentication/authorization checks for the staking action are insufficient.",
-      "Communication channels are not fully protected against injection."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for staking actions and verify LP token ownership/allowances on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a request to BeraHub to stake a legitimate user's LP tokens in a Reward Vault without their authorization.",
+    "description": "An attacker could flood the network or the reward vault contract with excessive $BGT claim transactions, preventing legitimate users from claiming their earned rewards.",
     "trace_source": {
       "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 29,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 10,
-      "capability_match": "Stake LP Tokens in Reward Vaults via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        14,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 10,
-      "data_flow_id": 18,
-      "data_description": "Staking request + LP token amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Staking request parameters could be modified in transit."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 10,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to LP tokens being staked in the wrong vault or incorrect amounts."
-    },
-    "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request (e.g., via signature)."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's request to stake LP tokens, changing the target vault or the amount staked.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 30,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 10,
-      "capability_match": "Stake LP Tokens in Reward Vaults via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        14,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 10,
-      "data_flow_id": 18,
-      "data_description": "Staking request + LP token amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Staking action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 10,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over staked LP tokens and BGT earning eligibility."
-    },
-    "assumptions": [
-      "The staking action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all staking actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user stakes LP tokens via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 31,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 10,
-      "capability_match": "Stake LP Tokens in Reward Vaults via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        14,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 10,
-      "data_flow_id": 18,
-      "data_description": "Staking request + LP token amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying contract is vulnerable to request flooding."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 10,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from staking LP tokens and earning BGT rewards."
-    },
-    "assumptions": [
-      "BeraHub's staking endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a staking action is low enough for an attacker to spam."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for staking transactions.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood BeraHub or the underlying Reward Vault contract with staking requests, causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 32,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 11,
-      "capability_match": "Mint $HONEY via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        8,
-        12,
-        13
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 11,
-      "data_flow_id": 19,
-      "data_description": "Minting request + collateral amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "BeraHub or the underlying HoneySwap contract may not fully authenticate the request originates from the legitimate collateral owner."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 11,
-      "risk_level": "High",
-      "rationale": "Successful spoofing leads to direct loss/misdirection of user's collateral and minted HONEY."
-    },
-    "assumptions": [
-      "An attacker can forge a minting request that BeraHub or the HoneySwap contract accepts as valid.",
-      "Authentication/authorization checks for the minting action are insufficient.",
-      "Communication channels are not fully protected against injection."
-    ],
-    "mitigation": {
-      "strategy": "Require signed transactions for minting actions and verify collateral ownership/allowances on-chain.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could spoof a request to BeraHub to mint $HONEY using a legitimate user's collateral without their authorization, redirecting the minted $HONEY.",
-    "trace_source": {
-      "doc_reference": "dapps/honey_swap.md",
-      "matched_capability": "Mint $HONEY"
-    }
-  },
-  {
-    "id": 33,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 11,
-      "capability_match": "Mint $HONEY via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        8,
-        12,
-        13
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 11,
-      "data_flow_id": 19,
-      "data_description": "Minting request + collateral amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Minting request parameters could be modified in transit."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 11,
-      "risk_level": "High",
-      "rationale": "Tampering could lead to incorrect collateral amounts or redirection of minted HONEY."
-    },
-    "assumptions": [
-      "The communication channel between the user/BeraHub/contract is vulnerable to interception and modification.",
-      "The underlying contract does not verify the integrity of the request."
-    ],
-    "mitigation": {
-      "strategy": "Ensure requests are sent over secure channels (HTTPS) and signed on-chain to verify integrity.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could intercept and modify a user's minting request, altering the collateral amount or the recipient address for the minted $HONEY.",
-    "trace_source": {
-      "doc_reference": "dapps/honey_swap.md",
-      "matched_capability": "Mint $HONEY"
-    }
-  },
-  {
-    "id": 34,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 11,
-      "capability_match": "Mint $HONEY via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        8,
-        12,
-        13
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 11,
-      "data_flow_id": 19,
-      "data_description": "Minting request + collateral amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Minting action might not be definitively attributable to the user on-chain."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 11,
-      "risk_level": "Medium",
-      "rationale": "Repudiation could cause disputes over minted HONEY or collateral usage."
-    },
-    "assumptions": [
-      "The minting action is processed off-chain or without a strong on-chain link to the user's identity (e.g., not a signed transaction).",
-      "Logs or records are insufficient to prove the user initiated the action."
-    ],
-    "mitigation": {
-      "strategy": "Ensure all minting actions are recorded as signed transactions on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user mints $HONEY via BeraHub but later denies having done so.",
-    "trace_source": {
-      "doc_reference": "dapps/honey_swap.md",
-      "matched_capability": "Mint $HONEY"
-    }
-  },
-  {
-    "id": 35,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 2,
-      "behavior_id": 11,
-      "capability_match": "Mint $HONEY via BeraHub"
-    },
-    "threat_target": {
-      "component_id": 5,
-      "asset_ids": [
-        8,
-        12,
-        13
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 11,
-      "data_flow_id": 19,
-      "data_description": "Minting request + collateral amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 3,
-      "boundary_name": "External to Internal",
-      "between_component_ids": [
-        2,
-        5
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "BeraHub endpoint or the underlying HoneySwap contract is vulnerable to request flooding."
-    },
-    "actor_risk": {
-      "actor_id": 2,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor initiates a state-changing action involving user assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 11,
-      "risk_level": "Medium",
-      "rationale": "Flooding could prevent legitimate users from minting HONEY."
-    },
-    "assumptions": [
-      "BeraHub's minting endpoint lacks sufficient rate limiting.",
-      "The transaction cost for a minting action is low enough for an attacker to spam."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting and ensure appropriate gas fees for minting transactions.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood BeraHub or the underlying HoneySwap contract with minting requests, causing a denial of service for legitimate users.",
-    "trace_source": {
-      "doc_reference": "dapps/honey_swap.md",
-      "matched_capability": "Mint $HONEY"
+      "matched_capability": "Earning BGT"
     }
   }
 ]

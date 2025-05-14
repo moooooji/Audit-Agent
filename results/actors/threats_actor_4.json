@@ -1,243 +1,242 @@
 [
   {
     "id": 1,
-    "stride_category": "Tampering",
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Boost Validator"
+      "behavior_id": 5,
+      "capability_match": "Boost a Validator"
     },
     "threat_target": {
-      "component_id": 6,
+      "component_id": 9,
       "asset_ids": [
-        6
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 12,
-      "data_description": "Signed BGT delegation amount and target validator address"
+      "behavior_id": 5,
+      "data_flow_id": 13,
+      "data_description": "User Boost Request"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "External User to Chain",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        6
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "The integrity of the signed delegation message might be compromised before processing."
+      "gap_description": "Unauthorized delegation of BGT."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor interacts with the validator contract via signed messages."
+      "description": "The actor initiates boosting requests which require authorization."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "A vulnerability in message signing or processing could allow unauthorized alteration of delegation details."
+      "behavior_id": 5,
+      "risk_level": "High",
+      "rationale": "If authorization/signature is not properly enforced for delegation."
     },
     "assumptions": [
-      "The signature on the delegation message does not cover all critical fields or the message format is malleable.",
-      "The Berachain Validator Contract does not perform strict validation of signed delegation data."
+      "The boost/delegation mechanism does not properly verify the user's identity or signature.",
+      "An attacker can submit delegation requests on behalf of another user without authorization."
     ],
     "mitigation": {
-      "strategy": "Ensure signature covers full canonical message data; implement strict on-chain validation.",
+      "strategy": "Require cryptographic signature verification for all delegation requests.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker attempts to modify the amount of BGT delegated or the target validator within a signed delegation message before it is processed by the contract.",
+    "description": "An attacker could impersonate a user to delegate their BGT to a validator without authorization.",
     "trace_source": {
       "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost Validator"
+      "matched_capability": "Boost a Validator"
     }
   },
   {
     "id": 2,
-    "stride_category": "Denial of Service",
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Boost Validator"
+      "behavior_id": 6,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 6,
+      "component_id": 9,
       "asset_ids": [
         6
       ]
     },
     "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 12,
-      "data_description": "Transaction volume"
+      "behavior_id": 6,
+      "data_flow_id": 14,
+      "data_description": "Claim Incentive Request"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "External User to Chain",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        6
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Excessive transaction volume could hinder legitimate boost operations."
+      "gap_description": "Unauthorized claim of user incentives."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor can send transactions to the contract."
+      "description": "The actor initiates claim requests which require authorization."
     },
     "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "High volume of transactions could impact contract or network availability."
+      "behavior_id": 6,
+      "risk_level": "High",
+      "rationale": "If the incentive claim proof system is vulnerable to forgery."
     },
     "assumptions": [
-      "Gas fees are not prohibitively expensive for an attacker to send a large volume of transactions.",
-      "The Berachain Validator Contract or network infrastructure has throughput limits that can be reached by a single actor."
+      "The incentive claim proof generation or verification process is flawed.",
+      "An attacker can forge a valid proof to claim another user's incentives."
     ],
     "mitigation": {
-      "strategy": "Implement rate limiting (if possible); rely on network-level gas fees and resource management.",
+      "strategy": "Implement robust cryptographic proof generation and on-chain verification for incentive claims.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker floods the Berachain Validator Contract with a high volume of boost transactions, potentially disrupting the boosting process for other users or impacting network availability.",
+    "description": "An attacker could forge claim proofs to steal incentive tokens belonging to other users.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost Validator"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
     "id": 3,
-    "stride_category": "Elevation of Privilege",
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 8,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 7,
+      "capability_match": "Participate in Governance (vote)"
     },
     "threat_target": {
-      "component_id": 10,
+      "component_id": 9,
       "asset_ids": [
-        7
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Claim proof and signature"
+      "behavior_id": 7,
+      "data_flow_id": 11,
+      "data_description": "vote selection + signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "External User to Chain",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        10
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Authorization check for claiming incentives could be bypassed using a falsified or stolen proof."
+      "gap_description": "Unauthorized casting of votes."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor can submit claims to the contract using claim proofs."
+      "description": "The actor initiates voting requests which require authorization."
     },
     "behavioral_risk": {
-      "behavior_id": 8,
+      "behavior_id": 7,
       "risk_level": "High",
-      "rationale": "A vulnerability allowing proof forgery or theft would directly lead to asset loss for users."
+      "rationale": "If vote message signatures are not properly verified by the contract."
     },
     "assumptions": [
-      "The claim proof generation process is compromised, allowing forgery, or proofs can be intercepted.",
-      "The on-chain validation of the claim proof does not correctly verify the entitlement amount, the rightful claimant's address, or the proof's signature against the claimant's key.",
-      "The off-chain backend service generating proofs is vulnerable."
+      "The governance contract does not properly verify signatures on vote messages.",
+      "An attacker can submit votes on behalf of another user without authorization."
     ],
     "mitigation": {
-      "strategy": "Secure proof generation process; robust on-chain validation tied to claimant address and secure signature over claim data.",
+      "strategy": "Ensure rigorous on-chain verification of cryptographic signatures for all vote messages.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker exploits a vulnerability in the incentive claim proof system to claim incentive tokens belonging to other users, effectively elevating their privilege to access others' assets.",
+    "description": "An attacker could impersonate a user to cast fraudulent votes in governance proposals.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
+      "doc_reference": "governance.md",
+      "matched_capability": "Participate in Governance (vote)"
     }
   },
   {
     "id": 4,
-    "stride_category": "Tampering",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 8,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 5,
+      "capability_match": "Boost a Validator"
     },
     "threat_target": {
-      "component_id": 10,
+      "component_id": 9,
       "asset_ids": [
-        7
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Claim proof and signature"
+      "behavior_id": 5,
+      "data_flow_id": 13,
+      "data_description": "User Boost Request"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "External User to Chain",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        10
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
+      "integrity_required": false,
       "availability_required": true,
-      "gap_description": "The integrity of a legitimate claim proof might be compromised, allowing a user to claim more than entitled."
+      "gap_description": "Legitimate users are prevented from boosting validators."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor can obtain valid claim proofs."
+      "description": "The actor can send requests to the boost mechanism."
     },
     "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "High",
-      "rationale": "Vulnerability in proof structure or on-chain validation could allow alteration of claimed amount, leading to asset loss."
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "Potential for resource exhaustion or logic lock in boost queuing/activation contract."
     },
     "assumptions": [
-      "A user can modify a part of their valid claim proof (e.g., the amount) without invalidating the entire proof or its signature.",
-      "The on-chain validation of the claim proof does not strictly verify the claimed amount against the proof's integrity check (e.g., Merkle root)."
+      "The boost queuing or activation contract logic has a vulnerability that can be exploited for DoS.",
+      "An attacker can trigger the vulnerability with moderate resources."
     ],
     "mitigation": {
-      "strategy": "Ensure claim proof structure is tamper-evident; implement robust on-chain validation verifying all proof components.",
+      "strategy": "Audit boost contract logic for DoS vulnerabilities (e.g., re-entrancy, unexpected loops, state locking).",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "A user with a legitimate claim proof attempts to alter the proof to increase the amount of incentive tokens they can claim from the BGTIncentiveDistributor contract.",
+    "description": "An attacker could exploit a vulnerability in the validator boosting contract to prevent users from delegating BGT or activating boosts.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost a Validator"
     }
   },
   {
@@ -246,58 +245,118 @@
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 8,
+      "behavior_id": 6,
       "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 10,
+      "component_id": 9,
       "asset_ids": [
-        7
+        6
       ]
     },
     "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 16,
-      "data_description": "Transaction volume"
+      "behavior_id": 6,
+      "data_flow_id": 14,
+      "data_description": "Claim Incentive Request"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "External User to Chain",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        10
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
+      "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Excessive transaction volume could hinder legitimate claim operations."
+      "gap_description": "Legitimate users are prevented from claiming incentives."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor can send transactions to the contract."
+      "description": "The actor can send requests to the claim mechanism."
     },
     "behavioral_risk": {
-      "behavior_id": 8,
+      "behavior_id": 6,
       "risk_level": "Medium",
-      "rationale": "High volume of transactions could impact contract or network availability."
+      "rationale": "Potential for resource exhaustion or logic lock in the claim contract or backend proof generation."
     },
     "assumptions": [
-      "Gas fees are not prohibitively expensive for an attacker to send a large volume of claim transactions.",
-      "The BGTIncentiveDistributor contract or network infrastructure has throughput limits that can be reached by a single actor."
+      "The incentive claim contract logic or backend proof generation process has a vulnerability that can be exploited for DoS.",
+      "An attacker can trigger the vulnerability with moderate resources."
     ],
     "mitigation": {
-      "strategy": "Rely on network-level gas fees and resource management; ensure contract handles invalid proofs efficiently.",
+      "strategy": "Audit incentive claim contract logic and proof system backend for DoS vulnerabilities.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker floods the BGTIncentiveDistributor contract with claim transactions, potentially disrupting the claiming process for other users or impacting network availability.",
+    "description": "An attacker could exploit a vulnerability in the incentive claim mechanism to prevent users from claiming their earned incentives.",
     "trace_source": {
       "doc_reference": "guides/claim_incentives.md",
       "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 6,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Participate in Governance (vote)"
+    },
+    "threat_target": {
+      "component_id": 9,
+      "asset_ids": [
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 11,
+      "data_description": "vote selection + signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        9
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Legitimate users are prevented from casting votes or proposals fail due to manipulation."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor can send voting requests."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Interfering with governance voting can halt or manipulate system upgrades/parameters."
+    },
+    "assumptions": [
+      "The governance voting contract logic has a vulnerability that can be exploited for DoS.",
+      "An attacker can trigger the vulnerability with moderate resources (e.g., flooding with invalid votes if gas costs are low or not properly handled)."
+    ],
+    "mitigation": {
+      "strategy": "Audit governance voting contract logic for DoS vulnerabilities and implement gas limits/checks to prevent flooding.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could exploit a vulnerability in the governance voting mechanism to prevent users from voting or interfere with proposal outcomes.",
+    "trace_source": {
+      "doc_reference": "governance.md",
+      "matched_capability": "Participate in Governance (vote)"
     }
   }
 ]

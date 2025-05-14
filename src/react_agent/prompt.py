@@ -1190,7 +1190,7 @@ CHECKLIST_CONFIG = types.GenerateContentConfig(
         ),
     )
 
-VERIFY_CHECKLIST_TEMPLATE = """
+ASSESSMENT_CHECKLIST_TEMPLATE = """
 **System**:
 You are a security engineer.
 You are given a JSON object that contains one or more `threats`, following this schema:
@@ -1198,7 +1198,7 @@ You are given a JSON object that contains one or more `threats`, following this 
 `{Checklist}`
 """
 
-VERIFY_CHECKLIST_CONFIG = types.GenerateContentConfig(
+ASSESSMENT_CHECKLIST_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
     response_schema=genai.types.Schema(
         type = genai.types.Type.OBJECT,
@@ -1207,7 +1207,7 @@ VERIFY_CHECKLIST_CONFIG = types.GenerateContentConfig(
 )
 
 
-VERIFY_CHECKLIST_WITH_CODE_TEMPLATE = """
+ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE = """
 **System**:
 You are a security engineer.
 You are given a JSON object that contains one or more `threats`, following this schema:
@@ -1215,7 +1215,7 @@ You are given a JSON object that contains one or more `threats`, following this 
 `{Checklist}`
 """
 
-VERIFY_CHECKLIST_WITH_CODE_CONFIG = types.GenerateContentConfig(
+ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
     response_schema=genai.types.Schema(
         type = genai.types.Type.OBJECT,
