@@ -1,5 +1,5 @@
 {
-  "id": 9,
+  "id": 12,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
@@ -18,53 +18,45 @@
   "attack_surface": {
     "behavior_id": 19,
     "data_flow_id": 10,
-    "data_description": "BGT/Voting Power/Proposal Data (malicious execution payload)"
+    "data_description": "BGT/Voting Power/Proposal Data"
   },
   "trust_boundary_risk": {
-    "boundary_id": 4,
-    "boundary_name": "Smart Contract Interaction Boundary",
+    "boundary_id": 5,
+    "boundary_name": "Governance Timelock Security",
     "between_component_ids": [
-      1,
-      5,
-      6,
-      8,
       9,
-      10,
-      11,
-      12,
-      13
+      4
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The Governance Contract may not fully validate the safety or intent of the proposal's execution payload, allowing malicious actions upon execution."
+    "availability_required": true,
+    "gap_description": "Governance process (voting, timelock, Guardian review) fails to prevent whitelisting of malicious Reward Vault granting unintended privileges."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "A compromised or malicious Protocol entity could craft proposals designed to execute arbitrary malicious code or grant unintended privileges."
+    "description": "Partner system capable of submitting governance proposals."
   },
   "behavioral_risk": {
     "behavior_id": 19,
     "risk_level": "Low",
-    "rationale": "Submitting a proposal is low risk, but if the contract executes the proposed code without sufficient checks, it's an EOP vector."
+    "rationale": "Submission of proposal for malicious vault has low behavioral risk due to governance checks, but high potential impact if successful."
   },
   "assumptions": [
-    "The Governance Contract's execution mechanism allows calls to arbitrary contract addresses and functions.",
-    "Automated or manual review processes (including Guardian oversight during Timelock) may fail to identify or block malicious execution payloads.",
-    "The Protocol entity is capable of crafting a malicious execution payload for a proposal."
+    "Actor 3 submits a proposal for a malicious Reward Vault designed to grant unintended privileges.",
+    "The governance mechanism (voting quorum, timelock, Guardian multisig) is compromised, subverted, or fails to identify the malicious nature of the proposal/vault."
   ],
   "mitigation": {
-    "strategy": "Implement allowlists for target addresses and function calls within proposal payloads; enhance review processes for execution payloads.",
-    "type": "Technical Control",
+    "strategy": "Ensure robust community and Guardian review of RFRV proposals and proposed vault code.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A malicious RFRV proposal submitted by the Protocol entity could contain an execution payload designed to grant the submitter or another party unauthorized privileges over assets or control within the system.",
+  "description": "A Protocol/Ecosystem Project (Actor 3) submits a Request for Reward Vault (RFRV) proposal to the Governance Contract (Component 9) for a malicious vault that, if approved and whitelisted by governance, would grant Actor 3 or other unauthorized parties elevated privileges or control over assets or other system components.",
   "trace_source": {
-    "doc_reference": "governance.md#governance-lifecycle",
+    "doc_reference": "governance.md#guardian-oversight",
     "matched_capability": "Submit RFRV (Request for Reward Vault)"
   }
 }

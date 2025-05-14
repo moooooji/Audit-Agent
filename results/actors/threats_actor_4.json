@@ -1,6 +1,6 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 2,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
@@ -15,54 +15,46 @@
   },
   "attack_surface": {
     "behavior_id": 21,
-    "data_flow_id": 0,
-    "data_description": "Governance Contract access control logic for cancellation"
+    "data_flow_id": 10,
+    "data_description": "cancel command and proposal ID sent to governance contract"
   },
   "trust_boundary_risk": {
-    "boundary_id": 4,
-    "boundary_name": "Smart Contract Interaction Boundary",
+    "boundary_id": 5,
+    "boundary_name": "Governance Timelock Security",
     "between_component_ids": [
-      1,
-      5,
-      6,
-      8,
       9,
-      10,
-      11,
-      12,
-      13
+      4
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "An attacker gains the ability to perform the 'cancel' action on the Governance Contract without proper authorization (e.g., without the required multisig signatures)."
+    "gap_description": "Prevention of timely execution of the cancel function on the Governance Contract via Data Flow ID 10 context."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "The 'cancel' capability is restricted to the Guardian Multisig and is highly sensitive."
+    "description": "The system's reliance on the Guardian Multisig's timely action via this path makes it a DoS target."
   },
   "behavioral_risk": {
     "behavior_id": 21,
     "risk_level": "High",
-    "rationale": "Unauthorized execution of the 'cancel' capability bypasses critical governance safeguards."
+    "rationale": "Failure to execute the cancel function during the timelock allows malicious proposals to pass, posing a high risk to the protocol."
   },
   "assumptions": [
-    "The Governance Contract's access control logic for the 'cancel' function is flawed.",
-    "An attacker can find a vulnerability to bypass the multisig requirement.",
-    "Multisig key material is compromised."
+    "An attacker can disrupt the communication path used by the Guardian Multisig to interact with the Governance Contract (e.g., network congestion, targeting Guardian infrastructure).",
+    "The Governance Contract's cancel function or related infrastructure is susceptible to DoS attacks."
   ],
   "mitigation": {
-    "strategy": "Implement strict and correctly verified access control on the 'cancel' function.",
+    "strategy": "Implement robust network infrastructure, monitor for congestion/attacks, and design smart contracts to be DoS-resistant.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker bypasses the Guardian Multisig requirement to gain unauthorized ability to cancel governance proposals.",
+  "description": "An attacker launches a Denial of Service attack preventing the Guardian Multisig from successfully sending the cancel command to the Governance Contract within the required timelock, allowing a malicious proposal to execute.",
   "trace_source": {
     "doc_reference": "governance.md#guardian-oversight",
-    "matched_capability": "Guardians act through a 5-of-9 multisig"
+    "matched_capability": "Guardians can cancel malicious proposals"
   }
 }

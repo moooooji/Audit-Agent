@@ -1,6 +1,6 @@
 {
-  "id": 20,
-  "stride_category": "Denial of Service",
+  "id": 13,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
@@ -17,43 +17,50 @@
   "attack_surface": {
     "behavior_id": 13,
     "data_flow_id": 11,
-    "data_description": "Incentive Entitlement Proofs (claim transaction/service request)"
+    "data_description": "Incentive Entitlement Proofs submitted for claim"
   },
   "trust_boundary_risk": {
-    "boundary_id": 6,
-    "boundary_name": "Incentive Proof Boundary",
+    "boundary_id": 4,
+    "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      14,
+      1,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
       13
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Distributor contract or Backend Service (ID 14) providing proofs is vulnerable to DoS attacks."
+    "gap_description": "Vulnerabilities in the Distributor contract or proof mechanism could allow attackers to claim unearned incentives or fees."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "User relies on service availability to claim rewards."
+    "description": "User claiming rewards is exposed if the entitlement and claim logic is flawed."
   },
   "behavioral_risk": {
     "behavior_id": 13,
-    "risk_level": "Medium",
-    "rationale": "Prevents users from accessing earned rewards temporarily."
+    "risk_level": "Low",
+    "rationale": "Basic action to claim accrued incentives/fees."
   },
   "assumptions": [
-    "Attacker has sufficient resources to flood the claim function or the Backend Service providing proofs.",
-    "The Distributor contract or Backend Service lacks sufficient rate limiting or DoS protection."
+    "The BGTIncentiveDistributor contract or the off-chain proof generation mechanism contains a vulnerability.",
+    "An attacker can forge or manipulate claim proofs."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting on the claim endpoint; ensure Backend Service has robust DoS protection.",
+    "strategy": "Conduct comprehensive smart contract audits, secure the proof generation process, implement robust proof verification on-chain.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "User is unable to claim earned incentives/fees due to a Denial of Service attack on the claiming mechanism or the proof-generating service.",
+  "description": "An attacker exploits a vulnerability in the BGTIncentiveDistributor contract or the incentive proof mechanism to claim incentive tokens or fees they are not entitled to.",
   "trace_source": {
     "doc_reference": "guides/claim-incentives.md",
     "matched_capability": "Claim Incentives"

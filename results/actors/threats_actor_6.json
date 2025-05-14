@@ -1,60 +1,57 @@
 {
-  "id": 15,
-  "stride_category": "Elevation of Privilege",
+  "id": 4,
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 11,
-    "capability_match": "Claim Incentives"
+    "actor_id": 6,
+    "behavior_id": 39,
+    "capability_match": "Review RFRV proposals"
   },
   "threat_target": {
-    "component_id": 10,
-    "asset_ids": [
-      4
-    ]
+    "component_id": 9,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 11,
-    "data_flow_id": 9,
-    "data_description": "malicious claim transaction with forged proof/parameters"
+    "behavior_id": 39,
+    "data_flow_id": -1,
+    "data_description": "Submission of RFRV review outcome"
   },
   "trust_boundary_risk": {
-    "boundary_id": 5,
-    "boundary_name": "Browser to Smart Contract",
+    "boundary_id": 4,
+    "boundary_name": "Governance Boundary",
     "between_component_ids": [
-      8,
-      10
+      9
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Smart contract vulnerability allows a user to claim more tokens than they are entitled to or claim tokens belonging to others."
+    "gap_description": "Review outcomes are not cryptographically signed or sufficiently logged, allowing the reviewer to deny their action."
   },
   "actor_risk": {
-    "actor_id": 1,
-    "type": "External User",
+    "actor_id": 6,
+    "type": "Internal Service",
     "overprivileged": false,
-    "description": "Actor interacting with a contract function that awards assets based on entitlement."
+    "description": "Can perform review actions and potentially deny having performed them."
   },
   "behavioral_risk": {
-    "behavior_id": 11,
-    "risk_level": "High",
-    "rationale": "Allows attacker to steal tokens directly from the contract or other users."
+    "behavior_id": 39,
+    "risk_level": "Low",
+    "rationale": "Lack of non-repudiation hinders accountability but doesn't directly compromise system state unless combined with tampering."
   },
   "assumptions": [
-    "Smart contract code for claim validation is incorrect or contains vulnerabilities.",
-    "The proof system used by the contract is weak."
+    "Review outcomes are not logged immutably.",
+    "Reviewer identity is not strongly tied to the outcome record."
   ],
   "mitigation": {
-    "strategy": "Perform thorough code audits and formal verification of the claim logic in the smart contract; Use secure and well-tested proof systems.",
+    "strategy": "Implement cryptographic signing and immutable logging of all review decisions.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Low"
   },
-  "description": "An attacker could exploit a vulnerability in the BGT Incentive Distributor contract to claim more Incentive Tokens than they are legitimately entitled to.",
+  "description": "The BGT Foundation could potentially repudiate a review outcome (e.g., denying approval of a malicious RFRV), hindering accountability and post-incident analysis.",
   "trace_source": {
-    "doc_reference": "guides/claim_incentives.md",
-    "matched_capability": "Claim Incentives"
+    "doc_reference": "governance/rewardvault.md",
+    "matched_capability": "Review RFRV proposals"
   }
 }

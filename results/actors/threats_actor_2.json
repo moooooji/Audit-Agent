@@ -1,58 +1,60 @@
 {
   "id": 18,
-  "stride_category": "Repudiation",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 14,
-    "capability_match": "Direct BGT emissions (to Reward Vaults)"
+    "behavior_id": 28,
+    "capability_match": "Stake BERA"
   },
   "threat_target": {
-    "component_id": 1,
-    "asset_ids": []
+    "component_id": 2,
+    "asset_ids": [
+      1
+    ]
   },
   "attack_surface": {
-    "behavior_id": 14,
-    "data_flow_id": 16,
-    "data_description": "Process of directing BGT Variable Emissions"
+    "behavior_id": 28,
+    "data_flow_id": -1,
+    "data_description": "Staking/Unstaking permissions or limits"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Berachain Network Perimeter",
+    "boundary_id": -1,
+    "boundary_name": "Implicit/External Interface",
     "between_component_ids": [
-      1,
-      3
+      2,
+      -1
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Lack of irrefutable proof linking a validator operator to specific BGT emission direction choices."
+    "gap_description": "Validator operator could gain unauthorized privileges related to staking, such as bypassing limits or staking others' BERA."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "Entity running a validator node to secure the network."
+    "description": "Operator of a validator node."
   },
   "behavioral_risk": {
-    "behavior_id": 14,
-    "risk_level": "Low",
-    "rationale": "Validator operator runs the validator software"
+    "behavior_id": 28,
+    "risk_level": "Medium",
+    "rationale": "Involves committing significant value to the network, carries inherent financial risk."
   },
   "assumptions": [
-    "Validator emission direction choices are not cryptographically signed.",
-    "On-chain records of validator allocation choices are not definitive or auditable."
+    "Vulnerabilities exist in the validator node software or the staking smart contract.",
+    "Exploiting these vulnerabilities allows the operator to bypass access controls or limits on staking actions."
   ],
   "mitigation": {
-    "strategy": "Require validator signature for emission direction choices and ensure transparent on-chain records.",
+    "strategy": "Implement strict access controls and input validation in the staking contract and secure the node software against privilege escalation.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A validator operator may deny having directed BGT emissions to specific Reward Vaults.",
+  "description": "A malicious validator operator exploits vulnerabilities to perform unauthorized staking or unstaking actions, potentially affecting others' funds or chain state.",
   "trace_source": {
-    "doc_reference": "pol/bgtmath.md#bgt-distribution",
-    "matched_capability": "Direct BGT emissions (to Reward Vaults)"
+    "doc_reference": "pol/bgtmath.md#validator-selection",
+    "matched_capability": "Stake BERA"
   }
 }

@@ -30,12 +30,8 @@ from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
-    print("1. state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     # not feedback loop
     if state.architecture_feedback_loop_count == 0:
-        print("1. state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
-        # print("completed initializing state")
-        # state = init_state(state)
         print("first architecture analysis ...")
         state.is_initial_architecture_analysis = True
         # generate llm response
@@ -65,7 +61,6 @@ def analyze_architecture(state: State) -> State:
 # assessment node
 def assess_architecture(state: State) -> State:
     """architecture assessment node"""
-    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_assessment_analysis = True
     # generate llm response
     response = generate_llm_response(state)
@@ -82,7 +77,6 @@ def assess_architecture(state: State) -> State:
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
-    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_threat_analysis = True
     id_weight = 1
     
@@ -113,7 +107,6 @@ def analyze_threats(state: State) -> State:
 def generate_checklist(state: State) -> State:
     
     state.is_initial_checklist_analysis = True
-    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
         
     id_weight = 1
     checklist_items = []
@@ -151,7 +144,6 @@ def generate_checklist(state: State) -> State:
 
 def assess_checklist(state: State) -> State:
     print("verifying checklist ...")
-    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
     state.is_assessment_checklist = True
     
     generate_llm_response(state)
@@ -170,9 +162,6 @@ def init_db(state: State) -> State:
     state.is_init_db = False
     
 def code_binding(state: State) -> State:
-    
-    print("state.checklist_with_code_feedback_loop_count: ", state.checklist_with_code_feedback_loop_count)
-    
     if state.checklist_with_code_feedback_loop_count == 0:
         print("initial code binding ...")
         
@@ -183,9 +172,23 @@ def code_binding(state: State) -> State:
         for item in checklist["checklist_items"]:
             function_description = item["description"]
             similar_functions = AnalyzeSolidity.search(function_description, 3)
-            print("[+] similar_functions: ", similar_functions)
             similar_functions_list.append(similar_functions)
         print("[+] similar_functions_list: ", similar_functions_list)
+        print("[+] similar_functions_length: ", len(similar_functions_list))
+        
+        contract_names = []
+        function_names = []
+        # parsing contract names and function names
+        for similar_functions in similar_functions_list:
+            for doc in similar_functions:
+                # Parse metadata
+                contract_names.append(doc.metadata['contract'])
+                function_names.append(doc.metadata['function'])
+        
+        for i in range(len(contract_names)):
+            function_code = RedisUtil.get_function_code(f"{contract_names[i]}.{function_names[i]}")
+            print("[+] function_code: ", function_code)
+        
         state.is_initial_code_binding = True
         response = generate_llm_response(state)
         print("completed initial code binding")

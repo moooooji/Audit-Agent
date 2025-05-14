@@ -206,7 +206,6 @@ def generate_llm_response(state: State) -> str:
         architecture_correction = load_file("results/architecture_analysis.json")
         
         cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
-        print("[+] cur_actor: ", cur_actor)
         
         prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chunk}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
         

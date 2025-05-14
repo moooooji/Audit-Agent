@@ -1,59 +1,60 @@
 {
   "id": 4,
-  "stride_category": "Denial of Service",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 5,
-    "behavior_id": 34,
-    "capability_match": "Manage Incentive Rates"
+    "behavior_id": 20,
+    "capability_match": "Offer Incentive Tokens (deposit)"
   },
   "threat_target": {
     "component_id": 8,
-    "asset_ids": []
+    "asset_ids": [
+      5
+    ]
   },
   "attack_surface": {
-    "behavior_id": 34,
-    "data_flow_id": 0,
-    "data_description": "Function calls for rate management actions"
+    "behavior_id": 20,
+    "data_flow_id": 999,
+    "data_description": "Incentive token transfer and rate parameters"
   },
   "trust_boundary_risk": {
     "boundary_id": 4,
     "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      5,
+      1,
       8
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Legitimate actors cannot perform essential rate management actions due to resource exhaustion or function unavailability."
+    "gap_description": "Authorization logic for Token Manager actions is flawed."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "External User",
-    "overprivileged": false,
-    "description": "A malicious actor could flood the system with transactions targeting the rate management function, preventing the legitimate Token Manager from operating."
+    "overprivileged": true,
+    "description": "The actor is the designated Token Manager for the Reward Vault, controlling incentive deposits and rates."
   },
   "behavioral_risk": {
-    "behavior_id": 34,
+    "behavior_id": 20,
     "risk_level": "Medium",
-    "rationale": "Disrupting rate management impacts the entire incentive system, preventing protocols from adjusting offers and users from receiving expected rewards, targeting a high-trust component (Reward Vault)."
+    "rationale": "The behavior involves managing sensitive incentive token supply and distribution rates in a critical smart contract."
   },
   "assumptions": [
-    "The smart contract's rate management functions are vulnerable to denial-of-service attacks (e.g., excessive gas costs, state lock-ups).",
-    "An attacker can flood the network or RPC endpoint with transactions targeting the contract.",
-    "data_flow_id 0 is a placeholder as no specific data flow ID for Actor 5 to Component 8 was provided in the chunk."
+    "The Reward Vault smart contract contains a vulnerability (e.g., logic error, re-entrancy, weak key management) that allows an unauthorized address to gain Token Manager permissions.",
+    "The attacker can interact with the smart contract to exploit this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Implement gas efficiency optimizations, potentially add rate limiting (off-chain), and monitor contract health for signs of attack.",
+    "strategy": "Conduct thorough audits and testing of smart contract access control logic and ensure secure key management for authorized roles.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "An attacker could prevent the legitimate Incentive Token Manager from setting or updating incentive rates in the Reward Vault by exploiting vulnerabilities or flooding the network.",
+  "description": "An attacker exploits a vulnerability in the Reward Vault contract to gain unauthorized control over the \"Token Manager\" role, allowing them to manage incentive tokens and rates.",
   "trace_source": {
-    "doc_reference": "guides/add-incentives-for-reward-vault.md",
-    "matched_capability": "Manage Incentive Rates"
+    "doc_reference": "pol/incentives.md#incentive-token-managers",
+    "matched_capability": "Manage Incentive Token Deposit and Rate"
   }
 }
