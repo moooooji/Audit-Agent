@@ -67,7 +67,8 @@
       "description": "Wallet or entity authorized to manage incentive token deposits and rates for a specific Reward Vault.",
       "capabilities": [
         "Offer Incentive Tokens (deposit)",
-        "Manage Incentive Rate"
+        "Increase Incentive Rate",
+        "Manage Incentive Rates"
       ]
     }
   ],
@@ -196,12 +197,19 @@
       "name": "$WBERA",
       "description": "Wrapped BERA token.",
       "type": "Token",
-      "sensitivity": "Medium"
+      "sensitivity": "High"
     },
     {
-      "id": 36,
+      "id": 19,
       "name": "Fee Shares",
-      "description": "Represents a share of collected fees.",
+      "description": "Represents a portion of fees collected.",
+      "type": "Token",
+      "sensitivity": "Low"
+    },
+    {
+      "id": 20,
+      "name": "Incentive Distribution Data",
+      "description": "Data about incentive distribution and user entitlements.",
       "type": "Data",
       "sensitivity": "Low"
     }
@@ -223,7 +231,8 @@
         1,
         2,
         5,
-        17
+        17,
+        18
       ]
     },
     {
@@ -299,9 +308,9 @@
       "description": "Contract for staking PoL-eligible assets to earn BGT.",
       "trust_level": "High",
       "assets_managed": [
-        2,
         6,
         7,
+        2,
         5
       ]
     },
@@ -311,9 +320,9 @@
       "description": "Manages the governance process, proposals, voting, and execution.",
       "trust_level": "High",
       "assets_managed": [
-        2,
+        10,
         9,
-        10
+        2
       ]
     },
     {
@@ -322,11 +331,11 @@
       "description": "Central contract for HONEY minting and burning.",
       "trust_level": "High",
       "assets_managed": [
+        16,
         3,
         12,
         13,
-        16,
-        36
+        19
       ]
     },
     {
@@ -338,7 +347,7 @@
         12,
         13,
         16,
-        36
+        19
       ]
     },
     {
@@ -350,7 +359,7 @@
         1,
         3,
         18,
-        36
+        19
       ]
     },
     {
@@ -360,7 +369,8 @@
       "trust_level": "High",
       "assets_managed": [
         5,
-        18
+        18,
+        20
       ]
     },
     {
@@ -369,7 +379,8 @@
       "description": "Off-chain service managing proofs of entitlement for incentive claiming.",
       "trust_level": "Medium",
       "assets_managed": [
-        11
+        11,
+        20
       ]
     },
     {
@@ -409,7 +420,8 @@
         16,
         17,
         18,
-        36
+        19,
+        20
       ]
     }
   ],
@@ -550,8 +562,8 @@
       "id": 12,
       "source_id": 13,
       "destination_id": 3,
-      "data": "Incentive Tokens/WBERA",
-      "description": "User receives claimed Incentive Tokens or WBERA fees",
+      "data": "Incentive Tokens",
+      "description": "User receives claimed Incentive Tokens",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -863,7 +875,7 @@
       "source_id": 8,
       "destination_id": 13,
       "data": "Incentive Tokens",
-      "description": "Reward Vault sends incentive tokens (non-commission) to the Distributor",
+      "description": "Reward Vault sends incentives to distributor for boosters",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -873,9 +885,21 @@
     {
       "id": 39,
       "source_id": 13,
+      "destination_id": 3,
+      "data": "WBERA (Claimed Fees)",
+      "description": "User claims their share of dApp fees from the Distributor",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 40,
+      "source_id": 13,
       "destination_id": 14,
-      "data": "Incentive Entitlement Data",
-      "description": "Distributor sends data about incentive distribution to the backend service",
+      "data": "Incentive Distribution Data",
+      "description": "BGTIncentiveDistributor provides data to the backend service for calculating and generating incentive entitlement proofs",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -1002,7 +1026,7 @@
       "target_id": 5,
       "action": "swap",
       "description": "User exchanges tokens on BEX",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 5,
@@ -1012,7 +1036,7 @@
       "target_id": 5,
       "action": "provide liquidity",
       "description": "User deposits tokens into BEX liquidity pool",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 6,
@@ -1022,7 +1046,7 @@
       "target_id": 6,
       "action": "mint",
       "description": "User deposits collateral to mint HONEY",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 7,
@@ -1032,7 +1056,7 @@
       "target_id": 6,
       "action": "burn",
       "description": "User redeems collateral by burning HONEY",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 8,
@@ -1042,7 +1066,7 @@
       "target_id": 8,
       "action": "stake",
       "description": "User stakes PoL-eligible assets in a Reward Vault",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 9,
@@ -1082,7 +1106,7 @@
       "target_id": 9,
       "action": "create proposal",
       "description": "User submits a new governance proposal",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 13,
@@ -1125,6 +1149,16 @@
       "risk_level": "Low"
     },
     {
+      "id": 17,
+      "name": "Set Commission Rate",
+      "initiator_type": "Actor",
+      "initiator_id": 2,
+      "target_id": 2,
+      "action": "configure",
+      "description": "Validator operator sets their incentive commission rate on the node",
+      "risk_level": "Low"
+    },
+    {
       "id": 18,
       "name": "Deploy Reward Vault",
       "initiator_type": "Actor",
@@ -1132,7 +1166,7 @@
       "target_id": 1,
       "action": "deploy",
       "description": "Protocol deploys a new Reward Vault contract onto the blockchain",
-      "risk_level": "Medium"
+      "risk_level": "Low"
     },
     {
       "id": 19,
@@ -1151,8 +1185,8 @@
       "initiator_id": 5,
       "target_id": 8,
       "action": "deposit",
-      "description": "Token Manager adds incentive tokens to a Reward Vault and sets/updates the distribution rate",
-      "risk_level": "Medium"
+      "description": "Token Manager adds incentive tokens to a Reward Vault",
+      "risk_level": "Low"
     },
     {
       "id": 21,
@@ -1198,40 +1232,90 @@
       "id": 25,
       "name": "Receive Transaction Fees",
       "initiator_type": "Component",
-      "initiator_id": 1,
-      "target_id": 2,
-      "action": "receive fees",
-      "description": "Validator Node receives transaction fees for including transactions in a block",
+      "initiator_id": 2,
+      "target_id": 1,
+      "action": "receive",
+      "description": "Validator receives transaction fees for including transactions in blocks",
       "risk_level": "Low"
     },
     {
       "id": 26,
       "name": "Receive Base BGT Emission",
       "initiator_type": "Component",
-      "initiator_id": 1,
-      "target_id": 2,
-      "action": "receive emission",
-      "description": "Validator Node receives base BGT emission for block production",
+      "initiator_id": 2,
+      "target_id": 1,
+      "action": "receive",
+      "description": "Validator receives base BGT emission for proposing a block",
       "risk_level": "Low"
     },
     {
       "id": 27,
       "name": "Receive Incentive Commission",
       "initiator_type": "Component",
-      "initiator_id": 8,
-      "target_id": 2,
-      "action": "receive commission",
-      "description": "Validator Node receives commission on incentives from Reward Vaults",
+      "initiator_id": 2,
+      "target_id": 8,
+      "action": "receive",
+      "description": "Validator receives commission on incentive tokens from Reward Vaults",
       "risk_level": "Low"
     },
     {
-      "id": 28,
+      "id": 29,
+      "name": "Collect Fees (BEX)",
+      "initiator_type": "Component",
+      "initiator_id": 5,
+      "target_id": 12,
+      "action": "collect",
+      "description": "BEX collects fees from user interactions and sends them to the FeeCollector",
+      "risk_level": "Low"
+    },
+    {
+      "id": 30,
+      "name": "Collect Fees (Honey Swap)",
+      "initiator_type": "Component",
+      "initiator_id": 6,
+      "target_id": 12,
+      "action": "collect",
+      "description": "Honey Swap collects fees from user interactions and sends them to the FeeCollector",
+      "risk_level": "Low"
+    },
+    {
+      "id": 31,
+      "name": "Distribute Fees",
+      "initiator_type": "Component",
+      "initiator_id": 12,
+      "target_id": 13,
+      "action": "distribute",
+      "description": "FeeCollector distributes collected fees (as WBERA) to the BGTIncentiveDistributor",
+      "risk_level": "Low"
+    },
+    {
+      "id": 32,
+      "name": "Distribute Incentives/Fees",
+      "initiator_type": "Component",
+      "initiator_id": 13,
+      "target_id": 1,
+      "action": "distribute",
+      "description": "BGTIncentiveDistributor makes incentives and fees available for users to claim",
+      "risk_level": "Low"
+    },
+    {
+      "id": 33,
       "name": "Stake BERA",
       "initiator_type": "Actor",
       "initiator_id": 2,
-      "target_id": 2,
+      "target_id": 1,
       "action": "stake",
-      "description": "Validator Operator stakes BERA to become eligible for the active set",
+      "description": "Validator operator stakes BERA to become eligible for the active set",
+      "risk_level": "Low"
+    },
+    {
+      "id": 34,
+      "name": "Manage Incentive Rates",
+      "initiator_type": "Actor",
+      "initiator_id": 5,
+      "target_id": 8,
+      "action": "manage",
+      "description": "Incentive Token Manager deposits incentives and sets/updates incentive rates for a Reward Vault",
       "risk_level": "Medium"
     }
   ]

@@ -11,13 +11,13 @@
     "threat_target": {
       "component_id": 9,
       "asset_ids": [
-        2
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 18,
-      "data_description": "Vote data (proposal ID, vote choice)"
+      "data_flow_id": 11,
+      "data_description": "vote selection + signature"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -31,53 +31,53 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Identity of the voter not cryptographically verified, allowing impersonation."
+      "gap_description": "Vote input may be spoofed without signature verification."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Untrusted external actor performing a sensitive governance action."
+      "description": "The actor is unauthenticated and can perform governance actions."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "If voter identity is not strongly authenticated, attacker can influence governance outcomes by voting as others."
+      "rationale": "The system accepts unsigned votes from external actors."
     },
     "assumptions": [
-      "The governance contract does not require cryptographic signatures tied to the voter's address for voting transactions.",
-      "An attacker can initiate transactions using another user's purported address without their private key."
+      "The governance contract does not enforce signature verification for vote messages.",
+      "The actor is able to access the voting interface without authentication."
     ],
     "mitigation": {
-      "strategy": "Implement cryptographic signature verification for all voting transactions.",
+      "strategy": "Require signature-based vote authentication and role validation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could impersonate a legitimate user to cast fraudulent votes on governance proposals, potentially altering proposal outcomes.",
+    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
     "trace_source": {
-      "doc_reference": "governance.md",
+      "doc_reference": "governance/voting.md#vote-process",
       "matched_capability": "Vote on Proposal"
     }
   },
   {
     "id": 2,
-    "stride_category": "Tampering",
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Submit Vote Transaction"
     },
     "threat_target": {
       "component_id": 9,
       "asset_ids": [
-        2
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 18,
-      "data_description": "Vote data (proposal ID, vote choice)"
+      "data_flow_id": 11,
+      "data_description": "Signed Vote Transaction"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -89,55 +89,55 @@
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Vote data is susceptible to alteration during transmission."
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Governance contract's capacity to handle high volume of vote transactions is limited."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Attacker controlling the network path between user and contract."
+      "description": "An external user attempting to disrupt voting by spamming the contract."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Altered votes can disrupt governance accuracy."
+      "rationale": "Can disrupt voting affecting governance, but requires attacker resources."
     },
     "assumptions": [
-      "The data flow carrying the vote transaction is not sufficiently protected against modification in transit.",
-      "An intermediate network node is compromised and can intercept/modify transaction data."
+      "The Governance Smart Contract (Component 9) or its interaction layer (Data Flow 11) has limitations on transaction processing capacity.",
+      "An attacker has sufficient resources ($BERA for gas) to generate a high volume of vote transactions."
     ],
     "mitigation": {
-      "strategy": "Ensure vote transaction payload is signed and verified by the contract; use secure communication channels (HTTPS/WSS).",
+      "strategy": "Implement transaction rate limiting at application layer or rely on blockchain's gas model.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could intercept and modify the contents of a vote transaction (e.g., changing the vote choice) before it is processed by the governance contract.",
+    "description": "An attacker could flood the Governance Smart Contract (Component 9) with vote transactions via Data Flow 11, potentially causing congestion or disrupting the voting process.",
     "trace_source": {
       "doc_reference": "governance.md",
-      "matched_capability": "Vote on Proposal"
+      "matched_capability": "Active Voting"
     }
   },
   {
     "id": 3,
-    "stride_category": "Denial of Service",
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
+      "capability_match": "Submit Vote Transaction"
     },
     "threat_target": {
       "component_id": 9,
       "asset_ids": [
-        2
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 18,
-      "data_description": "Vote transaction submission"
+      "data_flow_id": 11,
+      "data_description": "Signed Vote Transaction with vote details"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
@@ -149,453 +149,34 @@
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "System resources can be exhausted by malicious transaction volume."
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Governance contract fails to verify user's voting eligibility (ownership/delegation of Asset 4)."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor who can submit transactions."
+      "overprivileged": true,
+      "description": "An external user attempting to cast votes they are not eligible for."
     },
     "behavioral_risk": {
       "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Prevents legitimate participation in governance."
+      "risk_level": "High",
+      "rationale": "Allows manipulating governance outcomes with illegitimate votes."
     },
     "assumptions": [
-      "The cost of submitting voting transactions is low enough for an attacker to send a large volume.",
-      "The network or the governance contract has limitations on transaction processing that can be overwhelmed."
+      "The Governance Smart Contract (Component 9) has a vulnerability in its logic for verifying voting eligibility based on Asset 4 holdings/delegation.",
+      "An attacker can craft a transaction exploiting this vulnerability."
     ],
     "mitigation": {
-      "strategy": "Implement transaction rate limiting or minimum stake requirements for voting beyond basic gas fees.",
+      "strategy": "Robustly verify voting eligibility based on Asset 4 holdings/delegation within the Governance Smart Contract logic.",
       "type": "Technical Control",
-      "priority": "Medium"
+      "priority": "High"
     },
-    "description": "An attacker could flood the network or the governance contract with excessive voting transactions, preventing legitimate users from casting their votes.",
+    "description": "An attacker could exploit a vulnerability in the Governance Smart Contract (Component 9) to cast votes without the required Asset 4 voting power via Data Flow 11, influencing governance illegitimately.",
     "trace_source": {
       "doc_reference": "governance.md",
-      "matched_capability": "Vote on Proposal"
-    }
-  },
-  {
-    "id": 4,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Boost Validator with $BGT"
-    },
-    "threat_target": {
-      "component_id": 10,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 19,
-      "data_description": "$BGT delegation transaction"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        10
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Delegation action not cryptographically verified to originate from the BGT holder."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor attempting to control another user's assets/actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "High",
-      "rationale": "Attacker could steal BGT delegation power and associated rewards/rights."
-    },
-    "assumptions": [
-      "Standard blockchain transaction signing is not effectively enforced or is bypassed.",
-      "An attacker can somehow initiate a transaction from another user's address without their private key."
-    ],
-    "mitigation": {
-      "strategy": "Rely on fundamental blockchain security properties: standard transaction signing and private key protection.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could impersonate a user to delegate or undelegate their $BGT from a validator without their permission, affecting their potential rewards.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost A Validator With $BGT"
-    }
-  },
-  {
-    "id": 5,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 7,
-      "capability_match": "Claim Incentives"
-    },
-    "threat_target": {
-      "component_id": 12,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 20,
-      "data_description": "Incentive claim request data (proof, amount)"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Contract to Backend/Service",
-      "between_component_ids": [
-        12
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Claiming mechanism (e.g., merkle proof) is vulnerable to manipulation, allowing unauthorized claims."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor attempting to claim unearned assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "High",
-      "rationale": "Attacker could steal incentive tokens earned by other users or the protocol."
-    },
-    "assumptions": [
-      "The off-chain backend service generating claim proofs is compromised or has a vulnerability.",
-      "The on-chain contract verifying claim proofs has logic flaws that can be exploited.",
-      "The mapping between user addresses and earned incentives is flawed."
-    ],
-    "mitigation": {
-      "strategy": "Secure backend infrastructure; employ robust merkle tree generation and verification; conduct smart contract audits.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could exploit vulnerabilities in the incentive claim mechanism (e.g., manipulating proofs or contract logic) to claim incentive tokens they have not legitimately earned or that belong to others.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 6,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 7,
-      "capability_match": "Claim Incentives"
-    },
-    "threat_target": {
-      "component_id": 12,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 20,
-      "data_description": "Incentive claim request transaction"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Contract to Backend/Service",
-      "between_component_ids": [
-        12
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Backend service providing claim proofs is susceptible to being overwhelmed."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor attempting to disrupt service availability."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "Medium",
-      "rationale": "Prevents users from accessing earned rewards."
-    },
-    "assumptions": [
-      "The backend service is a centralized point of failure for generating or serving claim proofs.",
-      "The backend service lacks sufficient DoS protection measures."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust DoS protection for the backend service; explore decentralized methods for proof generation/distribution.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could launch a DoS attack against the backend service responsible for generating incentive claim proofs, preventing users from claiming their rewards.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentives"
-    }
-  },
-  {
-    "id": 7,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 8,
-      "capability_match": "Stake LP Tokens in Reward Vault"
-    },
-    "threat_target": {
-      "component_id": 11,
-      "asset_ids": [
-        6
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 21,
-      "data_description": "LP token staking transaction"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        11
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Staking action not cryptographically verified to originate from the LP token holder."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor attempting to control another user's assets/actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "High",
-      "rationale": "Attacker could steal LP tokens or prevent user from earning BGT."
-    },
-    "assumptions": [
-      "Standard blockchain transaction signing is not effectively enforced or is bypassed.",
-      "An attacker can somehow initiate a transaction from another user's address without their private key."
-    ],
-    "mitigation": {
-      "strategy": "Rely on fundamental blockchain security properties: standard transaction signing and private key protection.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could impersonate a user to stake or unstake their LP tokens in a reward vault without their permission, affecting their ability to earn $BGT.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 8,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 8,
-      "capability_match": "Stake LP Tokens in Reward Vault"
-    },
-    "threat_target": {
-      "component_id": 11,
-      "asset_ids": [
-        6
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 8,
-      "data_flow_id": 21,
-      "data_description": "LP token staking/unstaking transactions"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        11
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "System resources can be exhausted by malicious staking/unstaking transaction volume."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor who can submit transactions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 8,
-      "risk_level": "Medium",
-      "rationale": "Prevents legitimate users from managing their LP token stakes and earning BGT."
-    },
-    "assumptions": [
-      "The cost of submitting staking/unstaking transactions is low enough for an attacker to send a large volume.",
-      "The network or the reward vault contract has limitations on transaction processing that can be overwhelmed."
-    ],
-    "mitigation": {
-      "strategy": "Implement transaction rate limiting or dynamic gas pricing to disincentivize spam.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood the network or the reward vault contract with excessive LP staking or unstaking transactions, preventing legitimate users from managing their deposits.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Staking With A Reward Vault"
-    }
-  },
-  {
-    "id": 9,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 9,
-      "capability_match": "Claim Earned $BGT"
-    },
-    "threat_target": {
-      "component_id": 11,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 22,
-      "data_description": "$BGT claim request transaction"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        11
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "$BGT claim logic allows claiming more than earned or claiming others' BGT."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor attempting to claim unearned assets."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "High",
-      "rationale": "Attacker could steal BGT earned by other users or the protocol."
-    },
-    "assumptions": [
-      "The reward vault contract's internal accounting or claim logic is vulnerable.",
-      "The mechanism tracking earned BGT per user is flawed."
-    ],
-    "mitigation": {
-      "strategy": "Thoroughly audit the reward vault smart contract for vulnerabilities in claim logic.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could exploit vulnerabilities in the reward vault contract's claim function to claim more $BGT than they are entitled to or claim $BGT belonging to other users.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Earning BGT"
-    }
-  },
-  {
-    "id": 10,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 9,
-      "capability_match": "Claim Earned $BGT"
-    },
-    "threat_target": {
-      "component_id": 11,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 9,
-      "data_flow_id": 22,
-      "data_description": "$BGT claim transaction submission"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        11
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "System resources can be exhausted by malicious claim transaction volume."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Untrusted external actor who can submit transactions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 9,
-      "risk_level": "Medium",
-      "rationale": "Prevents users from accessing earned BGT rewards."
-    },
-    "assumptions": [
-      "The cost of submitting claim transactions is low enough for an attacker to send a large volume.",
-      "The network or the reward vault contract has limitations on transaction processing that can be overwhelmed by claim requests."
-    ],
-    "mitigation": {
-      "strategy": "Implement transaction rate limiting or dynamic gas pricing to disincentivize spam.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood the network or the reward vault contract with excessive $BGT claim transactions, preventing legitimate users from claiming their earned rewards.",
-    "trace_source": {
-      "doc_reference": "pol/rewardvaults.md",
-      "matched_capability": "Earning BGT"
+      "matched_capability": "Ensure Sufficient Voting Power"
     }
   }
 ]

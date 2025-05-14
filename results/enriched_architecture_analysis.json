@@ -24,7 +24,8 @@
           1,
           2,
           5,
-          17
+          17,
+          18
         ]
       },
       "3": {
@@ -100,9 +101,9 @@
         "description": "Contract for staking PoL-eligible assets to earn BGT.",
         "trust_level": "High",
         "assets_managed": [
-          2,
           6,
           7,
+          2,
           5
         ]
       },
@@ -112,9 +113,9 @@
         "description": "Manages the governance process, proposals, voting, and execution.",
         "trust_level": "High",
         "assets_managed": [
-          2,
+          10,
           9,
-          10
+          2
         ]
       },
       "10": {
@@ -123,11 +124,11 @@
         "description": "Central contract for HONEY minting and burning.",
         "trust_level": "High",
         "assets_managed": [
+          16,
           3,
           12,
           13,
-          16,
-          36
+          19
         ]
       },
       "11": {
@@ -139,7 +140,7 @@
           12,
           13,
           16,
-          36
+          19
         ]
       },
       "12": {
@@ -151,7 +152,7 @@
           1,
           3,
           18,
-          36
+          19
         ]
       },
       "13": {
@@ -161,7 +162,8 @@
         "trust_level": "High",
         "assets_managed": [
           5,
-          18
+          18,
+          20
         ]
       },
       "14": {
@@ -170,7 +172,8 @@
         "description": "Off-chain service managing proofs of entitlement for incentive claiming.",
         "trust_level": "Medium",
         "assets_managed": [
-          11
+          11,
+          20
         ]
       },
       "15": {
@@ -210,7 +213,8 @@
           16,
           17,
           18,
-          36
+          19,
+          20
         ]
       }
     },
@@ -282,7 +286,8 @@
         "description": "Wallet or entity authorized to manage incentive token deposits and rates for a specific Reward Vault.",
         "capabilities": [
           "Offer Incentive Tokens (deposit)",
-          "Manage Incentive Rate"
+          "Increase Incentive Rate",
+          "Manage Incentive Rates"
         ]
       }
     },
@@ -411,12 +416,19 @@
         "name": "$WBERA",
         "description": "Wrapped BERA token.",
         "type": "Token",
-        "sensitivity": "Medium"
+        "sensitivity": "High"
       },
-      "36": {
-        "id": 36,
+      "19": {
+        "id": 19,
         "name": "Fee Shares",
-        "description": "Represents a share of collected fees.",
+        "description": "Represents a portion of fees collected.",
+        "type": "Token",
+        "sensitivity": "Low"
+      },
+      "20": {
+        "id": 20,
+        "name": "Incentive Distribution Data",
+        "description": "Data about incentive distribution and user entitlements.",
         "type": "Data",
         "sensitivity": "Low"
       }

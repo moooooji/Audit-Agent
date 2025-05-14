@@ -4,539 +4,491 @@
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 112,
-      "capability_match": "Participate in Governance"
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Claim Incentives"
     },
     "threat_target": {
-      "component_id": 31,
+      "component_id": 5,
       "asset_ids": [
-        41
+        4
       ]
     },
     "attack_surface": {
-      "behavior_id": 112,
-      "data_flow_id": 312,
-      "data_description": "Governance proposal or vote transaction data"
+      "behavior_id": 3,
+      "data_flow_id": 3,
+      "data_description": "claim transaction and associated proof data"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        31
+        2,
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Governance actions not strongly authenticated to prevent impersonation."
+      "gap_description": "Verification of claim proofs or user identity may be insufficient allowing spoofed claims."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User interacts directly with governance contract, requires robust authentication."
+      "description": "User interacts with the incentive distributor contract using proofs."
     },
     "behavioral_risk": {
-      "behavior_id": 112,
-      "risk_level": "High",
-      "rationale": "Unauthorized governance actions can compromise system integrity and state."
+      "behavior_id": 3,
+      "risk_level": "Medium",
+      "rationale": "Insufficient proof verification or replay vulnerabilities could allow attackers to claim incentives belonging to others."
     },
     "assumptions": [
-      "The mechanism for submitting governance actions (proposals, votes) does not require a cryptographic signature tied to the user's wallet.",
-      "An attacker can submit transactions impersonating a legitimate user."
+      "Attacker obtains or generates a valid claim proof for a victim.",
+      "The claim contract does not fully prevent replay attacks or forged proofs."
     ],
     "mitigation": {
-      "strategy": "Require wallet signatures for all governance transactions.",
+      "strategy": "Implement robust claim proof validation and prevent replay attacks.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might spoof a user's identity to submit malicious governance proposals or votes.",
+    "description": "An attacker may impersonate a user to claim incentive tokens from the BGT Incentive Distributor Contract.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
     }
   },
   {
     "id": 2,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Redeem BGT"
+    },
+    "threat_target": {
+      "component_id": 6,
+      "asset_ids": [
+        3,
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 8,
+      "data_description": "redeem transaction parameters (amount of BGT)"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
+      "between_component_ids": [
+        2,
+        6
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Transaction data could potentially be modified in transit before confirmation."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User initiates the BGT redemption process."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "Medium",
+      "rationale": "While standard blockchain security mitigates this, tampering with transaction amounts could lead to unexpected outcomes or loss."
+    },
+    "assumptions": [
+      "Attacker can intercept and modify the signed transaction before it is included in a block.",
+      "Transaction integrity check is insufficient."
+    ],
+    "mitigation": {
+      "strategy": "Ensure all critical transaction parameters are covered by the user's digital signature.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker may tamper with a user's transaction to alter the amount of BGT redeemed for BERA.",
+    "trace_source": {
+      "doc_reference": "pol/tokens/bgt.md",
+      "matched_capability": "Redeem BGT For BERA"
+    }
+  },
+  {
+    "id": 3,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 112,
-      "capability_match": "Participate in Governance"
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Swap Assets"
     },
     "threat_target": {
-      "component_id": 31,
-      "asset_ids": []
+      "component_id": 9,
+      "asset_ids": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
     },
     "attack_surface": {
-      "behavior_id": 112,
-      "data_flow_id": 312,
-      "data_description": "Any governance transaction (proposal, vote)"
+      "behavior_id": 10,
+      "data_flow_id": 11,
+      "data_description": "swap transaction execution on BEX"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        31
+        2,
+        9
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Governance contract or network susceptible to transaction spam preventing legitimate actions."
+      "gap_description": "Network congestion or malicious transaction spam can prevent legitimate swaps from executing."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User interacts directly with governance contract."
+      "description": "User is dependent on network availability to perform swaps."
     },
     "behavioral_risk": {
-      "behavior_id": 112,
+      "behavior_id": 10,
       "risk_level": "Medium",
-      "rationale": "Spam attacks can disrupt the governance process."
+      "rationale": "Common blockchain risk where network load or targeted spam can hinder user activity."
     },
     "assumptions": [
-      "Transaction costs (gas fees) are not sufficiently high to deter spam.",
-      "The governance contract's processing logic is inefficient under high load of invalid transactions."
+      "The network can be overloaded by transactions.",
+      "An attacker can afford to submit a large volume of spam transactions."
     ],
     "mitigation": {
-      "strategy": "Ensure efficient transaction validation and appropriate gas costs.",
+      "strategy": "Implement dynamic transaction fees and monitor network health.",
       "type": "Technical Control",
       "priority": "Medium"
     },
-    "description": "An attacker could flood the network with governance transactions to prevent legitimate users from participating.",
+    "description": "An attacker floods the network with transactions or targets the BEX contract specifically, preventing users from swapping assets.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 3,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 112,
-      "capability_match": "Participate in Governance"
-    },
-    "threat_target": {
-      "component_id": 31,
-      "asset_ids": [
-        41
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 112,
-      "data_flow_id": 312,
-      "data_description": "Governance proposal or vote transaction data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        10,
-        31
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Flaws in privilege checks allow unauthorized governance actions (e.g., voting without BGT, proposing without threshold)."
-    },
-    "actor_risk": {
-      "actor_id": 10,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacts directly with governance contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 112,
-      "risk_level": "High",
-      "rationale": "Bypassing governance permissions is a critical vulnerability."
-    },
-    "assumptions": [
-      "The governance smart contract contains logical errors in enforcing BGT balance/delegation requirements for voting or the proposal threshold.",
-      "An attacker can craft a transaction that exploits these logical errors."
-    ],
-    "mitigation": {
-      "strategy": "Conduct rigorous smart contract audits focusing on permission and threshold logic.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker might exploit smart contract vulnerabilities to perform governance actions without meeting the required BGT thresholds or permissions.",
-    "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap Assets"
     }
   },
   {
     "id": 4,
-    "stride_category": "Spoofing",
+    "stride_category": "Elevation of Privilege",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 107,
-      "capability_match": "Boost Validator with $BGT"
+      "actor_id": 1,
+      "behavior_id": 13,
+      "capability_match": "Mint HONEY"
     },
     "threat_target": {
-      "component_id": 26,
+      "component_id": 11,
       "asset_ids": [
-        41
+        6,
+        11,
+        12
       ]
     },
     "attack_surface": {
-      "behavior_id": 107,
-      "data_flow_id": 307,
-      "data_description": "BGT delegation transaction data"
+      "behavior_id": 13,
+      "data_flow_id": 14,
+      "data_description": "minting transaction parameters (collateral amount, HONEY amount)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        26
+        2,
+        11
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "BGT delegation actions not strongly authenticated to prevent impersonation."
+      "gap_description": "Insufficient validation logic in the minting contract allows users to mint HONEY without providing the required collateral."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
-      "overprivileged": false,
-      "description": "User delegates BGT directly via staking contract."
+      "overprivileged": true,
+      "description": "A malicious user attempts to exploit contract vulnerabilities to gain unauthorized HONEY."
     },
     "behavioral_risk": {
-      "behavior_id": 107,
+      "behavior_id": 13,
       "risk_level": "High",
-      "rationale": "Unauthorized delegation can impact validator economics and user rewards."
+      "rationale": "Exploiting minting logic directly undermines the stability and collateralization of the native stablecoin."
     },
     "assumptions": [
-      "The BGT delegation transaction does not require a cryptographic signature tied to the user's wallet owning the BGT.",
-      "An attacker can submit delegation transactions impersonating a legitimate user."
+      "A vulnerability exists in the HONEY Swap contract's collateral validation or minting logic.",
+      "An attacker can craft a transaction that bypasses these checks."
     ],
     "mitigation": {
-      "strategy": "Require wallet signatures for BGT delegation transactions.",
+      "strategy": "Perform rigorous smart contract audits and implement strict validation checks for collateral and minted amounts.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might spoof a user's identity to delegate their BGT to a different validator or a malicious entity.",
+    "description": "A malicious user exploits a vulnerability in the HONEY Swap contract to mint more HONEY than their deposited collateral allows.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Boost Validator with $BGT"
+      "doc_reference": "dapps/honey_swap.md",
+      "matched_capability": "Mint HONEY"
     }
   },
   {
     "id": 5,
-    "stride_category": "Elevation of Privilege",
+    "stride_category": "Repudiation",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 107,
-      "capability_match": "Boost Validator with $BGT"
+      "actor_id": 1,
+      "behavior_id": 5,
+      "capability_match": "Queue Boost"
     },
     "threat_target": {
-      "component_id": 26,
+      "component_id": 6,
       "asset_ids": [
-        41
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 107,
-      "data_flow_id": 307,
-      "data_description": "BGT delegation transaction data"
+      "behavior_id": 5,
+      "data_flow_id": 6,
+      "data_description": "queue boost transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        26
+        2,
+        6
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Flaws in logic allow delegating BGT not owned by the user or bypassing delegation rules."
+      "gap_description": "A user performs a staking action but later attempts to deny they initiated it."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User delegates BGT directly via staking contract."
+      "description": "User interacts with the BGT staking contract."
     },
     "behavioral_risk": {
-      "behavior_id": 107,
-      "risk_level": "High",
-      "rationale": "Bypassing ownership checks for delegation is a critical vulnerability."
+      "behavior_id": 5,
+      "risk_level": "Low",
+      "rationale": "Blockchain transactions with digital signatures provide strong non-repudiation evidence."
     },
     "assumptions": [
-      "The staking smart contract contains logical errors in verifying BGT ownership or delegation constraints.",
-      "An attacker can craft a transaction that exploits these logical errors."
+      "The user's private key was compromised, leading to unauthorized transactions.",
+      "The user attempts to deny a valid signed transaction."
     ],
     "mitigation": {
-      "strategy": "Conduct rigorous smart contract audits focusing on ownership and delegation logic.",
+      "strategy": "Rely on transaction immutability and digital signatures for non-repudiation.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Low"
     },
-    "description": "An attacker might exploit smart contract vulnerabilities to delegate BGT they do not own.",
+    "description": "A user queues a BGT boost but later denies having sent the transaction.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Boost Validator with $BGT"
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Queue Boost"
     }
   },
   {
     "id": 6,
-    "stride_category": "Spoofing",
+    "stride_category": "Information Disclosure",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 109,
-      "capability_match": "Claim Earned $BGT"
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Swap Assets"
     },
     "threat_target": {
-      "component_id": 28,
+      "component_id": 9,
       "asset_ids": [
-        41
+        2,
+        3,
+        4,
+        5,
+        6
       ]
     },
     "attack_surface": {
-      "behavior_id": 109,
-      "data_flow_id": 309,
-      "data_description": "BGT claim transaction data"
+      "behavior_id": 10,
+      "data_flow_id": 11,
+      "data_description": "pending swap transaction details broadcast to the network"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 3,
+      "boundary_name": "Wallet to Component",
       "between_component_ids": [
-        10,
-        28
+        2,
+        9
       ]
     },
     "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "BGT claim action not strongly authenticated to prevent impersonation."
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Swap details are visible in the public transaction pool before being executed."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User claims earned BGT directly from the contract."
+      "description": "User's pending transactions are publicly observable."
     },
     "behavioral_risk": {
-      "behavior_id": 109,
+      "behavior_id": 10,
       "risk_level": "High",
-      "rationale": "Unauthorized claiming of BGT leads to loss of user funds."
+      "rationale": "Public visibility of swap details is a prerequisite for MEV attacks like front-running, impacting user profit."
     },
     "assumptions": [
-      "The BGT claim transaction does not require a cryptographic signature tied to the user's wallet entitled to the BGT.",
-      "An attacker can submit claim transactions impersonating a legitimate user."
+      "Transaction details are broadcast unencrypted to the network.",
+      "Attacker monitors the transaction pool and can act faster than the user's transaction."
     ],
     "mitigation": {
-      "strategy": "Require wallet signatures for BGT claim transactions, tied to entitlement proof.",
+      "strategy": "Explore MEV mitigation techniques or encourage users to use strategies that reduce visibility (e.g., limit orders, private transactions).",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might spoof a user's identity to claim the user's earned BGT rewards.",
+    "description": "A user's pending swap transaction details are publicly exposed, potentially enabling attackers to front-run the transaction.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Claim Earned $BGT"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Swap Assets"
     }
   },
   {
     "id": 7,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 109,
-      "capability_match": "Claim Earned $BGT"
-    },
-    "threat_target": {
-      "component_id": 28,
-      "asset_ids": [
-        41
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 109,
-      "data_flow_id": 309,
-      "data_description": "BGT claim transaction data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        10,
-        28
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Flaws in entitlement verification allow claiming BGT not earned by the user."
-    },
-    "actor_risk": {
-      "actor_id": 10,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User claims earned BGT directly from the contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 109,
-      "risk_level": "High",
-      "rationale": "Bypassing entitlement checks leads to theft of funds."
-    },
-    "assumptions": [
-      "The smart contract logic for verifying eligibility or entitlement proofs for BGT claiming contains errors.",
-      "An attacker can craft a transaction that exploits these logical errors to claim unearned BGT."
-    ],
-    "mitigation": {
-      "strategy": "Conduct rigorous smart contract audits focusing on claim and entitlement logic.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker might exploit smart contract vulnerabilities to claim BGT rewards they are not entitled to.",
-    "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Claim Earned $BGT"
-    }
-  },
-  {
-    "id": 8,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 110,
-      "capability_match": "Swap Assets"
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Claim Airdrop Tokens"
     },
     "threat_target": {
-      "component_id": 29,
+      "component_id": 8,
       "asset_ids": [
-        40,
-        42
+        2,
+        8
       ]
     },
     "attack_surface": {
-      "behavior_id": 110,
-      "data_flow_id": 310,
-      "data_description": "Swap transaction data (pair, amounts, slippage)"
+      "behavior_id": 9,
+      "data_flow_id": 10,
+      "data_description": "airdrop claim transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        29
+        2,
+        8
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Swap transaction not strongly authenticated to prevent impersonation."
+      "gap_description": "The airdrop claim contract may not sufficiently verify the claimant's identity or entitlement."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
-      "overprivileged": false,
-      "description": "User interacts directly with DEX contract for swapping."
+      "overprivileged": true,
+      "description": "A malicious user attempts to claim tokens belonging to another."
     },
     "behavioral_risk": {
-      "behavior_id": 110,
+      "behavior_id": 9,
       "risk_level": "High",
-      "rationale": "Unauthorized swaps lead to loss of user funds."
+      "rationale": "A successful spoofed claim results in direct loss of airdrop tokens for the legitimate recipient."
     },
     "assumptions": [
-      "The swap transaction does not require a cryptographic signature tied to the user's wallet owning the assets being swapped.",
-      "An attacker can submit swap transactions impersonating a legitimate user."
+      "Attacker compromises a user's wallet or obtains forged claim credentials.",
+      "The claim contract lacks sufficient authentication or authorization checks."
     ],
     "mitigation": {
-      "strategy": "Require wallet signatures for swap transactions.",
+      "strategy": "Implement strong cryptographic authentication and entitlement checks for airdrop claims.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might spoof a user's identity to execute unauthorized swaps from their wallet.",
+    "description": "An attacker spoofs a user's identity to claim their allocated BERA airdrop tokens.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Swap Assets"
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Claim $BERA Airdrop"
     }
   },
   {
-    "id": 9,
+    "id": 8,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
-      "actor_id": 10,
-      "behavior_id": 110,
-      "capability_match": "Swap Assets"
+      "actor_id": 1,
+      "behavior_id": 14,
+      "capability_match": "Add Incentives to Reward Vault"
     },
     "threat_target": {
-      "component_id": 29,
+      "component_id": 10,
       "asset_ids": [
-        40,
-        42
+        13
       ]
     },
     "attack_surface": {
-      "behavior_id": 110,
-      "data_flow_id": 310,
-      "data_description": "Swap transaction data in transit"
+      "behavior_id": 14,
+      "data_flow_id": 15,
+      "data_description": "add incentive transaction parameters (token, amount, rate)"
     },
     "trust_boundary_risk": {
-      "boundary_id": 500,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 5,
+      "boundary_name": "Wallet to Contract",
       "between_component_ids": [
-        10,
-        29
+        2,
+        10
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Swap transaction data can be modified in transit (e.g., front-running changing parameters)."
+      "availability_required": true,
+      "gap_description": "Transaction parameters for adding incentives could be modified before contract execution."
     },
     "actor_risk": {
-      "actor_id": 10,
+      "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User interacts directly with DEX contract for swapping."
+      "description": "User acts as an Incentive Token Manager interacting with the Reward Vault contract."
     },
     "behavioral_risk": {
-      "behavior_id": 110,
-      "risk_level": "High",
-      "rationale": "Tampering (including front-running) can lead to significant financial loss for the user."
+      "behavior_id": 14,
+      "risk_level": "Medium",
+      "rationale": "Tampering could lead to incorrect incentive amounts or rates being locked in the vault, impacting protocol economics."
     },
     "assumptions": [
-      "The swap transaction data is vulnerable to inspection and modification while in the network mempool.",
-      "The smart contract or network design does not fully mitigate against transaction reordering or front-running."
+      "Attacker can intercept and modify the signed transaction before it is included in a block.",
+      "Transaction integrity check is insufficient for all parameters."
     ],
     "mitigation": {
-      "strategy": "Implement MEV mitigation strategies, use methods like commit-reveal or trusted relayers.",
+      "strategy": "Ensure all critical transaction parameters are cryptographically signed.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker might tamper with (e.g., front-run) a user's swap transaction to gain an unfair advantage, resulting in worse execution for the user.",
+    "description": "An attacker intercepts and tampers with an Incentive Token Manager's transaction to alter the amount or rate of incentives added to a Reward Vault.",
     "trace_source": {
-      "doc_reference": "Reference Documentation",
-      "matched_capability": "Swap Assets"
+      "doc_reference": "guides/add_incentives_for_reward_vault.md",
+      "matched_capability": "Add Incentives For Reward Vault"
     }
   }
 ]
