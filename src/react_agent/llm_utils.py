@@ -206,7 +206,9 @@ def generate_llm_response(state: State) -> str:
         architecture_correction = load_file("results/architecture_analysis.json")
         
         cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
-        prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chuck}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
+        print("[+] cur_actor: ", cur_actor)
+        
+        prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chunk}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
         
         contents = [
             types.Content(
@@ -371,30 +373,25 @@ def map_update(response_dict: dict, state: State):
 def _init_db():
     """initialize vector db && redis"""
     print("initializing vector db && redis ...")
-    # embedding functions
-    AnalyzeSolidity.load_and_embed_functions("./src/react_agent/Utils/analysis_results.json")
     
-    # parse target directory
-    print("parsing target directory ...")
-    functions = FunctionParser.process_directory("./src/react_agent/Utils/contracts/src", "functions.json")
-    print("completed parsing target directory")
+    with open("./src/react_agent/Utils/final_analysis_results.json", "r") as f:
+        functions = json.load(f)
+        
+    # embedding functions
+    print("embedding functions ...")
+    vector_db = AnalyzeSolidity.store_db(functions)
+    print("[+] vector db: ", vector_db)
+    print("completed embedding functions")
     
     # set redis
     print("setting functions in Redis ...")
+    functions = FunctionParser.process_directory("./src/react_agent/Utils/contracts/src")
     RedisUtil.set_function_codes_from_json(functions)
+    print("[+] test: ", RedisUtil.get_function_code("BeaconRootsHelper.setZeroValidatorPubkeyGIndex"))
+    
+    print("completed setting functions in Redis")
+    
     print("Stored functions in Redis")
-    
-    # Parsing storage
-    print("parsing storage ...")
-    storage = StorageParser.extract_storage("./src/react_agent/Utils/contracts/src")
-    print("completed parsing storage")
-    
-    # set redis
-    print("setting storage in Redis ...")
-    RedisUtil.set_storage_variables_from_json(storage)
-    print("Stored storage in Redis")
-    
-    print("completed initializing vector db && redis")
     
     return
 

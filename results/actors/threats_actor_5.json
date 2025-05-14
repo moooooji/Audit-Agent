@@ -1,367 +1,59 @@
-[
-  {
-    "id": 1,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Boost Validator"
-    },
-    "threat_target": {
-      "component_id": 2,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 4,
-      "data_description": "User identity, validator target, BGT amount"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Lack of strong identity verification for boost requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Standard external user interaction with a critical function."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Medium",
-      "rationale": "Requests could be spoofed if user identity isn't strongly verified before processing."
-    },
-    "assumptions": [
-      "Attacker can forge requests or compromise user's wallet key/session.",
-      "System relies on wallet signature but might process requests without sufficient validation context."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust signature verification and session management for all state-changing requests.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker impersonates a user to boost a validator or misuse their BGT by submitting fraudulent boost requests via the Berachain Hub.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost Validator"
-    }
+{
+  "id": 4,
+  "stride_category": "Denial of Service",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 5,
+    "behavior_id": 34,
+    "capability_match": "Manage Incentive Rates"
   },
-  {
-    "id": 2,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 3,
-      "capability_match": "Redeem BGT for BERA"
-    },
-    "threat_target": {
-      "component_id": 2,
-      "asset_ids": [
-        2,
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 3,
-      "data_flow_id": 5,
-      "data_description": "Redemption amount, destination address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Request details could be modified before final processing."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Standard external user interaction involving value transfer."
-    },
-    "behavioral_risk": {
-      "behavior_id": 3,
-      "risk_level": "High",
-      "rationale": "Modification of redemption details can lead to loss of user funds."
-    },
-    "assumptions": [
-      "Attacker can intercept and modify the data flow between user and Hub.",
-      "System processes the request based on modified data without proper validation or signature checks."
-    ],
-    "mitigation": {
-      "strategy": "Encrypt data flows (HTTPS), require request signing, validate signed parameters on the backend.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker modifies a user's request to redeem BGT for BERA, changing the amount or redirecting the resulting BERA to the attacker's address.",
-    "trace_source": {
-      "doc_reference": "pol/tokens/bgt.md",
-      "matched_capability": "Redeem BGT for BERA"
-    }
+  "threat_target": {
+    "component_id": 8,
+    "asset_ids": []
   },
-  {
-    "id": 3,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 4,
-      "capability_match": "Claim Rewards"
-    },
-    "threat_target": {
-      "component_id": 2,
-      "asset_ids": [
-        2,
-        7
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 4,
-      "data_flow_id": 6,
-      "data_description": "Claim identifier, user identity"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Lack of non-repudiable logging or proof of user action for claims."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacting with reward claiming interface."
-    },
-    "behavioral_risk": {
-      "behavior_id": 4,
-      "risk_level": "Medium",
-      "rationale": "Lack of strong logging allows users to deny initiating claims, causing potential disputes."
-    },
-    "assumptions": [
-      "System does not maintain sufficient logs or signed records that undeniably link the claim action to the user.",
-      "Audit trails are insufficient to resolve disputes about claimed rewards."
-    ],
-    "mitigation": {
-      "strategy": "Implement detailed, tamper-evident logging of all claim transactions, potentially requiring user signatures.",
-      "type": "Process Control",
-      "priority": "Medium"
-    },
-    "description": "A user denies initiating a reward claim via the Hub, potentially after the rewards have been transferred, attempting to fraudulently reclaim them or cause support issues.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Rewards"
-    }
+  "attack_surface": {
+    "behavior_id": 34,
+    "data_flow_id": 0,
+    "data_description": "Function calls for rate management actions"
   },
-  {
-    "id": 4,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Swap Assets"
-    },
-    "threat_target": {
-      "component_id": 2,
-      "asset_ids": [
-        4,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 7,
-      "data_description": "Asset types, amounts, slippage, wallet address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Sensitive swap information is transmitted or stored insecurely."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User initiating token swaps via the Hub."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Low",
-      "rationale": "Exposure of trade details is generally less critical than fund loss, but can enable predatory practices."
-    },
-    "assumptions": [
-      "Trade request data or logs containing sensitive details are not adequately protected during transmission or storage.",
-      "Attacker can access Hub backend systems or intercept network traffic."
-    ],
-    "mitigation": {
-      "strategy": "Use encrypted connections (HTTPS), restrict access to backend logs, anonymize logs where possible.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "An attacker gains unauthorized access to a user's pending or historical swap transaction details via the Hub interface or backend, potentially leading to front-running or privacy violations.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Swap Assets"
-    }
+  "trust_boundary_risk": {
+    "boundary_id": 4,
+    "boundary_name": "Smart Contract Interaction Boundary",
+    "between_component_ids": [
+      5,
+      8
+    ]
   },
-  {
-    "id": 5,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 6,
-      "capability_match": "Provide Liquidity"
-    },
-    "threat_target": {
-      "component_id": 2,
-      "asset_ids": [
-        4,
-        5,
-        6
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 6,
-      "data_flow_id": 8,
-      "data_description": "Pool ID, asset amounts, user identity"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Hub resources can be exhausted by excessive requests."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacting with liquidity pool functions via the Hub."
-    },
-    "behavioral_risk": {
-      "behavior_id": 6,
-      "risk_level": "Medium",
-      "rationale": "Excessive or malformed requests can disrupt service availability for others."
-    },
-    "assumptions": [
-      "The Hub or underlying service lacks sufficient capacity or rate limiting to handle a flood of requests.",
-      "Input validation on requests is insufficient to immediately reject malformed inputs."
-    ],
-    "mitigation": {
-      "strategy": "Implement rate limiting on the Hub interface and backend, validate request parameters thoroughly, monitor traffic patterns.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker floods the Berachain Hub's liquidity provision/withdrawal endpoints with requests, overwhelming the service and preventing legitimate users from managing their liquidity.",
-    "trace_source": {
-      "doc_reference": "dapps/bex.md",
-      "matched_capability": "Provide Liquidity"
-    }
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "Legitimate actors cannot perform essential rate management actions due to resource exhaustion or function unavailability."
   },
-  {
-    "id": 6,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 7,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 7,
-      "data_flow_id": 9,
-      "data_description": "Vote choice, Proposal ID, Voter identity/BGT balance"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        2
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Improper validation of voting power or identity allows unauthorized influence."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User interacting with governance voting interface via the Hub."
-    },
-    "behavioral_risk": {
-      "behavior_id": 7,
-      "risk_level": "High",
-      "rationale": "Unauthorized influence on governance decisions is a critical risk to the system's integrity."
-    },
-    "assumptions": [
-      "Weak validation of user identity or BGT/delegation balance allows illicit voting power manipulation via the Hub interface.",
-      "Hub allows crafting requests that bypass strict on-chain contract validation."
-    ],
-    "mitigation": {
-      "strategy": "Enforce strict on-chain validation of voter identity and BGT balance for every vote. Require cryptographic signatures.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker exploits vulnerabilities in the governance interaction flow via the Hub to cast votes with illicitly gained voting power or on behalf of others, potentially hijacking governance proposals.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Vote on Proposal"
-    }
+  "actor_risk": {
+    "actor_id": 5,
+    "type": "External User",
+    "overprivileged": false,
+    "description": "A malicious actor could flood the system with transactions targeting the rate management function, preventing the legitimate Token Manager from operating."
+  },
+  "behavioral_risk": {
+    "behavior_id": 34,
+    "risk_level": "Medium",
+    "rationale": "Disrupting rate management impacts the entire incentive system, preventing protocols from adjusting offers and users from receiving expected rewards, targeting a high-trust component (Reward Vault)."
+  },
+  "assumptions": [
+    "The smart contract's rate management functions are vulnerable to denial-of-service attacks (e.g., excessive gas costs, state lock-ups).",
+    "An attacker can flood the network or RPC endpoint with transactions targeting the contract.",
+    "data_flow_id 0 is a placeholder as no specific data flow ID for Actor 5 to Component 8 was provided in the chunk."
+  ],
+  "mitigation": {
+    "strategy": "Implement gas efficiency optimizations, potentially add rate limiting (off-chain), and monitor contract health for signs of attack.",
+    "type": "Technical Control",
+    "priority": "Medium"
+  },
+  "description": "An attacker could prevent the legitimate Incentive Token Manager from setting or updating incentive rates in the Reward Vault by exploiting vulnerabilities or flooding the network.",
+  "trace_source": {
+    "doc_reference": "guides/add-incentives-for-reward-vault.md",
+    "matched_capability": "Manage Incentive Rates"
   }
-]
+}

@@ -1,182 +1,70 @@
-[
-  {
-    "id": 1,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Vote on Proposal"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection + signature"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote input may be spoofed without signature verification."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "The actor is unauthenticated and can perform governance actions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "The system accepts unsigned votes from external actors."
-    },
-    "assumptions": [
-      "The governance contract does not enforce signature verification for vote messages.",
-      "The actor is able to access the voting interface without authentication."
-    ],
-    "mitigation": {
-      "strategy": "Require signature-based vote authentication and role validation.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
-    "trace_source": {
-      "doc_reference": "governance/voting.md#vote-process",
-      "matched_capability": "Vote on Proposal"
-    }
+{
+  "id": 9,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 3,
+    "behavior_id": 19,
+    "capability_match": "Submit RFRV (Request for Reward Vault)"
   },
-  {
-    "id": 2,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Submit Vote Transaction"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Signed Vote Transaction"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Governance contract's capacity to handle high volume of vote transactions is limited."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "An external user attempting to disrupt voting by spamming the contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Can disrupt voting affecting governance, but requires attacker resources."
-    },
-    "assumptions": [
-      "The Governance Smart Contract (Component 9) or its interaction layer (Data Flow 11) has limitations on transaction processing capacity.",
-      "An attacker has sufficient resources ($BERA for gas) to generate a high volume of vote transactions."
-    ],
-    "mitigation": {
-      "strategy": "Implement transaction rate limiting at application layer or rely on blockchain's gas model.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker could flood the Governance Smart Contract (Component 9) with vote transactions via Data Flow 11, potentially causing congestion or disrupting the voting process.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Active Voting"
-    }
+  "threat_target": {
+    "component_id": 9,
+    "asset_ids": [
+      2,
+      9,
+      10
+    ]
   },
-  {
-    "id": 3,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Submit Vote Transaction"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Signed Vote Transaction with vote details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Governance contract fails to verify user's voting eligibility (ownership/delegation of Asset 4)."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": true,
-      "description": "An external user attempting to cast votes they are not eligible for."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Allows manipulating governance outcomes with illegitimate votes."
-    },
-    "assumptions": [
-      "The Governance Smart Contract (Component 9) has a vulnerability in its logic for verifying voting eligibility based on Asset 4 holdings/delegation.",
-      "An attacker can craft a transaction exploiting this vulnerability."
-    ],
-    "mitigation": {
-      "strategy": "Robustly verify voting eligibility based on Asset 4 holdings/delegation within the Governance Smart Contract logic.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could exploit a vulnerability in the Governance Smart Contract (Component 9) to cast votes without the required Asset 4 voting power via Data Flow 11, influencing governance illegitimately.",
-    "trace_source": {
-      "doc_reference": "governance.md",
-      "matched_capability": "Ensure Sufficient Voting Power"
-    }
+  "attack_surface": {
+    "behavior_id": 19,
+    "data_flow_id": 10,
+    "data_description": "BGT/Voting Power/Proposal Data (malicious execution payload)"
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 4,
+    "boundary_name": "Smart Contract Interaction Boundary",
+    "between_component_ids": [
+      1,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "The Governance Contract may not fully validate the safety or intent of the proposal's execution payload, allowing malicious actions upon execution."
+  },
+  "actor_risk": {
+    "actor_id": 3,
+    "type": "Partner System",
+    "overprivileged": false,
+    "description": "A compromised or malicious Protocol entity could craft proposals designed to execute arbitrary malicious code or grant unintended privileges."
+  },
+  "behavioral_risk": {
+    "behavior_id": 19,
+    "risk_level": "Low",
+    "rationale": "Submitting a proposal is low risk, but if the contract executes the proposed code without sufficient checks, it's an EOP vector."
+  },
+  "assumptions": [
+    "The Governance Contract's execution mechanism allows calls to arbitrary contract addresses and functions.",
+    "Automated or manual review processes (including Guardian oversight during Timelock) may fail to identify or block malicious execution payloads.",
+    "The Protocol entity is capable of crafting a malicious execution payload for a proposal."
+  ],
+  "mitigation": {
+    "strategy": "Implement allowlists for target addresses and function calls within proposal payloads; enhance review processes for execution payloads.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "A malicious RFRV proposal submitted by the Protocol entity could contain an execution payload designed to grant the submitter or another party unauthorized privileges over assets or control within the system.",
+  "trace_source": {
+    "doc_reference": "governance.md#governance-lifecycle",
+    "matched_capability": "Submit RFRV (Request for Reward Vault)"
   }
-]
+}
