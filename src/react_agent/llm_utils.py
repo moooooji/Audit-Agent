@@ -8,8 +8,10 @@ from react_agent.state import State
 from react_agent.prompt import (
     ARCHITECTURE_ANALYSIS_TEMPLATE, ARCHITECTURE_RESPONSE_CONFIG, 
     ASSESSMENT_TEMPLATE, ASSESSMENT_CONFIG, 
-    ARCHITECTURE_CORRECTION_TEMPLATE, ARCHITECTURE_CORRECTION_CONFIG, 
+    ARCHITECTURE_CORRECTION_TEMPLATE, ARCHITECTURE_CORRECTION_CONFIG,
+    THREAT_ANALYSIS_TEMPLATE,
     THREAT_ANALYSIS_CONFIG,
+    CHECKLIST_TEMPLATE,
     CHECKLIST_CONFIG,
     CODE_BINDING_TEMPLATE,
     CODE_BINDING_CONFIG,
@@ -130,7 +132,7 @@ def generate_llm_response(state: State) -> str:
     
     # first architecture analysis node
     if state.is_initial_architecture_analysis:
-        
+        print("=============initial architecture analysis node=============")
         target_docs = load_file(state.target_docs_path)
         
         prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace("{DOCS}", target_docs)
@@ -150,7 +152,7 @@ def generate_llm_response(state: State) -> str:
         return response
     
     elif state.is_assessment_analysis and state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
-        
+        print("=============assessment analysis node=============")
         target_docs = load_file(state.target_docs_path)
     
         # read architecture_analysis 
@@ -176,7 +178,7 @@ def generate_llm_response(state: State) -> str:
     
     # feedback loop architecture analysis node
     elif state.is_feedback_architecture_analysis:
-        
+        print("=============feedback architecture analysis node=============")
         target_docs = load_file(state.target_docs_path)
         analysis_json = load_file("results/architecture_analysis.json")
         # read assessment file
@@ -208,7 +210,12 @@ def generate_llm_response(state: State) -> str:
     # threat analysis node
     elif state.is_threat_analysis:
         print("=============threat analysis node=============")
-        prompt = state.threat_prompt
+        target_docs = load_file(state.target_docs_path)
+        # read architecture_correction file
+        architecture_correction = load_file("results/architecture_analysis.json")
+        
+        cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
+        prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chuck}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
         
         contents = [
             types.Content(
@@ -224,9 +231,32 @@ def generate_llm_response(state: State) -> str:
         )
         return response
     
-    elif state.is_checklist_analysis:
+    elif state.is_initial_checklist_analysis:
         print("=============checklist analysis node=============")
-        prompt = state.checklist_prompt
+        target_docs = load_file(state.target_docs_path)
+        threat_analysis = load_file("results/all_threats.json")
+        prompt = CHECKLIST_TEMPLATE.replace("{docs}", target_docs).replace("{json}", threat_analysis)
+        
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)],
+            ),
+        ]
+
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=CHECKLIST_CONFIG,
+        )
+        return response
+    
+    elif state.is_feedback_checklist_analysis:
+        print("=============feedback checklist analysis node=============")
+        # 수정 필요
+        target_docs = load_file(state.target_docs_path)
+        threat_analysis = load_file("results/all_threats.json")
+        prompt = CHECKLIST_TEMPLATE.replace("{docs}", target_docs).replace("{json}", threat_analysis)
         
         contents = [
             types.Content(

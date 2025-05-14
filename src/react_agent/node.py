@@ -27,7 +27,8 @@ from react_agent.variables import (
     trust_boundaries_map,
     behaviors_map,
     threats_list,
-    threat_count
+    threat_count,
+    checklist_count
 )
 
 from react_agent.prompt import THREAT_ANALYSIS_TEMPLATE, CHECKLIST_TEMPLATE
@@ -50,8 +51,6 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed first architecture analysis")
         
-        state.is_initial_architecture_analysis = False
-        
         return {"is_initial_architecture_analysis": False}
     else:
         print("feedback loop architecture analysis ...")
@@ -65,8 +64,6 @@ def analyze_architecture(state: State) -> State:
         # parsing response and save to file
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed feedback loop architecture analysis")
-        
-        state.is_feedback_architecture_analysis = False
         
         return {"is_feedback_architecture_analysis": False}
     
@@ -82,8 +79,6 @@ def assess_architecture(state: State) -> State:
     save_json(response_dict, "results/assessment.json")
     print("completed assessing architecture")
     
-    state.is_assessment_analysis = False
-    
     return {
         "is_assessment_analysis": False, 
         "architecture_feedback_loop_count": state.architecture_feedback_loop_count+1
@@ -93,15 +88,7 @@ def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
     state.is_threat_analysis = True
     id_weight = 1
-    # read target docs file
-    target_docs = load_file(state.target_docs_path)
-    # read architecture_correction file
-    architecture_correction = load_file("results/architecture_analysis.json")
     
-    cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
-    
-    prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chuck}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
-    state.threat_prompt = prompt
     response = generate_llm_response(state)
     # parsing response and save to file
     response_dict = json_str_to_dict(response.text)
@@ -125,21 +112,12 @@ def analyze_threats(state: State) -> State:
         sleep(60)
         print("sleep 60 seconds ... done")
         
-    state.is_threat_analysis = False
-    
     return {"is_threat_analysis": False}
 
 def generate_checklist(state: State) -> State:
     
     print("[+] generating checklist ...")
-    state.is_checklist_analysis = True
-    # read target docs file
-    with open(state.target_docs_path, "r") as f:
-        target_docs = f.read()
-    
-    # read threat_analysis file
-    with open("results/all_threats.json", "r") as f:
-        threat_analysis = f.read()
+    state.is_initial_checklist_analysis = True
         
     id_weight = 1
     checklist_items = []
@@ -169,12 +147,14 @@ def generate_checklist(state: State) -> State:
         threat["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
         
         context.append(threat)
-    
-    prompt = CHECKLIST_TEMPLATE.replace("{docs}", target_docs).replace("{json}", threat_analysis)
-    state.checklist_prompt = prompt
-    
-    response = generate_llm_response(state)
-
+        
+    if state.checklist_feedback_loop_count == 0:
+        state.is_initial_checklist_analysis = True
+        response = generate_llm_response(state)
+    else:
+        state.is_feedback_checklist_analysis = True
+        response = generate_llm_response(state)
+        
     # parsing response and save to file
     response_dict = json_str_to_dict(response.text)
     for checklist_item in response_dict['checklist_items']:
@@ -184,15 +164,15 @@ def generate_checklist(state: State) -> State:
         checklist_items.append(checklist_item)
     print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
     
-    if state.current_actor_id == len(actors_map)-1:
+    checklist_count += 1
+    
+    if checklist_count == len(actors_map):
         with open("results/checklist.json", "w") as f:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
         print("Saved checklist in 'results/checklist.json'")
         print("completed generating checklist")
     
-    state.is_checklist_analysis = False
-    
-    return {"is_checklist_analysis": False}
+    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
 
 def verify_checklist(state: State) -> State:
     print("verifying checklist ...")
@@ -224,17 +204,12 @@ def code_binding(state: State) -> State:
     
     print("completed code binding")
     
-    state.is_code_binding = False
-    
     return {"is_code_binding": False}
 
 def verify_checklist_with_code(state: State) -> State:
     state.is_verify_checklist_with_code = True
     
     _verify_checklist_with_code(state)
-    
-    state.is_verify_checklist_with_code = False
-    state.checklist_with_code_feedback_loop_count = state.checklist_with_code_feedback_loop_count+1
     
     return {
         "is_verify_checklist_with_code": False, 

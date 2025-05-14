@@ -6,57 +6,297 @@
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 1,
-      "capability_match": "Claim Incentives"
+      "capability_match": "Boost Validator"
     },
     "threat_target": {
-      "component_id": 2,
+      "component_id": 6,
       "asset_ids": [
-        5
+        6
       ]
     },
     "attack_surface": {
       "behavior_id": 1,
-      "data_flow_id": 3,
-      "data_description": "Claim transaction with incentive proof"
+      "data_flow_id": 12,
+      "data_description": "Signed BGT delegation amount and target validator address"
     },
     "trust_boundary_risk": {
       "boundary_id": 4,
-      "boundary_name": "User to Contract (via Service)",
+      "boundary_name": "External User to Chain",
       "between_component_ids": [
         1,
-        2
+        6
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": true,
-      "gap_description": "Off-chain generated proof used for on-chain claim is vulnerable to modification or invalid generation."
+      "gap_description": "The integrity of the signed delegation message might be compromised before processing."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "The actor relies on the integrity of off-chain infrastructure to claim rewards."
+      "description": "The actor interacts with the validator contract via signed messages."
     },
     "behavioral_risk": {
       "behavior_id": 1,
-      "risk_level": "High",
-      "rationale": "Reliance on off-chain proof generation and its verification on-chain is a critical security surface."
+      "risk_level": "Medium",
+      "rationale": "A vulnerability in message signing or processing could allow unauthorized alteration of delegation details."
     },
     "assumptions": [
-      "The off-chain service generating claim proofs is not fully trusted.",
-      "The proof structure or verification logic in the contract is vulnerable to crafted input.",
-      "An attacker can intercept, modify, or forge a valid proof for another user."
+      "The signature on the delegation message does not cover all critical fields or the message format is malleable.",
+      "The Berachain Validator Contract does not perform strict validation of signed delegation data."
     ],
     "mitigation": {
-      "strategy": "Implement strong cryptographic proof mechanisms (e.g., Merkle proofs) verified on-chain.",
+      "strategy": "Ensure signature covers full canonical message data; implement strict on-chain validation.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could tamper with an off-chain generated incentive claim proof or inject a forged one to claim tokens belonging to other users.",
+    "description": "An attacker attempts to modify the amount of BGT delegated or the target validator within a signed delegation message before it is processed by the contract.",
     "trace_source": {
-      "doc_reference": "pol/incentives.md",
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost Validator"
+    }
+  },
+  {
+    "id": 2,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Boost Validator"
+    },
+    "threat_target": {
+      "component_id": 6,
+      "asset_ids": [
+        6
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 12,
+      "data_description": "Transaction volume"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "External User to Chain",
+      "between_component_ids": [
+        1,
+        6
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Excessive transaction volume could hinder legitimate boost operations."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor can send transactions to the contract."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "Medium",
+      "rationale": "High volume of transactions could impact contract or network availability."
+    },
+    "assumptions": [
+      "Gas fees are not prohibitively expensive for an attacker to send a large volume of transactions.",
+      "The Berachain Validator Contract or network infrastructure has throughput limits that can be reached by a single actor."
+    ],
+    "mitigation": {
+      "strategy": "Implement rate limiting (if possible); rely on network-level gas fees and resource management.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker floods the Berachain Validator Contract with a high volume of boost transactions, potentially disrupting the boosting process for other users or impacting network availability.",
+    "trace_source": {
+      "doc_reference": "guides/boost_a_validator.md",
+      "matched_capability": "Boost Validator"
+    }
+  },
+  {
+    "id": 3,
+    "stride_category": "Elevation of Privilege",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 16,
+      "data_description": "Claim proof and signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "External User to Chain",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Authorization check for claiming incentives could be bypassed using a falsified or stolen proof."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor can submit claims to the contract using claim proofs."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "A vulnerability allowing proof forgery or theft would directly lead to asset loss for users."
+    },
+    "assumptions": [
+      "The claim proof generation process is compromised, allowing forgery, or proofs can be intercepted.",
+      "The on-chain validation of the claim proof does not correctly verify the entitlement amount, the rightful claimant's address, or the proof's signature against the claimant's key.",
+      "The off-chain backend service generating proofs is vulnerable."
+    ],
+    "mitigation": {
+      "strategy": "Secure proof generation process; robust on-chain validation tied to claimant address and secure signature over claim data.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker exploits a vulnerability in the incentive claim proof system to claim incentive tokens belonging to other users, effectively elevating their privilege to access others' assets.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 4,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 16,
+      "data_description": "Claim proof and signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "External User to Chain",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "The integrity of a legitimate claim proof might be compromised, allowing a user to claim more than entitled."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor can obtain valid claim proofs."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Vulnerability in proof structure or on-chain validation could allow alteration of claimed amount, leading to asset loss."
+    },
+    "assumptions": [
+      "A user can modify a part of their valid claim proof (e.g., the amount) without invalidating the entire proof or its signature.",
+      "The on-chain validation of the claim proof does not strictly verify the claimed amount against the proof's integrity check (e.g., Merkle root)."
+    ],
+    "mitigation": {
+      "strategy": "Ensure claim proof structure is tamper-evident; implement robust on-chain validation verifying all proof components.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A user with a legitimate claim proof attempts to alter the proof to increase the amount of incentive tokens they can claim from the BGTIncentiveDistributor contract.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 16,
+      "data_description": "Transaction volume"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 4,
+      "boundary_name": "External User to Chain",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Excessive transaction volume could hinder legitimate claim operations."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "The actor can send transactions to the contract."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "Medium",
+      "rationale": "High volume of transactions could impact contract or network availability."
+    },
+    "assumptions": [
+      "Gas fees are not prohibitively expensive for an attacker to send a large volume of claim transactions.",
+      "The BGTIncentiveDistributor contract or network infrastructure has throughput limits that can be reached by a single actor."
+    ],
+    "mitigation": {
+      "strategy": "Rely on network-level gas fees and resource management; ensure contract handles invalid proofs efficiently.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker floods the BGTIncentiveDistributor contract with claim transactions, potentially disrupting the claiming process for other users or impacting network availability.",
+    "trace_source": {
+      "doc_reference": "guides/claim_incentives.md",
       "matched_capability": "Claim Incentives"
     }
   }

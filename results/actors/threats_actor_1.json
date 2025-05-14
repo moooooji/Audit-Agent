@@ -1,124 +1,123 @@
 [
   {
     "id": 1,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Wallet Connection"
-    },
-    "threat_target": {
-      "component_id": 8,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Connection requests and RPC calls"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to RPC Endpoint",
-      "between_component_ids": [
-        1,
-        8
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Public RPC endpoint has limited capacity and may lack robust rate limiting."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Standard external user with ability to initiate numerous connections/requests."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "High",
-      "rationale": "Flooding the public RPC endpoint impacts the availability of basic network interaction for all users."
-    },
-    "assumptions": [
-      "The public RPC endpoint has finite resources.",
-      "Rate limiting or access control on the RPC endpoint is insufficient or bypassable.",
-      "An attacker has resources to generate significant network traffic."
-    ],
-    "mitigation": {
-      "strategy": "Implement robust rate limiting, access control, and monitoring on public RPC endpoints. Consider distributed RPC infrastructure.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker floods the public RPC endpoint with excessive connection requests or calls, making it unavailable for legitimate users.",
-    "trace_source": {
-      "doc_reference": "doc_5",
-      "matched_capability": "Connect Wallet"
-    }
-  },
-  {
-    "id": 2,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Participate in Governance (Vote)"
+      "behavior_id": 2,
+      "capability_match": "Claim $BERA Airdrop"
     },
     "threat_target": {
       "component_id": 2,
       "asset_ids": [
-        4
+        1
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Vote transaction payload"
+      "behavior_id": 2,
+      "data_flow_id": 6,
+      "data_description": "claim signature"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "RPC Endpoint to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
-        8,
+        1,
         2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Governance contract does not verify cryptographic signature tying the vote to the BGT holder's private key."
+      "availability_required": true,
+      "gap_description": "Airdrop claim must be tied to the legitimate recipient's identity and allocation."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Standard external user attempting to impersonate a BGT holder."
+      "description": "User interacts with the Airdrop contract without prior strong authentication beyond wallet signature."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
+      "behavior_id": 2,
       "risk_level": "High",
-      "rationale": "Spoofing votes can manipulate governance outcomes, impacting BGT value and network direction."
+      "rationale": "If claim authorization (signature/proof) can be spoofed, an attacker can steal airdrops."
     },
     "assumptions": [
-      "The governance contract relies solely on the transaction's `msg.sender` field for vote validity.",
-      "The contract does not require or verify a separate cryptographic signature of the vote payload from the BGT holder's address.",
-      "An attacker can submit a transaction with a fabricated `msg.sender` address corresponding to a BGT holder."
+      "The airdrop contract's verification of the claim signature or proof is insufficient or can be bypassed.",
+      "There is no secondary validation layer to confirm the legitimacy of a claim request against the intended recipient."
     ],
     "mitigation": {
-      "strategy": "Implement mandatory cryptographic signature verification for all governance actions, verified on-chain against the authorized BGT holding address.",
+      "strategy": "Implement robust cryptographic claim proof verification tied to the authorized wallet address.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker could potentially submit fraudulent vote transactions to the governance contract, impersonating legitimate BGT holders.",
+    "description": "An attacker may forge a claim signature or proof to impersonate another user and claim their $BERA airdrop allocation.",
     "trace_source": {
-      "doc_reference": "doc_3",
-      "matched_capability": "Participate in Governance (Vote)"
+      "doc_reference": "doc_2",
+      "matched_capability": "Claim $BERA Airdrop"
+    }
+  },
+  {
+    "id": 2,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Check $BERA Airdrop"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
+        1,
+        4
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 3,
+      "data_flow_id": 5,
+      "data_description": "allocation details"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 3,
+      "boundary_name": "User to Backend",
+      "between_component_ids": [
+        1,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Airdrop checker may reveal sensitive allocation information to unauthorized users."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Standard user querying a backend service."
+    },
+    "behavioral_risk": {
+      "behavior_id": 3,
+      "risk_level": "Medium",
+      "rationale": "Backend service might lack proper authorization checks for data retrieval."
+    },
+    "assumptions": [
+      "The airdrop checker backend does not enforce strict authorization on queries.",
+      "An attacker can iterate through wallet addresses or social identifiers to query allocation data."
+    ],
+    "mitigation": {
+      "strategy": "Implement strict access control on the airdrop checker backend, ensuring users can only query their own allocations.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker queries the airdrop checker backend to gain unauthorized access to allocation details of other users or NFT holders.",
+    "trace_source": {
+      "doc_reference": "doc_2",
+      "matched_capability": "Check $BERA Airdrop"
     }
   },
   {
@@ -127,59 +126,181 @@
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Participate in Governance (Transaction Submission)"
+      "behavior_id": 8,
+      "capability_match": "Swap assets"
     },
     "threat_target": {
-      "component_id": 2,
+      "component_id": 6,
       "asset_ids": [
-        4
+        1,
+        2,
+        3
       ]
     },
     "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 5,
-      "data_description": "Signed governance transaction payload"
+      "behavior_id": 8,
+      "data_flow_id": 9,
+      "data_description": "swap details + signature"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to RPC Endpoint",
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        8
+        6
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Transaction integrity check (signature verification) could be bypassed or fail allowing tampered transactions to be processed."
+      "gap_description": "Swap transaction parameters must be protected from unauthorized modification after signing."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "Standard external user potentially capable of intercepting/altering network traffic or exploiting system flaws."
+      "description": "User interacting with a DEX smart contract."
     },
     "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Medium",
-      "rationale": "Tampering with governance transactions could lead to incorrect actions being executed or manipulation of individual user interactions."
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Tampering with swap details can lead to direct financial loss for the user or pool."
     },
     "assumptions": [
-      "The communication channel between the user's wallet and the RPC endpoint is vulnerable to interception or modification.",
-      "The RPC endpoint or blockchain node fails to correctly verify the transaction signature after tampering.",
-      "The governance contract processes transactions with invalid or missing signatures."
+      "The user's environment or transaction submission path is compromised, allowing modification of signed transaction data.",
+      "The BEX smart contract does not sufficiently validate or bind all critical swap parameters to the user's authorization."
     ],
     "mitigation": {
-      "strategy": "Ensure robust transaction signature verification is performed by the RPC node and confirmed on-chain. Encourage use of secure connections (WSS).",
+      "strategy": "Implement robust client-side security and ensure the BEX contract validates all critical parameters against a secure signature or context.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker intercepts and modifies a legitimate user's signed governance transaction while it is in transit to the network.",
+    "description": "An attacker modifies the parameters of a user's swap transaction (e.g., amounts, recipient) before it is executed on the BEX contract.",
+    "trace_source": {
+      "doc_reference": "doc_11",
+      "matched_capability": "Swap assets"
+    }
+  },
+  {
+    "id": 4,
+    "stride_category": "Spoofing",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 17,
+      "capability_match": "Participate in Governance"
+    },
+    "threat_target": {
+      "component_id": 13,
+      "asset_ids": [
+        6
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 17,
+      "data_flow_id": 18,
+      "data_description": "vote selection + signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        13
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Governance votes must be authentically tied to the legitimate BGT holder or their delegate."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User participating in governance by casting votes."
+    },
+    "behavioral_risk": {
+      "behavior_id": 17,
+      "risk_level": "High",
+      "rationale": "Compromised voting can lead to malicious governance outcomes, impacting the entire protocol."
+    },
+    "assumptions": [
+      "The governance contract's vote verification mechanism relies on signatures or proofs that can be forged.",
+      "An attacker can generate valid vote submissions for addresses holding significant BGT without controlling the private keys."
+    ],
+    "mitigation": {
+      "strategy": "Implement strong cryptographic signature verification for vote submissions, ensuring the signature is securely linked to the address and voting context.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker impersonates a legitimate BGT holder or delegate to cast fraudulent votes on governance proposals.",
     "trace_source": {
       "doc_reference": "doc_3",
-      "matched_capability": "Participate in Governance (Transaction Submission)"
+      "matched_capability": "Participate in Governance"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 15,
+      "capability_match": "Claim earned $BGT rewards"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        6
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 15,
+      "data_flow_id": 16,
+      "data_description": "claim proof + signature"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Claim proofs for earned BGT must be protected from unauthorized modification or forgery."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "User claiming earned tokens from a smart contract."
+    },
+    "behavioral_risk": {
+      "behavior_id": 15,
+      "risk_level": "High",
+      "rationale": "Tampering with claim proofs can lead to unauthorized BGT minting or theft of others' rewards."
+    },
+    "assumptions": [
+      "The claim proof structure or verification logic allows for modification without detection.",
+      "An attacker can intercept or generate fraudulent claim proofs that the BGT contract accepts.",
+      "The claim process does not sufficiently bind the proof to the user's identity and the exact claimable amount."
+    ],
+    "mitigation": {
+      "strategy": "Strengthen claim proof generation and on-chain verification using robust cryptographic techniques (e.g., Merkle proofs) securely bound to user identity and amounts.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker modifies a claim proof to claim a larger amount of $BGT than legitimately earned or claim $BGT belonging to another user.",
+    "trace_source": {
+      "doc_reference": "doc_27",
+      "matched_capability": "Claim earned $BGT rewards"
     }
   }
 ]

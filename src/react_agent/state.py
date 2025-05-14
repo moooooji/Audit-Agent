@@ -27,16 +27,12 @@ class State(InputState):
     is_assessment_analysis: bool = field(default=False)
     is_feedback_architecture_analysis: bool = field(default=False)
     is_threat_analysis: Annotated[bool, parallel_handler] = field(default=False)
-    is_checklist_analysis: Annotated[bool, parallel_handler] = field(default=False)
+    is_initial_checklist_analysis: Annotated[bool, parallel_handler] = field(default=False)
+    is_feedback_checklist_analysis: Annotated[bool, parallel_handler] = field(default=False)
     is_init_db: bool = field(default=False)
     is_code_binding: bool = field(default=False)
     is_verify_checklist: bool = field(default=False)
     is_verify_checklist_with_code: bool = field(default=False)
-    
-    
-    # prompt
-    threat_prompt: str = field(default="")
-    checklist_prompt: str = field(default="")
     
     # node info
     current_actor_id: int = field(default=0)
