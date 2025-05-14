@@ -27,6 +27,8 @@ architecture_analysis = {
     }
 }
 
+threat_count = 0
+
 # all threats list
 all_threats = []
 # threats list

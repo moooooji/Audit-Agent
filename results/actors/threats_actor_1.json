@@ -1,15 +1,76 @@
 [
   {
     "id": 1,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 1,
+      "capability_match": "Wallet Connection"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 1,
+      "data_flow_id": 1,
+      "data_description": "Connection requests and RPC calls"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to RPC Endpoint",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "Public RPC endpoint has limited capacity and may lack robust rate limiting."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Standard external user with ability to initiate numerous connections/requests."
+    },
+    "behavioral_risk": {
+      "behavior_id": 1,
+      "risk_level": "High",
+      "rationale": "Flooding the public RPC endpoint impacts the availability of basic network interaction for all users."
+    },
+    "assumptions": [
+      "The public RPC endpoint has finite resources.",
+      "Rate limiting or access control on the RPC endpoint is insufficient or bypassable.",
+      "An attacker has resources to generate significant network traffic."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust rate limiting, access control, and monitoring on public RPC endpoints. Consider distributed RPC infrastructure.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker floods the public RPC endpoint with excessive connection requests or calls, making it unavailable for legitimate users.",
+    "trace_source": {
+      "doc_reference": "doc_5",
+      "matched_capability": "Connect Wallet"
+    }
+  },
+  {
+    "id": 2,
     "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Participate in Governance"
+      "capability_match": "Participate in Governance (Vote)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 2,
       "asset_ids": [
         4
       ]
@@ -17,285 +78,108 @@
     "attack_surface": {
       "behavior_id": 5,
       "data_flow_id": 11,
-      "data_description": "vote selection and voter identity/delegation"
+      "data_description": "Vote transaction payload"
     },
     "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_id": 4,
+      "boundary_name": "RPC Endpoint to Smart Contract",
       "between_component_ids": [
-        1,
-        9
+        8,
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote inputs may be spoofed without strong identity verification or signature checks."
+      "availability_required": false,
+      "gap_description": "Governance contract does not verify cryptographic signature tying the vote to the BGT holder's private key."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User interacting with governance."
+      "description": "Standard external user attempting to impersonate a BGT holder."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Weak authentication allows impersonation for critical governance actions."
+      "rationale": "Spoofing votes can manipulate governance outcomes, impacting BGT value and network direction."
     },
     "assumptions": [
-      "The governance contract does not enforce strong cryptographic signature verification for vote messages.",
-      "Attacker can forge or replay vote messages."
+      "The governance contract relies solely on the transaction's `msg.sender` field for vote validity.",
+      "The contract does not require or verify a separate cryptographic signature of the vote payload from the BGT holder's address.",
+      "An attacker can submit a transaction with a fabricated `msg.sender` address corresponding to a BGT holder."
     ],
     "mitigation": {
-      "strategy": "Implement cryptographic signature verification for all vote submissions.",
+      "strategy": "Implement mandatory cryptographic signature verification for all governance actions, verified on-chain against the authorized BGT holding address.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a legitimate user or BGT holder to cast unauthorized or fraudulent votes on governance proposals.",
+    "description": "An attacker could potentially submit fraudulent vote transactions to the governance contract, impersonating legitimate BGT holders.",
     "trace_source": {
-      "doc_reference": "doc_3#berachain-governance",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "doc_3",
+      "matched_capability": "Participate in Governance (Vote)"
     }
   },
   {
-    "id": 2,
+    "id": 3,
     "stride_category": "Tampering",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 5,
-      "capability_match": "Participate in Governance"
+      "capability_match": "Participate in Governance (Transaction Submission)"
     },
     "threat_target": {
-      "component_id": 9,
+      "component_id": 2,
       "asset_ids": [
-        5
+        4
       ]
     },
     "attack_surface": {
       "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote selection and weight"
+      "data_flow_id": 5,
+      "data_description": "Signed governance transaction payload"
     },
     "trust_boundary_risk": {
       "boundary_id": 2,
-      "boundary_name": "User to Contract",
+      "boundary_name": "User to RPC Endpoint",
       "between_component_ids": [
         1,
-        9
+        8
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Vote messages lack sufficient integrity checks before processing."
+      "availability_required": false,
+      "gap_description": "Transaction integrity check (signature verification) could be bypassed or fail allowing tampered transactions to be processed."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "User sending vote message."
+      "description": "Standard external user potentially capable of intercepting/altering network traffic or exploiting system flaws."
     },
     "behavioral_risk": {
       "behavior_id": 5,
       "risk_level": "Medium",
-      "rationale": "Vote integrity relies solely on standard blockchain transaction integrity; application-level checks may be missing."
+      "rationale": "Tampering with governance transactions could lead to incorrect actions being executed or manipulation of individual user interactions."
     },
     "assumptions": [
-      "Attacker can intercept and modify the vote transaction before it is included in a block.",
-      "The smart contract does not sufficiently validate the integrity of the submitted vote data."
+      "The communication channel between the user's wallet and the RPC endpoint is vulnerable to interception or modification.",
+      "The RPC endpoint or blockchain node fails to correctly verify the transaction signature after tampering.",
+      "The governance contract processes transactions with invalid or missing signatures."
     ],
     "mitigation": {
-      "strategy": "Ensure the entire vote payload is cryptographically signed and verified by the smart contract.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "An attacker may tamper with the contents of a vote message (e.g., changing the vote selection or intended weight) before it is processed by the governance contract.",
-    "trace_source": {
-      "doc_reference": "doc_3#berachain-governance",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 3,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Participate in Governance"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": []
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "High volume of vote submissions or malformed vote messages"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Governance contract or underlying blockchain is vulnerable to transaction flooding or resource exhaustion attacks."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "User capable of submitting many transactions."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Publicly accessible voting mechanism can be targeted by DoS attacks, potentially preventing legitimate participation."
-    },
-    "assumptions": [
-      "The blockchain network can be congested by a high volume of transactions.",
-      "The governance contract's gas limits or processing logic can be exploited to cause it to fail or reject valid votes under stress."
-    ],
-    "mitigation": {
-      "strategy": "Implement transaction prioritization based on fees and ensure robust smart contract gas handling; potentially require small staking for voting.",
+      "strategy": "Ensure robust transaction signature verification is performed by the RPC node and confirmed on-chain. Encourage use of secure connections (WSS).",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may flood the network or target the governance contract with a large volume of transactions to prevent legitimate users from casting votes or disrupt the voting process.",
+    "description": "An attacker intercepts and modifies a legitimate user's signed governance transaction while it is in transit to the network.",
     "trace_source": {
-      "doc_reference": "doc_3#berachain-governance",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 4,
-    "stride_category": "Elevation of Privilege",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Participate in Governance"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        4,
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "vote message including claimed voting power"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Governance contract fails to correctly validate voter's BGT holdings/delegation or vote weight."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": true,
-      "description": "User attempting to gain unauthorized voting power."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "High",
-      "rationale": "Exploiting flaws in BGT balance checks or vote counting logic could grant unauthorized influence over governance decisions."
-    },
-    "assumptions": [
-      "The governance contract contains a bug in how it reads or validates the voter's BGT balance or delegated voting power.",
-      "The calculation or summation of vote weights is exploitable."
-    ],
-    "mitigation": {
-      "strategy": "Rigorous smart contract auditing and formal verification for BGT balance checks and vote counting logic.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may exploit vulnerabilities in the governance contract to cast votes with more weight than their BGT holdings/delegation allows, or influence the vote count unfairly.",
-    "trace_source": {
-      "doc_reference": "doc_3#berachain-governance",
-      "matched_capability": "Participate in Governance"
-    }
-  },
-  {
-    "id": 5,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 5,
-      "capability_match": "Participate in Governance"
-    },
-    "threat_target": {
-      "component_id": 9,
-      "asset_ids": [
-        5
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 5,
-      "data_flow_id": 11,
-      "data_description": "Voter identity and vote selection made public on-chain."
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 2,
-      "boundary_name": "User to Contract",
-      "between_component_ids": [
-        1,
-        9
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Vote details (voter, choice) are immediately publicly visible on the blockchain upon submission."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "Source of the public vote data."
-    },
-    "behavioral_risk": {
-      "behavior_id": 5,
-      "risk_level": "Low",
-      "rationale": "Transparency of public blockchains makes vote details immediately visible, potentially impacting the voting process."
-    },
-    "assumptions": [
-      "The governance system does not implement a private voting mechanism or a commit-reveal scheme.",
-      "Real-time visibility of individual votes is considered a privacy or manipulation risk."
-    ],
-    "mitigation": {
-      "strategy": "Implement a commit-reveal voting scheme or explore zero-knowledge proof based private voting if vote privacy is a requirement.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "Due to the transparent nature of the blockchain, a user's vote and identity (associated with their BGT address) are publicly visible immediately after the vote is cast, which could potentially influence other voters or expose voter preferences.",
-    "trace_source": {
-      "doc_reference": "doc_3#berachain-governance",
-      "matched_capability": "Participate in Governance"
+      "doc_reference": "doc_3",
+      "matched_capability": "Participate in Governance (Transaction Submission)"
     }
   }
 ]

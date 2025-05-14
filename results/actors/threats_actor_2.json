@@ -1,300 +1,302 @@
 [
   {
     "id": 1,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Boost Validator"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 5,
-      "data_description": "Delegation request (user ID, validator ID, BGT amount, signature)"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Delegation request may be spoofed without proper identity verification."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user interacts with the delegation contract."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "High",
-      "rationale": "Weak authentication on delegation requests could allow impersonation, leading to unauthorized BGT delegation."
-    },
-    "assumptions": [
-      "Attacker can obtain or guess another user's identity.",
-      "Delegation contract relies solely on user ID without strong cryptographic proof of identity/intent."
-    ],
-    "mitigation": {
-      "strategy": "Enforce cryptographic signatures for all delegation requests linked to the user's wallet address.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may impersonate a user to delegate their BGT to a validator chosen by the attacker.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost a Validator With $BGT"
-    }
-  },
-  {
-    "id": 2,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Boost Validator"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 5,
-      "data_description": "Delegation request data in transit"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "Delegation request data integrity is not guaranteed during transmission."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user initiates data flow susceptible to tampering."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "High",
-      "rationale": "Data flow integrity between user wallet and smart contract is critical for correct delegation."
-    },
-    "assumptions": [
-      "Communication channel between user and contract is compromised.",
-      "Signature does not cover the entire transaction payload."
-    ],
-    "mitigation": {
-      "strategy": "Ensure transaction signatures cover all critical delegation parameters including validator ID and BGT amount.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker may alter the validator ID or BGT amount in a delegation request during transmission to redirect delegation or change the amount.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost a Validator With $BGT"
-    }
-  },
-  {
-    "id": 3,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Boost Validator"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        2
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 5,
-      "data_description": "Delegation action record on blockchain"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "User may deny initiating delegation."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user performs an action they might later deny."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "Lack of cryptographically verifiable actions could lead to disputes over delegation history."
-    },
-    "assumptions": [
-      "User wallet does not sign transactions.",
-      "Transaction history is not persistently recorded in a non-repudiable manner."
-    ],
-    "mitigation": {
-      "strategy": "Require user's cryptographic signature for all delegation transactions and record them immutably on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user who delegated BGT to a validator may later deny having performed the delegation.",
-    "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost a Validator With $BGT"
-    }
-  },
-  {
-    "id": 4,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 1,
-      "capability_match": "Boost Validator"
+      "capability_match": "Initiate Swap"
     },
     "threat_target": {
-      "component_id": 4,
-      "asset_ids": []
+      "component_id": 2,
+      "asset_ids": [
+        2
+      ]
     },
     "attack_surface": {
       "behavior_id": 1,
-      "data_flow_id": 5,
-      "data_description": "Transaction volume directed at the delegation contract"
+      "data_flow_id": 1,
+      "data_description": "Swap Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        4
+        2
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Delegation contract or network can be overwhelmed by excessive transaction volume."
+      "gap_description": "High volume of swap transactions can impact BEX availability."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user can send transactions to the contract."
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
     },
     "behavioral_risk": {
       "behavior_id": 1,
-      "risk_level": "High",
-      "rationale": "Overwhelming the delegation mechanism prevents legitimate users from participating in the PoL system by boosting validators."
+      "risk_level": "Medium",
+      "rationale": "High volume attacks are possible, mitigated by gas fees and network capacity."
     },
     "assumptions": [
-      "Transaction fees are low enough to be economically feasible for an attacker to send a large volume of transactions.",
-      "Contract or network infrastructure cannot handle high transaction volume directed at this specific behavior."
+      "Attacker has sufficient $BERA to pay gas for many transactions.",
+      "Berachain network has limited transaction throughput or gas fees are low enough to make flooding economically feasible."
     ],
     "mitigation": {
-      "strategy": "Implement dynamic transaction fees or rate limiting at the contract or network level; ensure robust infrastructure capable of handling expected load.",
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker floods the delegation contract or network with a high volume of transactions to prevent legitimate users from boosting validators.",
+    "description": "An attacker could flood the BEX contract with swap requests, potentially impacting its availability for other users.",
     "trace_source": {
-      "doc_reference": "guides/boost_a_validator.md",
-      "matched_capability": "Boost a Validator With $BGT"
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Initiate Swap"
     }
   },
   {
-    "id": 5,
-    "stride_category": "Spoofing",
+    "id": 2,
+    "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
       "behavior_id": 2,
-      "capability_match": "Claim Incentives"
+      "capability_match": "Provide BEX Liquidity"
     },
     "threat_target": {
-      "component_id": 4,
+      "component_id": 2,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 2,
+      "data_flow_id": 2,
+      "data_description": "Liquidity Deposit Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        2
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of liquidity deposits can impact BEX availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 2,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA and deposit assets.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the BEX contract with liquidity deposit transactions, potentially impacting the ability of legitimate users to provide liquidity.",
+    "trace_source": {
+      "doc_reference": "dapps/bex.md",
+      "matched_capability": "Provide BEX Liquidity"
+    }
+  },
+  {
+    "id": 3,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 3,
+      "capability_match": "Stake LP Token in Reward Vault"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
+        5
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 3,
+      "data_flow_id": 3,
+      "data_description": "Stake Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of staking transactions can impact Reward Vault availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 3,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA and LP tokens.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood a Reward Vault contract with staking transactions, potentially impacting the ability of legitimate users to stake their LP tokens.",
+    "trace_source": {
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Stake LP Token in Reward Vault"
+    }
+  },
+  {
+    "id": 4,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Claim $BGT"
+    },
+    "threat_target": {
+      "component_id": 3,
       "asset_ids": [
         3
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 6,
-      "data_description": "Claim request including user identifier and proof"
+      "behavior_id": 4,
+      "data_flow_id": 4,
+      "data_description": "Claim Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        4
+        3
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Claim request may be spoofed using a compromised or forged proof."
+      "gap_description": "The claim logic might be vulnerable, allowing users to claim excessive $BGT."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user interacts with the claim contract using a proof of entitlement."
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
     },
     "behavioral_risk": {
-      "behavior_id": 2,
+      "behavior_id": 4,
       "risk_level": "High",
-      "rationale": "Weak proof verification or identity binding allows attackers to claim others' incentives."
+      "rationale": "Integrity flaws in claim logic could lead to unauthorized BGT minting/claiming."
     },
     "assumptions": [
-      "Attacker obtains a legitimate user's claim proof.",
-      "Claim verification logic does not strongly bind the proof or claim to the transaction initiator's identity."
+      "The Reward Vault contract or its BGT distribution logic contains a bug.",
+      "The attacker can craft a malicious transaction to exploit the bug."
     ],
     "mitigation": {
-      "strategy": "Require cryptographic signatures for claim transactions, linking the claim request and proof to the user's wallet address.",
+      "strategy": "Implement robust smart contract auditing and testing.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may impersonate a user by using their claim proof to steal their incentive tokens.",
+    "description": "A vulnerability in the $BGT claim logic within the Reward Vault could allow an attacker to claim more $BGT than they are legitimately entitled to.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive Tokens"
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Claim $BGT"
+    }
+  },
+  {
+    "id": 5,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 4,
+      "capability_match": "Claim $BGT"
+    },
+    "threat_target": {
+      "component_id": 3,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 4,
+      "data_flow_id": 4,
+      "data_description": "Claim Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        3
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of claim transactions can impact Reward Vault availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 4,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood a Reward Vault contract with claim transactions, potentially impacting the ability of legitimate users to claim their $BGT rewards.",
+    "trace_source": {
+      "doc_reference": "pol/rewardvaults.md",
+      "matched_capability": "Claim $BGT"
     }
   },
   {
@@ -303,8 +305,8 @@
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 5,
+      "capability_match": "Delegate $BGT"
     },
     "threat_target": {
       "component_id": 4,
@@ -313,13 +315,13 @@
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 6,
-      "data_description": "Claim request data (user ID, proof, requested amount/tokens) in transit"
+      "behavior_id": 5,
+      "data_flow_id": 5,
+      "data_description": "Delegation Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
         4
@@ -329,176 +331,57 @@
       "confidentiality_required": false,
       "integrity_required": true,
       "availability_required": false,
-      "gap_description": "Claim request data integrity is not guaranteed during transmission or processing."
+      "gap_description": "Delegation logic might be vulnerable, allowing manipulation of validator boost."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user initiates data flow susceptible to tampering."
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
     },
     "behavioral_risk": {
-      "behavior_id": 2,
+      "behavior_id": 5,
       "risk_level": "High",
-      "rationale": "Data flow integrity is critical to prevent unauthorized claim modifications."
+      "rationale": "Integrity flaws in delegation logic could disrupt the PoL mechanism."
     },
     "assumptions": [
-      "Communication channel between user and contract is compromised.",
-      "Claim request or proof can be altered in transit or before verification.",
-      "Transaction signature does not cover all critical claim parameters."
+      "The delegation contract/logic contains a bug.",
+      "The attacker can craft a malicious transaction to exploit the bug."
     ],
     "mitigation": {
-      "strategy": "Ensure transaction signatures cover all critical claim parameters and that the claim proof itself is tamper-evident.",
+      "strategy": "Implement robust smart contract auditing and testing for delegation logic.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker may alter the recipient address, claimed amount, or proof data in a claim request during transmission.",
+    "description": "A vulnerability in the $BGT delegation logic could allow an attacker to manipulate the amount of $BGT delegated to a validator, unfairly impacting their boost and emissions.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive Tokens"
+      "doc_reference": "pol/tokens/bgt.md",
+      "matched_capability": "Delegate $BGT"
     }
   },
   {
     "id": 7,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Claim Incentives"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 6,
-      "data_description": "Claim action record on blockchain"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "User may deny initiating claim."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user performs an action they might later deny."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Medium",
-      "rationale": "Lack of cryptographically verifiable actions could lead to disputes over claim history, especially if a claim is performed fraudulently by a spoofed identity."
-    },
-    "assumptions": [
-      "User wallet does not sign transactions.",
-      "Transaction history is not persistently recorded in a non-repudiable manner."
-    ],
-    "mitigation": {
-      "strategy": "Require user's cryptographic signature for all claim transactions and record them immutably on the blockchain.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A user who claimed incentives may later deny having performed the claim.",
-    "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive Tokens"
-    }
-  },
-  {
-    "id": 8,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Claim Incentives"
-    },
-    "threat_target": {
-      "component_id": 4,
-      "asset_ids": [
-        3
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 6,
-      "data_description": "Claim request/proof data; Data flow 7: Incentive Token Transfer data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
-      "between_component_ids": [
-        1,
-        4
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Sensitive claim entitlement or proof-related information is disclosed."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user initiating/receiving data that might contain sensitive info."
-    },
-    "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "Low",
-      "rationale": "Blockchain transaction data is public, but exposure of sensitive off-chain data used for proofs is a concern."
-    },
-    "assumptions": [
-      "Claim proofs or associated off-chain data contain sensitive user information not intended for public view.",
-      "Communication channels or off-chain storage for proofs are not adequately secured."
-    ],
-    "mitigation": {
-      "strategy": "Minimize sensitive data included in on-chain proofs; secure off-chain data storage and communication channels.",
-      "type": "Technical Control",
-      "priority": "Low"
-    },
-    "description": "Sensitive information about user entitlements, claim proofs, or claim activity is exposed to unauthorized parties.",
-    "trace_source": {
-      "doc_reference": "pol/incentives.md",
-      "matched_capability": "Incentive Distribution Flow"
-    }
-  },
-  {
-    "id": 9,
     "stride_category": "Denial of Service",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 5,
+      "capability_match": "Delegate $BGT"
     },
     "threat_target": {
       "component_id": 4,
-      "asset_ids": []
+      "asset_ids": [
+        3
+      ]
     },
     "attack_surface": {
-      "behavior_id": 2,
-      "data_flow_id": 6,
-      "data_description": "Transaction volume directed at the claim contract"
+      "behavior_id": 5,
+      "data_flow_id": 5,
+      "data_description": "Delegation Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
         4
@@ -508,92 +391,994 @@
       "confidentiality_required": false,
       "integrity_required": false,
       "availability_required": true,
-      "gap_description": "Claim contract or network can be overwhelmed by excessive transaction volume."
+      "gap_description": "High volume of delegation transactions can impact delegation system availability."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user can send transactions to the contract."
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
     },
     "behavioral_risk": {
-      "behavior_id": 2,
-      "risk_level": "High",
-      "rationale": "Overwhelming the claim mechanism prevents legitimate users from accessing their earned incentives."
+      "behavior_id": 5,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
     },
     "assumptions": [
-      "Transaction fees are low enough to be economically feasible for an attacker to send a large volume of transactions.",
-      "Contract or network infrastructure cannot handle high transaction volume directed at this specific behavior."
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
     ],
     "mitigation": {
-      "strategy": "Implement dynamic transaction fees or rate limiting at the contract or network level; ensure robust infrastructure capable of handling expected load.",
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
       "type": "Technical Control",
-      "priority": "High"
+      "priority": "Medium"
     },
-    "description": "An attacker floods the claim contract or network with transactions to prevent legitimate users from claiming their incentives.",
+    "description": "An attacker could flood the delegation system with transactions, potentially impacting the ability of legitimate users to delegate their $BGT.",
     "trace_source": {
-      "doc_reference": "guides/claim_incentives.md",
-      "matched_capability": "Claim Incentive Tokens"
+      "doc_reference": "pol/tokens/bgt.md",
+      "matched_capability": "Delegate $BGT"
     }
   },
   {
-    "id": 10,
-    "stride_category": "Elevation of Privilege",
+    "id": 8,
+    "stride_category": "Spoofing",
     "origin": {
       "from_chunk": true,
       "actor_id": 1,
-      "behavior_id": 2,
-      "capability_match": "Claim Incentives"
+      "behavior_id": 6,
+      "capability_match": "Vote on Proposal"
     },
     "threat_target": {
-      "component_id": 4,
+      "component_id": 5,
       "asset_ids": [
         3
       ]
     },
     "attack_surface": {
-      "behavior_id": 2,
+      "behavior_id": 6,
       "data_flow_id": 6,
-      "data_description": "Claim request/proof validation logic"
+      "data_description": "Vote Transaction"
     },
     "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "User to Smart Contract",
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
       "between_component_ids": [
         1,
-        4
+        5
       ]
     },
     "security_gap": {
       "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "Attacker exploits vulnerability to claim unauthorized incentives."
+      "integrity_required": true,
+      "availability_required": true,
+      "gap_description": "Voting mechanism might not sufficiently verify the voter's identity or prevent vote tampering."
     },
     "actor_risk": {
       "actor_id": 1,
       "type": "External User",
       "overprivileged": false,
-      "description": "External user interacts with a potentially vulnerable contract."
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
     },
     "behavioral_risk": {
-      "behavior_id": 2,
+      "behavior_id": 6,
       "risk_level": "High",
-      "rationale": "A flaw in claim logic or proof verification could lead to theft of user funds (incentives)."
+      "rationale": "Compromised voting integrity could subvert governance decisions."
     },
     "assumptions": [
-      "Claim proof verification logic is flawed (e.g., susceptible to forged proofs or parameter manipulation).",
-      "Authorization checks within the claim contract are insufficient to prevent claiming more than entitled or claiming others' assets."
+      "The governance contract or voting mechanism lacks strong authentication/signature verification.",
+      "An attacker can intercept or craft vote transactions.",
+      "Voting power calculation is accurate and tied to BGT."
     ],
     "mitigation": {
-      "strategy": "Conduct thorough security audits of the claim contract logic and proof verification mechanisms.",
+      "strategy": "Implement robust authentication and signature verification for voting.",
       "type": "Technical Control",
       "priority": "High"
     },
-    "description": "An attacker exploits a vulnerability in the claim contract or proof mechanism to claim incentives they are not entitled to, potentially including those belonging to other users.",
+    "description": "An attacker could submit fraudulent votes by impersonating a legitimate $BGT holder or tampering with vote transactions, potentially influencing governance outcomes.",
+    "trace_source": {
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on Proposal"
+    }
+  },
+  {
+    "id": 9,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 6,
+      "capability_match": "Vote on Proposal"
+    },
+    "threat_target": {
+      "component_id": 5,
+      "asset_ids": [
+        3
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 6,
+      "data_flow_id": 6,
+      "data_description": "Vote Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        5
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of vote transactions can impact Governance system availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 6,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the Governance contract with transactions, potentially impacting the ability of legitimate users to cast their votes.",
+    "trace_source": {
+      "doc_reference": "governance.md",
+      "matched_capability": "Vote on Proposal"
+    }
+  },
+  {
+    "id": 10,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 6,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Claim Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        6
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "The proof generation or claim logic might be vulnerable, allowing users to claim excessive incentives."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "High",
+      "rationale": "Integrity flaws could lead to unauthorized incentive claiming and economic loss for other users/protocols."
+    },
+    "assumptions": [
+      "The backend API or proof generation mechanism has a vulnerability.",
+      "The BGTIncentiveDistributor contract contains a bug in claim validation.",
+      "The attacker can craft a malicious proof or transaction."
+    ],
+    "mitigation": {
+      "strategy": "Secure the backend API generating proofs and ensure robust smart contract validation of proofs.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A vulnerability in the incentive claim proof generation or validation logic could allow an attacker to claim more Incentive Tokens than they are legitimately entitled to.",
     "trace_source": {
       "doc_reference": "pol/incentives.md",
-      "matched_capability": "Incentive Distribution Flow"
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 11,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 7,
+      "capability_match": "Claim Incentives"
+    },
+    "threat_target": {
+      "component_id": 6,
+      "asset_ids": [
+        7
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 7,
+      "data_flow_id": 7,
+      "data_description": "Claim Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        6
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of claim transactions can impact Distributor contract availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 7,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the BGTIncentiveDistributor contract with claim transactions, potentially impacting the ability of legitimate users to claim their Incentive Tokens.",
+    "trace_source": {
+      "doc_reference": "pol/incentives.md",
+      "matched_capability": "Claim Incentives"
+    }
+  },
+  {
+    "id": 12,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Mint $HONEY"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 8,
+      "data_description": "Mint Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "The minting logic might be vulnerable, allowing users to mint $HONEY without sufficient collateral."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "High",
+      "rationale": "Integrity flaws in minting could depeg $HONEY and cause economic instability."
+    },
+    "assumptions": [
+      "The HoneyFactory or related vault contracts contain a bug in collateral validation or mint amount calculation.",
+      "The attacker can craft a malicious transaction."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust smart contract auditing and testing for minting logic and collateral handling.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A vulnerability in the $HONEY minting logic could allow an attacker to mint $HONEY without depositing required collateral or to mint excessive amounts, depegging the stablecoin.",
+    "trace_source": {
+      "doc_reference": "pol/tokens/honey.md",
+      "matched_capability": "Mint $HONEY"
+    }
+  },
+  {
+    "id": 13,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 8,
+      "capability_match": "Mint $HONEY"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 8,
+      "data_flow_id": 8,
+      "data_description": "Mint Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of mint transactions can impact HoneyFactory availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 8,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the HoneyFactory contract with mint transactions, potentially impacting the ability of legitimate users to mint $HONEY.",
+    "trace_source": {
+      "doc_reference": "pol/tokens/honey.md",
+      "matched_capability": "Mint $HONEY"
+    }
+  },
+  {
+    "id": 14,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Burn $HONEY"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 9,
+      "data_description": "Burn Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "The burning/redemption logic might be vulnerable, allowing users to redeem excessive collateral."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 9,
+      "risk_level": "High",
+      "rationale": "Integrity flaws in burning/redemption could drain collateral pools and depeg $HONEY."
+    },
+    "assumptions": [
+      "The HoneyFactory or related vault contracts contain a bug in burn validation or redemption amount calculation.",
+      "The attacker can craft a malicious transaction."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust smart contract auditing and testing for burning/redemption logic and collateral handling.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A vulnerability in the $HONEY burning/redemption logic could allow an attacker to redeem more collateral than they are legitimately entitled to by burning $HONEY, potentially draining collateral pools.",
+    "trace_source": {
+      "doc_reference": "pol/tokens/honey.md",
+      "matched_capability": "Burn $HONEY"
+    }
+  },
+  {
+    "id": 15,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 9,
+      "capability_match": "Burn $HONEY"
+    },
+    "threat_target": {
+      "component_id": 7,
+      "asset_ids": [
+        2
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 9,
+      "data_flow_id": 9,
+      "data_description": "Burn Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        7
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of burn transactions can impact HoneyFactory availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 9,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the HoneyFactory contract with burn transactions, potentially impacting the ability of legitimate users to burn $HONEY and redeem collateral.",
+    "trace_source": {
+      "doc_reference": "pol/tokens/honey.md",
+      "matched_capability": "Burn $HONEY"
+    }
+  },
+  {
+    "id": 16,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Bridge Assets to Berachain"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        8
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 10,
+      "data_description": "Bridge Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External Network to Berachain",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Lack of sufficient validation or authentication could allow fraudulent bridge transfers."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "High",
+      "rationale": "Vulnerabilities in the bridge could lead to unauthorized asset minting or loss."
+    },
+    "assumptions": [
+      "The bridge protocol (LayerZero) or its implementation contains vulnerabilities.",
+      "Weak validation of external chain events or signatures."
+    ],
+    "mitigation": {
+      "strategy": "Perform rigorous security audits of the bridge protocol and smart contracts.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could exploit vulnerabilities in the bridging process to mint unauthorized assets on Berachain or steal assets from the source chain by submitting fraudulent bridge claims.",
+    "trace_source": {
+      "doc_reference": "how_to_get_bera.md",
+      "matched_capability": "Bridge Assets to Berachain"
+    }
+  },
+  {
+    "id": 17,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 10,
+      "capability_match": "Bridge Assets to Berachain"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        8
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 10,
+      "data_flow_id": 10,
+      "data_description": "Bridge Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External Network to Berachain",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of bridge transactions can impact bridge service availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 10,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees on both chains and bridge infrastructure."
+    },
+    "assumptions": [
+      "Attacker has sufficient funds on either chain to pay fees.",
+      "The bridge infrastructure has capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure bridge infrastructure is robust and handle high load.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the bridge service with transactions, preventing legitimate users from transferring assets between networks.",
+    "trace_source": {
+      "doc_reference": "how_to_get_bera.md",
+      "matched_capability": "Bridge Assets to Berachain"
+    }
+  },
+  {
+    "id": 18,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 11,
+      "capability_match": "Bridge NFTs to Berachain"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        9
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 11,
+      "data_flow_id": 11,
+      "data_description": "Bridge Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External Network to Berachain",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "Lack of sufficient validation or authentication could allow fraudulent NFT bridge transfers."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 11,
+      "risk_level": "High",
+      "rationale": "Vulnerabilities in the NFT bridge could lead to unauthorized NFT minting or loss."
+    },
+    "assumptions": [
+      "The bridge protocol (LayerZero) or its implementation contains vulnerabilities.",
+      "Weak validation of external chain events or signatures for NFT ownership."
+    ],
+    "mitigation": {
+      "strategy": "Perform rigorous security audits of the NFT bridge protocol and smart contracts.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could exploit vulnerabilities in the NFT bridging process to mint unauthorized NFTs on Berachain or steal NFTs from the source chain by submitting fraudulent bridge claims.",
+    "trace_source": {
+      "doc_reference": "berachain_nfts.md",
+      "matched_capability": "Bridge NFTs to Berachain"
+    }
+  },
+  {
+    "id": 19,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 11,
+      "capability_match": "Bridge NFTs to Berachain"
+    },
+    "threat_target": {
+      "component_id": 8,
+      "asset_ids": [
+        9
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 11,
+      "data_flow_id": 11,
+      "data_description": "Bridge Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 1,
+      "boundary_name": "External Network to Berachain",
+      "between_component_ids": [
+        1,
+        8
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of bridge transactions can impact bridge service availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 11,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees on both chains and bridge infrastructure."
+    },
+    "assumptions": [
+      "Attacker has sufficient funds on either chain to pay fees.",
+      "The bridge infrastructure has capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure bridge infrastructure is robust and handle high load.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the NFT bridge service with transactions, preventing legitimate users from transferring their NFTs between networks.",
+    "trace_source": {
+      "doc_reference": "berachain_nfts.md",
+      "matched_capability": "Bridge NFTs to Berachain"
+    }
+  },
+  {
+    "id": 20,
+    "stride_category": "Information Disclosure",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 12,
+      "capability_match": "Check Airdrop Allocation"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        1
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 12,
+      "data_flow_id": 12,
+      "data_description": "Allocation Check Request"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": true,
+      "integrity_required": false,
+      "availability_required": false,
+      "gap_description": "Allocation data stored by the checker service might be accessible without proper authorization."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 12,
+      "risk_level": "High",
+      "rationale": "Disclosure of sensitive allocation data could lead to targeted attacks or privacy loss."
+    },
+    "assumptions": [
+      "The Airdrop Checker Service has vulnerabilities allowing unauthorized data access.",
+      "User allocation data is stored in a queryable format."
+    ],
+    "mitigation": {
+      "strategy": "Secure the Airdrop Checker Service database and API with strong authentication and access controls.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "An attacker could exploit vulnerabilities in the Airdrop Checker Service to gain unauthorized access to user $BERA allocation data.",
+    "trace_source": {
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Check $BERA Airdrop Allocation"
+    }
+  },
+  {
+    "id": 21,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 12,
+      "capability_match": "Check Airdrop Allocation"
+    },
+    "threat_target": {
+      "component_id": 10,
+      "asset_ids": [
+        1
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 12,
+      "data_flow_id": 12,
+      "data_description": "Allocation Check Request"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        10
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of check requests can impact Checker Service availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 12,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, depends on service infrastructure capacity."
+    },
+    "assumptions": [
+      "Attacker can send a high volume of requests.",
+      "The Checker Service infrastructure has capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure service infrastructure is robust and handle high load.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the Airdrop Checker Service with requests, preventing legitimate users from checking their allocation.",
+    "trace_source": {
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Check Airdrop Allocation"
+    }
+  },
+  {
+    "id": 22,
+    "stride_category": "Tampering",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 13,
+      "capability_match": "Claim Airdrop"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        1
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 13,
+      "data_flow_id": 13,
+      "data_description": "Airdrop Claim Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": true,
+      "availability_required": false,
+      "gap_description": "The claim logic might be vulnerable, allowing users to claim excessive or unauthorized $BERA."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 13,
+      "risk_level": "High",
+      "rationale": "Integrity flaws in claim logic could lead to unauthorized $BERA distribution."
+    },
+    "assumptions": [
+      "The Airdrop Claim Contract contains a bug in allocation validation or claim logic.",
+      "The attacker can craft a malicious transaction to exploit the bug."
+    ],
+    "mitigation": {
+      "strategy": "Implement robust smart contract auditing and testing for airdrop claim logic.",
+      "type": "Technical Control",
+      "priority": "High"
+    },
+    "description": "A vulnerability in the Airdrop Claim Contract could allow an attacker to claim more $BERA than their allocated amount or claim the airdrop for another user.",
+    "trace_source": {
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Claim Airdrop"
+    }
+  },
+  {
+    "id": 23,
+    "stride_category": "Denial of Service",
+    "origin": {
+      "from_chunk": true,
+      "actor_id": 1,
+      "behavior_id": 13,
+      "capability_match": "Claim Airdrop"
+    },
+    "threat_target": {
+      "component_id": 11,
+      "asset_ids": [
+        1
+      ]
+    },
+    "attack_surface": {
+      "behavior_id": 13,
+      "data_flow_id": 13,
+      "data_description": "Airdrop Claim Transaction"
+    },
+    "trust_boundary_risk": {
+      "boundary_id": 2,
+      "boundary_name": "User to Contract",
+      "between_component_ids": [
+        1,
+        11
+      ]
+    },
+    "security_gap": {
+      "confidentiality_required": false,
+      "integrity_required": false,
+      "availability_required": true,
+      "gap_description": "High volume of claim transactions can impact Claim Contract availability."
+    },
+    "actor_risk": {
+      "actor_id": 1,
+      "type": "External User",
+      "overprivileged": false,
+      "description": "Represents any user interacting with the Berachain dApps and contracts."
+    },
+    "behavioral_risk": {
+      "behavior_id": 13,
+      "risk_level": "Medium",
+      "rationale": "High volume attacks possible, mitigated by gas fees and network capacity."
+    },
+    "assumptions": [
+      "Attacker has sufficient $BERA.",
+      "Network capacity limitations."
+    ],
+    "mitigation": {
+      "strategy": "Ensure sufficient network capacity and appropriate transaction fee mechanisms.",
+      "type": "Technical Control",
+      "priority": "Medium"
+    },
+    "description": "An attacker could flood the Airdrop Claim Contract with transactions, potentially preventing legitimate users from claiming their $BERA airdrop.",
+    "trace_source": {
+      "doc_reference": "claim_bera_airdrop.md",
+      "matched_capability": "Claim Airdrop"
     }
   }
 ]
