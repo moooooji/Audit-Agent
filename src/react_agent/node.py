@@ -176,19 +176,30 @@ def code_binding(state: State) -> State:
         print("[+] similar_functions_list: ", similar_functions_list)
         print("[+] similar_functions_length: ", len(similar_functions_list))
         
-        contract_names = []
-        function_names = []
+        function_codes = {}
         # parsing contract names and function names
-        for similar_functions in similar_functions_list:
+        for i, similar_functions in enumerate(similar_functions_list):
+            print(f"\n[+] Processing checklist item {i+1}:")
+            function_codes[i] = {
+                "checklist_item_id": i,
+                "similar_functions": []
+            }
             for doc in similar_functions:
                 # Parse metadata
-                contract_names.append(doc.metadata['contract'])
-                function_names.append(doc.metadata['function'])
+                contract_name = doc.metadata['contract']
+                function_name = doc.metadata['function']
+                function_code = RedisUtil.get_function_code(f"{contract_name}.{function_name}")
+                # Store the function code with its metadata
+                function_codes[i]["similar_functions"].append({
+                    "contract_name": contract_name,
+                    "function_name": function_name,
+                    "code": function_code
+                })
+                print(f"[+] Added function code for {contract_name}.{function_name}")
         
-        for i in range(len(contract_names)):
-            function_code = RedisUtil.get_function_code(f"{contract_names[i]}.{function_names[i]}")
-            print("[+] function_code: ", function_code)
-        
+        print("[+] Saving function codes to code_binding.json...")
+        with open("results/code_binding.json", "w") as f:
+            json.dump({ "function_codes": function_codes }, f, ensure_ascii=False, indent=2)
         state.is_initial_code_binding = True
         response = generate_llm_response(state)
         print("completed initial code binding")

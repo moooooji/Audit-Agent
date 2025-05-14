@@ -1,60 +1,62 @@
 {
-  "id": 18,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 28,
-    "capability_match": "Stake BERA"
+    "behavior_id": 14,
+    "capability_match": "Operate validator node"
   },
   "threat_target": {
     "component_id": 2,
     "asset_ids": [
-      1
+      1,
+      2,
+      5,
+      17
     ]
   },
   "attack_surface": {
-    "behavior_id": 28,
-    "data_flow_id": -1,
-    "data_description": "Staking/Unstaking permissions or limits"
+    "behavior_id": 14,
+    "data_flow_id": 13,
+    "data_description": "Validator Node control interfaces and associated credentials/keys"
   },
   "trust_boundary_risk": {
-    "boundary_id": -1,
-    "boundary_name": "Implicit/External Interface",
+    "boundary_id": 99,
+    "boundary_name": "Validator Node Perimeter",
     "between_component_ids": [
       2,
-      -1
+      0
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Validator operator could gain unauthorized privileges related to staking, such as bypassing limits or staking others' BERA."
+    "availability_required": true,
+    "gap_description": "Unauthorized users can gain administrative control over the Validator Node or the Validator Operator's identity."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Internal Service",
-    "overprivileged": false,
-    "description": "Operator of a validator node."
+    "overprivileged": true,
+    "description": "Attacker gains full control over the highly privileged validator operator identity and resources."
   },
   "behavioral_risk": {
-    "behavior_id": 28,
-    "risk_level": "Medium",
-    "rationale": "Involves committing significant value to the network, carries inherent financial risk."
+    "behavior_id": 14,
+    "risk_level": "High",
+    "rationale": "Gaining control of a validator node grants extensive privileges to influence consensus and control assets."
   },
   "assumptions": [
-    "Vulnerabilities exist in the validator node software or the staking smart contract.",
-    "Exploiting these vulnerabilities allows the operator to bypass access controls or limits on staking actions."
+    "Attacker exploits vulnerabilities in the Validator Node software, underlying OS, or compromises the operator's administrative credentials or keys."
   ],
   "mitigation": {
-    "strategy": "Implement strict access controls and input validation in the staking contract and secure the node software against privilege escalation.",
+    "strategy": "Implement multi-factor authentication, principle of least privilege, regular security patching, and intrusion detection.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious validator operator exploits vulnerabilities to perform unauthorized staking or unstaking actions, potentially affecting others' funds or chain state.",
+  "description": "An attacker successfully gains unauthorized administrative control over the Validator Node or the Validator Operator's identity, effectively becoming the operator and inheriting all associated privileges, including block proposal, voting, and asset control.",
   "trace_source": {
-    "doc_reference": "pol/bgtmath.md#validator-selection",
-    "matched_capability": "Stake BERA"
+    "doc_reference": "pol/participants.md#validators-\u2705",
+    "matched_capability": "Operate validator node"
   }
 }

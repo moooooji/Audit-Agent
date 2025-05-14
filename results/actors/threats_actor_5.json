@@ -5,7 +5,7 @@
     "from_chunk": true,
     "actor_id": 5,
     "behavior_id": 20,
-    "capability_match": "Offer Incentive Tokens (deposit)"
+    "capability_match": "Manage Incentive Rate"
   },
   "threat_target": {
     "component_id": 8,
@@ -15,14 +15,14 @@
   },
   "attack_surface": {
     "behavior_id": 20,
-    "data_flow_id": 999,
-    "data_description": "Incentive token transfer and rate parameters"
+    "data_flow_id": -1,
+    "data_description": "Access control check for 'Token Manager' role"
   },
   "trust_boundary_risk": {
     "boundary_id": 4,
     "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      1,
+      5,
       8
     ]
   },
@@ -30,31 +30,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Authorization logic for Token Manager actions is flawed."
+    "gap_description": "Flaw in the smart contract's access control logic allows a non-authorized user to perform 'Token Manager' actions."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "External User",
     "overprivileged": true,
-    "description": "The actor is the designated Token Manager for the Reward Vault, controlling incentive deposits and rates."
+    "description": "Attacker gains unauthorized 'Token Manager' privileges by exploiting a vulnerability in the access control logic."
   },
   "behavioral_risk": {
     "behavior_id": 20,
     "risk_level": "Medium",
-    "rationale": "The behavior involves managing sensitive incentive token supply and distribution rates in a critical smart contract."
+    "rationale": "Bypassing authorization for this behavior allows full control over incentive deposits and rates, impacting the entire vault and its participants."
   },
   "assumptions": [
-    "The Reward Vault smart contract contains a vulnerability (e.g., logic error, re-entrancy, weak key management) that allows an unauthorized address to gain Token Manager permissions.",
-    "The attacker can interact with the smart contract to exploit this vulnerability."
+    "The smart contract's implementation of access control for functions related to depositing incentives or setting rates has a vulnerability.",
+    "A user without the designated 'Token Manager' wallet/key can bypass this check."
   ],
   "mitigation": {
-    "strategy": "Conduct thorough audits and testing of smart contract access control logic and ensure secure key management for authorized roles.",
+    "strategy": "Conduct thorough review and formal verification of the smart contract's access control logic for privileged roles.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a vulnerability in the Reward Vault contract to gain unauthorized control over the \"Token Manager\" role, allowing them to manage incentive tokens and rates.",
+  "description": "An attacker exploits a vulnerability in the Reward Vault contract's access control mechanism to perform privileged Incentive Token Manager actions without proper authorization.",
   "trace_source": {
-    "doc_reference": "pol/incentives.md#incentive-token-managers",
-    "matched_capability": "Manage Incentive Token Deposit and Rate"
+    "doc_reference": "guides/add_incentives_for_reward_vault.md",
+    "matched_capability": "Requirements: Must be connected with Token Manager wallet"
   }
 }

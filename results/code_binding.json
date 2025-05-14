@@ -1,0 +1,64 @@
+{
+  "function_codes": {
+    "0": {
+      "checklist_item_id": 0,
+      "similar_functions": [
+        {
+          "contract_name": "FactoryOwnable",
+          "function_name": "_getAdminRole",
+          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+        },
+        {
+          "contract_name": "FactoryOwnable",
+          "function_name": "_getAdminRole",
+          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+        },
+        {
+          "contract_name": "FactoryOwnable",
+          "function_name": "_getAdminRole",
+          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+        }
+      ]
+    },
+    "1": {
+      "checklist_item_id": 1,
+      "similar_functions": [
+        {
+          "contract_name": "IBeraChef_V1",
+          "function_name": "isReady",
+          "code": "function isReady() external view returns (bool);"
+        },
+        {
+          "contract_name": "Distributor",
+          "function_name": "initialize",
+          "code": "function initialize(\n        address _berachef,\n        address _bgt,\n        address _blockRewardController,\n        address _governance,\n        uint64 _zeroValidatorPubkeyGIndex,\n        uint64 _proposerIndexGIndex\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __ReentrancyGuard_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        beraChef = IBeraChef(_berachef);\n        bgt = _bgt;\n        blockRewardController = IBlockRewardController(_blockRewardController);\n        super.setZeroValidatorPubkeyGIndex(_zeroValidatorPubkeyGIndex);\n        super.setProposerIndexGIndex(_proposerIndexGIndex);\n    }"
+        },
+        {
+          "contract_name": "Distributor",
+          "function_name": "initialize",
+          "code": "function initialize(\n        address _berachef,\n        address _bgt,\n        address _blockRewardController,\n        address _governance,\n        uint64 _zeroValidatorPubkeyGIndex,\n        uint64 _proposerIndexGIndex\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __ReentrancyGuard_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        beraChef = IBeraChef(_berachef);\n        bgt = _bgt;\n        blockRewardController = IBlockRewardController(_blockRewardController);\n        super.setZeroValidatorPubkeyGIndex(_zeroValidatorPubkeyGIndex);\n        super.setProposerIndexGIndex(_proposerIndexGIndex);\n    }"
+        }
+      ]
+    },
+    "2": {
+      "checklist_item_id": 2,
+      "similar_functions": [
+        {
+          "contract_name": "VaultAdmin",
+          "function_name": "_authorizeUpgrade",
+          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+        },
+        {
+          "contract_name": "VaultAdmin",
+          "function_name": "_authorizeUpgrade",
+          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+        },
+        {
+          "contract_name": "VaultAdmin",
+          "function_name": "_authorizeUpgrade",
+          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+        }
+      ]
+    }
+  }
+}

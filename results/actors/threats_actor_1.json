@@ -1,11 +1,11 @@
 {
-  "id": 13,
+  "id": 11,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
     "behavior_id": 13,
-    "capability_match": "Claim Incentives"
+    "capability_match": "Claim Incentives/Fees"
   },
   "threat_target": {
     "component_id": 13,
@@ -17,7 +17,7 @@
   "attack_surface": {
     "behavior_id": 13,
     "data_flow_id": 11,
-    "data_description": "Incentive Entitlement Proofs submitted for claim"
+    "data_description": "Incentive claim transaction with proof"
   },
   "trust_boundary_risk": {
     "boundary_id": 4,
@@ -38,31 +38,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Vulnerabilities in the Distributor contract or proof mechanism could allow attackers to claim unearned incentives or fees."
+    "gap_description": "BGTIncentiveDistributor vulnerability allows claiming excess tokens or tokens belonging to others."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "User claiming rewards is exposed if the entitlement and claim logic is flawed."
+    "description": "General external user interacting with the Berachain ecosystem."
   },
   "behavioral_risk": {
     "behavior_id": 13,
     "risk_level": "Low",
-    "rationale": "Basic action to claim accrued incentives/fees."
+    "rationale": "User claims earned Incentive Tokens or dApp fees by providing proof"
   },
   "assumptions": [
-    "The BGTIncentiveDistributor contract or the off-chain proof generation mechanism contains a vulnerability.",
-    "An attacker can forge or manipulate claim proofs."
+    "Attacker finds a logic bug (e.g., reentrancy, improper state update) in the BGTIncentiveDistributor contract (ID 13).",
+    "The vulnerability can be exploited to claim unauthorized amounts or bypass proof requirements."
   ],
   "mitigation": {
-    "strategy": "Conduct comprehensive smart contract audits, secure the proof generation process, implement robust proof verification on-chain.",
+    "strategy": "Conduct rigorous smart contract audits focusing on access control, state updates, and proof verification logic.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a vulnerability in the BGTIncentiveDistributor contract or the incentive proof mechanism to claim incentive tokens or fees they are not entitled to.",
+  "description": "An attacker exploits a vulnerability in the BGTIncentiveDistributor contract (Component ID 13) to claim more Incentive Tokens or $WBERA (Asset IDs 5, 18) than entitled, potentially stealing from the contract or other users.",
   "trace_source": {
-    "doc_reference": "guides/claim-incentives.md",
-    "matched_capability": "Claim Incentives"
+    "doc_reference": "learn/pol/incentives.md",
+    "matched_capability": "Claim Incentives/Fees"
   }
 }

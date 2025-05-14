@@ -1,6 +1,6 @@
 {
-  "id": 12,
-  "stride_category": "Elevation of Privilege",
+  "id": 5,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
@@ -10,53 +10,52 @@
   "threat_target": {
     "component_id": 9,
     "asset_ids": [
-      2,
-      9,
       10
     ]
   },
   "attack_surface": {
     "behavior_id": 19,
     "data_flow_id": 10,
-    "data_description": "BGT/Voting Power/Proposal Data"
+    "data_description": "Governance proposal submission originating from an address claiming a false identity"
   },
   "trust_boundary_risk": {
-    "boundary_id": 5,
-    "boundary_name": "Governance Timelock Security",
+    "boundary_id": 4,
+    "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      9,
-      4
+      1,
+      9
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Governance process (voting, timelock, Guardian review) fails to prevent whitelisting of malicious Reward Vault granting unintended privileges."
+    "gap_description": "The on-chain governance contract does not verify the real-world or protocol identity associated with the submitting address, only the minimum $BGT requirement."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "Partner system capable of submitting governance proposals."
+    "description": "The actor can submit proposals and may attempt to deceive the community about their true identity."
   },
   "behavioral_risk": {
     "behavior_id": 19,
     "risk_level": "Low",
-    "rationale": "Submission of proposal for malicious vault has low behavioral risk due to governance checks, but high potential impact if successful."
+    "rationale": "Spoofing identity allows deceiving the community about the source of a proposal, potentially influencing voting, but doesn't directly grant on-chain power without further governance steps."
   },
   "assumptions": [
-    "Actor 3 submits a proposal for a malicious Reward Vault designed to grant unintended privileges.",
-    "The governance mechanism (voting quorum, timelock, Guardian multisig) is compromised, subverted, or fails to identify the malicious nature of the proposal/vault."
+    "Actor 3 can acquire an address meeting the 10k $BGT threshold.",
+    "The governance contract relies solely on msg.sender and balance for submission, not external identity proof.",
+    "The community or system relies on the claimed identity during the RFRV review process."
   ],
   "mitigation": {
-    "strategy": "Ensure robust community and Guardian review of RFRV proposals and proposed vault code.",
+    "strategy": "Strengthen off-chain verification steps for the RFRV process, potentially linking on-chain addresses to verified identities.",
     "type": "Process Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A Protocol/Ecosystem Project (Actor 3) submits a Request for Reward Vault (RFRV) proposal to the Governance Contract (Component 9) for a malicious vault that, if approved and whitelisted by governance, would grant Actor 3 or other unauthorized parties elevated privileges or control over assets or other system components.",
+  "description": "A partner protocol (or other entity meeting the $BGT threshold) may submit a governance proposal claiming to represent a different, potentially more reputable, protocol or entity to gain community trust or deceive voters during the governance process.",
   "trace_source": {
-    "doc_reference": "governance.md#guardian-oversight",
+    "doc_reference": "governance.md",
     "matched_capability": "Submit RFRV (Request for Reward Vault)"
   }
 }
