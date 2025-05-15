@@ -10,7 +10,6 @@ cd Utils && git clone https://github.com/berachain/contracts.git && cd ../../../
 ```
 
 #### 2. install dependencies  
-** return project root directory **
 ```bash
 make install
 ```
