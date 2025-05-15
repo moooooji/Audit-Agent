@@ -19,6 +19,9 @@ dependencies = [
     "google-genai",
     "langgraph-cli[inmem]>=0.1.71",
     "langchain-core>=0.3.59",
+    "redis==6.0.0",
+    "langchain-chroma==0.2.3",
+    "langchain-google-genai==2.1.4"
 ]
 
 
