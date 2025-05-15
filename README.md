@@ -1,6 +1,6 @@
 # WrappedThreatPromptor
 
-## langchain studio
+## Langchain Studio
 
 #### 1. clone the project and relevant repositories.
 ```bashå
