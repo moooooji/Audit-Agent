@@ -21,7 +21,8 @@
         "Mint HONEY",
         "Burn HONEY",
         "Vote on governance proposals",
-        "Create governance proposals (if sufficient BGT)"
+        "Create governance proposals (if sufficient BGT)",
+        "Claim dApp fees"
       ]
     },
     {
@@ -37,7 +38,8 @@
         "Receive BGT rewards (base emission)",
         "Direct BGT emissions (to Reward Vaults)",
         "Receive Incentive rewards (commission)",
-        "Set Incentive commission rate"
+        "Set Incentive commission rate",
+        "Receive dApp fees"
       ]
     },
     {
@@ -68,7 +70,7 @@
       "capabilities": [
         "Offer Incentive Tokens (deposit)",
         "Increase Incentive Rate",
-        "Manage Incentive Rates"
+        "Manage Incentive rates"
       ]
     }
   ],
@@ -191,27 +193,6 @@
       "description": "Configuration data specifying how a validator directs BGT emissions.",
       "type": "Data",
       "sensitivity": "Low"
-    },
-    {
-      "id": 18,
-      "name": "$WBERA",
-      "description": "Wrapped BERA token.",
-      "type": "Token",
-      "sensitivity": "High"
-    },
-    {
-      "id": 19,
-      "name": "Fee Shares",
-      "description": "Represents a portion of fees collected.",
-      "type": "Token",
-      "sensitivity": "Low"
-    },
-    {
-      "id": 20,
-      "name": "Incentive Distribution Data",
-      "description": "Data about incentive distribution and user entitlements.",
-      "type": "Data",
-      "sensitivity": "Low"
     }
   ],
   "components": [
@@ -231,8 +212,7 @@
         1,
         2,
         5,
-        17,
-        18
+        17
       ]
     },
     {
@@ -253,8 +233,7 @@
         13,
         14,
         15,
-        16,
-        18
+        16
       ]
     },
     {
@@ -290,6 +269,7 @@
       "description": "Native dApp for minting, burning, and swapping HONEY.",
       "trust_level": "High",
       "assets_managed": [
+        1,
         3,
         12,
         13
@@ -334,8 +314,7 @@
         16,
         3,
         12,
-        13,
-        19
+        13
       ]
     },
     {
@@ -346,8 +325,7 @@
       "assets_managed": [
         12,
         13,
-        16,
-        19
+        16
       ]
     },
     {
@@ -357,9 +335,7 @@
       "trust_level": "High",
       "assets_managed": [
         1,
-        3,
-        18,
-        19
+        3
       ]
     },
     {
@@ -369,8 +345,7 @@
       "trust_level": "High",
       "assets_managed": [
         5,
-        18,
-        20
+        1
       ]
     },
     {
@@ -379,8 +354,7 @@
       "description": "Off-chain service managing proofs of entitlement for incentive claiming.",
       "trust_level": "Medium",
       "assets_managed": [
-        11,
-        20
+        11
       ]
     },
     {
@@ -410,6 +384,7 @@
         5,
         6,
         7,
+        8,
         9,
         10,
         11,
@@ -418,10 +393,7 @@
         14,
         15,
         16,
-        17,
-        18,
-        19,
-        20
+        17
       ]
     }
   ],
@@ -562,8 +534,8 @@
       "id": 12,
       "source_id": 13,
       "destination_id": 3,
-      "data": "Incentive Tokens",
-      "description": "User receives claimed Incentive Tokens",
+      "data": "Incentive Tokens/WBERA",
+      "description": "User receives claimed Incentive Tokens or dApp fees",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -875,7 +847,7 @@
       "source_id": 8,
       "destination_id": 13,
       "data": "Incentive Tokens",
-      "description": "Reward Vault sends incentives to distributor for boosters",
+      "description": "Reward Vault sends incentive tokens (non-commission) to the Distributor",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -885,9 +857,9 @@
     {
       "id": 39,
       "source_id": 13,
-      "destination_id": 3,
-      "data": "WBERA (Claimed Fees)",
-      "description": "User claims their share of dApp fees from the Distributor",
+      "destination_id": 2,
+      "data": "WBERA (dApp Fees)",
+      "description": "Distributor sends dApp fees to Validator Node (for distribution to Boosters)",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -898,8 +870,8 @@
       "id": 40,
       "source_id": 13,
       "destination_id": 14,
-      "data": "Incentive Distribution Data",
-      "description": "BGTIncentiveDistributor provides data to the backend service for calculating and generating incentive entitlement proofs",
+      "data": "Incentive/Fee Distribution Data",
+      "description": "Distributor provides data to backend service for proof generation",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -1026,7 +998,7 @@
       "target_id": 5,
       "action": "swap",
       "description": "User exchanges tokens on BEX",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 5,
@@ -1036,7 +1008,7 @@
       "target_id": 5,
       "action": "provide liquidity",
       "description": "User deposits tokens into BEX liquidity pool",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 6,
@@ -1046,7 +1018,7 @@
       "target_id": 6,
       "action": "mint",
       "description": "User deposits collateral to mint HONEY",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 7,
@@ -1056,7 +1028,7 @@
       "target_id": 6,
       "action": "burn",
       "description": "User redeems collateral by burning HONEY",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 8,
@@ -1066,7 +1038,7 @@
       "target_id": 8,
       "action": "stake",
       "description": "User stakes PoL-eligible assets in a Reward Vault",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 9,
@@ -1136,7 +1108,7 @@
       "target_id": 1,
       "action": "propose block",
       "description": "Validator node creates and proposes a new block for consensus",
-      "risk_level": "Low"
+      "risk_level": "High"
     },
     {
       "id": 16,
@@ -1166,7 +1138,7 @@
       "target_id": 1,
       "action": "deploy",
       "description": "Protocol deploys a new Reward Vault contract onto the blockchain",
-      "risk_level": "Low"
+      "risk_level": "Medium"
     },
     {
       "id": 19,
@@ -1216,7 +1188,7 @@
       "target_id": 1,
       "action": "execute",
       "description": "Execution Client processes and executes transactions on the blockchain state",
-      "risk_level": "Low"
+      "risk_level": "High"
     },
     {
       "id": 24,
@@ -1226,36 +1198,46 @@
       "target_id": 1,
       "action": "finalize",
       "description": "CometBFT finalizes blocks and achieves consensus on the blockchain state",
-      "risk_level": "Low"
+      "risk_level": "High"
     },
     {
       "id": 25,
       "name": "Receive Transaction Fees",
       "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "receive",
-      "description": "Validator receives transaction fees for including transactions in blocks",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "receive fees",
+      "description": "Validator Node receives transaction fees from the network",
       "risk_level": "Low"
     },
     {
       "id": 26,
       "name": "Receive Base BGT Emission",
       "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "receive",
-      "description": "Validator receives base BGT emission for proposing a block",
+      "initiator_id": 1,
+      "target_id": 2,
+      "action": "receive emission",
+      "description": "Validator Node receives base BGT emission for block production",
       "risk_level": "Low"
     },
     {
       "id": 27,
       "name": "Receive Incentive Commission",
       "initiator_type": "Component",
-      "initiator_id": 2,
-      "target_id": 8,
-      "action": "receive",
-      "description": "Validator receives commission on incentive tokens from Reward Vaults",
+      "initiator_id": 8,
+      "target_id": 2,
+      "action": "receive commission",
+      "description": "Validator Node receives commission on incentives from Reward Vault",
+      "risk_level": "Low"
+    },
+    {
+      "id": 28,
+      "name": "Receive dApp Fees",
+      "initiator_type": "Component",
+      "initiator_id": 13,
+      "target_id": 1,
+      "action": "receive fees",
+      "description": "User receives their share of dApp fees",
       "risk_level": "Low"
     },
     {
@@ -1264,8 +1246,8 @@
       "initiator_type": "Component",
       "initiator_id": 5,
       "target_id": 12,
-      "action": "collect",
-      "description": "BEX collects fees from user interactions and sends them to the FeeCollector",
+      "action": "collect fees",
+      "description": "BEX sends collected fees to FeeCollector",
       "risk_level": "Low"
     },
     {
@@ -1274,8 +1256,8 @@
       "initiator_type": "Component",
       "initiator_id": 6,
       "target_id": 12,
-      "action": "collect",
-      "description": "Honey Swap collects fees from user interactions and sends them to the FeeCollector",
+      "action": "collect fees",
+      "description": "Honey Swap sends collected fees to FeeCollector",
       "risk_level": "Low"
     },
     {
@@ -1284,8 +1266,8 @@
       "initiator_type": "Component",
       "initiator_id": 12,
       "target_id": 13,
-      "action": "distribute",
-      "description": "FeeCollector distributes collected fees (as WBERA) to the BGTIncentiveDistributor",
+      "action": "distribute fees",
+      "description": "FeeCollector distributes fees to the Distributor",
       "risk_level": "Low"
     },
     {
@@ -1294,8 +1276,8 @@
       "initiator_type": "Component",
       "initiator_id": 13,
       "target_id": 1,
-      "action": "distribute",
-      "description": "BGTIncentiveDistributor makes incentives and fees available for users to claim",
+      "action": "distribute incentives/fees",
+      "description": "BGTIncentiveDistributor makes incentives/fees available for claiming",
       "risk_level": "Low"
     },
     {
@@ -1305,8 +1287,8 @@
       "initiator_id": 2,
       "target_id": 1,
       "action": "stake",
-      "description": "Validator operator stakes BERA to become eligible for the active set",
-      "risk_level": "Low"
+      "description": "Validator Operator stakes BERA to become/remain in the active set",
+      "risk_level": "Medium"
     },
     {
       "id": 34,
@@ -1314,9 +1296,9 @@
       "initiator_type": "Actor",
       "initiator_id": 5,
       "target_id": 8,
-      "action": "manage",
-      "description": "Incentive Token Manager deposits incentives and sets/updates incentive rates for a Reward Vault",
-      "risk_level": "Medium"
+      "action": "manage rates",
+      "description": "Incentive Token Manager sets/updates incentive rates for a Reward Vault",
+      "risk_level": "Low"
     }
   ]
 }

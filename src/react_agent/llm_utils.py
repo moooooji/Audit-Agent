@@ -7,12 +7,13 @@ from react_agent.state import State
 
 from react_agent.prompt import (
     ARCHITECTURE_ANALYSIS_TEMPLATE, ARCHITECTURE_RESPONSE_CONFIG, 
-    ASSESSMENT_TEMPLATE, ASSESSMENT_CONFIG, 
+    ARCHITECTURE_ASSESSMENT_TEMPLATE, ARCHITECTURE_ASSESSMENT_CONFIG, 
     ARCHITECTURE_CORRECTION_TEMPLATE, ARCHITECTURE_CORRECTION_CONFIG,
     THREAT_ANALYSIS_TEMPLATE, THREAT_ANALYSIS_CONFIG,
     CHECKLIST_TEMPLATE, CHECKLIST_CONFIG,
+    CHECKLIST_CORRECTION_TEMPLATE, CHECKLIST_CORRECTION_CONFIG,
     CODE_BINDING_TEMPLATE, CODE_BINDING_CONFIG,
-    ASSESSMENT_CHECKLIST_TEMPLATE, ASSESSMENT_CHECKLIST_CONFIG,
+    CHECKLIST_ASSESSMENT_TEMPLATE, CHECKLIST_ASSESSMENT_CONFIG,
     ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE, ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG
 )
 
@@ -126,7 +127,7 @@ def generate_llm_response(state: State) -> str:
         print("=============initial architecture analysis node=============")
         target_docs = load_file(state.target_docs_path)
         
-        prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace("{DOCS}", target_docs)
+        prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace("{target_docs}", target_docs)
         
         contents = [
             types.Content(
@@ -149,8 +150,10 @@ def generate_llm_response(state: State) -> str:
         # read architecture_analysis 
         analysis_json = load_file("results/architecture_analysis.json")
         
-        prompt = ASSESSMENT_TEMPLATE.replace("{docs}", target_docs).replace(
-            "{json}", analysis_json
+        prompt = ARCHITECTURE_ASSESSMENT_TEMPLATE.replace(
+            "{target_docs}", target_docs
+            ).replace(
+            "{initial_architecture_analysis}", analysis_json
         )
         
         contents = [
@@ -163,7 +166,7 @@ def generate_llm_response(state: State) -> str:
         response = client.models.generate_content(
             model=model,
             contents=contents,
-            config=ASSESSMENT_CONFIG,
+            config=ARCHITECTURE_ASSESSMENT_CONFIG,
         )
         return response
     
@@ -173,14 +176,14 @@ def generate_llm_response(state: State) -> str:
         target_docs = load_file(state.target_docs_path)
         analysis_json = load_file("results/architecture_analysis.json")
         # read assessment file
-        assessment_json = load_file("results/assessment.json")
+        assessment_architecture_json = load_file("results/assessment_architecture.json")
             
         prompt = ARCHITECTURE_CORRECTION_TEMPLATE.replace(
-        "{docs}", target_docs
+            "{target_docs}", target_docs
         ).replace(
-            "{initial_json}", analysis_json
+            "{initial_architecture_analysis}", analysis_json
         ).replace(
-            "{findings}", assessment_json
+            "{assessment_architecture}", assessment_architecture_json
         )
         
         contents = [
@@ -203,11 +206,17 @@ def generate_llm_response(state: State) -> str:
         print("=============threat analysis node=============")
         target_docs = load_file(state.target_docs_path)
         # read architecture_correction file
-        architecture_correction = load_file("results/architecture_analysis.json")
+        architecture_analysis = load_file("results/architecture_analysis.json")
         
-        cur_actor = build_llm_chunk(architecture_correction, state.current_actor_id + 1)
+        cur_actor = build_llm_chunk(architecture_analysis, state.current_actor_id + 1)
         
-        prompt = THREAT_ANALYSIS_TEMPLATE.replace("{docs}", target_docs).replace("{chunk}", json.dumps(cur_actor)).replace("{json}", architecture_correction)
+        prompt = THREAT_ANALYSIS_TEMPLATE.replace(
+            "{target_docs}", target_docs
+            ).replace(
+                "{chunk}", json.dumps(cur_actor)
+            ).replace(
+                "{architecture_analysis}", architecture_analysis
+            )
         
         contents = [
             types.Content(
@@ -227,7 +236,11 @@ def generate_llm_response(state: State) -> str:
         print("=============checklist analysis node=============")
         target_docs = load_file(state.target_docs_path)
         threat_analysis = load_file("results/all_threats.json")
-        prompt = CHECKLIST_TEMPLATE.replace("{docs}", target_docs).replace("{json}", threat_analysis)
+        prompt = CHECKLIST_TEMPLATE.replace(
+            "{target_docs}", target_docs
+            ).replace(
+                "{threat_analysis}", threat_analysis
+            )
         
         contents = [
             types.Content(
@@ -247,8 +260,15 @@ def generate_llm_response(state: State) -> str:
         print("=============feedback checklist analysis node=============")
         # 수정 필요
         target_docs = load_file(state.target_docs_path)
-        threat_analysis = load_file("results/all_threats.json")
-        prompt = CHECKLIST_TEMPLATE.replace("{docs}", target_docs).replace("{json}", threat_analysis)
+        initial_checklist = load_file("results/checklist.json")
+        assessment_checklist_json = load_file("results/assessment_checklist.json")
+        prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
+            "{target_docs}", target_docs
+            ).replace(
+                "{initial_checklist}", initial_checklist
+            ).replace(
+                "{assessment_checklist}", assessment_checklist_json
+            )
         
         contents = [
             types.Content(
@@ -260,32 +280,37 @@ def generate_llm_response(state: State) -> str:
         response = client.models.generate_content(
             model=model,
             contents=contents,
-            config=CHECKLIST_CONFIG,
+            config=CHECKLIST_CORRECTION_CONFIG,
         )
         return response
     
     # verify checklist node
     elif state.is_assessment_checklist and state.checklist_feedback_loop_count < CHECKLIST_FEEDBACK_LOOP_COUNT:
         print("=============assess checklist node=============")
-        # prompt = VERIFY_CHECKLIST_TEMPLATE.replace(
-        #     "{checklist}", state.checklist_prompt
-        # )
         
-        # contents = [
-        #     types.Content(
-        #         role="user",
-        #         parts=[types.Part.from_text(text=prompt)],
-        #     ),
-        # ]
+        threat_analysis = load_file("results/all_threats.json")
+        initial_checklist = load_file("results/checklist.json")
+        
+        prompt = CHECKLIST_ASSESSMENT_TEMPLATE.replace(
+            "{threat_analysis}", threat_analysis
+            ).replace(
+                "{initial_checklist}", initial_checklist
+            )
+        
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)],
+            ),
+        ]
 
-        # response = client.models.generate_content(
-        #     model=model,
-        #     contents=contents,
-        #     config=VERIFY_CHECKLIST_CONFIG,
-        # )
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=CHECKLIST_ASSESSMENT_CONFIG,
+        )
         
-        # return response
-        return
+        return response
         
     # verify checklist with code
     elif state.is_initial_code_binding:

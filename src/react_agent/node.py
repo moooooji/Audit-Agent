@@ -67,7 +67,7 @@ def assess_architecture(state: State) -> State:
     
     # parsing json and save to file
     response_dict = json_str_to_dict(response.text)
-    save_json(response_dict, "results/assessment.json")
+    save_json(response_dict, "results/assessment_architecture.json")
     print("completed assessing architecture")
     
     return {
@@ -146,7 +146,10 @@ def assess_checklist(state: State) -> State:
     print("verifying checklist ...")
     state.is_assessment_checklist = True
     
-    generate_llm_response(state)
+    response = generate_llm_response(state)
+    
+    response_dict = json_str_to_dict(response.text)
+    save_json(response_dict, "results/assessment_checklist.json")
     
     print("completed verifying checklist")
     
@@ -201,7 +204,7 @@ def code_binding(state: State) -> State:
         with open("results/code_binding.json", "w") as f:
             json.dump({ "function_codes": function_codes }, f, ensure_ascii=False, indent=2)
         state.is_initial_code_binding = True
-        response = generate_llm_response(state)
+        # response = generate_llm_response(state)
         print("completed initial code binding")
     else:
         print("feedback loop code binding ...")

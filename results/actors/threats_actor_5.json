@@ -1,57 +1,67 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 5,
-    "behavior_id": 34,
-    "capability_match": "Manage Incentive Rates"
+    "behavior_id": 20,
+    "capability_match": "Offer Incentive Tokens (deposit)"
   },
   "threat_target": {
     "component_id": 8,
-    "asset_ids": []
+    "asset_ids": [
+      5
+    ]
   },
   "attack_surface": {
-    "behavior_id": 34,
-    "data_flow_id": 34,
-    "data_description": "Input parameters for deposit or rate management functions."
+    "behavior_id": 20,
+    "data_flow_id": 1,
+    "data_description": "Excessive small incentive token deposit transactions or repeated rate management transactions."
   },
   "trust_boundary_risk": {
     "boundary_id": 4,
     "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      8
+      1,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Vulnerability in access control allows unauthorized privilege escalation."
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "The Reward Vault contract or network processing is vulnerable to being overwhelmed by excessive transactions initiated by the Token Manager or an attacker."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "External User",
     "overprivileged": true,
-    "description": "External actor with privileged access to critical smart contract functions; weak access control could lead to unauthorized privilege."
+    "description": "The Incentive Token Manager's ability to initiate transactions against the Reward Vault could be misused for DoS."
   },
   "behavioral_risk": {
-    "behavior_id": 34,
-    "risk_level": "Medium",
-    "rationale": "Actor's role is privileged; vulnerabilities in associated contract logic could allow actions beyond intended scope."
+    "behavior_id": 20,
+    "risk_level": "High",
+    "rationale": "The ability to deposit tokens or manage rates can be abused to flood the target contract or network, preventing legitimate operations."
   },
   "assumptions": [
-    "The smart contract's access control logic for sensitive functions is flawed.",
-    "An attacker can exploit this flaw using inputs to deposit/rate functions to perform actions only intended for the authorized Token Manager or other privileged roles."
+    "The network (Component 1) or Reward Vault contract (Component 8) has insufficient rate limiting or gas cost protection against excessive transactions.",
+    "The Incentive Token Manager account is compromised or acting maliciously."
   ],
   "mitigation": {
-    "strategy": "Implement least privilege principle and rigorous access control checks on all state-changing smart contract functions.",
+    "strategy": "Implement transaction rate limiting, monitor activity from privileged accounts, and ensure smart contract gas costs reflect processing burden.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker could exploit a vulnerability in the Reward Vault's access control within the deposit or rate management functions to gain unauthorized privileges on the contract.",
+  "description": "A malicious or compromised Incentive Token Manager floods the Reward Vault contract or the network with excessive deposit or rate management transactions, causing denial of service for other users or processes interacting with the vault.",
   "trace_source": {
-    "doc_reference": "guides/add_incentives_for_reward_vault.md",
-    "matched_capability": "Manage Incentive Rates"
+    "doc_reference": "guides/add-incentives-for-reward-vault.md",
+    "matched_capability": "Offer Incentive Tokens (deposit)"
   }
 }
