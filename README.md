@@ -24,5 +24,3 @@ make run
 ```bash
 input dataset/berachain_docs_merged.md
 ```
-
-image.png

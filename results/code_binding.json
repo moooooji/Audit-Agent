@@ -4,19 +4,19 @@
       "checklist_item_id": 0,
       "similar_functions": [
         {
-          "contract_name": "FactoryOwnable",
-          "function_name": "_getAdminRole",
-          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "FactoryOwnable",
-          "function_name": "_getAdminRole",
-          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "FactoryOwnable",
-          "function_name": "_getAdminRole",
-          "code": "function _getAdminRole() internal view returns (bytes32) {\n        FactoryOwnableStorage storage $ = _getFactoryOwnableStorage();\n        return AccessControlUpgradeable($._factory).DEFAULT_ADMIN_ROLE();\n    }"
+          "contract_name": "RewardVault_V3",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         }
       ]
     },
@@ -24,19 +24,19 @@
       "checklist_item_id": 1,
       "similar_functions": [
         {
-          "contract_name": "IBeraChef_V1",
-          "function_name": "isReady",
-          "code": "function isReady() external view returns (bool);"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "Distributor",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _berachef,\n        address _bgt,\n        address _blockRewardController,\n        address _governance,\n        uint64 _zeroValidatorPubkeyGIndex,\n        uint64 _proposerIndexGIndex\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __ReentrancyGuard_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        beraChef = IBeraChef(_berachef);\n        bgt = _bgt;\n        blockRewardController = IBlockRewardController(_blockRewardController);\n        super.setZeroValidatorPubkeyGIndex(_zeroValidatorPubkeyGIndex);\n        super.setProposerIndexGIndex(_proposerIndexGIndex);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "Distributor",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _berachef,\n        address _bgt,\n        address _blockRewardController,\n        address _governance,\n        uint64 _zeroValidatorPubkeyGIndex,\n        uint64 _proposerIndexGIndex\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __ReentrancyGuard_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        beraChef = IBeraChef(_berachef);\n        bgt = _bgt;\n        blockRewardController = IBlockRewardController(_blockRewardController);\n        super.setZeroValidatorPubkeyGIndex(_zeroValidatorPubkeyGIndex);\n        super.setProposerIndexGIndex(_proposerIndexGIndex);\n    }"
+          "contract_name": "RewardVault_V3",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         }
       ]
     },
@@ -44,19 +44,39 @@
       "checklist_item_id": 2,
       "similar_functions": [
         {
-          "contract_name": "VaultAdmin",
-          "function_name": "_authorizeUpgrade",
-          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "VaultAdmin",
-          "function_name": "_authorizeUpgrade",
-          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         },
         {
-          "contract_name": "VaultAdmin",
-          "function_name": "_authorizeUpgrade",
-          "code": "function _authorizeUpgrade(address newImplementation) internal virtual override {\n        newImplementation;\n        _checkRole(DEFAULT_ADMIN_ROLE);\n    }"
+          "contract_name": "RewardVault_V3",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
+        }
+      ]
+    },
+    "3": {
+      "checklist_item_id": 3,
+      "similar_functions": [
+        {
+          "contract_name": "RewardVault",
+          "function_name": "accountIncentives",
+          "code": "function accountIncentives(address token, uint256 amount) external nonReentrant onlyWhitelistedToken(token) {\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        uint256 incentiveBalance = IERC20(token).balanceOf(address(this));\n        if (token == address(stakeToken)) {\n            incentiveBalance -= totalSupply;\n        }\n        if (amount > incentiveBalance - amountRemainingBefore) NotEnoughBalance.selector.revertWith();\n        incentive.amountRemaining += amount;\n        emit IncentiveAdded(token, msg.sender, amount, incentiveRateStored);\n    }"
+        },
+        {
+          "contract_name": "RewardVault",
+          "function_name": "accountIncentives",
+          "code": "function accountIncentives(address token, uint256 amount) external nonReentrant onlyWhitelistedToken(token) {\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        uint256 incentiveBalance = IERC20(token).balanceOf(address(this));\n        if (token == address(stakeToken)) {\n            incentiveBalance -= totalSupply;\n        }\n        if (amount > incentiveBalance - amountRemainingBefore) NotEnoughBalance.selector.revertWith();\n        incentive.amountRemaining += amount;\n        emit IncentiveAdded(token, msg.sender, amount, incentiveRateStored);\n    }"
+        },
+        {
+          "contract_name": "RewardVault_V2",
+          "function_name": "checkSelfStakedBalance",
+          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
         }
       ]
     }

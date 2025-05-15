@@ -1,62 +1,67 @@
 {
-  "id": 6,
+  "id": 14,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 14,
-    "capability_match": "Operate validator node"
+    "behavior_id": 33,
+    "capability_match": "Stake BERA"
   },
   "threat_target": {
-    "component_id": 2,
+    "component_id": 1,
     "asset_ids": [
-      1,
-      2,
-      5,
-      17
+      1
     ]
   },
   "attack_surface": {
-    "behavior_id": 14,
-    "data_flow_id": 13,
-    "data_description": "Validator Node control interfaces and associated credentials/keys"
+    "behavior_id": 33,
+    "data_flow_id": 1,
+    "data_description": "Staking smart contract interaction"
   },
   "trust_boundary_risk": {
-    "boundary_id": 99,
-    "boundary_name": "Validator Node Perimeter",
+    "boundary_id": 4,
+    "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
-      2,
-      0
+      1,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Unauthorized users can gain administrative control over the Validator Node or the Validator Operator's identity."
+    "availability_required": false,
+    "gap_description": "Vulnerabilities in the staking contract allow unauthorized control or state manipulation."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Internal Service",
-    "overprivileged": true,
-    "description": "Attacker gains full control over the highly privileged validator operator identity and resources."
+    "overprivileged": false,
+    "description": "Entity running a validator node to secure the network."
   },
   "behavioral_risk": {
-    "behavior_id": 14,
-    "risk_level": "High",
-    "rationale": "Gaining control of a validator node grants extensive privileges to influence consensus and control assets."
+    "behavior_id": 33,
+    "risk_level": "Low",
+    "rationale": "As per system chunk data."
   },
   "assumptions": [
-    "Attacker exploits vulnerabilities in the Validator Node software, underlying OS, or compromises the operator's administrative credentials or keys."
+    "A critical vulnerability exists in the staking smart contract logic.",
+    "An attacker can craft malicious calls to the staking contract to gain unauthorized control over staked funds or contract state."
   ],
   "mitigation": {
-    "strategy": "Implement multi-factor authentication, principle of least privilege, regular security patching, and intrusion detection.",
+    "strategy": "Conduct rigorous security audits and formal verification of the staking smart contract.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker successfully gains unauthorized administrative control over the Validator Node or the Validator Operator's identity, effectively becoming the operator and inheriting all associated privileges, including block proposal, voting, and asset control.",
+  "description": "An attacker exploits a vulnerability in the staking smart contract on the Berachain L1 (Component 1) used for staking $BERA (Asset 1) by a Validator Operator (Actor 2), gaining unauthorized control over staked assets or contract functions.",
   "trace_source": {
-    "doc_reference": "pol/participants.md#validators-\u2705",
-    "matched_capability": "Operate validator node"
+    "doc_reference": "pol/tokens/bera",
+    "matched_capability": "Stake BERA"
   }
 }

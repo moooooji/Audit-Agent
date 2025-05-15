@@ -2,68 +2,6 @@
   "threats": [
     {
       "id": 1,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 3,
-        "behavior_id": 18,
-        "capability_match": "Deploy Reward Vault"
-      },
-      "threat_target": {
-        "component_id": 1,
-        "asset_ids": [
-          2,
-          9,
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 18,
-        "data_flow_id": 1,
-        "data_description": "Transaction data containing Reward Vault contract code and deployment parameters"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          1,
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Integrity of deployed contract code is not automatically verified by the chain or other systems before execution."
-      },
-      "actor_risk": {
-        "actor_id": 3,
-        "type": "Partner System",
-        "overprivileged": false,
-        "description": "The actor has the capability to deploy arbitrary smart contracts onto the blockchain."
-      },
-      "behavioral_risk": {
-        "behavior_id": 18,
-        "risk_level": "Medium",
-        "rationale": "Deploying arbitrary code onto the blockchain carries inherent risk, especially if the code is malicious or contains vulnerabilities."
-      },
-      "assumptions": [
-        "Actor 3 deliberately includes malicious code in the deployed Reward Vault contract.",
-        "The blockchain executes the deployed code without pre-vetting the contract logic."
-      ],
-      "mitigation": {
-        "strategy": "Implement code security audits or formal verification requirements for vault contracts seeking whitelisting.",
-        "type": "Process Control",
-        "priority": "High"
-      },
-      "description": "A partner protocol may deploy a Reward Vault containing malicious code, potentially impacting users interacting with the vault or other protocol assets if the vault is later whitelisted via governance.",
-      "trace_source": {
-        "doc_reference": "pol/rewardvaults.md",
-        "matched_capability": "Deploy Reward Vault"
-      }
-    },
-    {
-      "id": 2,
       "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
@@ -78,299 +16,195 @@
       "attack_surface": {
         "behavior_id": 18,
         "data_flow_id": 1,
-        "data_description": "Transaction data containing resource-intensive or faulty Reward Vault contract code"
+        "data_description": "Malicious vault contract deployment transaction data"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
         "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
           1,
-          9
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "The blockchain and EVM may not sufficiently limit resource consumption of deployed contracts during execution."
+        "gap_description": "Insufficient gas limits or resource metering for contract execution allows malicious code to consume excessive resources."
       },
       "actor_risk": {
         "actor_id": 3,
         "type": "Partner System",
         "overprivileged": false,
-        "description": "The actor has the capability to deploy smart contracts, which could be faulty or resource-intensive."
+        "description": "Actor initiates contract deployment."
       },
       "behavioral_risk": {
         "behavior_id": 18,
-        "risk_level": "Medium",
-        "rationale": "Faulty or resource-intensive code deployments can negatively impact chain availability or performance."
+        "risk_level": "Low",
+        "rationale": "Permissionless deployment of resource-intensive contracts could impact network availability."
       },
       "assumptions": [
-        "Actor 3 deploys a contract designed to consume excessive blockchain resources.",
-        "The blockchain's execution environment allows this to impact network performance or state."
+        "The deployed contract contains code designed for resource exhaustion.",
+        "The EVM environment (Component 1) has vulnerabilities allowing excessive resource consumption despite gas mechanisms."
       ],
       "mitigation": {
-        "strategy": "Enforce strict gas limits per transaction and per block. Ensure robust EVM implementation handles exceptions safely.",
+        "strategy": "Strengthen EVM resource metering and gas limits for contract execution.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "A partner protocol may deploy a Reward Vault contract with inefficient or malicious code that consumes excessive blockchain resources, potentially impacting network availability or increasing gas costs for others.",
+      "description": "A Protocol/Ecosystem Project deploys a smart contract with malicious code that consumes excessive chain resources on the Berachain L1 Blockchain, disrupting network operations.",
       "trace_source": {
-        "doc_reference": "pol/rewardvaults.md",
+        "doc_reference": "pol/rewardvaults.md#vault-creation",
+        "matched_capability": "Deploy Reward Vault"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 3,
+        "behavior_id": 18,
+        "capability_match": "Deploy Reward Vault"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": []
+      },
+      "attack_surface": {
+        "behavior_id": 18,
+        "data_flow_id": 1,
+        "data_description": "Malicious vault contract deployment transaction data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerabilities in the EVM or core contracts allow deployed code to gain unauthorized access or control."
+      },
+      "actor_risk": {
+        "actor_id": 3,
+        "type": "Partner System",
+        "overprivileged": false,
+        "description": "Actor initiates contract deployment."
+      },
+      "behavioral_risk": {
+        "behavior_id": 18,
+        "risk_level": "Low",
+        "rationale": "Deployed contract could exploit chain vulnerabilities to gain escalated privileges."
+      },
+      "assumptions": [
+        "The deployed contract contains code designed to exploit known or unknown vulnerabilities in Component 1's EVM or core contracts.",
+        "The EVM environment (Component 1) does not fully isolate deployed contract privileges."
+      ],
+      "mitigation": {
+        "strategy": "Patch EVM and core contract vulnerabilities; Implement stricter contract privilege separation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A Protocol/Ecosystem Project deploys a smart contract designed to exploit vulnerabilities in the Berachain L1 Blockchain's EVM or core contracts, potentially gaining unauthorized control or access.",
+      "trace_source": {
+        "doc_reference": "pol/rewardvaults.md#vault-creation",
         "matched_capability": "Deploy Reward Vault"
       }
     },
     {
       "id": 3,
-      "stride_category": "Tampering",
+      "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
         "actor_id": 3,
         "behavior_id": 19,
-        "capability_match": "Submit RFRV (Request for Reward Vault)"
+        "capability_match": "Submit RFRV Proposal"
       },
       "threat_target": {
         "component_id": 9,
         "asset_ids": [
-          2,
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 19,
+        "data_flow_id": 10,
+        "data_description": "Fraudulent governance proposal data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
           9,
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 19,
-        "data_flow_id": 10,
-        "data_description": "Governance proposal data containing malicious parameters or contract calls"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          1,
-          9
+          10,
+          11,
+          12,
+          13
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "The governance contract accepts proposals containing potentially harmful actions or parameters without automated validation of their intent."
+        "gap_description": "Insufficient validation of proposer identity or required BGT/voting power by the governance contract."
       },
       "actor_risk": {
         "actor_id": 3,
         "type": "Partner System",
         "overprivileged": false,
-        "description": "The actor can submit governance proposals, which can contain arbitrary executable logic or parameter changes."
+        "description": "Attacker spoofs the identity of a Protocol/Ecosystem Project (Actor 3) to bypass governance checks."
       },
       "behavioral_risk": {
         "behavior_id": 19,
         "risk_level": "Low",
-        "rationale": "While submission is low risk, the content of the proposal itself can be malicious, relying on subsequent governance steps for mitigation."
+        "rationale": "Attacker submits proposals pretending to be an authorized entity without necessary voting power."
       },
       "assumptions": [
-        "Actor 3 crafts a proposal with malicious intent (e.g., proposing to drain a contract, change critical parameters unfavorably).",
-        "The governance contract accepts the proposal format containing the malicious payload."
+        "Component 9's governance contract does not correctly verify the transaction sender's identity against required authorization levels (e.g., sufficient $BGT/voting power).",
+        "The attacker can craft transaction data that appears to originate from an authorized address or bypasses signature verification."
       ],
       "mitigation": {
-        "strategy": "Community vigilance and voting. Guardian system intervention during timelock. Off-chain community review of RFRV proposals.",
-        "type": "Process Control",
+        "strategy": "Enforce strict identity verification and $BGT/voting power checks in the governance contract for proposal submission.",
+        "type": "Technical Control",
         "priority": "High"
       },
-      "description": "A partner protocol may submit a governance proposal containing malicious logic or parameters designed to harm the protocol or seize assets if the proposal passes and is executed.",
+      "description": "An attacker spoofs the identity of a legitimate Protocol/Ecosystem Project or user with sufficient $BGT/voting power and submits a fraudulent RFRV proposal to the Governance Contract (Component 9).",
       "trace_source": {
-        "doc_reference": "governance/rewardvault.md",
-        "matched_capability": "Submit RFRV (Request for Reward Vault)"
+        "doc_reference": "governance/rewardvault.md#request-for-reward-vault",
+        "matched_capability": "Submit RFRV Proposal"
       }
     },
     {
       "id": 4,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 3,
-        "behavior_id": 19,
-        "capability_match": "Submit RFRV (Request for Reward Vault)"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 19,
-        "data_flow_id": 10,
-        "data_description": "Excessive volume of governance proposal submissions"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          1,
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Cost or rate limits for submitting governance proposals may be insufficient to prevent a denial-of-service attack via spamming."
-      },
-      "actor_risk": {
-        "actor_id": 3,
-        "type": "Partner System",
-        "overprivileged": false,
-        "description": "The actor can submit governance proposals and may have resources (e.g., $BGT) to overcome basic submission costs."
-      },
-      "behavioral_risk": {
-        "behavior_id": 19,
-        "risk_level": "Low",
-        "rationale": "Spamming proposals disrupts the governance process but doesn't directly compromise assets, making it a lower overall risk compared to code execution."
-      },
-      "assumptions": [
-        "Actor 3 has sufficient resources ($BGT) or finds a way to submit many proposals cheaply.",
-        "The governance contract or network doesn't effectively prevent high-volume, low-quality submissions."
-      ],
-      "mitigation": {
-        "strategy": "Increase minimum $BGT required for proposals. Implement dynamic transaction fees or rate limits based on network/governance load.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "A partner protocol may flood the governance system with numerous, low-quality or nonsensical proposals, disrupting the ability of the community and validators to review and vote on legitimate proposals.",
-      "trace_source": {
-        "doc_reference": "governance.md",
-        "matched_capability": "Submit RFRV (Request for Reward Vault)"
-      }
-    },
-    {
-      "id": 5,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 3,
-        "behavior_id": 19,
-        "capability_match": "Submit RFRV (Request for Reward Vault)"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 19,
-        "data_flow_id": 10,
-        "data_description": "Governance proposal submission originating from an address claiming a false identity"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          1,
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The on-chain governance contract does not verify the real-world or protocol identity associated with the submitting address, only the minimum $BGT requirement."
-      },
-      "actor_risk": {
-        "actor_id": 3,
-        "type": "Partner System",
-        "overprivileged": false,
-        "description": "The actor can submit proposals and may attempt to deceive the community about their true identity."
-      },
-      "behavioral_risk": {
-        "behavior_id": 19,
-        "risk_level": "Low",
-        "rationale": "Spoofing identity allows deceiving the community about the source of a proposal, potentially influencing voting, but doesn't directly grant on-chain power without further governance steps."
-      },
-      "assumptions": [
-        "Actor 3 can acquire an address meeting the 10k $BGT threshold.",
-        "The governance contract relies solely on msg.sender and balance for submission, not external identity proof.",
-        "The community or system relies on the claimed identity during the RFRV review process."
-      ],
-      "mitigation": {
-        "strategy": "Strengthen off-chain verification steps for the RFRV process, potentially linking on-chain addresses to verified identities.",
-        "type": "Process Control",
-        "priority": "Medium"
-      },
-      "description": "A partner protocol (or other entity meeting the $BGT threshold) may submit a governance proposal claiming to represent a different, potentially more reputable, protocol or entity to gain community trust or deceive voters during the governance process.",
-      "trace_source": {
-        "doc_reference": "governance.md",
-        "matched_capability": "Submit RFRV (Request for Reward Vault)"
-      }
-    },
-    {
-      "id": 1,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 21,
-        "capability_match": "Cancel malicious governance proposals"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 21,
-        "data_flow_id": 10,
-        "data_description": "cancel proposal request"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 5,
-        "boundary_name": "Governance Timelock Security",
-        "between_component_ids": [
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Multisig authentication/authorization is insufficient or bypassed."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "Highly privileged Guardian Multisig with unique cancellation authority, vulnerable to identity compromise."
-      },
-      "behavioral_risk": {
-        "behavior_id": 21,
-        "risk_level": "High",
-        "rationale": "Compromise of Guardian identity allows unauthorized cancellation of proposals, bypassing timelock security."
-      },
-      "assumptions": [
-        "Attacker compromises the private keys of 5 or more Guardian signers.",
-        "Multisig verification logic in the Governance Contract is flawed or bypassed.",
-        "Data Flow 10, although described for User actions, is the relevant channel for Guardian cancellation requests."
-      ],
-      "mitigation": {
-        "strategy": "Implement robust multisig signature verification and signer validation.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker impersonates the Guardian Multisig (Actor 4) by compromising multisig keys or bypassing contract checks, and cancels legitimate governance proposals (Asset 10) on the Governance Contract (Component 9).",
-      "trace_source": {
-        "doc_reference": "doc_3",
-        "matched_capability": "Cancel malicious governance proposals"
-      }
-    },
-    {
-      "id": 2,
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 21,
-        "capability_match": "Cancel malicious governance proposals"
+        "actor_id": 3,
+        "behavior_id": 19,
+        "capability_match": "Submit RFRV Proposal"
       },
       "threat_target": {
         "component_id": 9,
@@ -379,169 +213,55 @@
         ]
       },
       "attack_surface": {
-        "behavior_id": 21,
+        "behavior_id": 19,
         "data_flow_id": 10,
-        "data_description": "cancel proposal request parameters"
+        "data_description": "Tampered governance proposal data"
       },
       "trust_boundary_risk": {
-        "boundary_id": 5,
-        "boundary_name": "Governance Timelock Security",
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
-          9
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Cancellation request parameters can be altered undetected."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "Guardian Multisig (Actor 4) initiates requests vulnerable to tampering."
-      },
-      "behavioral_risk": {
-        "behavior_id": 21,
-        "risk_level": "High",
-        "rationale": "Tampering with cancellation parameters allows subversion of the intended proposal censorship, potentially allowing malicious proposals or censoring legitimate ones."
-      },
-      "assumptions": [
-        "Cancellation request data (like proposal ID) is not cryptographically signed as part of the multisig payload.",
-        "Governance Contract does not validate cancellation request parameters against external state or constraints.",
-        "Data Flow 10, although described for User actions, is the relevant channel for Guardian cancellation requests."
-      ],
-      "mitigation": {
-        "strategy": "Cryptographically sign the entire cancellation request payload as part of the multisig transaction.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker tampers with the data or parameters of a legitimate cancellation request from the Guardian Multisig (Actor 4), causing the Governance Contract (Component 9) to cancel the wrong proposal (Asset 10) or fail unexpectedly.",
-      "trace_source": {
-        "doc_reference": "doc_3",
-        "matched_capability": "Cancel malicious governance proposals"
-      }
-    },
-    {
-      "id": 3,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 21,
-        "capability_match": "Cancel malicious governance proposals"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 21,
-        "data_flow_id": 10,
-        "data_description": "executed cancellation transaction"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 5,
-        "boundary_name": "Governance Timelock Security",
-        "between_component_ids": [
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Guardian's cancellation action cannot be definitively proven or attributed."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "Guardian Multisig (Actor 4) actions may lack sufficient non-repudiation."
-      },
-      "behavioral_risk": {
-        "behavior_id": 21,
-        "risk_level": "High",
-        "rationale": "If the Guardian Multisig can deny a cancellation, it undermines accountability and trust in the oversight mechanism."
-      },
-      "assumptions": [
-        "The execution of the cancellation function is not immutably logged on-chain.",
-        "The multisig signature scheme used is deniable.",
-        "Off-chain logs or proofs of the action are not maintained or are forgeable.",
-        "Data Flow 10, although described for User actions, is the relevant channel for Guardian cancellation requests."
-      ],
-      "mitigation": {
-        "strategy": "Ensure all Guardian cancellation actions are recorded as non-repudiable on-chain transactions with verifiable multisig signatures.",
-        "type": "Process Control",
-        "priority": "Medium"
-      },
-      "description": "The Guardian Multisig (Actor 4) performs a cancellation action on a governance proposal (Asset 10) via the Governance Contract (Component 9) but later denies having done so, due to insufficient logging or deniable proof.",
-      "trace_source": {
-        "doc_reference": "doc_3",
-        "matched_capability": "Cancel malicious governance proposals"
-      }
-    },
-    {
-      "id": 4,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 21,
-        "capability_match": "Cancel malicious governance proposals"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 21,
-        "data_flow_id": 10,
-        "data_description": "attempted cancellation execution"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 5,
-        "boundary_name": "Governance Timelock Security",
-        "between_component_ids": [
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
         "availability_required": true,
-        "gap_description": "Guardian Multisig is prevented from cancelling a malicious proposal during the critical timelock window."
+        "gap_description": "Weak or bypassable integrity checks on the transaction data containing the proposal payload before processing by the governance contract."
       },
       "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "The critical function performed by Guardian Multisig (Actor 4) is susceptible to prevention."
+        "actor_id": 3,
+        "type": "Partner System",
+        "overprivileged": false,
+        "description": "Actor initiates proposal submission transaction."
       },
       "behavioral_risk": {
-        "behavior_id": 21,
-        "risk_level": "High",
-        "rationale": "Preventing the cancellation of a malicious proposal allows it to be executed, directly harming system assets and state."
+        "behavior_id": 19,
+        "risk_level": "Low",
+        "rationale": "Proposal details are altered during submission before being recorded by the governance contract."
       },
       "assumptions": [
-        "Governance Contract's cancellation function has DoS vulnerabilities (e.g., reentrancy, excessive gas).",
-        "Network conditions (e.g., high gas prices, network congestion) prevent the Guardian transaction from being confirmed in time.",
-        "Data Flow 10, although described for User actions, is the relevant channel for Guardian cancellation requests."
+        "The integrity requirement for Data Flow 10 is not fully enforced, allowing transaction data modification in transit or before processing by Component 9.",
+        "Standard EVM transaction signing is insufficient or bypassable for this specific interaction."
       ],
       "mitigation": {
-        "strategy": "Implement robust DoS prevention in smart contract logic and ensure critical functions are low-gas.",
+        "strategy": "Ensure robust transaction signing and integrity checks are enforced by the chain and governance contract.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker prevents the Guardian Multisig (Actor 4) from executing the 'cancel governance proposal' behavior (21) on the Governance Contract (Component 9) during the timelock, potentially through contract exploits or network attacks, allowing a malicious proposal (Asset 10) to pass.",
+      "description": "An attacker intercepts or modifies the transaction data for submitting an RFRV proposal to the Governance Contract (Component 9), altering the intended target contract, function call, or parameters.",
       "trace_source": {
-        "doc_reference": "doc_3",
-        "matched_capability": "Cancel malicious governance proposals"
+        "doc_reference": "governance.md#creating-your-governance-proposal",
+        "matched_capability": "Submit RFRV Proposal"
       }
     },
     {
@@ -549,541 +269,488 @@
       "stride_category": "Elevation of Privilege",
       "origin": {
         "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 21,
-        "capability_match": "Cancel malicious governance proposals"
+        "actor_id": 3,
+        "behavior_id": 19,
+        "capability_match": "Submit RFRV Proposal"
       },
       "threat_target": {
         "component_id": 9,
         "asset_ids": [
-          10
+          10,
+          9,
+          2
         ]
       },
       "attack_surface": {
-        "behavior_id": 21,
+        "behavior_id": 19,
         "data_flow_id": 10,
-        "data_description": "unauthorized cancellation attempt"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 5,
-        "boundary_name": "Governance Timelock Security",
-        "between_component_ids": [
-          9
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Unauthorized actors can gain the privilege to cancel proposals without required multisig approval."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "The unique privilege held by Guardian Multisig (Actor 4) can be bypassed."
-      },
-      "behavioral_risk": {
-        "behavior_id": 21,
-        "risk_level": "High",
-        "rationale": "Allows any unauthorized actor to censor or remove governance proposals, bypassing the intended Guardian oversight role."
-      },
-      "assumptions": [
-        "The access control mechanism for the `cancel` function in the Governance Contract is flawed.",
-        "The contract does not properly verify that the caller is the Guardian Multisig or possesses the required authorization.",
-        "Data Flow 10, although described for User actions, is the relevant channel for Guardian cancellation requests."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict access control on the cancellation function, requiring verification of the Guardian Multisig signature and address.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker exploits a vulnerability in the Governance Contract (Component 9) to execute the 'cancel governance proposal' function (Behavior 21) on a proposal (Asset 10) without the required authorization from the Guardian Multisig (Actor 4), thereby elevating their privileges.",
-      "trace_source": {
-        "doc_reference": "doc_3",
-        "matched_capability": "Cancel malicious governance proposals"
-      }
-    },
-    {
-      "id": 1,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 20,
-        "capability_match": "Offer Incentive Tokens (deposit)"
-      },
-      "threat_target": {
-        "component_id": 8,
-        "asset_ids": [
-          5
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 20,
-        "data_flow_id": -1,
-        "data_description": "Incentive token deposit transaction"
+        "data_description": "Malicious governance proposal execution payload"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
         "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
-          5,
-          8
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Weak authentication or authorization allows an attacker to impersonate the authorized Token Manager wallet."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "External User",
-        "overprivileged": true,
-        "description": "Attacker impersonates the authorized Token Manager by bypassing authentication/authorization controls."
-      },
-      "behavioral_risk": {
-        "behavior_id": 20,
-        "risk_level": "Medium",
-        "rationale": "The behavior allows depositing sensitive assets and controlling rates, making authentication/authorization bypass critical."
-      },
-      "assumptions": [
-        "The authentication/authorization mechanism for the Incentive Token Manager wallet is bypassable.",
-        "The attacker can craft and send transactions as if originating from the authorized wallet."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong cryptographic signature verification and robust access control for authorized Token Managers.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker impersonates the authorized Incentive Token Manager wallet to deposit malicious or unauthorized tokens into the Reward Vault.",
-      "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
-        "matched_capability": "Must be connected with Token Manager wallet"
-      }
-    },
-    {
-      "id": 2,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 20,
-        "capability_match": "Manage Incentive Rate"
-      },
-      "threat_target": {
-        "component_id": 8,
-        "asset_ids": [
-          5
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 20,
-        "data_flow_id": -1,
-        "data_description": "Incentive rate update transaction"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          5,
-          8
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Lack of sufficient input validation or authorization allows an attacker to set an arbitrary or economically damaging incentive rate."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "External User",
-        "overprivileged": true,
-        "description": "Attacker modifies the rate parameter in transit or sets an unauthorized rate after bypassing authorization."
-      },
-      "behavioral_risk": {
-        "behavior_id": 20,
-        "risk_level": "Medium",
-        "rationale": "Setting the incentive rate directly impacts vault economics and BGT emissions distribution, making rate tampering a significant risk."
-      },
-      "assumptions": [
-        "The incentive rate parameter is not properly validated (e.g., bounds checking) by the smart contract.",
-        "The attacker can intercept and modify the transaction data or bypass authorization to call the rate setting function."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict input validation for the incentive rate parameter within the smart contract and ensure robust access control.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker modifies the incentive rate parameter during a deposit/update transaction or sets an unauthorized, economically unfavorable rate.",
-      "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
-        "matched_capability": "Distribution Per BGT rate"
-      }
-    },
-    {
-      "id": 3,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 20,
-        "capability_match": "Offer Incentive Tokens (deposit)"
-      },
-      "threat_target": {
-        "component_id": 8,
-        "asset_ids": [
-          5
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 20,
-        "data_flow_id": -1,
-        "data_description": "Processing of incentive deposit transactions by Reward Vault"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          5,
-          8
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "Vulnerability to resource exhaustion or lack of rate limiting on deposit function prevents legitimate use."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "External User",
-        "overprivileged": false,
-        "description": "Attacker floods the deposit function with transactions to exhaust contract resources or block legitimate calls."
-      },
-      "behavioral_risk": {
-        "behavior_id": 20,
-        "risk_level": "Medium",
-        "rationale": "Preventing incentive deposits disrupts vault operations and the incentive marketplace, impacting users and validators."
-      },
-      "assumptions": [
-        "The Reward Vault contract's deposit function is susceptible to high gas costs or processing load under heavy transaction volume.",
-        "There are no effective on-chain or off-chain mechanisms to mitigate transaction flooding targeting this function."
-      ],
-      "mitigation": {
-        "strategy": "Optimize contract functions for gas efficiency, implement transaction throttling or rely on network-level fee market mechanisms.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "An attacker performs actions that prevent authorized Incentive Token Managers from successfully depositing incentive tokens or updating rates in the Reward Vault.",
-      "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
-        "matched_capability": "How To Add Incentives To A Reward Vault"
-      }
-    },
-    {
-      "id": 4,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 20,
-        "capability_match": "Manage Incentive Rate"
-      },
-      "threat_target": {
-        "component_id": 8,
-        "asset_ids": [
-          5
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 20,
-        "data_flow_id": -1,
-        "data_description": "Access control check for 'Token Manager' role"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          5,
-          8
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Flaw in the smart contract's access control logic allows a non-authorized user to perform 'Token Manager' actions."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "External User",
-        "overprivileged": true,
-        "description": "Attacker gains unauthorized 'Token Manager' privileges by exploiting a vulnerability in the access control logic."
-      },
-      "behavioral_risk": {
-        "behavior_id": 20,
-        "risk_level": "Medium",
-        "rationale": "Bypassing authorization for this behavior allows full control over incentive deposits and rates, impacting the entire vault and its participants."
-      },
-      "assumptions": [
-        "The smart contract's implementation of access control for functions related to depositing incentives or setting rates has a vulnerability.",
-        "A user without the designated 'Token Manager' wallet/key can bypass this check."
-      ],
-      "mitigation": {
-        "strategy": "Conduct thorough review and formal verification of the smart contract's access control logic for privileged roles.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker exploits a vulnerability in the Reward Vault contract's access control mechanism to perform privileged Incentive Token Manager actions without proper authorization.",
-      "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
-        "matched_capability": "Requirements: Must be connected with Token Manager wallet"
-      }
-    },
-    {
-      "id": 1,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Operate validator node"
-      },
-      "threat_target": {
-        "component_id": 2,
-        "asset_ids": [
           1,
-          2,
           5,
-          17
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 13,
-        "data_description": "Proposed Block Data sent to network"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
-        "between_component_ids": [
-          2,
-          0
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Attacker can impersonate a validator node on the network to submit malicious or forged data flows."
-      },
-      "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "A compromised validator operator identity allows an attacker to perform privileged network actions."
-      },
-      "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "High",
-        "rationale": "Successful operation relies on the authenticity of the validator; spoofing allows malicious participation in consensus."
-      },
-      "assumptions": [
-        "Attacker compromises the validator operator's private key or identity used for signing consensus messages."
-      ],
-      "mitigation": {
-        "strategy": "Implement robust identity verification and secure key management for validator operations.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker spoofs the identity of a legitimate Validator Operator to participate in consensus, proposing invalid blocks or sending false messages to disrupt the network or claim illegitimate rewards.",
-      "trace_source": {
-        "doc_reference": "pol/participants.md#validators-\u2705",
-        "matched_capability": "Operate validator node"
-      }
-    },
-    {
-      "id": 2,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Operate validator node"
-      },
-      "threat_target": {
-        "component_id": 2,
-        "asset_ids": [
-          17
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 16,
-        "data_description": "Validator Node configuration influencing BGT Variable Emission"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
-        "between_component_ids": [
-          2,
-          0
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "The Validator Node's configuration for directing emissions is vulnerable to unauthorized modification."
-      },
-      "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "A compromised validator operator can alter critical node configuration data."
-      },
-      "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "High",
-        "rationale": "Tampering with reward allocation data allows direct manipulation of the Proof-of-Liquidity incentive distribution."
-      },
-      "assumptions": [
-        "Attacker gains unauthorized write access to the Validator Node's configuration or internal state where Reward Allocation Data (Asset 17) is stored."
-      ],
-      "mitigation": {
-        "strategy": "Enforce strict access controls and integrity checks on validator node configuration files and data.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker compromises the Validator Node and tampers with the Reward Allocation Data, redirecting variable BGT emissions (Data Flow 16) to attacker-controlled Reward Vaults or disrupting intended incentive distribution.",
-      "trace_source": {
-        "doc_reference": "pol/bgtmath.md#bgt-emissions-structure",
-        "matched_capability": "Operate validator node"
-      }
-    },
-    {
-      "id": 3,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Propose blocks"
-      },
-      "threat_target": {
-        "component_id": 2,
-        "asset_ids": [
-          1
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 13,
-        "data_description": "Proposed Block Data submitted to network"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
-        "between_component_ids": [
-          2,
-          0
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Validator operator might be able to deny proposing a block or specific transaction included in it."
-      },
-      "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
-        "overprivileged": false,
-        "description": "Legitimate validator operator attempts to evade accountability for actions."
-      },
-      "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "Medium",
-        "rationale": "Repudiation of actions undermines the integrity and trust in consensus participants."
-      },
-      "assumptions": [
-        "Cryptographic proofs linking the validator to their proposed blocks or included transactions are insufficient or can be circumvented.",
-        "Off-chain records of validator actions are not considered authoritative."
-      ],
-      "mitigation": {
-        "strategy": "Ensure all validator actions (block proposals, votes, emissions) are cryptographically signed and immutably recorded on-chain.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A Validator Operator attempts to deny that they proposed a specific block or directed BGT emissions as recorded on-chain, potentially to evade penalties or responsibility.",
-      "trace_source": {
-        "doc_reference": "pol/bgtmath.md#validator-selection",
-        "matched_capability": "Propose blocks"
-      }
-    },
-    {
-      "id": 4,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Operate validator node"
-      },
-      "threat_target": {
-        "component_id": 2,
-        "asset_ids": [
-          1,
-          2,
-          5
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 13,
-        "data_description": "Private keys used for signing Proposed Block Data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
-        "between_component_ids": [
-          2,
-          0
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
         ]
       },
       "security_gap": {
         "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Sensitive data, specifically private keys used for validator operations and asset access, is stored insecurely on the node host."
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerabilities in the governance contract or target contracts allow a malicious execution payload to grant unauthorized privileges."
       },
       "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
-        "overprivileged": true,
-        "description": "Compromise allows attacker access to validator's high-privilege credentials and assets."
+        "actor_id": 3,
+        "type": "Partner System",
+        "overprivileged": false,
+        "description": "Actor initiates governance proposal submission with a potentially malicious payload."
       },
       "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "High",
-        "rationale": "The private key is the root of trust for validator identity and control over staked assets."
+        "behavior_id": 19,
+        "risk_level": "Low",
+        "rationale": "Malicious proposal payload grants attacker unauthorized privileges upon execution."
       },
       "assumptions": [
-        "Attacker gains unauthorized read access to the Validator Node host system, allowing them to exfiltrate private key files or capture keys from memory."
+        "The governance contract or target contracts have vulnerabilities that a malicious proposal payload can exploit upon execution to gain unauthorized privileges.",
+        "The governance voting and timelock process is insufficient to detect and prevent execution of such a malicious proposal."
       ],
       "mitigation": {
-        "strategy": "Implement hardware security modules (HSMs) or encrypted storage for private validator keys.",
+        "strategy": "Implement secure coding practices for governance and target contracts; Improve validation and guardian oversight of proposal payloads.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker compromises the Validator Node's host system and steals the private keys used for signing consensus messages, staking BERA, and controlling associated assets ($BGT, Incentive Tokens).",
+      "description": "A Protocol/Ecosystem Project submits an RFRV proposal containing a malicious execution payload that, if passed and executed by the Governance Contract (Component 9), exploits vulnerabilities to gain unauthorized privileges over protocol assets or functions.",
       "trace_source": {
-        "doc_reference": "pol/tokens/bera.md#validator-staking",
-        "matched_capability": "Operate validator node"
+        "doc_reference": "governance.md#execution",
+        "matched_capability": "Submit RFRV Proposal"
+      }
+    },
+    {
+      "id": 1,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 21,
+        "capability_match": "Cancel malicious governance proposals"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 21,
+        "data_flow_id": 10,
+        "data_description": "Unauthorized cancellation action targeting governance proposals"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 5,
+        "boundary_name": "Governance Timelock Security",
+        "between_component_ids": [
+          9,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Access control mechanism does not prevent unauthorized cancellation."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "The Guardian Multisig has high privileges for cancelling proposals. Risk is attacker gaining these privileges."
+      },
+      "behavioral_risk": {
+        "behavior_id": 21,
+        "risk_level": "High",
+        "rationale": "Unauthorized cancellation of a governance proposal could bypass intended timelock security."
+      },
+      "assumptions": [
+        "The 5-of-9 multisig signature requirement can be bypassed or is incorrectly validated by the Governance Contract."
+      ],
+      "mitigation": {
+        "strategy": "Enforce robust 5-of-9 multisig signature verification for the cancel function.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker gains unauthorized privileges to call the Governance Contract's cancel function, bypassing the Guardian Multisig controls.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Guardian Oversight"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 21,
+        "capability_match": "Cancel malicious governance proposals"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 21,
+        "data_flow_id": 10,
+        "data_description": "Tampering with cancellation request data (e.g., proposal ID)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 5,
+        "boundary_name": "Governance Timelock Security",
+        "between_component_ids": [
+          9,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Integrity of cancellation request data is not fully protected."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Attack targets the integrity of the request originating from the trusted actor."
+      },
+      "behavioral_risk": {
+        "behavior_id": 21,
+        "risk_level": "High",
+        "rationale": "Tampering could prevent cancellation of a malicious proposal or cancel a legitimate one."
+      },
+      "assumptions": [
+        "The multisig signature does not cover all parameters of the cancel request (e.g., proposal ID).",
+        "The communication channel for the cancellation request is vulnerable to modification."
+      ],
+      "mitigation": {
+        "strategy": "Ensure the multisig signature covers all critical parameters of the cancel function call.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker modifies a legitimate cancellation request initiated by the Guardian Multisig before it is processed by the Governance Contract.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Guardian Oversight"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 21,
+        "capability_match": "Cancel malicious governance proposals"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 21,
+        "data_flow_id": 10,
+        "data_description": "Disrupting the cancellation action targeting governance proposals"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 5,
+        "boundary_name": "Governance Timelock Security",
+        "between_component_ids": [
+          9,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The cancel function or related infrastructure is vulnerable to denial of service."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Attack prevents the trusted actor from performing its critical availability function."
+      },
+      "behavioral_risk": {
+        "behavior_id": 21,
+        "risk_level": "High",
+        "rationale": "Preventing cancellation of a malicious proposal allows it to pass the timelock."
+      },
+      "assumptions": [
+        "The Governance Contract's cancel function is computationally expensive or has unchecked loops vulnerable to DoS.",
+        "The network infrastructure supporting the transaction is vulnerable to DoS attacks.",
+        "Multisig signers' ability to sign within the timelock period can be disrupted."
+      ],
+      "mitigation": {
+        "strategy": "Implement DoS protections on the cancel function and ensure network robustness for critical transactions.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker prevents the Guardian Multisig from cancelling a malicious governance proposal within the required timelock period.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Guardian Oversight"
+      }
+    },
+    {
+      "id": 1,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 20,
+        "capability_match": "Offer Incentive Tokens (deposit)"
+      },
+      "threat_target": {
+        "component_id": 8,
+        "asset_ids": [
+          5,
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 20,
+        "data_flow_id": 20,
+        "data_description": "Incentive Token amount and type for deposit."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          8
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of strong authentication/authorization allows unauthorized deposits."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "External actor with authority over critical vault assets; weak authorization poses privilege escalation risk."
+      },
+      "behavioral_risk": {
+        "behavior_id": 20,
+        "risk_level": "Low",
+        "rationale": "Actor can deposit tokens into the vault; manipulation via spoofing could dilute legitimate incentives or introduce invalid tokens."
+      },
+      "assumptions": [
+        "The smart contract does not verify that the depositor wallet is the authorized Token Manager.",
+        "An attacker can craft a transaction appearing to originate from the legitimate Token Manager."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict role-based access control for deposit functions, verifying the caller is the designated Token Manager.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker could spoof the identity of the Incentive Token Manager and deposit illegitimate or insufficient tokens into the Reward Vault, negatively impacting the yield for legitimate stakers.",
+      "trace_source": {
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Offer Incentive Tokens (deposit)"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 34,
+        "capability_match": "Manage Incentive Rates"
+      },
+      "threat_target": {
+        "component_id": 8,
+        "asset_ids": [
+          5,
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 34,
+        "data_flow_id": 34,
+        "data_description": "New incentive rate parameters."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          8
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of strong authentication/authorization allows unauthorized rate modifications."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "External actor with authority over critical vault parameters; weak authorization poses privilege escalation risk."
+      },
+      "behavioral_risk": {
+        "behavior_id": 34,
+        "risk_level": "Medium",
+        "rationale": "Actor can manage incentive rates; manipulation via spoofing could redirect incentives or make them unfavorable."
+      },
+      "assumptions": [
+        "The smart contract does not verify that the caller wallet is the authorized Token Manager for rate adjustments.",
+        "An attacker can craft a transaction appearing to originate from the legitimate Token Manager."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict role-based access control for rate management functions, verifying the caller is the designated Token Manager.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker could spoof the identity of the Incentive Token Manager and set artificially low or zero incentive rates, discouraging liquidity provision or redirecting value intended for stakers.",
+      "trace_source": {
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Manage Incentive Rates"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 34,
+        "capability_match": "Manage Incentive Rates"
+      },
+      "threat_target": {
+        "component_id": 8,
+        "asset_ids": [
+          5,
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 34,
+        "data_flow_id": 34,
+        "data_description": "Incentive token deposit amount/type or rate parameters."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          8
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Data integrity is not guaranteed during transmission to the smart contract."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "External actor's input is critical; tampering could corrupt vault state."
+      },
+      "behavioral_risk": {
+        "behavior_id": 34,
+        "risk_level": "Medium",
+        "rationale": "Data related to high-value deposit/rate actions can be intercepted and modified."
+      },
+      "assumptions": [
+        "The transaction data sent from the actor's wallet is not cryptographically signed or validated by the smart contract for integrity.",
+        "An attacker can perform a Man-in-the-Middle attack on the RPC connection to alter transaction data."
+      ],
+      "mitigation": {
+        "strategy": "Ensure RPC communication uses TLS/SSL and potentially require transaction payloads to be signed by the actor's key and verified on-chain.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker could intercept and alter the data sent by the legitimate Incentive Token Manager, such as changing the deposit amount or rate value, leading to incorrect vault configuration or asset management.",
+      "trace_source": {
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Manage Incentive Rates"
+      }
+    },
+    {
+      "id": 4,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 34,
+        "capability_match": "Manage Incentive Rates"
+      },
+      "threat_target": {
+        "component_id": 8,
+        "asset_ids": [
+          5,
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 34,
+        "data_flow_id": 34,
+        "data_description": "Completed deposit or rate change transaction record."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          8
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of non-repudiable proof of action originating from the authorized actor."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "Authorized actor performs critical state-changing actions; lack of non-repudiation allows malicious denial."
+      },
+      "behavioral_risk": {
+        "behavior_id": 34,
+        "risk_level": "Medium",
+        "rationale": "Critical actions can be performed without sufficient logging or cryptographic proof linked to the actor."
+      },
+      "assumptions": [
+        "The smart contract does not emit detailed, immutable logs for deposit and rate changes including the caller's address.",
+        "The link between the real-world identity of the Incentive Token Manager and the signing key is not legally or procedurally binding off-chain."
+      ],
+      "mitigation": {
+        "strategy": "Ensure all state-changing functions emit detailed event logs including the caller address and parameters, and maintain off-chain records linking identity to keys.",
+        "type": "Process Control",
+        "priority": "Low"
+      },
+      "description": "The authorized Incentive Token Manager could make deposit or rate changes and later deny responsibility if those changes lead to negative outcomes, if the transaction origin isn't properly recorded and attributable.",
+      "trace_source": {
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Manage Incentive Rates"
       }
     },
     {
@@ -1091,61 +758,59 @@
       "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Operate validator node"
+        "actor_id": 5,
+        "behavior_id": 34,
+        "capability_match": "Manage Incentive Rates"
       },
       "threat_target": {
-        "component_id": 2,
+        "component_id": 8,
         "asset_ids": [
-          1,
-          2,
           5,
-          17
+          2
         ]
       },
       "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 13,
-        "data_description": "Validator Node processing capacity and network interfaces"
+        "behavior_id": 34,
+        "data_flow_id": 34,
+        "data_description": "Deposit/rate transaction parameters triggering vulnerable logic."
       },
       "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
-          2,
-          0
+          8
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
-        "integrity_required": false,
+        "integrity_required": true,
         "availability_required": true,
-        "gap_description": "The Validator Node is vulnerable to attacks that consume its resources or disrupt its network connectivity."
+        "gap_description": "Contract logic vulnerable to manipulation causing denial of service."
       },
       "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
-        "overprivileged": false,
-        "description": "Legitimate validator operator is prevented from performing its duties and earning rewards."
+        "actor_id": 5,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "External actor can interact with critical contract functions; malicious input could cause DoS."
       },
       "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "High",
-        "rationale": "Disrupting node operation directly impacts consensus stability and the validator's ability to earn."
+        "behavior_id": 34,
+        "risk_level": "Medium",
+        "rationale": "Actor's interaction with vault functions could potentially be used to exploit logic vulnerabilities causing reverts or state corruption affecting availability."
       },
       "assumptions": [
-        "The Validator Node or its underlying infrastructure has insufficient capacity or unpatched vulnerabilities exploitable for DoS attacks."
+        "The smart contract functions for deposit or rate management contain a logic bug or gas inefficiency that can be exploited with specific parameters.",
+        "An attacker, potentially spoofing or being the authorized manager, can trigger this vulnerability."
       ],
       "mitigation": {
-        "strategy": "Harden the validator node software and host, implement network-level DoS protection, ensure adequate system resources.",
+        "strategy": "Conduct thorough smart contract audits and implement robust input validation and gas limits on critical functions.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker launches a denial-of-service attack against a Validator Node, preventing it from participating in consensus, proposing blocks, voting, or receiving/distributing rewards, thereby disrupting network operation and the validator's revenue.",
+      "description": "A malicious Incentive Token Manager, or an attacker spoofing one, could use the deposit or rate management functions to exploit a vulnerability in the Reward Vault contract, causing it to revert or become unavailable for legitimate users (e.g., stakers claiming rewards).",
       "trace_source": {
-        "doc_reference": "pol/participants.md#validators-\u2705",
-        "matched_capability": "Operate validator node"
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Manage Incentive Rates"
       }
     },
     {
@@ -1153,61 +818,56 @@
       "stride_category": "Elevation of Privilege",
       "origin": {
         "from_chunk": true,
-        "actor_id": 2,
-        "behavior_id": 14,
-        "capability_match": "Operate validator node"
+        "actor_id": 5,
+        "behavior_id": 34,
+        "capability_match": "Manage Incentive Rates"
       },
       "threat_target": {
-        "component_id": 2,
-        "asset_ids": [
-          1,
-          2,
-          5,
-          17
-        ]
+        "component_id": 8,
+        "asset_ids": []
       },
       "attack_surface": {
-        "behavior_id": 14,
-        "data_flow_id": 13,
-        "data_description": "Validator Node control interfaces and associated credentials/keys"
+        "behavior_id": 34,
+        "data_flow_id": 34,
+        "data_description": "Input parameters for deposit or rate management functions."
       },
       "trust_boundary_risk": {
-        "boundary_id": 99,
-        "boundary_name": "Validator Node Perimeter",
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
-          2,
-          0
+          8
         ]
       },
       "security_gap": {
-        "confidentiality_required": true,
+        "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Unauthorized users can gain administrative control over the Validator Node or the Validator Operator's identity."
+        "availability_required": false,
+        "gap_description": "Vulnerability in access control allows unauthorized privilege escalation."
       },
       "actor_risk": {
-        "actor_id": 2,
-        "type": "Internal Service",
+        "actor_id": 5,
+        "type": "External User",
         "overprivileged": true,
-        "description": "Attacker gains full control over the highly privileged validator operator identity and resources."
+        "description": "External actor with privileged access to critical smart contract functions; weak access control could lead to unauthorized privilege."
       },
       "behavioral_risk": {
-        "behavior_id": 14,
-        "risk_level": "High",
-        "rationale": "Gaining control of a validator node grants extensive privileges to influence consensus and control assets."
+        "behavior_id": 34,
+        "risk_level": "Medium",
+        "rationale": "Actor's role is privileged; vulnerabilities in associated contract logic could allow actions beyond intended scope."
       },
       "assumptions": [
-        "Attacker exploits vulnerabilities in the Validator Node software, underlying OS, or compromises the operator's administrative credentials or keys."
+        "The smart contract's access control logic for sensitive functions is flawed.",
+        "An attacker can exploit this flaw using inputs to deposit/rate functions to perform actions only intended for the authorized Token Manager or other privileged roles."
       ],
       "mitigation": {
-        "strategy": "Implement multi-factor authentication, principle of least privilege, regular security patching, and intrusion detection.",
+        "strategy": "Implement least privilege principle and rigorous access control checks on all state-changing smart contract functions.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker successfully gains unauthorized administrative control over the Validator Node or the Validator Operator's identity, effectively becoming the operator and inheriting all associated privileges, including block proposal, voting, and asset control.",
+      "description": "An attacker could exploit a vulnerability in the Reward Vault's access control within the deposit or rate management functions to gain unauthorized privileges on the contract.",
       "trace_source": {
-        "doc_reference": "pol/participants.md#validators-\u2705",
-        "matched_capability": "Operate validator node"
+        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "matched_capability": "Manage Incentive Rates"
       }
     },
     {
@@ -1217,7 +877,7 @@
         "from_chunk": true,
         "actor_id": 1,
         "behavior_id": 1,
-        "capability_match": "Connect Wallet"
+        "capability_match": "Connect wallet"
       },
       "threat_target": {
         "component_id": 3,
@@ -1228,7 +888,67 @@
       "attack_surface": {
         "behavior_id": 1,
         "data_flow_id": 0,
-        "data_description": "Wallet connection request/identity"
+        "data_description": "Wallet connection request/response"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "User Wallet Boundary",
+        "between_component_ids": [
+          3,
+          1
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "User wallet connection request source may not be fully verifiable, allowing phishing."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The actor is an external user interacting with potentially malicious interfaces."
+      },
+      "behavioral_risk": {
+        "behavior_id": 1,
+        "risk_level": "Low",
+        "rationale": "Standard wallet connection carries inherent phishing risk."
+      },
+      "assumptions": [
+        "A malicious party can create a convincing replica of a legitimate Berachain interface.",
+        "Users may not verify the source of the connection request."
+      ],
+      "mitigation": {
+        "strategy": "Educate users on verifying legitimate sites, implement browser extension checks.",
+        "type": "Process Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker spoofs a legitimate application interface to trick a user into connecting their wallet, potentially exposing it to malicious operations.",
+      "trace_source": {
+        "doc_reference": "learn/connect-to-berachain.md",
+        "matched_capability": "Connect wallet"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 1,
+        "capability_match": "Connect wallet"
+      },
+      "threat_target": {
+        "component_id": 3,
+        "asset_ids": [
+          8
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 1,
+        "data_flow_id": 0,
+        "data_description": "Wallet internal state/secrets"
       },
       "trust_boundary_risk": {
         "boundary_id": 1,
@@ -1242,42 +962,42 @@
         "confidentiality_required": true,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Wallet or user does not verify authenticity of connection target."
+        "gap_description": "Vulnerability in wallet software or interaction process could expose private keys."
       },
       "actor_risk": {
         "actor_id": 1,
         "type": "External User",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "The actor is responsible for protecting their own private keys."
       },
       "behavioral_risk": {
         "behavior_id": 1,
         "risk_level": "Low",
-        "rationale": "User connects their wallet to interact with dApps/network"
+        "rationale": "Wallet software is generally trusted, but client-side vulnerabilities exist."
       },
       "assumptions": [
-        "User is susceptible to phishing attacks.",
-        "Wallet software does not strictly validate RPC endpoints."
+        "The user wallet software has a vulnerability.",
+        "The user's device is compromised by malware."
       ],
       "mitigation": {
-        "strategy": "Educate users on verifying connection URLs; Implement strict wallet-side endpoint validation.",
+        "strategy": "Use reputable wallet software, keep software updated, practice good opsec on user device.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "An attacker spoofs a legitimate connection endpoint (e.g., RPC or dApp URL) to trick the user into revealing sensitive information or signing malicious transactions.",
+      "description": "Private keys managed by the User Wallet are disclosed due to vulnerabilities in the wallet software or client-side attacks during interaction.",
       "trace_source": {
         "doc_reference": "learn/connect-to-berachain.md",
-        "matched_capability": "Connect Wallet"
+        "matched_capability": "Connect wallet"
       }
     },
     {
-      "id": 2,
+      "id": 3,
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
         "actor_id": 1,
         "behavior_id": 3,
-        "capability_match": "Bridge Assets"
+        "capability_match": "Bridge tokens"
       },
       "threat_target": {
         "component_id": 4,
@@ -1293,7 +1013,7 @@
       "attack_surface": {
         "behavior_id": 3,
         "data_flow_id": 2,
-        "data_description": "Bridge transaction parameters (asset, amount, destination)"
+        "data_description": "Tokens/NFTs"
       },
       "trust_boundary_risk": {
         "boundary_id": 3,
@@ -1307,42 +1027,42 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Bridge transaction parameters can be altered before or during submission."
+        "gap_description": "Bridge contract or communication channel vulnerability allows modification of transaction parameters (asset, amount, destination)."
       },
       "actor_risk": {
         "actor_id": 1,
         "type": "External User",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "The actor initiates a high-value transaction across trust boundaries."
       },
       "behavioral_risk": {
         "behavior_id": 3,
         "risk_level": "Medium",
-        "rationale": "User transfers assets via the bridge"
+        "rationale": "Bridging involves complex cross-chain interactions with inherent risks if validation is insufficient."
       },
       "assumptions": [
-        "Attacker can intercept or modify user-submitted transaction data.",
-        "Bridge contract or user interface lacks sufficient integrity checks on transaction parameters."
+        "A vulnerability exists in the bridge smart contract or the off-chain components processing bridge requests.",
+        "An attacker can intercept and modify Data Flow 2 before it is processed by the bridge."
       ],
       "mitigation": {
-        "strategy": "Implement end-to-end transaction parameter signing/verification; Strong input validation in bridge contract.",
+        "strategy": "Implement robust cross-chain data validation and signature checks, monitor bridge activity.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker modifies the parameters of a user's bridge transaction (asset type, amount, destination) while in transit or via client-side manipulation.",
+      "description": "An attacker tampers with the user's bridge transaction data (e.g., changing asset type, amount, or destination address) during transit or within the bridge component.",
       "trace_source": {
-        "doc_reference": "learn/how-to-get-bera.md",
-        "matched_capability": "Bridge Assets"
+        "doc_reference": "learn/how-to-get-bera.md#bridging",
+        "matched_capability": "Bridge tokens"
       }
     },
     {
-      "id": 3,
-      "stride_category": "Denial of Service",
+      "id": 4,
+      "stride_category": "Elevation of Privilege",
       "origin": {
         "from_chunk": true,
         "actor_id": 1,
         "behavior_id": 4,
-        "capability_match": "Swap Tokens (BEX)"
+        "capability_match": "Swap assets"
       },
       "threat_target": {
         "component_id": 5,
@@ -1357,7 +1077,7 @@
       "attack_surface": {
         "behavior_id": 4,
         "data_flow_id": 4,
-        "data_description": "Swap transaction requests"
+        "data_description": "Tokens"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
@@ -1378,32 +1098,902 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "BEX contract or network infrastructure is susceptible to transaction spam or resource exhaustion."
+        "gap_description": "Vulnerability in BEX smart contract logic allows unauthorized operations (e.g., draining liquidity, swapping without input tokens)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to manipulate BEX pools or execute unauthorized swaps."
+      },
+      "behavioral_risk": {
+        "behavior_id": 4,
+        "risk_level": "Low",
+        "rationale": "Standard DEX interaction, but smart contract bugs can lead to critical exploits."
+      },
+      "assumptions": [
+        "A reentrancy bug, logic error, or permission issue exists in the BEX smart contracts.",
+        "An attacker can craft a transaction that exploits the vulnerability."
+      ],
+      "mitigation": {
+        "strategy": "Conduct thorough smart contract audits, implement access controls and reentrancy guards.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the BEX smart contracts to perform unauthorized swaps or drain liquidity pools.",
+      "trace_source": {
+        "doc_reference": "learn/dapps/bex.md",
+        "matched_capability": "Swap assets"
+      }
+    },
+    {
+      "id": 5,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 6,
+        "capability_match": "Mint HONEY"
+      },
+      "threat_target": {
+        "component_id": 6,
+        "asset_ids": [
+          3,
+          12,
+          13
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 6,
+        "data_flow_id": 6,
+        "data_description": "Tokens"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerability in Honey Swap smart contract allows modification of minting parameters (collateral amount/type, HONEY amount received)."
       },
       "actor_risk": {
         "actor_id": 1,
         "type": "External User",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "The actor is interacting with the stablecoin minting mechanism."
       },
       "behavioral_risk": {
-        "behavior_id": 4,
-        "risk_level": "Medium",
-        "rationale": "User exchanges tokens on BEX"
+        "behavior_id": 6,
+        "risk_level": "Low",
+        "rationale": "Standard stablecoin minting, but contract bugs can affect collateral and minted amount."
       },
       "assumptions": [
-        "Attacker has resources to flood the network with transactions.",
-        "BEX contract doesn't implement effective anti-spam or gas limiting measures at the application level."
+        "A vulnerability exists in the Honey Swap smart contract or associated vault contracts.",
+        "An attacker can craft a transaction to exploit the vulnerability."
       ],
       "mitigation": {
-        "strategy": "Implement gas limit mechanisms, monitor and mitigate network spam.",
+        "strategy": "Conduct thorough smart contract audits, validate all input parameters and state changes.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the parameters of a HONEY minting transaction, potentially affecting the amount of collateral locked or HONEY received.",
+      "trace_source": {
+        "doc_reference": "learn/dapps/honey-swap.md",
+        "matched_capability": "Mint HONEY"
+      }
+    },
+    {
+      "id": 6,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 8,
+        "capability_match": "Stake assets (in Reward Vaults)"
+      },
+      "threat_target": {
+        "component_id": 8,
+        "asset_ids": [
+          6,
+          7,
+          2,
+          5
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 8,
+        "data_flow_id": 8,
+        "data_description": "LP/Receipt Tokens"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerability in Reward Vault smart contract logic allows unauthorized staking or manipulation of stake balances."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to manipulate stake positions in a Reward Vault."
+      },
+      "behavioral_risk": {
+        "behavior_id": 8,
+        "risk_level": "Low",
+        "rationale": "Standard staking interaction, but contract bugs can affect user deposits and BGT earning potential."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Reward Vault smart contract.",
+        "An attacker can exploit the vulnerability to stake assets they don't own or alter others' stake amounts."
+      ],
+      "mitigation": {
+        "strategy": "Conduct thorough smart contract audits, implement access controls and validation for staking operations.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in a Reward Vault smart contract to stake unauthorized assets or manipulate user stake balances, affecting BGT distribution.",
+      "trace_source": {
+        "doc_reference": "learn/pol/rewardvaults.md",
+        "matched_capability": "Stake assets (in Reward Vaults)"
+      }
+    },
+    {
+      "id": 7,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 10,
+        "capability_match": "Delegate BGT (Boost validator)"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          2,
+          9
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Integrity is not required for Data Flow 10, allowing potential undetected tampering of delegation parameters (amount, target validator)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The actor is delegating governance tokens impacting network incentives."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "Low",
+        "rationale": "Standard delegation, but manipulating delegation can impact validator rewards and user incentives."
+      },
+      "assumptions": [
+        "The Governance Contract relies on the integrity of delegation data received via Data Flow 10.",
+        "Insufficient validation of delegation input parameters by the Governance Contract."
+      ],
+      "mitigation": {
+        "strategy": "Enforce integrity checks for delegation data, validate delegation parameters in the smart contract.",
         "type": "Technical Control",
         "priority": "Medium"
       },
-      "description": "An attacker floods the network or BEX smart contract with transactions to prevent legitimate users from executing swaps.",
+      "description": "An attacker tampers with the BGT delegation data (e.g., changing the amount delegated or the target validator) sent via Data Flow 10, potentially redirecting voting power or rewards.",
       "trace_source": {
-        "doc_reference": "learn/dapps/bex.md",
-        "matched_capability": "Swap Tokens (BEX)"
+        "doc_reference": "learn/guides/boost-a-validator.md",
+        "matched_capability": "Delegate BGT (Boost validator)"
+      }
+    },
+    {
+      "id": 8,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 10,
+        "capability_match": "Delegate BGT (Boost validator)"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          2,
+          9
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Vulnerability in the Governance Contract allows unauthorized delegation or manipulation of delegated BGT/Voting Power."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to delegate BGT they don't control or alter delegation records."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "Low",
+        "rationale": "Exploiting delegation could affect governance power distribution."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Governance Contract's delegation logic.",
+        "An attacker can exploit the vulnerability to delegate BGT without proper authorization."
+      ],
+      "mitigation": {
+        "strategy": "Conduct smart contract audits, implement strong access controls and validation for delegation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the Governance Contract to delegate BGT or Voting Power on behalf of other users or manipulate delegation amounts.",
+      "trace_source": {
+        "doc_reference": "learn/guides/boost-a-validator.md",
+        "matched_capability": "Delegate BGT (Boost validator)"
+      }
+    },
+    {
+      "id": 9,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 11,
+        "capability_match": "Vote on governance proposals"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          9,
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 11,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Integrity is not required for Data Flow 10, allowing potential undetected tampering of vote data (choice, weight, proposal ID)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The actor is participating in governance voting."
+      },
+      "behavioral_risk": {
+        "behavior_id": 11,
+        "risk_level": "Low",
+        "rationale": "Manipulating votes can affect governance outcomes."
+      },
+      "assumptions": [
+        "The Governance Contract relies on the integrity of vote data received via Data Flow 10.",
+        "Insufficient validation of vote input parameters by the Governance Contract."
+      ],
+      "mitigation": {
+        "strategy": "Enforce integrity checks for vote data, validate vote parameters and eligibility in the smart contract.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with a user's vote data (e.g., changing the vote from 'yes' to 'no' or altering weight) sent via Data Flow 10.",
+      "trace_source": {
+        "doc_reference": "learn/governance.md",
+        "matched_capability": "Vote on governance proposals"
+      }
+    },
+    {
+      "id": 10,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 11,
+        "capability_match": "Vote on governance proposals"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          9,
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 11,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Vulnerability in the Governance Contract allows unauthorized voting (e.g., voting without sufficient BGT/Voting Power or voting multiple times)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to cast votes they are not entitled to."
+      },
+      "behavioral_risk": {
+        "behavior_id": 11,
+        "risk_level": "Low",
+        "rationale": "Unauthorized voting directly impacts governance integrity."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Governance Contract's voting logic.",
+        "An attacker can exploit the vulnerability to bypass voting eligibility checks or vote multiple times."
+      ],
+      "mitigation": {
+        "strategy": "Conduct smart contract audits, implement robust eligibility checks and state tracking for votes.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the Governance Contract to cast votes on governance proposals without meeting the BGT/Voting Power requirement or to vote multiple times with a single stake.",
+      "trace_source": {
+        "doc_reference": "learn/governance.md",
+        "matched_capability": "Vote on governance proposals"
+      }
+    },
+    {
+      "id": 11,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 12,
+        "capability_match": "Create governance proposals (if sufficient BGT)"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 12,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Integrity is not required for Data Flow 10, allowing potential undetected tampering of proposal data (content, target, parameters)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The actor is submitting proposals for network changes."
+      },
+      "behavioral_risk": {
+        "behavior_id": 12,
+        "risk_level": "Low",
+        "rationale": "Manipulating proposal content can lead to malicious governance actions if passed."
+      },
+      "assumptions": [
+        "The Governance Contract relies on the integrity of proposal data received via Data Flow 10.",
+        "Insufficient validation of proposal input parameters by the Governance Contract."
+      ],
+      "mitigation": {
+        "strategy": "Enforce integrity checks for proposal data, validate proposal parameters and format in the smart contract.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the content or parameters of a governance proposal submitted by a user via Data Flow 10.",
+      "trace_source": {
+        "doc_reference": "learn/governance.md#creating-your-governance-proposal",
+        "matched_capability": "Create governance proposals (if sufficient BGT)"
+      }
+    },
+    {
+      "id": 12,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 12,
+        "capability_match": "Create governance proposals (if sufficient BGT)"
+      },
+      "threat_target": {
+        "component_id": 9,
+        "asset_ids": [
+          10
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 12,
+        "data_flow_id": 10,
+        "data_description": "BGT/Voting Power/Proposal Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Vulnerability in the Governance Contract allows unauthorized proposal creation (e.g., bypassing the BGT threshold or creating malicious proposals)."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to submit governance proposals without meeting requirements."
+      },
+      "behavioral_risk": {
+        "behavior_id": 12,
+        "risk_level": "Low",
+        "rationale": "Unauthorized proposals can disrupt governance or introduce malicious changes."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Governance Contract's proposal creation logic.",
+        "An attacker can exploit the vulnerability to bypass the minimum BGT requirement or submit malformed/malicious proposals."
+      ],
+      "mitigation": {
+        "strategy": "Conduct smart contract audits, enforce BGT threshold and validate proposal integrity upon submission.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the Governance Contract to create governance proposals without holding the required BGT amount or to submit malicious proposals that could harm the protocol.",
+      "trace_source": {
+        "doc_reference": "learn/governance.md#creating-your-governance-proposal",
+        "matched_capability": "Create governance proposals (if sufficient BGT)"
+      }
+    },
+    {
+      "id": 13,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 13,
+        "capability_match": "Claim Incentives"
+      },
+      "threat_target": {
+        "component_id": 13,
+        "asset_ids": [
+          5,
+          18,
+          20
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 13,
+        "data_flow_id": 11,
+        "data_description": "Incentive Entitlement Proofs"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Weak verification of incentive entitlement proofs allows forged proofs to be accepted."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The actor is claiming earned incentives/fees based on off-chain proofs."
+      },
+      "behavioral_risk": {
+        "behavior_id": 13,
+        "risk_level": "Low",
+        "rationale": "Claiming involves interaction with a contract and relies on proofs, creating potential for manipulation."
+      },
+      "assumptions": [
+        "The signature or structure of the incentive entitlement proof can be forged.",
+        "The BGTIncentiveDistributor contract does not sufficiently validate submitted proofs."
+      ],
+      "mitigation": {
+        "strategy": "Implement strong cryptographic signing for proofs, verify proof validity rigorously in the smart contract.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker spoofs an incentive entitlement proof to claim Incentive Tokens or WBERA fees they are not entitled to from the BGTIncentiveDistributor.",
+      "trace_source": {
+        "doc_reference": "learn/guides/claim-incentives.md",
+        "matched_capability": "Claim Incentives"
+      }
+    },
+    {
+      "id": 14,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 1,
+        "behavior_id": 13,
+        "capability_match": "Claim Incentives"
+      },
+      "threat_target": {
+        "component_id": 13,
+        "asset_ids": [
+          5,
+          18,
+          20
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 13,
+        "data_flow_id": 11,
+        "data_description": "Incentive Entitlement Proofs"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerability in BGTIncentiveDistributor logic or proof verification allows claiming unearned/excessive incentives."
+      },
+      "actor_risk": {
+        "actor_id": 1,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "The actor could gain privileges to claim incentives/fees belonging to others or claim more than earned."
+      },
+      "behavioral_risk": {
+        "behavior_id": 13,
+        "risk_level": "Low",
+        "rationale": "Exploiting claiming allows direct theft of user rewards."
+      },
+      "assumptions": [
+        "A vulnerability exists in the BGTIncentiveDistributor smart contract.",
+        "An attacker can exploit the vulnerability to bypass entitlement checks or claim logic."
+      ],
+      "mitigation": {
+        "strategy": "Conduct smart contract audits, validate claim eligibility and amounts based on verifiable proofs and state.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the BGTIncentiveDistributor contract to claim Incentive Tokens or WBERA fees they did not earn, potentially claiming another user's rewards or claiming more than their entitled amount.",
+      "trace_source": {
+        "doc_reference": "learn/guides/claim-incentives.md",
+        "matched_capability": "Claim Incentives"
+      }
+    },
+    {
+      "id": 1,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Operate validator node"
+      },
+      "threat_target": {
+        "component_id": 2,
+        "asset_ids": [
+          1,
+          2,
+          5,
+          17,
+          18
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 14,
+        "data_flow_id": 13,
+        "data_description": "Validator node identity/network presence"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "Berachain Network Perimeter",
+        "between_component_ids": [
+          1,
+          3,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of strong identity verification for validator nodes."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 14,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "The mechanism for identifying and authenticating validator nodes is insufficient.",
+        "An attacker can simulate a validator node's network presence."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust node identity verification and authentication.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker spoofs the identity of a legitimate Validator Node (Component 2) or its Operator (Actor 2) to participate in consensus or network activities.",
+      "trace_source": {
+        "doc_reference": "pol/participants",
+        "matched_capability": "Operate validator node"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Propose blocks"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": []
+      },
+      "attack_surface": {
+        "behavior_id": 14,
+        "data_flow_id": 13,
+        "data_description": "Proposed Block Data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "Berachain Network Perimeter",
+        "between_component_ids": [
+          1,
+          3,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Consensus mechanism does not adequately validate proposed block contents."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 14,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "The consensus validation logic is flawed and allows tampered block data to be accepted.",
+        "A malicious validator can create invalid block data."
+      ],
+      "mitigation": {
+        "strategy": "Strengthen consensus validation logic for proposed blocks and implement strict slashing.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious Validator Node (Component 2) or Operator (Actor 2) tampers with the data within a proposed block (Data Flow 13) before submission to the Berachain L1 (Component 1).",
+      "trace_source": {
+        "doc_reference": "pol/bgtmath",
+        "matched_capability": "Propose blocks"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Propose blocks"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1,
+          2,
+          5
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 14,
+        "data_flow_id": 13,
+        "data_description": "Validator actions (block proposals, reward receipts)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "Berachain Network Perimeter",
+        "between_component_ids": [
+          1,
+          3,
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Validator actions and reward receipts are not recorded with sufficient non-repudiation guarantees."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 14,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "Validator block proposals or reward receipts are not cryptographically signed in a non-repudiable manner.",
+        "The chain state does not immutably record the link between validator identity and specific actions/receipts."
+      ],
+      "mitigation": {
+        "strategy": "Ensure all validator actions and reward receipts are immutably recorded and cryptographically signed.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "A Validator Operator (Actor 2) or Node (Component 2) repudiates having proposed a specific block (Data Flow 13) or received network rewards (Assets 1, 2, 5 via Data Flows 14, 15, 17).",
+      "trace_source": {
+        "doc_reference": "pol/bgtmath",
+        "matched_capability": "Propose blocks"
       }
     },
     {
@@ -1411,18 +2001,18 @@
       "stride_category": "Information Disclosure",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 2,
-        "capability_match": "Interact with Frontend"
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Operate validator node"
       },
       "threat_target": {
-        "component_id": 7,
+        "component_id": 2,
         "asset_ids": []
       },
       "attack_surface": {
-        "behavior_id": 2,
-        "data_flow_id": 0,
-        "data_description": "User session data, displayed wallet info, balances"
+        "behavior_id": 14,
+        "data_flow_id": 32,
+        "data_description": "Sensitive data within validator node (e.g., keys, internal state, transaction data)"
       },
       "trust_boundary_risk": {
         "boundary_id": 2,
@@ -1437,183 +2027,172 @@
         "confidentiality_required": true,
         "integrity_required": false,
         "availability_required": false,
-        "gap_description": "Frontend application has vulnerabilities allowing unauthorized access to user data or display of false information."
+        "gap_description": "Sensitive data within the validator node is not adequately protected from unauthorized access or leakage."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 2,
+        "behavior_id": 14,
         "risk_level": "Low",
-        "rationale": "User uses the BeraHub interface"
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker compromises the BeraHub frontend server or exploits client-side vulnerabilities (e.g., XSS).",
-        "User accesses the frontend over an insecure connection or from a compromised device."
+        "The validator node's operating environment is compromised.",
+        "Sensitive information (like private keys or unprocessed transaction data) is stored or processed insecurely within the node.",
+        "Node software lacks robust access control for internal data."
       ],
       "mitigation": {
-        "strategy": "Implement robust frontend security practices; Use HTTPS; Regular security audits.",
+        "strategy": "Implement strong access controls, encryption, and secure handling for sensitive data within the validator node environment.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "An attacker compromises the BeraHub frontend (Component ID 7) to steal user session data, wallet addresses, balances, or other sensitive information displayed to the user.",
+      "description": "Sensitive internal data is disclosed from the Validator Node (Component 2) due to compromise or misconfiguration by the Operator (Actor 2).",
       "trace_source": {
-        "doc_reference": "learn/dapps/berahub.md",
-        "matched_capability": "Interact with Frontend"
+        "doc_reference": "pol/participants",
+        "matched_capability": "Operate validator node"
       }
     },
     {
       "id": 5,
-      "stride_category": "Elevation of Privilege",
+      "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 12,
-        "capability_match": "Create Proposal"
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Operate validator node"
       },
       "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          10,
-          2
-        ]
+        "component_id": 1,
+        "asset_ids": []
       },
       "attack_surface": {
-        "behavior_id": 12,
-        "data_flow_id": 10,
-        "data_description": "Proposal creation transaction (target, calldata, value)"
+        "behavior_id": 14,
+        "data_flow_id": 13,
+        "data_description": "Cessation of block proposals"
       },
       "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
+        "boundary_id": 2,
+        "boundary_name": "Berachain Network Perimeter",
         "between_component_ids": [
           1,
-          5,
-          6,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13
+          3,
+          4
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
-        "integrity_required": true,
+        "integrity_required": false,
         "availability_required": true,
-        "gap_description": "Governance contract vulnerability allows bypassing BGT threshold or targeting restricted functions."
+        "gap_description": "Lack of sufficient penalties or redundancy to prevent validator downtime from disrupting block production."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 12,
-        "risk_level": "Medium",
-        "rationale": "User submits a new governance proposal"
+        "behavior_id": 14,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker discovers and exploits a logic error in the Governance Contract (ID 9).",
-        "The vulnerability allows crafting a proposal transaction that bypasses permission checks."
+        "A significant number of validators can go offline or refuse to participate without immediate and effective penalty.",
+        "The network relies on a single or small set of validators for liveness."
       ],
       "mitigation": {
-        "strategy": "Thorough smart contract audits; Formal verification of critical governance logic; Strict parameter validation in `propose` function.",
+        "strategy": "Implement strong liveness detection and slashing mechanisms for validator downtime.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker exploits a vulnerability in the Governance Contract (Component ID 9) to create a proposal without meeting the required BGT threshold or targeting functions/addresses they should not control.",
+      "description": "A Validator Operator (Actor 2) intentionally or unintentionally causes their Validator Node (Component 2) to stop proposing blocks (Data Flow 13) or processing transactions, contributing to a Denial of Service for the Berachain L1 Blockchain (Component 1).",
       "trace_source": {
-        "doc_reference": "learn/governance.md",
-        "matched_capability": "Create Proposal"
+        "doc_reference": "pol/bgtmath",
+        "matched_capability": "Propose blocks"
       }
     },
     {
       "id": 6,
-      "stride_category": "Spoofing",
+      "stride_category": "Elevation of Privilege",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 13,
-        "capability_match": "Claim Incentives/Fees"
+        "actor_id": 2,
+        "behavior_id": 14,
+        "capability_match": "Operate validator node"
       },
       "threat_target": {
-        "component_id": 13,
-        "asset_ids": [
-          5,
-          18
-        ]
+        "component_id": 1,
+        "asset_ids": []
       },
       "attack_surface": {
-        "behavior_id": 13,
-        "data_flow_id": 11,
-        "data_description": "Incentive entitlement proofs"
+        "behavior_id": 14,
+        "data_flow_id": 13,
+        "data_description": "Validator node network interaction / consensus messages"
       },
       "trust_boundary_risk": {
-        "boundary_id": 6,
-        "boundary_name": "Incentive Proof Boundary",
+        "boundary_id": 2,
+        "boundary_name": "Berachain Network Perimeter",
         "between_component_ids": [
-          14,
-          13
+          1,
+          3,
+          4
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "BGTIncentiveDistributor cannot fully verify authenticity and integrity of entitlement proofs."
+        "availability_required": false,
+        "gap_description": "Vulnerabilities in consensus or node software allow unauthorized state changes or control."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 13,
+        "behavior_id": 14,
         "risk_level": "Low",
-        "rationale": "User claims earned Incentive Tokens or dApp fees by providing proof"
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker can forge or manipulate incentive entitlement proofs.",
-        "The BGTIncentiveDistributor contract (ID 13) has a flaw in its proof verification logic."
+        "A critical vulnerability exists in the Berachain L1 consensus protocol or Validator Node software.",
+        "An attacker can send specially crafted messages/blocks to gain unauthorized privileges or execute arbitrary code on L1 components."
       ],
       "mitigation": {
-        "strategy": "Strengthen proof generation and verification mechanisms; Use robust cryptographic schemes; Secure the Backend Service (ID 14).",
+        "strategy": "Conduct thorough security audits and formal verification of consensus and node software; implement strict input validation.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker submits forged incentive entitlement proofs to the BGTIncentiveDistributor (Component ID 13) to claim tokens they are not entitled to.",
+      "description": "An attacker exploits a vulnerability in the Validator Node (Component 2) software or the Berachain L1 (Component 1) consensus mechanism to gain unauthorized privileges.",
       "trace_source": {
-        "doc_reference": "learn/guides/claim-incentives.md",
-        "matched_capability": "Claim Incentives/Fees"
+        "doc_reference": "what_is_beaconkit",
+        "matched_capability": "Operate validator node"
       }
     },
     {
       "id": 7,
-      "stride_category": "Tampering",
+      "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 11,
-        "capability_match": "Vote on Proposal"
+        "actor_id": 2,
+        "behavior_id": 17,
+        "capability_match": "Set Incentive commission rate"
       },
       "threat_target": {
-        "component_id": 9,
+        "component_id": 2,
         "asset_ids": [
-          9,
-          10
+          17
         ]
       },
       "attack_surface": {
-        "behavior_id": 11,
-        "data_flow_id": 10,
-        "data_description": "Vote transaction (proposal ID, choice, weight)"
+        "behavior_id": 17,
+        "data_flow_id": 16,
+        "data_description": "Configuration update for commission rate"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
@@ -1633,98 +2212,100 @@
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Governance contract or submission process allows modification of votes after casting."
+        "availability_required": false,
+        "gap_description": "Lack of strong authentication/authorization for updating validator configuration."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 11,
+        "behavior_id": 17,
         "risk_level": "Low",
-        "rationale": "User casts a vote on a governance proposal"
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker can intercept and modify vote transactions before confirmation.",
-        "Governance contract (ID 9) does not immutably record vote details upon first valid submission."
+        "The mechanism for authenticating commission rate updates (either on-node or via L1 contract) is insufficient.",
+        "An attacker can send configuration messages impersonating a legitimate validator operator."
       ],
       "mitigation": {
-        "strategy": "Ensure immutability of submitted votes on-chain; Implement transaction integrity checks.",
+        "strategy": "Implement strong cryptographic authentication for all validator configuration updates.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "An attacker modifies a user's vote or manipulates vote counts within the Governance Contract (Component ID 9), potentially altering proposal outcomes.",
+      "description": "An attacker impersonates a Validator Operator (Actor 2) to set a fraudulent Incentive Commission Rate (part of Asset 17) for their Validator Node (Component 2).",
       "trace_source": {
-        "doc_reference": "learn/governance.md",
-        "matched_capability": "Vote on Proposal"
+        "doc_reference": "pol/incentives",
+        "matched_capability": "Set Incentive commission rate"
       }
     },
     {
       "id": 8,
-      "stride_category": "Repudiation",
+      "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 3,
-        "capability_match": "Bridge Assets"
+        "actor_id": 2,
+        "behavior_id": 17,
+        "capability_match": "Set Incentive commission rate"
       },
       "threat_target": {
-        "component_id": 4,
+        "component_id": 2,
         "asset_ids": [
-          1,
-          4,
-          12,
-          13,
-          14,
-          15
+          17
         ]
       },
       "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 2,
-        "data_description": "Asset transfer via bridge transaction"
+        "behavior_id": 17,
+        "data_flow_id": 16,
+        "data_description": "Configuration data for commission rate"
       },
       "trust_boundary_risk": {
-        "boundary_id": 3,
-        "boundary_name": "Bridge Trust Boundary",
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
         "between_component_ids": [
-          4,
-          1
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Insufficient logging or proof of transaction execution allows parties to deny bridge transfers."
+        "availability_required": false,
+        "gap_description": "Configuration data for the commission rate is vulnerable to modification."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "Medium",
-        "rationale": "User transfers assets via the bridge"
+        "behavior_id": 17,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Bridge transaction data or state updates are not immutably recorded or easily verifiable.",
-        "A party involved has motive to deny a transfer occurred."
+        "The communication channel or storage mechanism for the commission rate configuration is vulnerable to tampering.",
+        "The update process does not verify the integrity of the rate value."
       ],
       "mitigation": {
-        "strategy": "Implement detailed, immutable on-chain logging of all bridge actions and state changes; Provide clear proofs of transaction execution.",
+        "strategy": "Ensure integrity protection for configuration data in transit and at rest.",
         "type": "Technical Control",
         "priority": "Medium"
       },
-      "description": "A user or the bridge operator denies that a specific bridge transfer occurred or was initiated by them, leading to disputes and potential asset loss.",
+      "description": "An attacker tampers with the Incentive Commission Rate (part of Asset 17) value being set by a Validator Operator (Actor 2) for their Validator Node (Component 2).",
       "trace_source": {
-        "doc_reference": "learn/how-to-get-bera.md",
-        "matched_capability": "Bridge Assets"
+        "doc_reference": "pol/incentives",
+        "matched_capability": "Set Incentive commission rate"
       }
     },
     {
@@ -1732,20 +2313,20 @@
       "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 9,
-        "capability_match": "Claim BGT"
+        "actor_id": 2,
+        "behavior_id": 17,
+        "capability_match": "Set Incentive commission rate"
       },
       "threat_target": {
-        "component_id": 8,
+        "component_id": 2,
         "asset_ids": [
-          2
+          17
         ]
       },
       "attack_surface": {
-        "behavior_id": 9,
-        "data_flow_id": 9,
-        "data_description": "BGT claim transaction request"
+        "behavior_id": 17,
+        "data_flow_id": 16,
+        "data_description": "Configuration update process"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
@@ -1764,123 +2345,53 @@
       },
       "security_gap": {
         "confidentiality_required": false,
-        "integrity_required": true,
+        "integrity_required": false,
         "availability_required": true,
-        "gap_description": "Reward Vault contract or network is susceptible to attacks preventing claim transactions."
+        "gap_description": "The process for setting the commission rate is vulnerable to disruption."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 9,
+        "behavior_id": 17,
         "risk_level": "Low",
-        "rationale": "User claims earned BGT from a Reward Vault"
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker can flood the network with transactions.",
-        "Reward Vault claim function is not resilient to network congestion."
+        "The configuration endpoint or L1 contract for setting the rate is vulnerable to DoS attacks.",
+        "Network congestion or transaction spam can prevent the update transaction from succeeding."
       ],
       "mitigation": {
-        "strategy": "Ensure claim function is gas-efficient and resilient to transaction congestion.",
+        "strategy": "Ensure resilience of configuration endpoints/contracts and proper transaction handling.",
         "type": "Technical Control",
         "priority": "Low"
       },
-      "description": "An attacker prevents users from claiming their earned $BGT (Asset ID 2) from a Reward Vault (Component ID 8) by disrupting network or contract access.",
+      "description": "An attacker disrupts the process for a Validator Operator (Actor 2) to set their Incentive Commission Rate (Behavior 17) on their Validator Node (Component 2).",
       "trace_source": {
-        "doc_reference": "learn/pol/rewardvaults.md",
-        "matched_capability": "Claim BGT"
+        "doc_reference": "pol/incentives",
+        "matched_capability": "Set Incentive commission rate"
       }
     },
     {
       "id": 10,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 10,
-        "capability_match": "Delegate BGT (Boost)"
-      },
-      "threat_target": {
-        "component_id": 9,
-        "asset_ids": [
-          2
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 10,
-        "data_description": "BGT delegation transaction parameters"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 4,
-        "boundary_name": "Smart Contract Interaction Boundary",
-        "between_component_ids": [
-          1,
-          5,
-          6,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "On-chain delegation data reveals user BGT amounts and validator choices."
-      },
-      "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
-        "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "Low",
-        "rationale": "User delegates BGT to a validator to boost emissions"
-      },
-      "assumptions": [
-        "Public blockchain nature inherently exposes transaction data.",
-        "User requires privacy regarding their delegation strategy."
-      ],
-      "mitigation": {
-        "strategy": "Acknowledge transparency as a feature; No direct mitigation for on-chain data visibility within public blockchains.",
-        "type": "Policy",
-        "priority": "Low"
-      },
-      "description": "Details about which validator a user has delegated their $BGT (Asset ID 2) to, and the amount, are publicly visible on the blockchain, potentially impacting user privacy or strategy.",
-      "trace_source": {
-        "doc_reference": "learn/guides/boost-a-validator.md",
-        "matched_capability": "Delegate BGT (Boost)"
-      }
-    },
-    {
-      "id": 11,
       "stride_category": "Elevation of Privilege",
       "origin": {
         "from_chunk": true,
-        "actor_id": 1,
-        "behavior_id": 13,
-        "capability_match": "Claim Incentives/Fees"
+        "actor_id": 2,
+        "behavior_id": 17,
+        "capability_match": "Set Incentive commission rate"
       },
       "threat_target": {
-        "component_id": 13,
-        "asset_ids": [
-          5,
-          18
-        ]
+        "component_id": 1,
+        "asset_ids": []
       },
       "attack_surface": {
-        "behavior_id": 13,
-        "data_flow_id": 11,
-        "data_description": "Incentive claim transaction with proof"
+        "behavior_id": 17,
+        "data_flow_id": 16,
+        "data_description": "Configuration update process"
       },
       "trust_boundary_risk": {
         "boundary_id": 4,
@@ -1900,33 +2411,301 @@
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "BGTIncentiveDistributor vulnerability allows claiming excess tokens or tokens belonging to others."
+        "availability_required": false,
+        "gap_description": "Vulnerabilities in rate-setting implementation allow unauthorized actions."
       },
       "actor_risk": {
-        "actor_id": 1,
-        "type": "External User",
+        "actor_id": 2,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "General external user interacting with the Berachain ecosystem."
+        "description": "Entity running a validator node to secure the network."
       },
       "behavioral_risk": {
-        "behavior_id": 13,
+        "behavior_id": 17,
         "risk_level": "Low",
-        "rationale": "User claims earned Incentive Tokens or dApp fees by providing proof"
+        "rationale": "As per system chunk data."
       },
       "assumptions": [
-        "Attacker finds a logic bug (e.g., reentrancy, improper state update) in the BGTIncentiveDistributor contract (ID 13).",
-        "The vulnerability can be exploited to claim unauthorized amounts or bypass proof requirements."
+        "A critical vulnerability exists in the code that handles setting the commission rate, potentially allowing arbitrary code execution or state manipulation.",
+        "Input validation on the rate value is insufficient."
       ],
       "mitigation": {
-        "strategy": "Conduct rigorous smart contract audits focusing on access control, state updates, and proof verification logic.",
+        "strategy": "Conduct security audits and implement secure coding practices for rate-setting functionality/contracts.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker exploits a vulnerability in the commission rate setting process (Behavior 17) to gain elevated privileges on the Validator Node (Component 2) or execute unauthorized actions on the Berachain L1 (Component 1).",
+      "trace_source": {
+        "doc_reference": "pol/incentives",
+        "matched_capability": "Set Incentive commission rate"
+      }
+    },
+    {
+      "id": 11,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 33,
+        "capability_match": "Stake BERA"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 33,
+        "data_flow_id": 1,
+        "data_description": "Staking transaction initiation"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Lack of strong authentication/authorization for staking transactions."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 33,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "The staking smart contract or transaction validation does not adequately verify the sender's identity/authorization.",
+        "An attacker can craft and submit a staking transaction impersonating a legitimate operator."
+      ],
+      "mitigation": {
+        "strategy": "Require cryptographic signature and validation for staking transactions originating from authorized validator addresses.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker exploits a vulnerability in the BGTIncentiveDistributor contract (Component ID 13) to claim more Incentive Tokens or $WBERA (Asset IDs 5, 18) than entitled, potentially stealing from the contract or other users.",
+      "description": "An attacker impersonates a Validator Operator (Actor 2) to initiate or manipulate staking transactions (Behavior 33) of $BERA (Asset 1) on the Berachain L1 (Component 1).",
       "trace_source": {
-        "doc_reference": "learn/pol/incentives.md",
-        "matched_capability": "Claim Incentives/Fees"
+        "doc_reference": "pol/tokens/bera",
+        "matched_capability": "Stake BERA"
+      }
+    },
+    {
+      "id": 12,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 33,
+        "capability_match": "Stake BERA"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 33,
+        "data_flow_id": 1,
+        "data_description": "Staking transaction data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Staking transaction data is vulnerable to modification in transit or before processing."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 33,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "Transaction signing/verification does not cover the entire payload, allowing modification.",
+        "The staking smart contract does not validate the integrity of received staking data."
+      ],
+      "mitigation": {
+        "strategy": "Ensure integrity of staking transaction data via comprehensive signing and smart contract validation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the transaction data (Behavior 33) for staking $BERA (Asset 1) initiated by a Validator Operator (Actor 2).",
+      "trace_source": {
+        "doc_reference": "pol/tokens/bera",
+        "matched_capability": "Stake BERA"
+      }
+    },
+    {
+      "id": 13,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 33,
+        "capability_match": "Stake BERA"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 33,
+        "data_flow_id": 1,
+        "data_description": "Staking transaction process"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The staking process or smart contract is vulnerable to denial-of-service attacks."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 33,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "The staking smart contract has vulnerabilities that can be exploited for DoS.",
+        "The L1 can be congested or attacked in a way that prevents staking transactions."
+      ],
+      "mitigation": {
+        "strategy": "Ensure robustness and resilience of the staking smart contract against DoS attacks.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker prevents a Validator Operator (Actor 2) from successfully staking $BERA (Asset 1) by disrupting the staking transaction (Behavior 33) or attacking the staking smart contract on the Berachain L1 (Component 1).",
+      "trace_source": {
+        "doc_reference": "pol/tokens/bera",
+        "matched_capability": "Stake BERA"
+      }
+    },
+    {
+      "id": 14,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 2,
+        "behavior_id": 33,
+        "capability_match": "Stake BERA"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 33,
+        "data_flow_id": 1,
+        "data_description": "Staking smart contract interaction"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 4,
+        "boundary_name": "Smart Contract Interaction Boundary",
+        "between_component_ids": [
+          1,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Vulnerabilities in the staking contract allow unauthorized control or state manipulation."
+      },
+      "actor_risk": {
+        "actor_id": 2,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Entity running a validator node to secure the network."
+      },
+      "behavioral_risk": {
+        "behavior_id": 33,
+        "risk_level": "Low",
+        "rationale": "As per system chunk data."
+      },
+      "assumptions": [
+        "A critical vulnerability exists in the staking smart contract logic.",
+        "An attacker can craft malicious calls to the staking contract to gain unauthorized control over staked funds or contract state."
+      ],
+      "mitigation": {
+        "strategy": "Conduct rigorous security audits and formal verification of the staking smart contract.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the staking smart contract on the Berachain L1 (Component 1) used for staking $BERA (Asset 1) by a Validator Operator (Actor 2), gaining unauthorized control over staked assets or contract functions.",
+      "trace_source": {
+        "doc_reference": "pol/tokens/bera",
+        "matched_capability": "Stake BERA"
       }
     }
   ]

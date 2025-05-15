@@ -1,61 +1,69 @@
 {
   "id": 5,
-  "stride_category": "Spoofing",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
     "behavior_id": 19,
-    "capability_match": "Submit RFRV (Request for Reward Vault)"
+    "capability_match": "Submit RFRV Proposal"
   },
   "threat_target": {
     "component_id": 9,
     "asset_ids": [
-      10
+      10,
+      9,
+      2
     ]
   },
   "attack_surface": {
     "behavior_id": 19,
     "data_flow_id": 10,
-    "data_description": "Governance proposal submission originating from an address claiming a false identity"
+    "data_description": "Malicious governance proposal execution payload"
   },
   "trust_boundary_risk": {
     "boundary_id": 4,
     "boundary_name": "Smart Contract Interaction Boundary",
     "between_component_ids": [
       1,
-      9
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The on-chain governance contract does not verify the real-world or protocol identity associated with the submitting address, only the minimum $BGT requirement."
+    "gap_description": "Vulnerabilities in the governance contract or target contracts allow a malicious execution payload to grant unauthorized privileges."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "The actor can submit proposals and may attempt to deceive the community about their true identity."
+    "description": "Actor initiates governance proposal submission with a potentially malicious payload."
   },
   "behavioral_risk": {
     "behavior_id": 19,
     "risk_level": "Low",
-    "rationale": "Spoofing identity allows deceiving the community about the source of a proposal, potentially influencing voting, but doesn't directly grant on-chain power without further governance steps."
+    "rationale": "Malicious proposal payload grants attacker unauthorized privileges upon execution."
   },
   "assumptions": [
-    "Actor 3 can acquire an address meeting the 10k $BGT threshold.",
-    "The governance contract relies solely on msg.sender and balance for submission, not external identity proof.",
-    "The community or system relies on the claimed identity during the RFRV review process."
+    "The governance contract or target contracts have vulnerabilities that a malicious proposal payload can exploit upon execution to gain unauthorized privileges.",
+    "The governance voting and timelock process is insufficient to detect and prevent execution of such a malicious proposal."
   ],
   "mitigation": {
-    "strategy": "Strengthen off-chain verification steps for the RFRV process, potentially linking on-chain addresses to verified identities.",
-    "type": "Process Control",
-    "priority": "Medium"
+    "strategy": "Implement secure coding practices for governance and target contracts; Improve validation and guardian oversight of proposal payloads.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "A partner protocol (or other entity meeting the $BGT threshold) may submit a governance proposal claiming to represent a different, potentially more reputable, protocol or entity to gain community trust or deceive voters during the governance process.",
+  "description": "A Protocol/Ecosystem Project submits an RFRV proposal containing a malicious execution payload that, if passed and executed by the Governance Contract (Component 9), exploits vulnerabilities to gain unauthorized privileges over protocol assets or functions.",
   "trace_source": {
-    "doc_reference": "governance.md",
-    "matched_capability": "Submit RFRV (Request for Reward Vault)"
+    "doc_reference": "governance.md#execution",
+    "matched_capability": "Submit RFRV Proposal"
   }
 }
