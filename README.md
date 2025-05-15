@@ -14,7 +14,7 @@ cd Utils && git clone https://github.com/berachain/contracts.git && cd ../../../
 make install
 ```
 
-3.start langchain studio  
+#### 3. start langchain studio  
 ```bash
 make run
 ```
