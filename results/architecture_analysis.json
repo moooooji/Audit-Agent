@@ -255,7 +255,14 @@
       "name": "Berachain Bridge",
       "description": "powered by LayerZero",
       "trust_level": "Medium",
-      "assets_managed": []
+      "assets_managed": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
     },
     {
       "id": 2,
@@ -391,7 +398,7 @@
       "source_id": 1,
       "destination_id": 3,
       "data": "Governance Proposal",
-      "description": "User with sufficient voting power creates a governance proposal.",
+      "description": "User submits a governance proposal to the governance contracts.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -403,9 +410,9 @@
       "source_id": 1,
       "destination_id": 3,
       "data": "Vote",
-      "description": "`$BGT` holders cast their votes.",
+      "description": "User casts a vote on a governance proposal.",
       "security_properties": {
-        "confidentiality_required": false,
+        "confidentiality_required": true,
         "integrity_required": true,
         "availability_required": true
       }
@@ -415,7 +422,7 @@
       "source_id": 6,
       "destination_id": 4,
       "data": "$BGT Delegation",
-      "description": "BGT Holders delegate them to validators",
+      "description": "BGT Holders delegate their tokens to validators.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -426,8 +433,8 @@
       "id": 4,
       "source_id": 4,
       "destination_id": 7,
-      "data": "$BGT emissions",
-      "description": "Validators direct a portion of their `$BGT` emissions to specific Reward Vaults of their choice",
+      "data": "$BGT Emissions",
+      "description": "Validators direct a portion of their $BGT emissions to specific Reward Vaults.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -439,7 +446,7 @@
       "source_id": 7,
       "destination_id": 13,
       "data": "Collateral",
-      "description": "Users mint $HONEY by depositing whitelisted collateral into a vault",
+      "description": "Users mint $HONEY by depositing whitelisted collateral into a vault.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -451,7 +458,7 @@
       "source_id": 7,
       "destination_id": 1,
       "data": "$BERA",
-      "description": "`$BGT` can be redeemed (burned) 1:1 for `$BERA`",
+      "description": "$BGT can be redeemed (burned) 1:1 for $BERA.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -463,7 +470,7 @@
       "source_id": 9,
       "destination_id": 4,
       "data": "$BGT",
-      "description": "Any user that boosts a validator with $BGT",
+      "description": "Any user that boosts a validator with $BGT.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -475,7 +482,7 @@
       "source_id": 8,
       "destination_id": 7,
       "data": "Incentive Tokens",
-      "description": "One wallet address is responsible for offering an Incentive Token",
+      "description": "One wallet address is responsible for offering an Incentive Token.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -490,25 +497,16 @@
       "between_ids": [
         4
       ],
-      "description": "Boundary around the validator node, requiring trust in the operator.",
+      "description": "Trust boundary around the validator node and its operations.",
       "validation_required": true
     },
     {
       "id": 2,
-      "name": "Smart Contract Boundary",
+      "name": "Governance Trust Boundary",
       "between_ids": [
-        3,
-        5,
-        6,
-        7,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16
+        3
       ],
-      "description": "Boundary around smart contracts, requiring validation of code and audits.",
+      "description": "Trust boundary around the governance contracts and their execution.",
       "validation_required": true
     }
   ],
@@ -547,7 +545,7 @@
       "id": 4,
       "name": "Direct $BGT emissions",
       "initiator_type": "Component",
-      "initiator_id": 4,
+      "initiator_id": 10,
       "target_id": 7,
       "action": "send",
       "description": "Validators direct a portion of their `$BGT` emissions to specific Reward Vaults of their choice",

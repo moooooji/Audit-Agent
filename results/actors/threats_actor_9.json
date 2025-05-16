@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "stride_category": "Spoofing",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
@@ -27,9 +27,9 @@
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "A malicious actor could spoof the $BGT boosting request."
+    "gap_description": "An attacker can spam the boost validator functionality, causing a denial of service."
   },
   "actor_risk": {
     "actor_id": 9,
@@ -39,19 +39,19 @@
   },
   "behavioral_risk": {
     "behavior_id": 7,
-    "risk_level": "Low",
-    "rationale": "A malicious actor could try to boost a validator using someone else's identity."
+    "risk_level": "Medium",
+    "rationale": "Spamming the boost functionality can disrupt the normal operation of the validator boost system."
   },
   "assumptions": [
-    "The BeraHub component does not enforce strong authentication for boosting requests.",
-    "There is no signature verification of boosting transactions."
+    "There are no rate limits on the number of boost transactions a user can send.",
+    "The BeraHub component does not have rate limiting for the boost validator functionality."
   ],
   "mitigation": {
-    "strategy": "Implement strong authentication for boost requests with signature verification.",
+    "strategy": "Implement rate limiting on the BeraHub component to prevent users from spamming the boost validator functionality.",
     "type": "Technical Control",
     "priority": "Medium"
   },
-  "description": "A malicious actor could boost a validator using someone else's identity by spoofing the boost request.",
+  "description": "An attacker can spam the boost validator functionality, causing a denial of service and disrupting the normal operation of the validator boost system.",
   "trace_source": {
     "doc_reference": "guides/boost_a_validator.md",
     "matched_capability": "boosts a validator with $BGT"

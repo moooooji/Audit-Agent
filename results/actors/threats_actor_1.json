@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "stride_category": "Spoofing",
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
@@ -20,49 +20,40 @@
   },
   "trust_boundary_risk": {
     "boundary_id": 2,
-    "boundary_name": "Smart Contract Boundary",
+    "boundary_name": "Governance Trust Boundary",
     "between_component_ids": [
-      3,
-      5,
-      6,
-      7,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16
+      3
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "An attacker could potentially spoof votes by impersonating legitimate voters."
+    "gap_description": "Votes could be intercepted and altered before being recorded, skewing the outcome of a governance decision."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "`$BGT` holders cast their votes."
+    "description": "External user with the ability to influence governance decisions."
   },
   "behavioral_risk": {
     "behavior_id": 2,
-    "risk_level": "Medium",
-    "rationale": "Spoofed votes could change the outcome of governance decisions."
+    "risk_level": "Low",
+    "rationale": "Vote tampering can significantly impact the governance process, but the risk is mitigated by integrity requirements."
   },
   "assumptions": [
-    "There is no strong authentication mechanism in place to verify the identity of voters.",
-    "An attacker can compromise or control user accounts."
+    "The voting process is vulnerable to man-in-the-middle attacks.",
+    "There is no end-to-end encryption or signature verification for votes."
   ],
   "mitigation": {
-    "strategy": "Implement strong authentication using cryptographic signatures to verify voter identity.",
+    "strategy": "Implement end-to-end encryption and signature verification to ensure the integrity of votes.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
+  "description": "A malicious actor could intercept and tamper with votes, changing the outcome of governance proposals.",
   "trace_source": {
-    "doc_reference": "governance.md",
+    "doc_reference": "governance.md#active-voting",
     "matched_capability": "cast their votes during the voting period"
   }
 }

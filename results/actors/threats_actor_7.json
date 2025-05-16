@@ -1,6 +1,6 @@
 {
   "id": 4,
-  "stride_category": "Denial of Service",
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
@@ -19,50 +19,38 @@
     "data_description": "$BERA"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Smart Contract Boundary",
-    "between_component_ids": [
-      3,
-      5,
-      6,
-      7,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16
-    ]
+    "boundary_id": 0,
+    "boundary_name": "",
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A large redemption volume might cause unavailability."
+    "gap_description": "User can spoof the burn call for $BGT for $BERA"
   },
   "actor_risk": {
     "actor_id": 7,
     "type": "External User",
     "overprivileged": false,
-    "description": "User can redeem $BGT for $BERA."
+    "description": "User redeeming $BGT for $BERA."
   },
   "behavioral_risk": {
     "behavior_id": 6,
     "risk_level": "Low",
-    "rationale": "Large redemptions could cause network congestion."
+    "rationale": "A user may spoof an authorization to burn the contract and call a different contract.  "
   },
   "assumptions": [
-    "There is a lack of rate limiting or circuit breakers on $BGT to $BERA redemptions.",
-    "Large $BGT redemptions are not handled efficiently, leading to network congestion."
+    "No user input to specify who is receiving $BERA."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting or circuit breakers to prevent large $BGT to $BERA redemptions from overwhelming the network.",
+    "strategy": "Check for signature of original caller.",
     "type": "Technical Control",
-    "priority": "Low"
+    "priority": "Medium"
   },
-  "description": "A user may perform a large $BGT to $BERA redemption, causing a denial of service to other users.",
+  "description": "User calls a separate smart contract that initiates the burning of their $BGT. The attacker could initiate a separate smart contract that calls the burn function on the $BGT but sends the $BERA to a different user.",
   "trace_source": {
     "doc_reference": "pol/tokens/$BGT",
-    "matched_capability": "Redeem $BGT For $BERA"
+    "matched_capability": "Redeem $BGT for $BERA"
   }
 }

@@ -1,0 +1,60 @@
+{
+  "id": 2,
+  "stride_category": "Denial of Service",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 10,
+    "behavior_id": 0,
+    "capability_match": "offer Incentive tokens for their respective Reward Vault"
+  },
+  "threat_target": {
+    "component_id": 7,
+    "asset_ids": [
+      2
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 0,
+    "data_flow_id": 8,
+    "data_description": "Incentive Tokens"
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 2,
+    "boundary_name": "Smart Contract Trust Boundary",
+    "between_component_ids": [
+      7,
+      12
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "A large number of incentive tokens offered may cause a denial of service due to computational limits."
+  },
+  "actor_risk": {
+    "actor_id": 10,
+    "type": "Partner System",
+    "overprivileged": false,
+    "description": "The protocol might unintentionally or maliciously flood the Reward Vaults with a large amount of incentive tokens."
+  },
+  "behavioral_risk": {
+    "behavior_id": 0,
+    "risk_level": "Medium",
+    "rationale": "Offering extremely high numbers of incentive tokens may lead to DoS issues on the system."
+  },
+  "assumptions": [
+    "The smart contracts lack proper rate limiting or resource management for incentive token distribution.",
+    "There are no mechanisms to prevent the offering of excessive incentive tokens."
+  ],
+  "mitigation": {
+    "strategy": "Implement rate limiting and resource management mechanisms to prevent DoS attacks through incentive token distribution.",
+    "type": "Technical Control",
+    "priority": "Medium"
+  },
+  "description": "Protocol floods Reward Vaults with an extremely large amount of incentive tokens, leading to a Denial of Service.",
+  "trace_source": {
+    "doc_reference": "pol/incentives.md",
+    "matched_capability": "offer Incentive tokens for their respective Reward Vault"
+  }
+}

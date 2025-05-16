@@ -1,6 +1,6 @@
 {
   "id": 3,
-  "stride_category": "Information Disclosure",
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 8,
@@ -10,7 +10,7 @@
   "threat_target": {
     "component_id": 7,
     "asset_ids": [
-      2
+      4
     ]
   },
   "attack_surface": {
@@ -19,26 +19,15 @@
     "data_description": "Incentive Tokens"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Smart Contract Boundary",
-    "between_component_ids": [
-      3,
-      5,
-      6,
-      7,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16
-    ]
+    "boundary_id": 0,
+    "boundary_name": "",
+    "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "Incentive token offering reveals Token Manager's strategy."
+    "availability_required": true,
+    "gap_description": "Malicious Token Manager may intentionally halt the offering of Incentive Tokens, causing a denial of service for the Reward Vault users."
   },
   "actor_risk": {
     "actor_id": 8,
@@ -49,20 +38,20 @@
   "behavioral_risk": {
     "behavior_id": 8,
     "risk_level": "Low",
-    "rationale": "Revealing incentive strategies allows for front-running of incentive rewards."
+    "rationale": "A malicious Token Manager could disrupt the system by halting the offering of Incentive Tokens, leading to a denial of service for Reward Vault users."
   },
   "assumptions": [
-    "The incentive offering data is publicly visible on the blockchain.",
-    "Attackers are monitoring blockchain data for the incentive information."
+    "The Token Manager is a trusted entity that will always act in the best interest of the system.",
+    "There is no backup mechanism to continue offering Incentive Tokens if the Token Manager becomes unavailable or malicious."
   ],
   "mitigation": {
-    "strategy": "Consider using a commit-reveal scheme or other techniques to obfuscate incentive strategies.",
-    "type": "Technical Control",
-    "priority": "Low"
+    "strategy": "Implement a multi-signature scheme for the Token Manager's wallet to prevent a single point of failure. Introduce a governance mechanism to replace a malicious or unavailable Token Manager.",
+    "type": "Process Control",
+    "priority": "Medium"
   },
-  "description": "Information about the Incentive Token offering, such as the amount and rate, is publicly available, which could allow attackers to front-run the incentive rewards by strategically positioning themselves to take advantage of the increased rewards.",
+  "description": "A malicious or unavailable Token Manager could halt the offering of Incentive Tokens, causing a denial of service for users of the Reward Vault.",
   "trace_source": {
-    "doc_reference": "pol/incentives.md#offering-incentives",
+    "doc_reference": "guides/add_incentives_for_reward_vault.md",
     "matched_capability": "offer Incentive Tokens"
   }
 }

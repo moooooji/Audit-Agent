@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "stride_category": "Denial of Service",
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
@@ -27,9 +27,9 @@
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A large number of delegation transactions could congest the network."
+    "gap_description": "A malicious actor spoofs delegation source identity."
   },
   "actor_risk": {
     "actor_id": 6,
@@ -40,20 +40,20 @@
   "behavioral_risk": {
     "behavior_id": 3,
     "risk_level": "Low",
-    "rationale": "High volume of delegation transactions can lead to network congestion."
+    "rationale": "A malicious actor spoofs delegation source identity to undermine trust."
   },
   "assumptions": [
-    "The system doesn't have effective rate limiting or transaction prioritization mechanisms in place.",
-    "There is no cost associated with delegating $BGT tokens that would disincentivize spamming the network with delegation transactions."
+    "There is no sufficient identity validation for delegation transactions.",
+    "The system does not verify the source of delegation messages."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting and transaction fee adjustments to prevent DoS attacks via excessive delegation transactions. Prioritize critical network operations.",
+    "strategy": "Implement strong identity validation for delegation transactions. Ensure source is cryptographically verified.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "An attacker could perform a denial-of-service attack by flooding the network with a large number of $BGT delegation transactions, causing network congestion and preventing legitimate users from delegating.",
+  "description": "A malicious actor could impersonate a legitimate BGT holder and delegate tokens on their behalf, potentially manipulating validator boost and compromising the governance process.",
   "trace_source": {
-    "doc_reference": "guides/boost-a-validator.md",
+    "doc_reference": "guides/boost_a_validator.md",
     "matched_capability": "delegate them to validators"
   }
 }

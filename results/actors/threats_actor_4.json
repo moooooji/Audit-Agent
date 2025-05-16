@@ -1,6 +1,6 @@
 {
   "id": 3,
-  "stride_category": "Information Disclosure",
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
@@ -16,7 +16,7 @@
   "attack_surface": {
     "behavior_id": 4,
     "data_flow_id": 4,
-    "data_description": "$BGT emissions"
+    "data_description": "$BGT Emissions"
   },
   "trust_boundary_risk": {
     "boundary_id": 1,
@@ -26,34 +26,34 @@
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
-    "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "Internal metrics about validators boost and Reward Vaults earning statistics."
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "A malicious actor may spoof a valid validator identity to maliciously direct $BGT emissions."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "Validators direct $BGT emissions."
+    "description": "A malicious validator can compromise the integrity of BGT distribution."
   },
   "behavioral_risk": {
     "behavior_id": 4,
-    "risk_level": "Low",
-    "rationale": "Internal details about Reward Vaults earning statistics."
+    "risk_level": "Medium",
+    "rationale": "If a validator's identity can be spoofed, the system loses control over emissions."
   },
   "assumptions": [
-    "Validator internal information about staking amounts is not confidential.",
-    "Reward Vaults share earnings from Validators publically."
+    "The validator key management is weak, leading to unauthorized use.",
+    "The on-chain validation of validator actions is insufficient."
   ],
   "mitigation": {
-    "strategy": "Ensure validator data is not internal, but public to view.",
-    "type": "Policy",
-    "priority": "Low"
+    "strategy": "Strengthen validator key management and multi-factor authentication. Implement on-chain checks to prevent unauthorized validator actions.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "A malicious validator shares Reward Vault selection strategy with their friend.",
+  "description": "An attacker who gains control over a validator's identity can direct $BGT emissions to attacker-controlled reward vaults. This undermines the Proof-of-Liquidity model.",
   "trace_source": {
-    "doc_reference": "pol/rewardvaults.md",
+    "doc_reference": "pol/bgtmath.md",
     "matched_capability": "direct $BGT emissions to Reward Vaults"
   }
 }

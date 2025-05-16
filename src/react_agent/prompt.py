@@ -402,7 +402,7 @@ Each item should help ensure that the threat is effectively mitigated or control
 1. **Complete System Model**
    Includes context for checklist generation
    
-   `{target_docs}`
+   `{context}`
    
 2. **Focused Analysis Threats**
 You are given a JSON object that contains one or more `threats`, following this schema:
