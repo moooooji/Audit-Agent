@@ -23,6 +23,8 @@ from react_agent.variables import (
 
 threat_count = 0
 checklist_count = 0
+BATCH_SIZE = 10
+
 
 from time import sleep
 from react_agent.Utils.RedisUtil import RedisUtil
@@ -74,43 +76,87 @@ def assess_architecture(state: State) -> State:
         "is_assessment_analysis": False, 
         "architecture_feedback_loop_count": state.architecture_feedback_loop_count+1
         }
+    
+# 병렬 처리를 위한 세마포어 변수 추가
+import threading
+api_semaphore = threading.Semaphore(1)  # 한 번에 하나의 스레드만 API 대기 로직 실행
+processed_threats_batches = 0  # 처리된 위협 배치 수 추적
+processed_checklist_batches = 0  # 처리된 체크리스트 배치 수 추적
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
     state.is_threat_analysis = True
-    id_weight = 1
+
+    global threat_count
+    global processed_threats_batches
     
+    # 스레드 안전한 카운터 증가
+    with api_semaphore:
+        threat_count += 1
+        print("[+] threat_count : ", threat_count)
+        print("[+] actors_map : ", len(actors_map))
+        
+        # 배치 단위로 처리 확인
+        current_batch = (threat_count - 1) // BATCH_SIZE
+        if current_batch > processed_threats_batches:
+            processed_threats_batches = current_batch
+            print("gemini api initializing for threats batch ", current_batch, " ...")
+            sleep(60)
+            print("gemini api initialized for threats batch ", current_batch)
+
     response = generate_llm_response(state)
     # parsing response and save to file
     response_dict = json_str_to_dict(response.text)
-    for i in response_dict["threats"]:
-        i["id"] = id_weight
-        id_weight += 1
-        threats_list.append(i)
-        save_json(i, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
     
+    print(f"[+] Processing actor {state.current_actor_id+1}...")
+    print(f"[+] Threats count: {len(response_dict['threats'])}")
+    for threat in response_dict["threats"]:
+        threats_list.append(threat)
+        # ID 없이 개별 파일에 저장
+        save_json(threat, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
+
     print(f"Saved threats for actor {state.current_actor_id+1}")
     
-    global threat_count
-    threat_count += 1
-    
     if threat_count == len(actors_map):
+        # 모든 위협이 수집된 후 ID를 순차적으로 부여
+        threat_count = 0
+        id_weight = 1
+        for threat in threats_list:
+            threat["id"] = id_weight
+            id_weight += 1
+            
         save_json({ "threats": threats_list }, 'results/all_threats.json')
         print("Saved all threats in 'all_threats.json'")
         print("completed analyzing threats")
-        print("sleep 60 seconds ... ")
-        sleep(60)
-        print("sleep 60 seconds ... done")
         
+        print("gemini api initializing ...")
+        sleep(60)
+        print("gemini api initialized")
+
     return {"is_threat_analysis": False}
 
 def generate_checklist(state: State) -> State:
     
-    state.is_initial_checklist_analysis = True
-        
     id_weight = 1
     checklist_items = []
+    
+    global checklist_count
+    global processed_checklist_batches
+    
+    # 스레드 안전한 카운터 증가
+    with api_semaphore:
+        checklist_count += 1
+        print("[+] checklist_count : ", checklist_count)
+        print("[+] actors_map : ", len(actors_map))
         
+        # 배치 단위로 처리 확인
+        current_batch = (checklist_count - 1) // BATCH_SIZE
+        if current_batch > processed_checklist_batches:
+            processed_checklist_batches = current_batch
+            print("gemini api initializing for checklist batch ", current_batch, " ...")
+            sleep(60)
+            print("gemini api initialized for checklist batch ", current_batch)
+    
     if state.checklist_feedback_loop_count == 0:
         print("initial checklist analysis ...")
         state.is_initial_checklist_analysis = True
@@ -131,14 +177,17 @@ def generate_checklist(state: State) -> State:
         checklist_items.append(checklist_item)
     print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
     
-    global checklist_count
-    checklist_count += 1
-    
     if checklist_count == len(actors_map):
+        
+        checklist_count = 0
         with open("results/checklist.json", "w") as f:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
         print("Saved checklist in 'results/checklist.json'")
         print("completed generating checklist")
+        
+        print("gemini api initializing ...")
+        sleep(60)
+        print("gemini api initialized")
     
     return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
 
@@ -165,7 +214,7 @@ def init_db(state: State) -> State:
     state.is_init_db = False
     
 def code_binding(state: State) -> State:
-    if state.checklist_with_code_feedback_loop_count == 0:
+    if state.code_binding_feedback_loop_count == 0:
         print("initial code binding ...")
         
         with open("results/checklist.json", "r") as f:
@@ -176,13 +225,10 @@ def code_binding(state: State) -> State:
             function_description = item["description"]
             similar_functions = AnalyzeSolidity.search(function_description, 3)
             similar_functions_list.append(similar_functions)
-        print("[+] similar_functions_list: ", similar_functions_list)
-        print("[+] similar_functions_length: ", len(similar_functions_list))
         
         function_codes = {}
         # parsing contract names and function names
         for i, similar_functions in enumerate(similar_functions_list):
-            print(f"\n[+] Processing checklist item {i+1}:")
             function_codes[i] = {
                 "checklist_item_id": i,
                 "similar_functions": []
@@ -204,25 +250,27 @@ def code_binding(state: State) -> State:
         with open("results/code_binding.json", "w") as f:
             json.dump({ "function_codes": function_codes }, f, ensure_ascii=False, indent=2)
         state.is_initial_code_binding = True
-        # response = generate_llm_response(state)
+        
         print("completed initial code binding")
     else:
         print("feedback loop code binding ...")
         state.is_feedback_code_binding = True
-        response = generate_llm_response(state)
         print("completed feedback loop code binding")
     
     return {"is_initial_code_binding": False, "is_feedback_code_binding": False}
 
-def assess_checklist_with_code(state: State) -> State:
-    print("assessing checklist with code ...")
-    state.is_assessment_checklist_with_code = True
+def assess_code_binding(state: State) -> State:
+    print("assessing code binding ...")
+    state.is_assessment_code_binding = True
     
-    generate_llm_response(state)
+    response = generate_llm_response(state)
     
-    print("completed assessing checklist with code")
+    response_dict = json_str_to_dict(response.text)
+    save_json(response_dict, "results/assessment_code_binding.json")
+    
+    print("completed assessing code binding")
     
     return {
-        "is_assessment_checklist_with_code": False, 
-        "checklist_with_code_feedback_loop_count": state.checklist_with_code_feedback_loop_count+1
+        "is_assessment_code_binding": False, 
+        "code_binding_feedback_loop_count": state.code_binding_feedback_loop_count+1
         }

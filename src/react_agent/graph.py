@@ -8,7 +8,7 @@ from react_agent.node import (
     init_db,
     code_binding,
     assess_checklist,
-    assess_checklist_with_code
+    assess_code_binding
 )
 
 threat_count = 0
@@ -16,7 +16,7 @@ threat_count = 0
 from react_agent.variables import (
     ARCHITECTURE_FEEDBACK_LOOP_COUNT, 
     CHECKLIST_FEEDBACK_LOOP_COUNT, 
-    CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT,
+    CODE_BINDING_FEEDBACK_LOOP_COUNT,
     actors_map
     )
 
@@ -36,19 +36,20 @@ def checklist_feedback_loop_edge(state: State):
         return "code_binding"
 
 def checklist_with_code_feedback_loop_edge(state: State):
-    if state.checklist_with_code_feedback_loop_count  < CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT:
-        return "assess_checklist_with_code"
+    if state.code_binding_feedback_loop_count  < CODE_BINDING_FEEDBACK_LOOP_COUNT:
+        return "assess_code_binding"
     else:
         return "__end__"
     
 def parallel_threats_processing(state: State):
+    
     return [Send("analyze_threats", State(
         target_docs_path=state.target_docs_path,
         current_actor_id=i,
         is_threat_analysis=state.is_threat_analysis,
         architecture_feedback_loop_count=state.architecture_feedback_loop_count,
         checklist_feedback_loop_count=state.checklist_feedback_loop_count,
-        checklist_with_code_feedback_loop_count=state.checklist_with_code_feedback_loop_count,
+        code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
         is_initial_architecture_analysis=state.is_initial_architecture_analysis,
         is_assessment_analysis=state.is_assessment_analysis,
         is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
@@ -58,7 +59,7 @@ def parallel_threats_processing(state: State):
         is_feedback_code_binding=state.is_feedback_code_binding,
         is_init_db=state.is_init_db,
         is_assessment_checklist=state.is_assessment_checklist,
-        is_assessment_checklist_with_code=state.is_assessment_checklist_with_code,
+        is_assessment_code_binding=state.is_assessment_code_binding,
     )) for i in range(len(actors_map))]
     
 def parallel_checklist_processing(state: State):
@@ -74,7 +75,7 @@ def parallel_checklist_processing(state: State):
             is_threat_analysis=state.is_threat_analysis,
             architecture_feedback_loop_count=state.architecture_feedback_loop_count,
             checklist_feedback_loop_count=state.checklist_feedback_loop_count,
-            checklist_with_code_feedback_loop_count=state.checklist_with_code_feedback_loop_count,
+            code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
             is_initial_architecture_analysis=state.is_initial_architecture_analysis,
             is_assessment_analysis=state.is_assessment_analysis,
             is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
@@ -84,7 +85,7 @@ def parallel_checklist_processing(state: State):
             is_feedback_code_binding=state.is_feedback_code_binding,
             is_init_db=state.is_init_db,
             is_assessment_checklist=state.is_assessment_checklist,
-            is_assessment_checklist_with_code=state.is_assessment_checklist_with_code,
+            is_assessment_code_binding=state.is_assessment_code_binding,
         )) for i in range(len(actors_map))]
     else:
         return "__end__"
@@ -96,7 +97,7 @@ def parallel_feedback_checklist_processing(state: State):
         is_threat_analysis=state.is_threat_analysis,
         architecture_feedback_loop_count=state.architecture_feedback_loop_count,
         checklist_feedback_loop_count=state.checklist_feedback_loop_count,
-        checklist_with_code_feedback_loop_count=state.checklist_with_code_feedback_loop_count,
+        code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
         is_initial_architecture_analysis=state.is_initial_architecture_analysis,
         is_assessment_analysis=state.is_assessment_analysis,
         is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
@@ -106,7 +107,7 @@ def parallel_feedback_checklist_processing(state: State):
         is_feedback_code_binding=state.is_feedback_code_binding,
         is_init_db=state.is_init_db,
         is_assessment_checklist=state.is_assessment_checklist,
-        is_assessment_checklist_with_code=state.is_assessment_checklist_with_code,
+        is_assessment_code_binding=state.is_assessment_code_binding,
     )) for i in range(len(actors_map))]
 
 # define a new graph
@@ -120,7 +121,7 @@ builder.add_node(generate_checklist)
 builder.add_node(init_db)
 builder.add_node(code_binding)
 builder.add_node(assess_checklist)
-builder.add_node(assess_checklist_with_code)
+builder.add_node(assess_code_binding)
 
 # define edges
 builder.add_edge("__start__", "analyze_architecture")
@@ -128,13 +129,15 @@ builder.add_edge("__start__", "analyze_architecture")
 # jump based on feedback loop count
 builder.add_conditional_edges("analyze_architecture", architecture_feedback_loop_edge, ["assess_architecture", "analyze_threats"])
 builder.add_edge("assess_architecture", "analyze_architecture")
+
 # parallel edges
 builder.add_edge("analyze_threats", "init_db")
+
 builder.add_conditional_edges("analyze_threats", parallel_checklist_processing, ["generate_checklist", "__end__"])
 builder.add_conditional_edges("generate_checklist", checklist_feedback_loop_edge, ["assess_checklist", "code_binding"])
 builder.add_conditional_edges("assess_checklist", parallel_feedback_checklist_processing, ["generate_checklist", "__end__"])
-builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["assess_checklist_with_code", "__end__"])
-builder.add_edge("assess_checklist_with_code", "code_binding")
+builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["assess_code_binding", "__end__"])
+builder.add_edge("assess_code_binding", "code_binding")
 builder.add_edge("init_db", "__end__")
 
 # Compile the builder into an executable graph
