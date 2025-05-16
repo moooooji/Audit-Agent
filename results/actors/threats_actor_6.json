@@ -1,57 +1,59 @@
 {
-  "id": 4,
-  "stride_category": "Repudiation",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": 39,
-    "capability_match": "Review RFRV proposals"
+    "behavior_id": 3,
+    "capability_match": "delegate them to validators"
   },
   "threat_target": {
-    "component_id": 9,
-    "asset_ids": []
+    "component_id": 4,
+    "asset_ids": [
+      2
+    ]
   },
   "attack_surface": {
-    "behavior_id": 39,
-    "data_flow_id": -1,
-    "data_description": "Submission of RFRV review outcome"
+    "behavior_id": 3,
+    "data_flow_id": 3,
+    "data_description": "$BGT Delegation"
   },
   "trust_boundary_risk": {
-    "boundary_id": 4,
-    "boundary_name": "Governance Boundary",
+    "boundary_id": 1,
+    "boundary_name": "Validator Trust Boundary",
     "between_component_ids": [
-      9
+      4
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Review outcomes are not cryptographically signed or sufficiently logged, allowing the reviewer to deny their action."
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "A large number of delegation requests can overwhelm the BeraHub component."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "Internal Service",
+    "type": "External User",
     "overprivileged": false,
-    "description": "Can perform review actions and potentially deny having performed them."
+    "description": "accumulate tokens"
   },
   "behavioral_risk": {
-    "behavior_id": 39,
-    "risk_level": "Low",
-    "rationale": "Lack of non-repudiation hinders accountability but doesn't directly compromise system state unless combined with tampering."
+    "behavior_id": 3,
+    "risk_level": "Medium",
+    "rationale": "A DoS attack could prevent legitimate users from delegating their $BGT."
   },
   "assumptions": [
-    "Review outcomes are not logged immutably.",
-    "Reviewer identity is not strongly tied to the outcome record."
+    "The BeraHub component does not have adequate rate limiting or resource management mechanisms in place.",
+    "The Berachain network can be spammed with transactions by a malicious actor."
   ],
   "mitigation": {
-    "strategy": "Implement cryptographic signing and immutable logging of all review decisions.",
+    "strategy": "Implement rate limiting and resource management mechanisms within the BeraHub component to prevent resource exhaustion.",
     "type": "Technical Control",
-    "priority": "Low"
+    "priority": "Medium"
   },
-  "description": "The BGT Foundation could potentially repudiate a review outcome (e.g., denying approval of a malicious RFRV), hindering accountability and post-incident analysis.",
+  "description": "An attacker could flood the system with numerous delegation requests, causing the BeraHub component to become unresponsive or unavailable.",
   "trace_source": {
-    "doc_reference": "governance/rewardvault.md",
-    "matched_capability": "Review RFRV proposals"
+    "doc_reference": "guides/boost-a-validator.md",
+    "matched_capability": "delegate them to validators"
   }
 }

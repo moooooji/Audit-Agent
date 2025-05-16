@@ -12,9 +12,8 @@ from react_agent.prompt import (
     THREAT_ANALYSIS_TEMPLATE, THREAT_ANALYSIS_CONFIG,
     CHECKLIST_TEMPLATE, CHECKLIST_CONFIG,
     CHECKLIST_CORRECTION_TEMPLATE, CHECKLIST_CORRECTION_CONFIG,
-    CODE_BINDING_TEMPLATE, CODE_BINDING_CONFIG,
     CHECKLIST_ASSESSMENT_TEMPLATE, CHECKLIST_ASSESSMENT_CONFIG,
-    ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE, ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG
+    CODE_BINDING_ASSESSMENT_TEMPLATE, CODE_BINDING_ASSESSMENT_CONFIG
 )
 
 from react_agent.Utils.ExtractEntryFunctions import ExtractEntryFunctions
@@ -35,7 +34,7 @@ from react_agent.variables import (
     client,
     ARCHITECTURE_FEEDBACK_LOOP_COUNT,
     CHECKLIST_FEEDBACK_LOOP_COUNT,
-    CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT
+    CODE_BINDING_FEEDBACK_LOOP_COUNT
 )
 
 def init_state(state: State) -> State:
@@ -312,53 +311,33 @@ def generate_llm_response(state: State) -> str:
         
         return response
         
-    # verify checklist with code
-    elif state.is_initial_code_binding:
-        print("=============code binding node=============")
-        # checklist = load_file("results/checklist.json")
-        
-        # prompt = CODE_BINDING_TEMPLATE.replace(
-        # "{checklist}", checklist
-        # )
-        
-        # contents = [
-        #     types.Content(
-        #         role="user",
-        #         parts=[types.Part.from_text(text=prompt)],
-        #     ),
-        # ]
-        
-        # response = client.models.generate_content(
-        #     model=model,
-        #     contents=contents,
-        #     config=CODE_BINDING_CONFIG,
-        # )
-        
-    elif state.is_feedback_code_binding:
-        print("=============feedback code binding node=============")
-        
     # feedback loop verify checklist with code
-    elif state.is_assessment_checklist_with_code and state.checklist_with_code_feedback_loop_count < CHECKLIST_WITH_CODE_FEEDBACK_LOOP_COUNT:
+    elif state.is_assessment_code_binding and state.code_binding_feedback_loop_count < CODE_BINDING_FEEDBACK_LOOP_COUNT:
         print("=============assess checklist with code node=============")
         
-        # prompt = VERIFY_CHECKLIST_WITH_CODE_TEMPLATE.replace(
-        #     "{checklist}", state.checklist_prompt
-        # )
+        code_binding = load_file("results/code_binding.json")
+        checklist_items = load_file("results/checklist.json")
         
-        # contents = [
-        #     types.Content(
-        #         role="user",
-        #         parts=[types.Part.from_text(text=prompt)],
-        #     ),
-        # ]
+        prompt = CODE_BINDING_ASSESSMENT_TEMPLATE.replace(
+            "{code_binding}", code_binding,
+        ).replace(
+            "{checklist_items}", checklist_items
+        )
         
-        # response = client.models.generate_content(
-        #     model=model,
-        #     contents=contents,
-        #     config=VERIFY_CHECKLIST_WITH_CODE_CONFIG,
-        # )
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=prompt)],
+            ),
+        ]
         
-        return
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=CODE_BINDING_ASSESSMENT_CONFIG,
+        )
+        
+        return response
     
 def map_update(response_dict: dict, state: State):
     """map update"""

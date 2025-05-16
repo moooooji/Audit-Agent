@@ -18,7 +18,7 @@ class State(InputState):
     # feedback loop count
     architecture_feedback_loop_count: int = field(default=0)
     checklist_feedback_loop_count: int = field(default=0)
-    checklist_with_code_feedback_loop_count: int = field(default=0)
+    code_binding_feedback_loop_count: int = field(default=0)
     
     # node flag
     is_initial_architecture_analysis: bool = field(default=False)
@@ -31,7 +31,7 @@ class State(InputState):
     is_initial_code_binding: bool = field(default=False)
     is_feedback_code_binding: bool = field(default=False)
     is_assessment_checklist: bool = field(default=False)
-    is_assessment_checklist_with_code: bool = field(default=False)
+    is_assessment_code_binding: bool = field(default=False)
     
     # node info
     current_actor_id: int = field(default=0)

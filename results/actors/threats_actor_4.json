@@ -1,60 +1,59 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 2,
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 21,
-    "capability_match": "Cancel malicious governance proposals"
+    "behavior_id": 4,
+    "capability_match": "direct $BGT emissions to Reward Vaults"
   },
   "threat_target": {
-    "component_id": 9,
+    "component_id": 7,
     "asset_ids": [
-      10
+      2
     ]
   },
   "attack_surface": {
-    "behavior_id": 21,
-    "data_flow_id": 10,
-    "data_description": "Cancellation function call on Governance Contract"
+    "behavior_id": 4,
+    "data_flow_id": 4,
+    "data_description": "$BGT emissions"
   },
   "trust_boundary_risk": {
-    "boundary_id": 5,
-    "boundary_name": "Governance Timelock Security",
+    "boundary_id": 1,
+    "boundary_name": "Validator Trust Boundary",
     "between_component_ids": [
-      9,
       4
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Unauthorized entities could gain the ability to execute the cancellation function."
+    "availability_required": false,
+    "gap_description": "Lack of accountability in $BGT emission direction could allow validators to deny emission directions."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "The Guardian Multisig holds the specific privilege to cancel proposals."
+    "description": "Validators are trusted, which may lead to abuse."
   },
   "behavioral_risk": {
-    "behavior_id": 21,
-    "risk_level": "High",
-    "rationale": "Unauthorized cancellation privilege bypasses governance safeguards."
+    "behavior_id": 4,
+    "risk_level": "Low",
+    "rationale": "Validators have freedom to choose emission targets without public tracking."
   },
   "assumptions": [
-    "The Governance Contract's access control for the cancellation function is vulnerable.",
-    "An attacker can exploit a contract vulnerability or bypass multisig requirements."
+    "Validators can direct $BGT without complete transparency.",
+    "Validators can deny having directed emissions if not adequately tracked."
   ],
   "mitigation": {
-    "strategy": "Conduct thorough smart contract audits, implement strict access controls, and ensure robust multisig logic.",
+    "strategy": "Implement a publicly verifiable logging system for $BGT emission directions by validators.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Low"
   },
-  "description": "An attacker could exploit a vulnerability in the Governance Contract or the multisig mechanism to gain unauthorized privilege to cancel governance proposals without the required Guardian authorization.",
+  "description": "A validator could falsely deny directing $BGT emissions to a specific Reward Vault, hindering auditing and accountability.",
   "trace_source": {
-    "doc_reference": "governance.md#guardian-oversight",
-    "matched_capability": "Cancel malicious governance proposals"
+    "doc_reference": "pol/bgtmath.md",
+    "matched_capability": "direct $BGT emissions to Reward Vaults"
   }
 }

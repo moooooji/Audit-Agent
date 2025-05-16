@@ -1451,34 +1451,107 @@ CHECKLIST_ASSESSMENT_CONFIG = types.GenerateContentConfig(
 )
 
 
-ASSESSMENT_CHECKLIST_WITH_CODE_TEMPLATE = """
-**System**:
-You are a security engineer.
-You are given a JSON object that contains one or more `threats`, following this schema:
+CODE_BINDING_ASSESSMENT_TEMPLATE = """
+**System:** You are a Security Engineer responsible for validating the correctness and completeness of a threat-to-code binding process.
 
-`{Checklist}`
+**Context:**
+
+You are given:
+
+1. **Code Binding Output** – A JSON array of one or more `threats` that have been mapped to relevant source code locations or evidence (e.g., files, functions, or lines).
+   {code_binding}
+
+2. **Checklist Items** – A structured list of checklist items that were originally generated to mitigate or detect these threats. Each checklist item includes `id`, `description`, `linked_threat_id`, and additional metadata.
+   {checklist_items}
+
+---
+
+**Task:**
+
+Evaluate the **code binding output** in relation to the checklist items and documentation. You must verify:
+
+1. **Traceability** – For each threat, does the mapped code artifact clearly correspond to the **linked checklist item**? Is the evidence valid and well-supported?
+
+2. **Completeness** – Are there any threats or checklist items that are **not covered** by any code binding? Flag if a threat has no corresponding implementation or test.
+
+3. **Relevance & Accuracy** – Is the bound code artifact actually relevant to the security concern? Are the file paths, functions, or logic well-scoped and justified?
+
+4. **Schema Compliance** – Does the code binding object include the required fields: `threat_id`, `checklist_id`, `file_path`, `function`, `reason`?
+
+---
+
+**Instructions:**
+
+- Provide a concise **summary** of the overall validation.
+- Then return a list of findings in this schema:
+
+```json
+{
+  "findings": [
+    {
+      "type": "missing_binding",
+      "checklist_id": 2,
+      "description": "Checklist item 2 is not bound to any code artifact."
+    },
+    {
+      "type": "invalid_reference",
+      "threat_id": 5,
+      "description": "Threat 5 is mapped to a file path that does not exist in the source repository."
+    },
+    {
+      "type": "irrelevant_binding",
+      "checklist_id": 7,
+      "description": "The code bound to checklist item 7 does not handle the risk described in its threat."
+    },
+    {
+      "type": "schema_error",
+      "checklist_id": 3,
+      "description": "Missing required field `file_path` in code binding object."
+    }
+  ]
+}
+```
 """
 
-ASSESSMENT_CHECKLIST_WITH_CODE_CONFIG = types.GenerateContentConfig(
+CODE_BINDING_ASSESSMENT_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
+    temperature=0,
     response_schema=genai.types.Schema(
-        type = genai.types.Type.OBJECT,
-        required = ["checklist_items"],
-    ),
-)
-
-CODE_BINDING_TEMPLATE = """
-**System**:
-You are a security engineer.
-You are given a JSON object that contains one or more `threats`, following this schema:
-
-`{Checklist}`
-"""
-
-CODE_BINDING_CONFIG = types.GenerateContentConfig(
-    response_mime_type="application/json",
-    response_schema=genai.types.Schema(
-        type = genai.types.Type.OBJECT,
-        required = ["code_binding"],
-    ),
+        type=genai.types.Type.OBJECT,
+        required=["summary", "findings"],
+        properties={
+            "summary": genai.types.Schema(
+                type=genai.types.Type.STRING
+            ),
+            "findings": genai.types.Schema(
+                type=genai.types.Type.ARRAY,
+                items=genai.types.Schema(
+                    type=genai.types.Type.OBJECT,
+                    required=["type", "description"],
+                    properties={
+                        "type": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            enum=[
+                                "missing_binding",
+                                "invalid_reference",
+                                "irrelevant_binding",
+                                "schema_error"
+                            ]
+                        ),
+                        "threat_id": genai.types.Schema(
+                            type=genai.types.Type.INTEGER,
+                            nullable="True"
+                        ),
+                        "checklist_id": genai.types.Schema(
+                            type=genai.types.Type.INTEGER,
+                            nullable="True"
+                        ),
+                        "description": genai.types.Schema(
+                            type=genai.types.Type.STRING
+                        ),
+                    },
+                ),
+            ),
+        },
+    )
 )

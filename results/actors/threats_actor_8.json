@@ -1,296 +1,68 @@
-[
-  {
-    "id": 14,
-    "stride_category": "Spoofing",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "RPC connection details"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Wallet to Chain",
-      "between_component_ids": [
-        2,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": true,
-      "gap_description": "Wallet does not verify the authenticity of the RPC endpoint."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user relies on correct RPC configuration."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "The behavior involves connecting to an external, potentially untrusted, RPC endpoint."
-    },
-    "assumptions": [
-      "User configures/uses a malicious RPC URL.",
-      "Wallet software does not validate RPC certificates or identity."
-    ],
-    "mitigation": {
-      "strategy": "Educate users, provide verified RPC lists, implement RPC endpoint validation/pinning in wallet software.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "An attacker could set up a fake RPC endpoint to trick users into connecting their wallets, potentially leading to phishing or data theft.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md#berachain-mainnet-rpc-\ud83c\udf10",
-      "matched_capability": "Connect Wallet"
-    }
+{
+  "id": 2,
+  "stride_category": "Spoofing",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 8,
+    "behavior_id": 8,
+    "capability_match": "offer Incentive Tokens"
   },
-  {
-    "id": 15,
-    "stride_category": "Tampering",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": []
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Connection request/response data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Wallet to Chain",
-      "between_component_ids": [
-        2,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "RPC connection is vulnerable to man-in-the-middle attacks if not encrypted."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user's connection data can be intercepted."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "The behavior may allow insecure connections if not properly configured."
-    },
-    "assumptions": [
-      "User connects to an RPC using an insecure protocol (e.g., HTTP).",
-      "Network path between user and RPC is vulnerable to MITM."
-    ],
-    "mitigation": {
-      "strategy": "Enforce secure connection protocols (HTTPS/WSS) for all RPC interactions.",
-      "type": "Technical Control",
-      "priority": "High"
-    },
-    "description": "If RPC connections are not encrypted, an attacker could intercept and modify connection attempts, potentially disrupting the process or injecting malicious data.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md#berachain-mainnet-rpc-\ud83c\udf10",
-      "matched_capability": "Connect Wallet"
-    }
+  "threat_target": {
+    "component_id": 7,
+    "asset_ids": [
+      2
+    ]
   },
-  {
-    "id": 16,
-    "stride_category": "Repudiation",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": []
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Connection handshake data"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Wallet to Chain",
-      "between_component_ids": [
-        2,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": true,
-      "availability_required": false,
-      "gap_description": "The wallet connection handshake does not produce a non-repudiable record."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user's connection actions are not cryptographically bound to their identity."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Low",
-      "rationale": "Wallet connection is typically an off-chain, non-transactional event."
-    },
-    "assumptions": [
-      "Connection logs are the only record of the event.",
-      "Actor controls their wallet and can perform the action without specific identity verification beyond possessing the private key."
-    ],
-    "mitigation": {
-      "strategy": "(Usually accepted risk for connection). Could implement optional signed 'heartbeat' messages, but this adds complexity.",
-      "type": "Process Control",
-      "priority": "Low"
-    },
-    "description": "An external user could deny having connected their wallet to a specific RPC endpoint, as the connection process typically doesn't create a non-repudiable record.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md#berachain-mainnet-rpc-\ud83c\udf10",
-      "matched_capability": "Connect Wallet"
-    }
+  "attack_surface": {
+    "behavior_id": 8,
+    "data_flow_id": 8,
+    "data_description": "Incentive Tokens"
   },
-  {
-    "id": 17,
-    "stride_category": "Information Disclosure",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": [
-        4
-      ]
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "Wallet public address"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Wallet to Chain",
-      "between_component_ids": [
-        2,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": true,
-      "integrity_required": false,
-      "availability_required": false,
-      "gap_description": "RPC operator gains knowledge of connecting public addresses."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user's public address is exposed during connection."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Low",
-      "rationale": "Public address disclosure is inherent to interacting with a blockchain node."
-    },
-    "assumptions": [
-      "RPC operator is malicious or compromised.",
-      "User's public address can be linked to their identity off-chain."
-    ],
-    "mitigation": {
-      "strategy": "User privacy practices (VPN, privacy-focused wallets), select reputable RPCs, RPC operators should have strict data handling policies.",
-      "type": "Process Control",
-      "priority": "Low"
-    },
-    "description": "Connecting a wallet discloses the user's public address to the RPC endpoint operator, which could be misused if the operator is malicious.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md#berachain-mainnet-rpc-\ud83c\udf10",
-      "matched_capability": "Connect Wallet"
-    }
+  "trust_boundary_risk": {
+    "boundary_id": 2,
+    "boundary_name": "Smart Contract Boundary",
+    "between_component_ids": [
+      3,
+      5,
+      6,
+      7,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
   },
-  {
-    "id": 18,
-    "stride_category": "Denial of Service",
-    "origin": {
-      "from_chunk": true,
-      "actor_id": 1,
-      "behavior_id": 1,
-      "capability_match": "Connect Wallet"
-    },
-    "threat_target": {
-      "component_id": 3,
-      "asset_ids": []
-    },
-    "attack_surface": {
-      "behavior_id": 1,
-      "data_flow_id": 1,
-      "data_description": "RPC service endpoint"
-    },
-    "trust_boundary_risk": {
-      "boundary_id": 4,
-      "boundary_name": "Wallet to Chain",
-      "between_component_ids": [
-        2,
-        3
-      ]
-    },
-    "security_gap": {
-      "confidentiality_required": false,
-      "integrity_required": false,
-      "availability_required": true,
-      "gap_description": "Availability of the RPC endpoint is critical for wallet connection."
-    },
-    "actor_risk": {
-      "actor_id": 1,
-      "type": "External User",
-      "overprivileged": false,
-      "description": "External user is dependent on RPC availability."
-    },
-    "behavioral_risk": {
-      "behavior_id": 1,
-      "risk_level": "Medium",
-      "rationale": "The behavior relies on an external service's availability."
-    },
-    "assumptions": [
-      "The specific RPC endpoint is targeted by a DoS attack or experiences operational failure.",
-      "User only has access to a limited number of RPCs."
-    ],
-    "mitigation": {
-      "strategy": "Provide multiple RPC options, promote decentralized RPC networks, RPC infrastructure uses load balancing and DoS mitigation.",
-      "type": "Technical Control",
-      "priority": "Medium"
-    },
-    "description": "A Denial of Service attack on the RPC endpoint or its failure could prevent users from connecting their wallets to the network.",
-    "trace_source": {
-      "doc_reference": "connect_to_berachain.md#berachain-mainnet-rpc-\ud83c\udf10",
-      "matched_capability": "Connect Wallet"
-    }
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "A malicious actor could spoof the Token Manager and offer fraudulent Incentive Tokens, leading to potential misallocation of resources within the Reward Vault."
+  },
+  "actor_risk": {
+    "actor_id": 8,
+    "type": "Internal Service",
+    "overprivileged": false,
+    "description": "One wallet address is responsible for offering an Incentive Token."
+  },
+  "behavioral_risk": {
+    "behavior_id": 8,
+    "risk_level": "High",
+    "rationale": "If a malicious actor spoofs the Token Manager, it can severely affect the Reward Vault's ability to function correctly and distribute rewards as intended."
+  },
+  "assumptions": [
+    "There is no authentication mechanism to verify the identity of the Token Manager.",
+    "The Reward Vault does not validate the origin of the Incentive Tokens."
+  ],
+  "mitigation": {
+    "strategy": "Implement authentication and authorization mechanisms to verify the Token Manager's identity and validate the origin of Incentive Tokens.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "A malicious actor could impersonate the Token Manager and offer fraudulent Incentive Tokens to the Reward Vault, potentially leading to misallocation of resources.",
+  "trace_source": {
+    "doc_reference": "guides/add_incentives_for_reward_vault.md",
+    "matched_capability": "offer Incentive Tokens"
   }
-]
+}
