@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "stride_category": "Tampering",
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
@@ -38,31 +38,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Votes may be tampered with during submission or storage, altering the outcome of a proposal."
+    "gap_description": "An attacker could potentially spoof votes by impersonating legitimate voters."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "External user with the ability to cast votes."
+    "description": "`$BGT` holders cast their votes."
   },
   "behavioral_risk": {
     "behavior_id": 2,
     "risk_level": "Medium",
-    "rationale": "Compromised votes can lead to incorrect governance decisions."
+    "rationale": "Spoofed votes could change the outcome of governance decisions."
   },
   "assumptions": [
-    "There is no mechanism to ensure votes are recorded accurately and immutably.",
-    "The voting system is vulnerable to man-in-the-middle attacks."
+    "There is no strong authentication mechanism in place to verify the identity of voters.",
+    "An attacker can compromise or control user accounts."
   ],
   "mitigation": {
-    "strategy": "Implement end-to-end encryption and signature verification for votes.",
+    "strategy": "Implement strong authentication using cryptographic signatures to verify voter identity.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker may intercept and modify votes, skewing the results and leading to undesired outcomes for the governance process.",
+  "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
   "trace_source": {
-    "doc_reference": "governance.md#active-voting",
+    "doc_reference": "governance.md",
     "matched_capability": "cast their votes during the voting period"
   }
 }

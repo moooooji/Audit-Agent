@@ -5,9 +5,9 @@
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 4,
-        "capability_match": "direct $BGT emissions to Reward Vaults"
+        "actor_id": 8,
+        "behavior_id": 8,
+        "capability_match": "offer Incentive Tokens"
       },
       "threat_target": {
         "component_id": 7,
@@ -16,112 +16,61 @@
         ]
       },
       "attack_surface": {
-        "behavior_id": 4,
-        "data_flow_id": 4,
-        "data_description": "$BGT emissions"
+        "behavior_id": 8,
+        "data_flow_id": 8,
+        "data_description": "Incentive Tokens"
       },
       "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "Validator Trust Boundary",
+        "boundary_id": 2,
+        "boundary_name": "Smart Contract Boundary",
         "between_component_ids": [
-          4
+          3,
+          5,
+          6,
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
         ]
       },
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Malicious validator can direct $BGT emissions to a compromised Reward Vault"
+        "gap_description": "Token Manager could offer malicious incentive tokens."
       },
       "actor_risk": {
-        "actor_id": 4,
+        "actor_id": 8,
         "type": "Internal Service",
         "overprivileged": false,
-        "description": "Validator could be malicious or compromised"
+        "description": "One wallet address is responsible for offering an Incentive Token"
       },
       "behavioral_risk": {
-        "behavior_id": 4,
+        "behavior_id": 8,
         "risk_level": "Medium",
-        "rationale": "Compromised validator could manipulate $BGT emissions"
+        "rationale": "A compromised Token Manager can manipulate the Incentive Tokens offered, impacting the Reward Vaults and $BGT distribution."
       },
       "assumptions": [
-        "Validators are trusted to direct $BGT emissions honestly",
-        "Reward Vaults can be compromised",
-        "There is no validation of Reward Vault integrity when validators direct emissions"
+        "The Token Manager's wallet can be compromised.",
+        "The smart contract does not have sufficient validation of Incentive Tokens."
       ],
       "mitigation": {
-        "strategy": "Implement validation checks on the Reward Vault's integrity before directing emissions, potentially involving community review or automated audits",
+        "strategy": "Implement strict validation and whitelisting of Incentive Tokens.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "A compromised validator could direct $BGT emissions to a malicious Reward Vault, potentially stealing funds from users who stake in that vault.",
+      "description": "The Token Manager could offer Incentive Tokens that are malicious or have unintended consequences, leading to a loss of funds for users staking in the Reward Vaults.",
       "trace_source": {
-        "doc_reference": "pol/rewardvaults.md",
-        "matched_capability": "direct $BGT emissions to Reward Vaults"
+        "doc_reference": "pol/incentives.md#offering-incentives",
+        "matched_capability": "offer Incentive Tokens"
       }
     },
     {
       "id": 2,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 4,
-        "capability_match": "direct $BGT emissions to Reward Vaults"
-      },
-      "threat_target": {
-        "component_id": 7,
-        "asset_ids": [
-          2
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 4,
-        "data_flow_id": 4,
-        "data_description": "$BGT emissions"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "Validator Trust Boundary",
-        "between_component_ids": [
-          4
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Lack of accountability in $BGT emission direction could allow validators to deny emission directions."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Internal Service",
-        "overprivileged": false,
-        "description": "Validators are trusted, which may lead to abuse."
-      },
-      "behavioral_risk": {
-        "behavior_id": 4,
-        "risk_level": "Low",
-        "rationale": "Validators have freedom to choose emission targets without public tracking."
-      },
-      "assumptions": [
-        "Validators can direct $BGT without complete transparency.",
-        "Validators can deny having directed emissions if not adequately tracked."
-      ],
-      "mitigation": {
-        "strategy": "Implement a publicly verifiable logging system for $BGT emission directions by validators.",
-        "type": "Technical Control",
-        "priority": "Low"
-      },
-      "description": "A validator could falsely deny directing $BGT emissions to a specific Reward Vault, hindering auditing and accountability.",
-      "trace_source": {
-        "doc_reference": "pol/bgtmath.md",
-        "matched_capability": "direct $BGT emissions to Reward Vaults"
-      }
-    },
-    {
-      "id": 3,
-      "stride_category": "Tampering",
+      "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
         "actor_id": 8,
@@ -159,105 +108,106 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "The Incentive Token offered by the Token Manager could be manipulated or altered before reaching the Reward Vault, leading to incorrect incentive distribution."
+        "gap_description": "Compromised Token Manager account could be used to offer fraudulent incentive tokens."
       },
       "actor_risk": {
         "actor_id": 8,
         "type": "Internal Service",
         "overprivileged": false,
-        "description": "One wallet address is responsible for offering an Incentive Token."
+        "description": "One wallet address is responsible for offering an Incentive Token"
       },
       "behavioral_risk": {
         "behavior_id": 8,
-        "risk_level": "Medium",
-        "rationale": "If the Incentive Tokens are tampered with, it could affect the Reward Vault's ability to provide accurate incentives and rewards to users."
+        "risk_level": "High",
+        "rationale": "A malicious actor could use the Token Manager's privileges to manipulate the $BGT emissions by directing them toward fraudulent reward vaults, benefiting the attacker."
       },
       "assumptions": [
-        "There are no integrity checks on the Incentive Tokens offered by the Token Manager.",
-        "The communication channel between the Token Manager and the Reward Vault is not secured against tampering."
+        "The Token Manager's private key can be compromised.",
+        "The Reward Vault contracts do not adequately validate Incentive Tokens.",
+        "There's no multi-sig or governance check for offering incentive tokens"
       ],
       "mitigation": {
-        "strategy": "Implement integrity checks and secure communication channels between the Token Manager and the Reward Vault.",
+        "strategy": "Implement multi-signature or governance checks for critical actions such as setting incentive rates and offering tokens. Adopt Hardware Wallet for Token Manager account",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "A malicious actor could intercept and tamper with the Incentive Tokens offered by the Token Manager, potentially disrupting the incentive mechanism of the Reward Vault.",
+      "description": "A compromised Token Manager account can be used to spoof legitimate Incentive Token offers, potentially leading to the theft of funds from users interacting with the affected Reward Vaults.",
       "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
+        "doc_reference": "pol/incentives.md#incentive-token-managers",
+        "matched_capability": "offer Incentive Tokens"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 8,
+        "behavior_id": 8,
+        "capability_match": "offer Incentive Tokens"
+      },
+      "threat_target": {
+        "component_id": 7,
+        "asset_ids": [
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 8,
+        "data_flow_id": 8,
+        "data_description": "Incentive Tokens"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "Smart Contract Boundary",
+        "between_component_ids": [
+          3,
+          5,
+          6,
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Incentive token offering reveals Token Manager's strategy."
+      },
+      "actor_risk": {
+        "actor_id": 8,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "One wallet address is responsible for offering an Incentive Token"
+      },
+      "behavioral_risk": {
+        "behavior_id": 8,
+        "risk_level": "Low",
+        "rationale": "Revealing incentive strategies allows for front-running of incentive rewards."
+      },
+      "assumptions": [
+        "The incentive offering data is publicly visible on the blockchain.",
+        "Attackers are monitoring blockchain data for the incentive information."
+      ],
+      "mitigation": {
+        "strategy": "Consider using a commit-reveal scheme or other techniques to obfuscate incentive strategies.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "Information about the Incentive Token offering, such as the amount and rate, is publicly available, which could allow attackers to front-run the incentive rewards by strategically positioning themselves to take advantage of the increased rewards.",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#offering-incentives",
         "matched_capability": "offer Incentive Tokens"
       }
     },
     {
       "id": 4,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 8,
-        "behavior_id": 8,
-        "capability_match": "offer Incentive Tokens"
-      },
-      "threat_target": {
-        "component_id": 7,
-        "asset_ids": [
-          2
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 8,
-        "data_flow_id": 8,
-        "data_description": "Incentive Tokens"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 2,
-        "boundary_name": "Smart Contract Boundary",
-        "between_component_ids": [
-          3,
-          5,
-          6,
-          7,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "A malicious actor could spoof the Token Manager and offer fraudulent Incentive Tokens, leading to potential misallocation of resources within the Reward Vault."
-      },
-      "actor_risk": {
-        "actor_id": 8,
-        "type": "Internal Service",
-        "overprivileged": false,
-        "description": "One wallet address is responsible for offering an Incentive Token."
-      },
-      "behavioral_risk": {
-        "behavior_id": 8,
-        "risk_level": "High",
-        "rationale": "If a malicious actor spoofs the Token Manager, it can severely affect the Reward Vault's ability to function correctly and distribute rewards as intended."
-      },
-      "assumptions": [
-        "There is no authentication mechanism to verify the identity of the Token Manager.",
-        "The Reward Vault does not validate the origin of the Incentive Tokens."
-      ],
-      "mitigation": {
-        "strategy": "Implement authentication and authorization mechanisms to verify the Token Manager's identity and validate the origin of Incentive Tokens.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious actor could impersonate the Token Manager and offer fraudulent Incentive Tokens to the Reward Vault, potentially leading to misallocation of resources.",
-      "trace_source": {
-        "doc_reference": "guides/add_incentives_for_reward_vault.md",
-        "matched_capability": "offer Incentive Tokens"
-      }
-    },
-    {
-      "id": 5,
-      "stride_category": "Spoofing",
+      "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
         "actor_id": 1,
@@ -295,37 +245,37 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "An attacker could submit a malicious governance proposal, impersonating a legitimate user."
+        "gap_description": "Lack of sufficient validation on the governance proposal content could lead to malicious proposals being created."
       },
       "actor_risk": {
         "actor_id": 1,
         "type": "External User",
         "overprivileged": false,
-        "description": "External user with the ability to create governance proposals."
+        "description": "User with sufficient voting power creates a governance proposal."
       },
       "behavioral_risk": {
         "behavior_id": 1,
         "risk_level": "Medium",
-        "rationale": "Successful spoofing could lead to unauthorized changes to the system."
+        "rationale": "Malicious proposals can impact the protocol."
       },
       "assumptions": [
-        "The Governance contracts do not sufficiently verify the identity of the proposal creator.",
-        "An attacker has acquired sufficient voting power to create a proposal."
+        "There are insufficient checks to ensure governance proposals adhere to protocol rules.",
+        "A malicious user gains sufficient voting power."
       ],
       "mitigation": {
-        "strategy": "Implement strong authentication and authorization mechanisms for proposal creation.",
+        "strategy": "Implement stricter validation checks on governance proposals, including format and adherence to protocol rules.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker may submit a fraudulent governance proposal by impersonating a user with sufficient voting power, leading to unintended changes in the system.",
+      "description": "A malicious actor could tamper with the intended functionality of the protocol by creating a carefully crafted malicious governance proposal.",
       "trace_source": {
-        "doc_reference": "governance.md#proposal-creation",
+        "doc_reference": "governance.md",
         "matched_capability": "make important decisions on core functions of Proof-of-Liquidity & other core dApps"
       }
     },
     {
-      "id": 6,
-      "stride_category": "Tampering",
+      "id": 5,
+      "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
         "actor_id": 1,
@@ -363,42 +313,42 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Votes may be tampered with during submission or storage, altering the outcome of a proposal."
+        "gap_description": "An attacker could potentially spoof votes by impersonating legitimate voters."
       },
       "actor_risk": {
         "actor_id": 1,
         "type": "External User",
         "overprivileged": false,
-        "description": "External user with the ability to cast votes."
+        "description": "`$BGT` holders cast their votes."
       },
       "behavioral_risk": {
         "behavior_id": 2,
         "risk_level": "Medium",
-        "rationale": "Compromised votes can lead to incorrect governance decisions."
+        "rationale": "Spoofed votes could change the outcome of governance decisions."
       },
       "assumptions": [
-        "There is no mechanism to ensure votes are recorded accurately and immutably.",
-        "The voting system is vulnerable to man-in-the-middle attacks."
+        "There is no strong authentication mechanism in place to verify the identity of voters.",
+        "An attacker can compromise or control user accounts."
       ],
       "mitigation": {
-        "strategy": "Implement end-to-end encryption and signature verification for votes.",
+        "strategy": "Implement strong authentication using cryptographic signatures to verify voter identity.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "An attacker may intercept and modify votes, skewing the results and leading to undesired outcomes for the governance process.",
+      "description": "An attacker may impersonate a user and submit fraudulent votes to the governance contract.",
       "trace_source": {
-        "doc_reference": "governance.md#active-voting",
+        "doc_reference": "governance.md",
         "matched_capability": "cast their votes during the voting period"
       }
     },
     {
-      "id": 7,
-      "stride_category": "Spoofing",
+      "id": 6,
+      "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
-        "actor_id": 9,
-        "behavior_id": 7,
-        "capability_match": "boosts a validator with $BGT"
+        "actor_id": 6,
+        "behavior_id": 3,
+        "capability_match": "delegate them to validators"
       },
       "threat_target": {
         "component_id": 4,
@@ -407,9 +357,9 @@
         ]
       },
       "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 7,
-        "data_description": "$BGT"
+        "behavior_id": 3,
+        "data_flow_id": 3,
+        "data_description": "$BGT Delegation"
       },
       "trust_boundary_risk": {
         "boundary_id": 1,
@@ -422,95 +372,95 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "A malicious actor could spoof a legitimate Booster and boost a validator using someone else's $BGT"
+        "gap_description": "Malicious BGT Holders could delegate their tokens to a validator to maliciously inflate the validator's boost."
       },
       "actor_risk": {
-        "actor_id": 9,
+        "actor_id": 6,
         "type": "External User",
         "overprivileged": false,
-        "description": "Any user that boosts a validator with $BGT"
+        "description": "accumulate tokens"
       },
       "behavioral_risk": {
-        "behavior_id": 7,
+        "behavior_id": 3,
         "risk_level": "Low",
-        "rationale": "An attacker could spoof a boost transaction"
+        "rationale": "Delegation of BGT can influence validator boost, potentially leading to unfair reward distribution."
       },
       "assumptions": [
-        "There is no strong authentication or authorization mechanism in place for the booster.",
-        "The BeraHub component does not validate the origin of the $BGT being used for boosting."
+        "The system allows for unrestricted delegation of BGT to any validator.",
+        "There are no mechanisms to prevent or penalize malicious delegation strategies."
       ],
       "mitigation": {
-        "strategy": "Implement strong authentication for boosting transactions. Verify user identity before allowing a boost.",
+        "strategy": "Implement monitoring and reputation systems to identify and penalize validators and delegators engaging in malicious delegation strategies.",
         "type": "Technical Control",
         "priority": "Medium"
       },
-      "description": "A malicious user spoofs a legitimate Booster to boost a validator, causing the validator to gain undeserved rewards and influence.",
+      "description": "Malicious BGT Holders could delegate their tokens to a validator to maliciously inflate the validator's boost, disrupting the intended reward distribution mechanism.",
       "trace_source": {
-        "doc_reference": "guides/boost_a_validator.md",
-        "matched_capability": "boosts a validator with $BGT"
+        "doc_reference": "guides/boost-a-validator.md",
+        "matched_capability": "delegate them to validators"
+      }
+    },
+    {
+      "id": 7,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 3,
+        "capability_match": "delegate them to validators"
+      },
+      "threat_target": {
+        "component_id": 4,
+        "asset_ids": [
+          2
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 3,
+        "data_flow_id": 3,
+        "data_description": "$BGT Delegation"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "Validator Trust Boundary",
+        "between_component_ids": [
+          4
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "A large number of delegation transactions could congest the network."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "accumulate tokens"
+      },
+      "behavioral_risk": {
+        "behavior_id": 3,
+        "risk_level": "Low",
+        "rationale": "High volume of delegation transactions can lead to network congestion."
+      },
+      "assumptions": [
+        "The system doesn't have effective rate limiting or transaction prioritization mechanisms in place.",
+        "There is no cost associated with delegating $BGT tokens that would disincentivize spamming the network with delegation transactions."
+      ],
+      "mitigation": {
+        "strategy": "Implement rate limiting and transaction fee adjustments to prevent DoS attacks via excessive delegation transactions. Prioritize critical network operations.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker could perform a denial-of-service attack by flooding the network with a large number of $BGT delegation transactions, causing network congestion and preventing legitimate users from delegating.",
+      "trace_source": {
+        "doc_reference": "guides/boost-a-validator.md",
+        "matched_capability": "delegate them to validators"
       }
     },
     {
       "id": 8,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 9,
-        "behavior_id": 7,
-        "capability_match": "boosts a validator with $BGT"
-      },
-      "threat_target": {
-        "component_id": 4,
-        "asset_ids": [
-          2
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 7,
-        "data_description": "$BGT"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "Validator Trust Boundary",
-        "between_component_ids": [
-          4
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The amount of $BGT used to boost the validator could be tampered with during the transaction."
-      },
-      "actor_risk": {
-        "actor_id": 9,
-        "type": "External User",
-        "overprivileged": false,
-        "description": "Any user that boosts a validator with $BGT"
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "Medium",
-        "rationale": "An attacker could tamper with the boost transaction"
-      },
-      "assumptions": [
-        "The BeraHub component does not properly validate the amount of $BGT being used for boosting.",
-        "There are vulnerabilities in the BeraHub smart contracts that allow for transaction manipulation."
-      ],
-      "mitigation": {
-        "strategy": "Implement thorough input validation on the BeraHub smart contracts. Use secure coding practices to prevent transaction manipulation.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious user tampers with the $BGT boost transaction, either increasing or decreasing the amount being sent to influence validator rewards.",
-      "trace_source": {
-        "doc_reference": "guides/boost_a_validator.md",
-        "matched_capability": "boosts a validator with $BGT"
-      }
-    },
-    {
-      "id": 9,
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
@@ -549,36 +499,36 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Malicious collateral could be deposited to mint $HONEY."
+        "gap_description": "Malicious collateral could be deposited, influencing the minting of $HONEY."
       },
       "actor_risk": {
         "actor_id": 7,
         "type": "External User",
         "overprivileged": false,
-        "description": "User depositing collateral to mint $HONEY"
+        "description": "User can mint $HONEY by depositing collateral."
       },
       "behavioral_risk": {
         "behavior_id": 5,
         "risk_level": "Medium",
-        "rationale": "Users depositing malicious collateral could affect the peg of $HONEY."
+        "rationale": "The integrity of the collateral affects the stability of $HONEY."
       },
       "assumptions": [
-        "The HoneyFactory contract doesn't have sufficient checks on the collateral being deposited.",
-        "The whitelisted collateral assets are vulnerable."
+        "The deposited collateral is not validated correctly.",
+        "The HoneyFactory contract allows any arbitrary asset to be deposited."
       ],
       "mitigation": {
-        "strategy": "Implement strict validation and monitoring of whitelisted collateral assets.",
+        "strategy": "Implement strict validation of collateral assets and their values before minting $HONEY.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "Users can deposit malicious or compromised collateral to mint $HONEY, potentially destabilizing the stablecoin.",
+      "description": "A user may deposit malicious or compromised collateral to mint $HONEY, leading to a potential depeg.",
       "trace_source": {
         "doc_reference": "pol/tokens/$HONEY",
-        "matched_capability": "mint `$HONEY`"
+        "matched_capability": "Mint $HONEY"
       }
     },
     {
-      "id": 10,
+      "id": 9,
       "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
@@ -617,46 +567,47 @@
         "confidentiality_required": false,
         "integrity_required": false,
         "availability_required": true,
-        "gap_description": "Gas limit exhaustion during minting."
+        "gap_description": "Malicious collateral could cause a denial of service, blocking $HONEY minting for other users."
       },
       "actor_risk": {
         "actor_id": 7,
         "type": "External User",
         "overprivileged": false,
-        "description": "User minting $HONEY."
+        "description": "User can mint $HONEY by depositing collateral."
       },
       "behavioral_risk": {
         "behavior_id": 5,
-        "risk_level": "Low",
-        "rationale": "The smart contract can be spammed, making minting $HONEY unavailable."
+        "risk_level": "Medium",
+        "rationale": "The collateral validation process affects the availability of $HONEY."
       },
       "assumptions": [
-        "The HoneyFactory contract lacks proper gas limit management.",
-        "An attacker can repeatedly call the mint function, exhausting gas limits."
+        "The deposit of an invalid collateral asset may cause the HoneyFactory smart contract to stall or become unresponsive, denying services."
       ],
       "mitigation": {
-        "strategy": "Implement gas limit management and rate limiting for minting $HONEY.",
+        "strategy": "Implement robust error handling and input validation to prevent malicious collateral from causing service disruptions.",
         "type": "Technical Control",
         "priority": "Medium"
       },
-      "description": "An attacker can cause a denial of service by repeatedly calling the mint function, exhausting gas limits and preventing legitimate users from minting $HONEY.",
+      "description": "A user may deposit a large amount of invalid collateral to mint $HONEY, causing a denial of service.",
       "trace_source": {
         "doc_reference": "pol/tokens/$HONEY",
-        "matched_capability": "mint `$HONEY`"
+        "matched_capability": "Mint $HONEY"
       }
     },
     {
-      "id": 11,
-      "stride_category": "Information Disclosure",
+      "id": 10,
+      "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
         "actor_id": 7,
         "behavior_id": 6,
-        "capability_match": "delegate to validators who maximize returns"
+        "capability_match": "Earn `$BGT` by providing liquidity"
       },
       "threat_target": {
         "component_id": 1,
-        "asset_ids": []
+        "asset_ids": [
+          1
+        ]
       },
       "attack_surface": {
         "behavior_id": 6,
@@ -664,37 +615,116 @@
         "data_description": "$BERA"
       },
       "trust_boundary_risk": {
-        "boundary_id": 0,
-        "boundary_name": "",
-        "between_component_ids": []
+        "boundary_id": 2,
+        "boundary_name": "Smart Contract Boundary",
+        "between_component_ids": [
+          3,
+          5,
+          6,
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
       },
       "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Transaction data may be exposed on the bridge"
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The $BGT amount could be inflated or the BERA value could be manipulated leading to unfair redemptions."
       },
       "actor_risk": {
         "actor_id": 7,
         "type": "External User",
         "overprivileged": false,
-        "description": "User redeeming $BGT for $BERA"
+        "description": "User can redeem $BGT for $BERA."
+      },
+      "behavioral_risk": {
+        "behavior_id": 6,
+        "risk_level": "Medium",
+        "rationale": "The redemption of $BGT impacts the $BERA supply."
+      },
+      "assumptions": [
+        "The $BGT to $BERA exchange rate is vulnerable to manipulation.",
+        "The user is able to manipulate the $BGT supply or the $BERA value."
+      ],
+      "mitigation": {
+        "strategy": "Implement a robust price oracle or a decentralized exchange with high liquidity to ensure fair BERA redemption rates.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "A user may manipulate the $BGT to $BERA exchange rate to get an unfair amount of $BERA during redemption.",
+      "trace_source": {
+        "doc_reference": "pol/tokens/$BGT",
+        "matched_capability": "Redeem $BGT For $BERA"
+      }
+    },
+    {
+      "id": 11,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 7,
+        "behavior_id": 6,
+        "capability_match": "Earn `$BGT` by providing liquidity"
+      },
+      "threat_target": {
+        "component_id": 1,
+        "asset_ids": [
+          1
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 6,
+        "data_flow_id": 6,
+        "data_description": "$BERA"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "Smart Contract Boundary",
+        "between_component_ids": [
+          3,
+          5,
+          6,
+          7,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "A large redemption volume might cause unavailability."
+      },
+      "actor_risk": {
+        "actor_id": 7,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User can redeem $BGT for $BERA."
       },
       "behavioral_risk": {
         "behavior_id": 6,
         "risk_level": "Low",
-        "rationale": "Transaction data on the bridge may be publicly accessible."
+        "rationale": "Large redemptions could cause network congestion."
       },
       "assumptions": [
-        "The Berachain Bridge publicly exposes transaction details.",
-        "Transaction amounts and sender/receiver addresses are visible."
+        "There is a lack of rate limiting or circuit breakers on $BGT to $BERA redemptions.",
+        "Large $BGT redemptions are not handled efficiently, leading to network congestion."
       ],
       "mitigation": {
-        "strategy": "Implement privacy-enhancing technologies to obfuscate transaction data.",
+        "strategy": "Implement rate limiting or circuit breakers to prevent large $BGT to $BERA redemptions from overwhelming the network.",
         "type": "Technical Control",
         "priority": "Low"
       },
-      "description": "Transaction details (amounts, addresses) when redeeming $BGT for $BERA via the Berachain Bridge are publicly disclosed.",
+      "description": "A user may perform a large $BGT to $BERA redemption, causing a denial of service to other users.",
       "trace_source": {
         "doc_reference": "pol/tokens/$BGT",
         "matched_capability": "Redeem $BGT For $BERA"
@@ -705,20 +735,20 @@
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
-        "actor_id": 6,
-        "behavior_id": 3,
-        "capability_match": "delegate them to validators"
+        "actor_id": 4,
+        "behavior_id": 4,
+        "capability_match": "direct $BGT emissions to Reward Vaults"
       },
       "threat_target": {
-        "component_id": 4,
+        "component_id": 7,
         "asset_ids": [
           2
         ]
       },
       "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 3,
-        "data_description": "$BGT Delegation"
+        "behavior_id": 4,
+        "data_flow_id": 4,
+        "data_description": "$BGT emissions"
       },
       "trust_boundary_risk": {
         "boundary_id": 1,
@@ -731,53 +761,53 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Malicious BGT holders could attempt to manipulate the delegation process to unfairly benefit certain validators or disrupt the intended distribution of rewards."
+        "gap_description": "Compromised validator can direct $BGT emissions to attacker-controlled Reward Vaults."
       },
       "actor_risk": {
-        "actor_id": 6,
-        "type": "External User",
+        "actor_id": 4,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "accumulate tokens"
+        "description": "Validators direct $BGT emissions."
       },
       "behavioral_risk": {
-        "behavior_id": 3,
+        "behavior_id": 4,
         "risk_level": "Medium",
-        "rationale": "Although the risk is low, manipulation of delegation could influence validator boost."
+        "rationale": "Compromised validator directs $BGT emissions to malicious Reward Vaults."
       },
       "assumptions": [
-        "The BeraHub component does not have sufficient input validation or sanitization mechanisms in place.",
-        "Malicious BGT holders are capable of crafting and submitting transactions with altered data."
+        "Validator private key is compromised.",
+        "Reward Vault whitelisting process is not sufficient to prevent malicious vaults."
       ],
       "mitigation": {
-        "strategy": "Implement robust input validation and sanitization mechanisms within the BeraHub component.",
+        "strategy": "Implement robust key management and intrusion detection for validators. Enhance Reward Vault whitelisting process.",
         "type": "Technical Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "Malicious BGT holders could attempt to manipulate the delegation process to unfairly benefit certain validators or disrupt the intended distribution of rewards.",
+      "description": "Compromised validator can direct $BGT emissions to malicious Reward Vaults, benefiting the attacker.",
       "trace_source": {
-        "doc_reference": "guides/boost-a-validator.md",
-        "matched_capability": "delegate them to validators"
+        "doc_reference": "pol/rewardvaults.md",
+        "matched_capability": "direct $BGT emissions to Reward Vaults"
       }
     },
     {
       "id": 13,
-      "stride_category": "Spoofing",
+      "stride_category": "Repudiation",
       "origin": {
         "from_chunk": true,
-        "actor_id": 6,
-        "behavior_id": 3,
-        "capability_match": "delegate them to validators"
+        "actor_id": 4,
+        "behavior_id": 4,
+        "capability_match": "direct $BGT emissions to Reward Vaults"
       },
       "threat_target": {
-        "component_id": 4,
+        "component_id": 7,
         "asset_ids": [
           2
         ]
       },
       "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 3,
-        "data_description": "$BGT Delegation"
+        "behavior_id": 4,
+        "data_flow_id": 4,
+        "data_description": "$BGT emissions"
       },
       "trust_boundary_risk": {
         "boundary_id": 1,
@@ -789,54 +819,54 @@
       "security_gap": {
         "confidentiality_required": false,
         "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "An attacker might impersonate a legitimate $BGT holder to delegate tokens to a malicious validator."
+        "availability_required": false,
+        "gap_description": "Lack of an audit trail for validator Reward Vault selections hinders accountability."
       },
       "actor_risk": {
-        "actor_id": 6,
-        "type": "External User",
+        "actor_id": 4,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "accumulate tokens"
+        "description": "Validators direct $BGT emissions."
       },
       "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "Medium",
-        "rationale": "Delegation requires authentication; a spoofed delegation could benefit a malicious validator."
+        "behavior_id": 4,
+        "risk_level": "Low",
+        "rationale": "Lack of transparency in Reward Vault selections impacts accountability."
       },
       "assumptions": [
-        "Lack of robust authentication mechanisms on the BeraHub component.",
-        "An attacker gains control over a user's wallet or private keys."
+        "Validator Reward Vault selections are not logged or easily auditable.",
+        "No mechanism exists to prove or disprove a validator's Reward Vault selection history."
       ],
       "mitigation": {
-        "strategy": "Implement multi-factor authentication and hardware wallet support for delegation transactions.",
+        "strategy": "Implement an auditable log of validator Reward Vault selections.",
         "type": "Technical Control",
-        "priority": "High"
+        "priority": "Medium"
       },
-      "description": "An attacker might impersonate a legitimate $BGT holder to delegate tokens to a malicious validator, thus increasing the validator's rewards unfairly.",
+      "description": "Validator can deny directing emissions to certain Reward Vaults.",
       "trace_source": {
-        "doc_reference": "guides/boost-a-validator.md",
-        "matched_capability": "delegate them to validators"
+        "doc_reference": "pol/rewardvaults.md",
+        "matched_capability": "direct $BGT emissions to Reward Vaults"
       }
     },
     {
       "id": 14,
-      "stride_category": "Denial of Service",
+      "stride_category": "Information Disclosure",
       "origin": {
         "from_chunk": true,
-        "actor_id": 6,
-        "behavior_id": 3,
-        "capability_match": "delegate them to validators"
+        "actor_id": 4,
+        "behavior_id": 4,
+        "capability_match": "direct $BGT emissions to Reward Vaults"
       },
       "threat_target": {
-        "component_id": 4,
+        "component_id": 7,
         "asset_ids": [
           2
         ]
       },
       "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 3,
-        "data_description": "$BGT Delegation"
+        "behavior_id": 4,
+        "data_flow_id": 4,
+        "data_description": "$BGT emissions"
       },
       "trust_boundary_risk": {
         "boundary_id": 1,
@@ -846,35 +876,35 @@
         ]
       },
       "security_gap": {
-        "confidentiality_required": false,
+        "confidentiality_required": true,
         "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "A large number of delegation requests can overwhelm the BeraHub component."
+        "availability_required": false,
+        "gap_description": "Internal metrics about validators boost and Reward Vaults earning statistics."
       },
       "actor_risk": {
-        "actor_id": 6,
-        "type": "External User",
+        "actor_id": 4,
+        "type": "Internal Service",
         "overprivileged": false,
-        "description": "accumulate tokens"
+        "description": "Validators direct $BGT emissions."
       },
       "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "Medium",
-        "rationale": "A DoS attack could prevent legitimate users from delegating their $BGT."
+        "behavior_id": 4,
+        "risk_level": "Low",
+        "rationale": "Internal details about Reward Vaults earning statistics."
       },
       "assumptions": [
-        "The BeraHub component does not have adequate rate limiting or resource management mechanisms in place.",
-        "The Berachain network can be spammed with transactions by a malicious actor."
+        "Validator internal information about staking amounts is not confidential.",
+        "Reward Vaults share earnings from Validators publically."
       ],
       "mitigation": {
-        "strategy": "Implement rate limiting and resource management mechanisms within the BeraHub component to prevent resource exhaustion.",
-        "type": "Technical Control",
-        "priority": "Medium"
+        "strategy": "Ensure validator data is not internal, but public to view.",
+        "type": "Policy",
+        "priority": "Low"
       },
-      "description": "An attacker could flood the system with numerous delegation requests, causing the BeraHub component to become unresponsive or unavailable.",
+      "description": "A malicious validator shares Reward Vault selection strategy with their friend.",
       "trace_source": {
-        "doc_reference": "guides/boost-a-validator.md",
-        "matched_capability": "delegate them to validators"
+        "doc_reference": "pol/rewardvaults.md",
+        "matched_capability": "direct $BGT emissions to Reward Vaults"
       }
     }
   ]

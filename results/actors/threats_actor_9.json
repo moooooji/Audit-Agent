@@ -1,6 +1,6 @@
 {
   "id": 2,
-  "stride_category": "Tampering",
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
@@ -29,7 +29,7 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The amount of $BGT used to boost the validator could be tampered with during the transaction."
+    "gap_description": "A malicious actor could spoof the $BGT boosting request."
   },
   "actor_risk": {
     "actor_id": 9,
@@ -39,19 +39,19 @@
   },
   "behavioral_risk": {
     "behavior_id": 7,
-    "risk_level": "Medium",
-    "rationale": "An attacker could tamper with the boost transaction"
+    "risk_level": "Low",
+    "rationale": "A malicious actor could try to boost a validator using someone else's identity."
   },
   "assumptions": [
-    "The BeraHub component does not properly validate the amount of $BGT being used for boosting.",
-    "There are vulnerabilities in the BeraHub smart contracts that allow for transaction manipulation."
+    "The BeraHub component does not enforce strong authentication for boosting requests.",
+    "There is no signature verification of boosting transactions."
   ],
   "mitigation": {
-    "strategy": "Implement thorough input validation on the BeraHub smart contracts. Use secure coding practices to prevent transaction manipulation.",
+    "strategy": "Implement strong authentication for boost requests with signature verification.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A malicious user tampers with the $BGT boost transaction, either increasing or decreasing the amount being sent to influence validator rewards.",
+  "description": "A malicious actor could boost a validator using someone else's identity by spoofing the boost request.",
   "trace_source": {
     "doc_reference": "guides/boost_a_validator.md",
     "matched_capability": "boosts a validator with $BGT"

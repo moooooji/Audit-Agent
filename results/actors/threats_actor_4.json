@@ -1,6 +1,6 @@
 {
-  "id": 2,
-  "stride_category": "Repudiation",
+  "id": 3,
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
@@ -26,34 +26,34 @@
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": true,
+    "confidentiality_required": true,
+    "integrity_required": false,
     "availability_required": false,
-    "gap_description": "Lack of accountability in $BGT emission direction could allow validators to deny emission directions."
+    "gap_description": "Internal metrics about validators boost and Reward Vaults earning statistics."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "Validators are trusted, which may lead to abuse."
+    "description": "Validators direct $BGT emissions."
   },
   "behavioral_risk": {
     "behavior_id": 4,
     "risk_level": "Low",
-    "rationale": "Validators have freedom to choose emission targets without public tracking."
+    "rationale": "Internal details about Reward Vaults earning statistics."
   },
   "assumptions": [
-    "Validators can direct $BGT without complete transparency.",
-    "Validators can deny having directed emissions if not adequately tracked."
+    "Validator internal information about staking amounts is not confidential.",
+    "Reward Vaults share earnings from Validators publically."
   ],
   "mitigation": {
-    "strategy": "Implement a publicly verifiable logging system for $BGT emission directions by validators.",
-    "type": "Technical Control",
+    "strategy": "Ensure validator data is not internal, but public to view.",
+    "type": "Policy",
     "priority": "Low"
   },
-  "description": "A validator could falsely deny directing $BGT emissions to a specific Reward Vault, hindering auditing and accountability.",
+  "description": "A malicious validator shares Reward Vault selection strategy with their friend.",
   "trace_source": {
-    "doc_reference": "pol/bgtmath.md",
+    "doc_reference": "pol/rewardvaults.md",
     "matched_capability": "direct $BGT emissions to Reward Vaults"
   }
 }

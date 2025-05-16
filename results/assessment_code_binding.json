@@ -1,15 +1,30 @@
 {
-  "summary": "The code binding output provides mappings between checklist items and code artifacts. However, there are some issues with completeness, relevance, and accuracy that need to be addressed. Specifically, some checklist items are not bound to any code, and some of the bound code artifacts are not relevant to the security concern. Additionally, there are some potential schema errors.",
+  "summary": "The code binding output provides mappings between checklist items and source code functions. The analysis reveals several findings related to missing bindings, relevance of the bound code, and potential schema errors. Specifically, some checklist items lack corresponding code bindings, and some bound code appears irrelevant to the security concern addressed by the checklist item. Further investigation is needed to validate the accuracy and completeness of the code bindings.",
   "findings": [
     {
       "type": "missing_binding",
-      "checklist_id": 1,
-      "description": "Checklist item 1 is not bound to any code artifact."
+      "checklist_id": 3,
+      "description": "Checklist item 3 is not bound to any code artifact."
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 5,
+      "description": "Checklist item 5 is not bound to any code artifact."
     },
     {
       "type": "missing_binding",
       "checklist_id": 6,
       "description": "Checklist item 6 is not bound to any code artifact."
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 7,
+      "description": "Checklist item 7 is not bound to any code artifact."
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 9,
+      "description": "Checklist item 9 is not bound to any code artifact."
     },
     {
       "type": "missing_binding",
@@ -23,53 +38,13 @@
     },
     {
       "type": "missing_binding",
-      "checklist_id": 14,
-      "description": "Checklist item 14 is not bound to any code artifact."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 2,
-      "description": "The code bound to checklist item 2 (accountIncentives function in IRewardVault) is an interface definition and does not provide any implementation details related to logging $BGT emission directions. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 3,
-      "description": "The code bound to checklist item 3 (updateIncentiveManager function in IRewardVault_V1) is an interface definition and does not provide any implementation details related to integrity checks for Incentive Tokens. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 4,
-      "description": "The code bound to checklist item 4 (_propose function in BerachainGovernance) is related to proposal creation, not authentication/authorization of Token Managers. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 5,
-      "description": "The code bound to checklist item 5 (checkSelfStakedBalance modifier in RewardVault_V2) is related to staked balance checks, not authentication/authorization for proposal creation. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 7,
-      "description": "The code bound to checklist item 7 (queueBoost function in BGT) is related to queuing boosts, not authentication of boosting transactions. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 8,
-      "description": "The code bound to checklist item 8 (_checkGoodCollateralAsset function in VaultAdmin_V0) is related to checking collateral assets, not input validation for BGT boosting. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 9,
-      "description": "The code bound to checklist item 9 (_processIncentives function in RewardVault_V3) is related to processing incentives, not validation of whitelisted collateral assets for HONEY minting. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 12,
-      "description": "The code bound to checklist item 12 (stake function in IBGTStaker) is an interface definition and does not provide any implementation details related to input validation for BGT delegation. This binding is irrelevant."
-    },
-    {
-      "type": "irrelevant_binding",
       "checklist_id": 13,
-      "description": "The code bound to checklist item 13 (distributeFor function in IDistributor) has null code, and does not provide any implementation details related to multi-factor authentication for delegation transactions. This binding is irrelevant."
+      "description": "Checklist item 13 is not bound to any code artifact."
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 15,
+      "description": "Checklist item 15 is not bound to any code artifact."
     }
   ]
 }

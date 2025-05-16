@@ -1,15 +1,17 @@
 {
-  "id": 3,
-  "stride_category": "Information Disclosure",
+  "id": 4,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
     "behavior_id": 6,
-    "capability_match": "delegate to validators who maximize returns"
+    "capability_match": "Earn `$BGT` by providing liquidity"
   },
   "threat_target": {
     "component_id": 1,
-    "asset_ids": []
+    "asset_ids": [
+      1
+    ]
   },
   "attack_surface": {
     "behavior_id": 6,
@@ -17,37 +19,48 @@
     "data_description": "$BERA"
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "",
-    "between_component_ids": []
+    "boundary_id": 2,
+    "boundary_name": "Smart Contract Boundary",
+    "between_component_ids": [
+      3,
+      5,
+      6,
+      7,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "Transaction data may be exposed on the bridge"
+    "availability_required": true,
+    "gap_description": "A large redemption volume might cause unavailability."
   },
   "actor_risk": {
     "actor_id": 7,
     "type": "External User",
     "overprivileged": false,
-    "description": "User redeeming $BGT for $BERA"
+    "description": "User can redeem $BGT for $BERA."
   },
   "behavioral_risk": {
     "behavior_id": 6,
     "risk_level": "Low",
-    "rationale": "Transaction data on the bridge may be publicly accessible."
+    "rationale": "Large redemptions could cause network congestion."
   },
   "assumptions": [
-    "The Berachain Bridge publicly exposes transaction details.",
-    "Transaction amounts and sender/receiver addresses are visible."
+    "There is a lack of rate limiting or circuit breakers on $BGT to $BERA redemptions.",
+    "Large $BGT redemptions are not handled efficiently, leading to network congestion."
   ],
   "mitigation": {
-    "strategy": "Implement privacy-enhancing technologies to obfuscate transaction data.",
+    "strategy": "Implement rate limiting or circuit breakers to prevent large $BGT to $BERA redemptions from overwhelming the network.",
     "type": "Technical Control",
     "priority": "Low"
   },
-  "description": "Transaction details (amounts, addresses) when redeeming $BGT for $BERA via the Berachain Bridge are publicly disclosed.",
+  "description": "A user may perform a large $BGT to $BERA redemption, causing a denial of service to other users.",
   "trace_source": {
     "doc_reference": "pol/tokens/$BGT",
     "matched_capability": "Redeem $BGT For $BERA"

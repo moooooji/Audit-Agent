@@ -1,5 +1,5 @@
 {
-  "id": 3,
+  "id": 2,
   "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
@@ -29,7 +29,7 @@
     "confidentiality_required": false,
     "integrity_required": false,
     "availability_required": true,
-    "gap_description": "A large number of delegation requests can overwhelm the BeraHub component."
+    "gap_description": "A large number of delegation transactions could congest the network."
   },
   "actor_risk": {
     "actor_id": 6,
@@ -39,19 +39,19 @@
   },
   "behavioral_risk": {
     "behavior_id": 3,
-    "risk_level": "Medium",
-    "rationale": "A DoS attack could prevent legitimate users from delegating their $BGT."
+    "risk_level": "Low",
+    "rationale": "High volume of delegation transactions can lead to network congestion."
   },
   "assumptions": [
-    "The BeraHub component does not have adequate rate limiting or resource management mechanisms in place.",
-    "The Berachain network can be spammed with transactions by a malicious actor."
+    "The system doesn't have effective rate limiting or transaction prioritization mechanisms in place.",
+    "There is no cost associated with delegating $BGT tokens that would disincentivize spamming the network with delegation transactions."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting and resource management mechanisms within the BeraHub component to prevent resource exhaustion.",
+    "strategy": "Implement rate limiting and transaction fee adjustments to prevent DoS attacks via excessive delegation transactions. Prioritize critical network operations.",
     "type": "Technical Control",
     "priority": "Medium"
   },
-  "description": "An attacker could flood the system with numerous delegation requests, causing the BeraHub component to become unresponsive or unavailable.",
+  "description": "An attacker could perform a denial-of-service attack by flooding the network with a large number of $BGT delegation transactions, causing network congestion and preventing legitimate users from delegating.",
   "trace_source": {
     "doc_reference": "guides/boost-a-validator.md",
     "matched_capability": "delegate them to validators"

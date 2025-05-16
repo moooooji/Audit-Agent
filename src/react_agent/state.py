@@ -1,10 +1,8 @@
 """Define the state structures for the agent."""
 
 from __future__ import annotations
-from typing import TypedDict, Annotated, NotRequired
+from typing import Annotated
 from dataclasses import dataclass, field
-import operator
-from langgraph.prebuilt import ToolNode
     
 def parallel_handler(a, b):
     """parallel handler for state"""
