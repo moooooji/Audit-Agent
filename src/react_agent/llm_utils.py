@@ -37,6 +37,7 @@ from react_agent.variables import (
     behaviors_map,
     model,
     client,
+    threats_list,
     ARCHITECTURE_FEEDBACK_LOOP_COUNT,
     CHECKLIST_FEEDBACK_LOOP_COUNT,
     CODE_BINDING_FEEDBACK_LOOP_COUNT
@@ -238,10 +239,39 @@ def generate_llm_response(state: State) -> str:
     
     elif state.is_initial_checklist_analysis:
         print("=============checklist analysis node=============")
+        
+        threats_list_copy = threats_list.copy()
+        
+        context = []
+        
+        for i in range(len(threats_list)):
+            actor_id = threats_list_copy[i]["actor_risk"]["actor_id"]
+            threats_list_copy[i]["actor_risk"]["actor_details"] = actors_map.get(actor_id, {})
+            
+            # Add threat target component and assets
+            threats_list_copy[i]["threat_target"]["component_details"] = components_map.get(threats_list_copy[i]["threat_target"]["component_id"], {})
+            threats_list_copy[i]["threat_target"]["asset_details"] = [assets_map.get(aid, {}) for aid in threats_list_copy[i]["threat_target"]["asset_ids"]]
+
+            # Add behavior context
+            behavior_id = threats_list_copy[i]["attack_surface"]["behavior_id"]
+            threats_list_copy[i]["attack_surface"]["behavior_details"] = behaviors_map.get(behavior_id, {})
+
+            # Add data flow context
+            df_id = threats_list_copy[i]["attack_surface"]["data_flow_id"]
+            threats_list_copy[i]["attack_surface"]["data_flow_details"] = data_flows_map.get(df_id, {})
+
+            # Add trust boundary context
+            tb_id = threats_list_copy[i]["trust_boundary_risk"]["boundary_id"]
+            threats_list_copy[i]["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
+            
+            context.append(threats_list_copy[i])
+        
+        print("[+] context: ", context)
+        
         target_docs = load_file(state.target_docs_path)
         threat_analysis = load_file("results/all_threats.json")
         prompt = CHECKLIST_TEMPLATE.replace(
-            "{target_docs}", target_docs
+            "{context}", json.dumps(context)
             ).replace(
                 "{threat_analysis}", threat_analysis
             )
@@ -262,12 +292,37 @@ def generate_llm_response(state: State) -> str:
     
     elif state.is_feedback_checklist_analysis:
         print("=============feedback checklist analysis node=============")
-        # 수정 필요
-        target_docs = load_file(state.target_docs_path)
+        
+        threats_list_copy = threats_list.copy()
+        
+        context = []
+        
+        for i in range(len(threats_list)):
+            actor_id = threats_list_copy[i]["actor_risk"]["actor_id"]
+            threats_list_copy[i]["actor_risk"]["actor_details"] = actors_map.get(actor_id, {})
+            
+            # Add threat target component and assets
+            threats_list_copy[i]["threat_target"]["component_details"] = components_map.get(threats_list_copy[i]["threat_target"]["component_id"], {})
+            threats_list_copy[i]["threat_target"]["asset_details"] = [assets_map.get(aid, {}) for aid in threats_list_copy[i]["threat_target"]["asset_ids"]]
+
+            # Add behavior context
+            behavior_id = threats_list_copy[i]["attack_surface"]["behavior_id"]
+            threats_list_copy[i]["attack_surface"]["behavior_details"] = behaviors_map.get(behavior_id, {})
+
+            # Add data flow context
+            df_id = threats_list_copy[i]["attack_surface"]["data_flow_id"]
+            threats_list_copy[i]["attack_surface"]["data_flow_details"] = data_flows_map.get(df_id, {})
+
+            # Add trust boundary context
+            tb_id = threats_list_copy[i]["trust_boundary_risk"]["boundary_id"]
+            threats_list_copy[i]["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
+                
+        context.append(threats_list_copy[i])
+        
         initial_checklist = load_file("results/checklist.json")
         assessment_checklist_json = load_file("results/assessment_checklist.json")
         prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
-            "{target_docs}", target_docs
+            "{context}", json.dumps(context)
             ).replace(
                 "{initial_checklist}", initial_checklist
             ).replace(

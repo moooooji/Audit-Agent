@@ -13,6 +13,11 @@ from react_agent.llm_utils import (
 # import variables
 from react_agent.variables import (
     actors_map,
+    components_map,
+    assets_map,
+    data_flows_map,
+    trust_boundaries_map,
+    behaviors_map,
     threats_list,
 )
 
