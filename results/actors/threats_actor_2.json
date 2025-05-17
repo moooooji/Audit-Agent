@@ -1,59 +1,60 @@
 {
-  "id": 4,
+  "id": 3,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 102,
-    "behavior_id": 614,
-    "capability_match": "Set commission rate for incentives"
+    "actor_id": 2,
+    "behavior_id": 12,
+    "capability_match": "Stake $BERA to participate in consensus"
   },
   "threat_target": {
-    "component_id": 302,
+    "component_id": 2,
     "asset_ids": [
-      214
+      1
     ]
   },
   "attack_surface": {
-    "behavior_id": 614,
-    "data_flow_id": 401,
-    "data_description": "Validator's signed transaction to update_commission_rate, potentially exploiting logic flaws."
+    "behavior_id": 12,
+    "data_flow_id": 10,
+    "data_description": "Staking transaction exploiting a flaw in Berachain Core L1's state or input processing, potentially related to its handling of data from other flows like DF10."
   },
   "trust_boundary_risk": {
-    "boundary_id": 502,
-    "boundary_name": "Berachain L1 Network Boundary",
+    "boundary_id": 2,
+    "boundary_name": "Wallet-Blockchain Boundary",
     "between_component_ids": [
-      302
+      1,
+      2
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Lack of stringent validation on commission rate parameters or bypassable control mechanisms (like the waiting period) could allow a validator to set unauthorized rates."
+    "availability_required": false,
+    "gap_description": "A flaw in Berachain Core L1 allows a staking operation to grant unauthorized privileges or manipulate stake. The vulnerability might be exposed or exacerbated by complex state interactions, including those arising from processing data like Bridged NFTs (DF10)."
   },
   "actor_risk": {
-    "actor_id": 102,
-    "type": "Internal Service",
+    "actor_id": 2,
+    "type": "External User",
     "overprivileged": false,
-    "description": "A validator (even legitimate) might attempt to exploit system rules for undue gain."
+    "description": "Validator (ID 2) attempting to stake $BERA might exploit a system vulnerability to gain unfair advantages."
   },
   "behavioral_risk": {
-    "behavior_id": 614,
-    "risk_level": "Medium",
-    "rationale": "Bypassing controls or setting invalid commission rates grants unauthorized financial advantage."
+    "behavior_id": 12,
+    "risk_level": "High",
+    "rationale": "Exploiting a flaw in Core L1 during a staking operation could lead to unauthorized control over stake, theft of funds, or undeserved validator status."
   },
   "assumptions": [
-    "The smart contract logic for `update_commission_rate` on L1 (302) might have vulnerabilities in input validation for commission percentages (e.g., allowing >100%).",
-    "The mandatory waiting period for commission rate changes could be bypassed through an exploit."
+    "Berachain Core L1 (Component 2) has a vulnerability in its staking logic or broader state management.",
+    "This vulnerability can be triggered through a staking operation, potentially in conjunction with state influenced by other data inputs processed by Component 2, such as those from Data Flow 10."
   ],
   "mitigation": {
-    "strategy": "Implement strict input validation for commission rates (e.g., bounds checking 0-100%). Ensure timelock/waiting period mechanisms are non-bypassable. Regular audits of the L1 module.",
+    "strategy": "Rigorous auditing and testing of Berachain Core L1, especially staking contracts and interactions between different modules and data handlers. Employ formal verification where possible. Ensure robust state isolation or validation if interactions are unavoidable.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious or compromised Validator (102) attempts to elevate its privilege by setting an out-of-bounds incentive commission rate or bypassing the mandatory waiting period when updating its commission rate on the Berachain L1 Network (302).",
+  "description": "A malicious Validator (ID 2) performing a stake $BERA operation (Behavior ID 12) exploits a vulnerability in Berachain Core L1 (Component ID 2). This vulnerability might be related to its complex state management involving various data inputs (e.g., from Data Flow ID 10), allowing the validator to illegitimately increase their stake, stake tokens they don't own, or gain validator privileges unfairly.",
   "trace_source": {
-    "doc_reference": "pol/incentives.md#incentive-commission-and-distribution",
-    "matched_capability": "Set commission rate for incentives"
+    "doc_reference": "doc_26, doc_23",
+    "matched_capability": "Stake $BERA to participate in consensus"
   }
 }

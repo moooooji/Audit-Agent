@@ -1,72 +1,90 @@
 {
   "evaluation_summary": {
-    "actors": "The actors are generally well-extracted and traceable to the documentation. Most capabilities are supported. Minor clarification on one capability's directness could be considered but is acceptable. No major hallucinations or unsupported actors found.",
-    "assets": "Assets are largely accurate and traceable. Sensitivities are reasonably inferred. One significant token ($WBERA) explicitly mentioned with a contract address and role is missing.",
-    "components": "Components are mostly well-identified with correct trust levels and managed assets. One component's `assets_managed` list contains an asset not explicitly stated as managed by it in the documentation. One new component mentioned in updates ('Auto-Incentivizer') is missing.",
-    "data_flows": "Data flows are generally logical and supported by the described interactions. One flow contains details (signal type and specific direction for that signal) that are inferred rather than explicitly stated. Security properties are standard and acceptable.",
-    "trust_boundaries": "Trust boundaries are logical groupings of components and interactions. One logical trust boundary (between L1 and CEX) appears to be missing. Descriptions and validation requirements are reasonable for a threat model.",
-    "behaviors": "Behaviors are well-extracted and map to user/system actions described in the documentation. Risk levels are consistently applied. One behavior's initiator could be more precise. Several explicit behaviors mentioned in the documentation are missing."
+    "actors": "The actors list is largely traceable and covers key roles. One actor's type (Guardian) is questionable. Some less active stakeholder groups mentioned in the documentation (e.g., Big Bera Labs, Investors) are not included, but the most active participants are present.",
+    "assets": "Assets are well-traced to the documentation. A more general 'Receipt Token' asset could be considered, as 'LP Token' is a specific type of receipt token, and the documentation refers to other types (e.g., interest-bearing receipt tokens). 'Wallet phrase' is also distinct from 'Private Key' and could be a separate asset.",
+    "components": "Most components are traceable. There's a potential ambiguity between a general 'Berachain Bridge' for tokens and the specified 'Berachain NFT Bridge'. Several specific smart contracts (e.g., Distributor, FeeCollector, BlockRewardController) and underlying technologies (BeaconKit, CometBFT) are mentioned in the docs but are either grouped into larger components or omitted, which is acceptable for a higher-level model but reduces granularity.",
+    "data_flows": "The listed data flows are generally traceable but represent a subset of interactions. The sources for Data Flow 3 and Data Flow 8 could be more precise based on specific contract interactions described in the documentation. Many key data flows are missing, leading to an incomplete picture of system interactions.",
+    "trust_boundaries": "The trust boundaries are somewhat traceable. Trust Boundary 1 is incorrectly modeled if `between_ids` must refer to distinct components, as its description implies an actor-component boundary. The list is not exhaustive.",
+    "behaviors": "The listed behaviors are traceable and correctly map initiators to targets. Risk levels are inferred but appear consistent. Similar to data flows, this is a subset of the many behaviors described or implied in the documentation."
   },
   "findings": [
+    {
+      "category": "actors",
+      "type": "inconsistent",
+      "id": 6,
+      "description": "Actor 6 'Guardian' is typed as 'Internal Service'. However, documentation (doc_3) describes them as 'elected signers' acting via a multisig, suggesting they are more akin to trusted external individuals or a group of 'External Users' with special roles, rather than an automated internal system component. The type 'Internal Service' may not accurately reflect their nature."
+    },
+    {
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'Big Bera Labs' (core contributors, doc_29) is mentioned as a recipient of token allocations and a key entity but not listed as an actor."
+    },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$WBERA' (Wrapped BERA) is explicitly mentioned with a contract address (doc_26) and its role in the FeeCollector contract (doc_27) but was not extracted as a distinct asset from $BERA."
+      "description": "A general 'Receipt Token' asset is not explicitly listed. Asset 5 'LP Token' is a specific type of receipt token. Documentation (e.g., doc_7, doc_27) refers to 'receipt tokens' more broadly, including for activities like staking in reward vaults or from lending markets."
     },
     {
-      "category": "components",
-      "type": "invalid_reference",
-      "id": 317,
-      "description": "Component 317 (FeeCollector Contract) `assets_managed` lists asset 206 (Incentive Tokens). Doc_27 states FeeCollector distributes $WBERA (asset 201) derived from dApp fees, not generic 'Incentive Tokens' (asset 206)."
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'Wallet Phrase' or 'Recovery Phrase' (doc_5) is critical for wallet recovery and distinct from 'Private Key' but is not listed."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Auto-Incentivizer' is described in the Proof of Liquidity 1.2 update (doc_22: 'fees from foundation vaults will use the fees to automatically offer incentives') but was not extracted."
+      "description": "Component 'Berachain Token Bridge' (doc_6, powered by LayerZero, for fungible tokens) seems distinct from Component 10 'Berachain NFT Bridge' (doc_4) but is not listed separately."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Distributor Contract' (doc_20), responsible for emitting $BGT to reward vaults, is not explicitly listed. It might be subsumed under 'Berachain Core L1' but is a key specific contract in PoL."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'FeeCollector Contract' (doc_27), responsible for collecting and distributing dApp fees to $BGT holders, is not explicitly listed."
     },
     {
       "category": "data_flows",
-      "type": "hallucinated",
-      "id": 410,
-      "description": "Data Flow 410 (Berachain NFT Bridge -> Ethereum Mainnet) description 'Lock/Burn Signal' and its specific direction for this signal during Bera->Eth bridging is an inference. Doc_4 primarily details Eth->Bera bridging and does not explicitly state this signal type for the reverse flow."
+      "type": "inconsistent",
+      "id": 3,
+      "description": "Data Flow 3 ('$BGT emissions data' from 'Berachain Core L1' to 'Reward Vault') description states 'Validators direct $BGT emissions'. While validators decide the allocation, the actual emission flow originates from the 'Distributor' contract (doc_20) within the L1. The source is broadly correct if Distributor is part of Core L1, but the description could be clearer about the automated flow vs. validator configuration."
+    },
+    {
+      "category": "data_flows",
+      "type": "inconsistent",
+      "id": 8,
+      "description": "Data Flow 8 lists 'Berachain Core L1' (Component 2) as the source of 'Incentive tokens from protocols (via Reward Vaults)' to 'BGTIncentiveDistributor' (Component 8). Incentive tokens originate from Protocols (Actor 5) and are held in Reward Vaults (Component 6). The flow of these incentives to the BGTIncentiveDistributor should originate from Reward Vaults or an intermediary process, not directly from Core L1 in general (doc_21)."
     },
     {
       "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "A trust boundary between the Berachain L1 Network (component 302) and Centralized Exchanges (CEX, component 319) is not defined, though interactions are described (doc_6)."
-    },
-    {
-      "category": "behaviors",
-      "type": "inconsistent",
-      "id": 607,
-      "description": "Behavior 607 (Protocol Offers Incentives) lists initiator_id as 104 (Protocol/dApp Developer). Doc_21 specifies 'Incentive Token Managers' (Actor 107) are the ones who offer incentives. Actor 107 would be a more precise initiator."
+      "type": "schema_error",
+      "id": 1,
+      "description": "Trust Boundary 1 'User-Wallet Boundary' has `between_ids: [1, 1]`. If `between_ids` must contain IDs of distinct components, this is invalid. The description 'Separates the end user from their client-side wallet software' implies a boundary between an Actor (End User) and Component 1 (User Wallet), which is not directly representable if `between_ids` is strictly for component-to-component boundaries."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User Redeems $BGT for $BERA' is explicitly mentioned in doc_13 (BeraHub capabilities) and doc_27 ('Redeem $BGT For $BERA') but was not extracted."
+      "description": "Behavior 'User delegates $BGT to a Validator' (doc_7, doc_16, doc_27) is a core PoL interaction but is not listed."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Validator Changes Incentive Commission Rate' is described in doc_21 ('A validator can change their commission percentage...') but was not extracted."
+      "description": "Behavior 'Validator stakes $BERA' (doc_7, doc_26) is a fundamental action for a validator to join the network but is not listed."
     },
     {
-      "category": "behaviors",
+      "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User Delegates $BGT Voting Power' is mentioned in doc_27 ('$BGT holders can either vote on proposals themselves or delegate their voting power to another address') but was not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior or System Reaction '$HONEY Basket Mode Activates' due to collateral depegging, a key safety mechanism described in doc_28, was not extracted."
+      "description": "Component 'BeaconKit' (doc_8, doc_9), the modular consensus layer framework, is not explicitly listed. It's a significant piece of Berachain's architecture."
     }
   ]
 }

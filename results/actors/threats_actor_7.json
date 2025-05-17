@@ -1,62 +1,60 @@
 {
-  "id": 4,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 107,
-    "behavior_id": 607,
-    "capability_match": "Offer incentive tokens to a Reward Vault"
+    "actor_id": 7,
+    "behavior_id": 6,
+    "capability_match": "Add whitelisted Incentive Tokens to a Reward Vault"
   },
   "threat_target": {
-    "component_id": 310,
+    "component_id": 6,
     "asset_ids": [
-      202,
-      205,
-      206
+      6
     ]
   },
   "attack_surface": {
-    "behavior_id": 607,
-    "data_flow_id": 401,
-    "data_description": "Function call to 'add_incentives' potentially with malformed parameters or exploiting an internal logic flaw."
+    "behavior_id": 6,
+    "data_flow_id": 3,
+    "data_description": "Access control mechanisms for the 'offer_incentives' function in the Reward Vault Contract."
   },
   "trust_boundary_risk": {
-    "boundary_id": 503,
-    "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+    "boundary_id": 3,
+    "boundary_name": "dApp-SmartContract Boundary",
     "between_component_ids": [
-      307,
-      310
+      4,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Insufficient authorization checks in the Reward Vault contract might allow an Incentive Token Manager to affect incentives they don't manage or perform administrative actions beyond their scope."
+    "gap_description": "Weak or flawed access control on the 'offer_incentives' function in the Reward Vault contract allows unauthorized actors to perform actions reserved for designated Incentive Token Managers."
   },
   "actor_risk": {
-    "actor_id": 107,
+    "actor_id": 7,
     "type": "External User",
-    "overprivileged": true,
-    "description": "If the contract is flawed, the Incentive Token Manager (or an attacker spoofing them) might gain unauthorized control over aspects of the Reward Vault."
+    "overprivileged": false,
+    "description": "An attacker bypasses or exploits flaws in authorization checks to gain the privileges of an Incentive Token Manager, allowing them to illicitly offer or modify incentives."
   },
   "behavioral_risk": {
-    "behavior_id": 607,
-    "risk_level": "Medium",
-    "rationale": "Gaining unauthorized control over incentives or vault functions can lead to theft of funds or manipulation of the PoL system."
+    "behavior_id": 6,
+    "risk_level": "High",
+    "rationale": "Unauthorized execution of 'offer_incentives' grants an attacker control over a key aspect of the PoL system, potentially leading to economic disruption, theft of attention, or unfair advantages."
   },
   "assumptions": [
-    "The Reward Vault (310) contract incorrectly checks permissions, allowing a manager for incentive A to control parameters for incentive B when calling 'add_incentives'.",
-    "A vulnerability in the 'add_incentives' function allows for arbitrary storage writes or calls to privileged functions within the Reward Vault by the Incentive Token Manager."
+    "The Reward Vault Contract (Component 6) has missing, flawed, or bypassable `require` statements or modifier checks for verifying the caller's role as an authorized Incentive Token Manager for that specific vault/token.",
+    "An exploitable vulnerability allows an attacker to impersonate an authorized Incentive Token Manager's address (e.g., due to private key compromise, or a flaw in a proxy contract managing permissions)."
   ],
   "mitigation": {
-    "strategy": "Implement strict, granular access control within the Reward Vault contract. Adhere to the principle of least privilege. Conduct thorough security audits.",
+    "strategy": "Implement strict and granular role-based access control (RBAC) in the Reward Vault contract for all sensitive functions, particularly 'offer_incentives'. Utilize well-audited libraries like OpenZeppelin's AccessControl. Ensure secure management of Incentive Token Manager roles and keys.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A flaw in the Reward Vault (310) could allow an Incentive Token Manager (107), when offering incentives, to gain unauthorized privileges, such as managing other protocols' incentives or altering critical vault parameters.",
+  "description": "An attacker, without being an authorized Incentive Token Manager for a specific Reward Vault or incentive token, successfully calls the function to add/modify incentives, thereby illegitimately gaining manager privileges for that action.",
   "trace_source": {
-    "doc_reference": "pol/incentives.md#incentive-token-managers",
-    "matched_capability": "Offer incentive tokens to a Reward Vault"
+    "doc_reference": "pol/Incentive Marketplace#incentive-token-managers",
+    "matched_capability": "Add whitelisted Incentive Tokens to a Reward Vault"
   }
 }

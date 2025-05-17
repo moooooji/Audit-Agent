@@ -1,23 +1,22 @@
 {
-  "id": 12,
+  "id": 13,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 9,
-    "capability_match": "Redeem $BGT for $BERA"
+    "behavior_id": 11,
+    "capability_match": "Delegate $BGT to validators to boost their rewards"
   },
   "threat_target": {
     "component_id": 2,
     "asset_ids": [
-      1,
       2
     ]
   },
   "attack_surface": {
-    "behavior_id": 9,
-    "data_flow_id": 5,
-    "data_description": "$BGT redemption logic and $BGT/$BERA balance accounting"
+    "behavior_id": 11,
+    "data_flow_id": 10,
+    "data_description": "$BGT delegation transaction exploiting an accounting flaw (Note: DF10 is for NFTs but represents a user-initiated flow to Component 2)"
   },
   "trust_boundary_risk": {
     "boundary_id": 2,
@@ -31,31 +30,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in the redemption logic could allow an attacker to redeem unowned $BGT or receive excess $BERA."
+    "gap_description": "Flaw in delegation logic for $BGT balance checking or influence calculation."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "External User",
     "overprivileged": false,
-    "description": "An attacker exploits a vulnerability in Core L1 to illegitimately gain $BERA or affect $BGT supply."
+    "description": "$BGT Holder/Delegator attempting to delegate more $BGT than owned."
   },
   "behavioral_risk": {
-    "behavior_id": 9,
+    "behavior_id": 11,
     "risk_level": "High",
-    "rationale": "Exploiting redemption logic can lead to theft of $BGT, unauthorized minting of $BERA, or breaking tokenomic invariants."
+    "rationale": "Exploiting delegation logic can unfairly influence validator rewards and PoL."
   },
   "assumptions": [
-    "The Core L1 smart contract responsible for $BGT redemption has a vulnerability (e.g., reentrancy, incorrect balance check, integer overflow/underflow in 1:1 conversion).",
-    "The attacker can craft a transaction to trigger this vulnerability."
+    "The smart contract in Berachain Core L1 (Component 2) for $BGT delegation has errors in balance checking or how delegation weight is applied.",
+    "An attacker can manipulate these errors to delegate $BGT (Asset 2) they don't own or gain unearned influence over validator rewards."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits of Core L1 redemption logic and token contracts; adherence to secure token standards (e.g., ERC20 for $BERA, non-transferable aspects for $BGT); formal verification where possible.",
+    "strategy": "Rigorous auditing of the delegation smart contract, ensuring correct balance updates, ownership checks, and fair application of delegated $BGT weight.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a flaw in the Core L1 redemption mechanism to redeem more $BGT than they own, or to receive more $BERA than the specified 1:1 ratio, thereby illegitimately acquiring assets or manipulating token supplies.",
+  "description": "An attacker exploits a flaw in Berachain Core L1's (Component 2) delegation system to delegate $BGT (Asset 2) they do not own or to amplify the effect of their delegation beyond their actual stake, unfairly influencing validator boost calculations.",
   "trace_source": {
     "doc_reference": "doc_27",
-    "matched_capability": "Redeem $BGT for $BERA"
+    "matched_capability": "Delegate $BGT to validators to boost their rewards"
   }
 }

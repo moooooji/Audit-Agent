@@ -1,25 +1,25 @@
 {
-  "summary": "The code bindings generally correspond to the listed threats and checklist items, providing traceability and relevance for most security concerns. However, some threats lack direct code bindings, and certain file paths or artifacts are either missing or misaligned with the threat context. Overall, the mappings reflect good intent, but some gaps and inconsistencies are present.",
+  "summary": "The provided code binding output shows detailed mappings of threats to source code artifacts, with a reasonable coverage of the checklist items. Overall, each threat appears to be addressed by concrete code artifacts, with references to functions, files, and reasons. The mappings seem consistent with the threat descriptions, and schema compliance is mostly observed.",
   "findings": [
     {
       "type": "missing_binding",
       "checklist_id": 2,
-      "description": "Checklist item 2 for enforcing strong cryptographic signature validation in reward contracts has no corresponding code artifact."
+      "description": "Checklist item 2 is not bound to any code artifact."
     },
     {
       "type": "invalid_reference",
-      "checklist_id": 5,
-      "description": "The referenced file path 'contracts/Governor.sol' does not exist in the source repository, making the bound code artifact invalid for threat 5."
+      "checklist_id": 16,
+      "description": "Checklist item 16 is mapped to a file path that does not exist in the source repository."
     },
     {
       "type": "irrelevant_binding",
       "checklist_id": 7,
-      "description": "The code bound to checklist item 7 pertains to the __VaultAdmin_init function, which does not directly address the threat of maintaining audit logs of multisig actions."
+      "description": "The code bound to checklist item 7 does not handle the risk described in its threat."
     },
     {
       "type": "schema_error",
       "checklist_id": 3,
-      "description": "Missing 'file_path' field in the code binding object for checklist item 3, violating schema compliance."
+      "description": "Missing required field `file_path` in code binding object."
     }
   ]
 }

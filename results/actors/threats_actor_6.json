@@ -1,61 +1,60 @@
 {
-  "id": 8,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 106,
-    "behavior_id": 604,
-    "capability_match": "Stake receipt tokens in Reward Vaults"
+    "actor_id": 6,
+    "behavior_id": 4,
+    "capability_match": "Cancel malicious proposals during the timelock period via multisig"
   },
   "threat_target": {
-    "component_id": 310,
+    "component_id": 12,
     "asset_ids": [
-      205,
-      202,
-      206
+      8
     ]
   },
   "attack_surface": {
-    "behavior_id": 604,
-    "data_flow_id": 0,
-    "data_description": "Exploitable function call, potentially targeting administrative functions or bypassing authorization for user functions within Reward Vault Contract."
+    "behavior_id": 4,
+    "data_flow_id": 9001,
+    "data_description": "Transaction exploiting a flaw in Guardian Multisig contract (12) to call restricted functions or alter its own permissions/configuration beyond proposal cancellation."
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
+    "boundary_id": 5,
+    "boundary_name": "Governance Oversight Boundary",
     "between_component_ids": [
-      310
+      12,
+      3
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Reward Vault Contract may lack robust access control for privileged functions or may have vulnerabilities allowing unauthorized execution of actions."
+    "gap_description": "Guardian Multisig contract (12) has a flaw allowing a Guardian to execute actions beyond simple proposal cancellation, such as modifying multisig settings or arbitrarily impacting the Governance System (3)."
   },
   "actor_risk": {
-    "actor_id": 106,
+    "actor_id": 6,
     "type": "External User",
     "overprivileged": true,
-    "description": "An attacker (acting as an External User like ID 106) gains unauthorized administrative or user-level privileges within the Reward Vault Contract via an exploit."
+    "description": "A malicious or compromised Guardian exploits a vulnerability to gain powers beyond their intended scope, such as bypassing timelock or modifying governance parameters directly."
   },
   "behavioral_risk": {
-    "behavior_id": 604,
+    "behavior_id": 4,
     "risk_level": "High",
-    "rationale": "Elevation of privilege in a contract managing funds can lead to complete loss of assets or systemic compromise of the vault's integrity."
+    "rationale": "Elevation of privilege could allow a rogue Guardian or an attacker with a Guardian's key to severely compromise the governance process or the multisig itself."
   },
   "assumptions": [
-    "The Reward Vault Contract (ID 310) has administrative functions or allows certain users to perform sensitive operations (e.g., pause, upgrade, parameter changes, emergency withdrawal).",
-    "A vulnerability exists (e.g., improper access control checks, reentrancy exploiting state changes, delegatecall abuse) that an attacker can leverage to call these privileged functions or perform actions as if they were an authorized party or another user."
+    "The Guardian Multisig smart contract (12) contains a vulnerability that allows a user authenticated as a Guardian to perform actions not normally permitted (e.g., change multisig threshold, execute arbitrary calls via the Governance System component 3).",
+    "The Guardian (6) is malicious or their key is compromised and used by an attacker."
   ],
   "mitigation": {
-    "strategy": "Implementation of the principle of least privilege, use of secure and audited access control patterns (e.g., OpenZeppelin's Ownable/AccessControl), multi-signature requirements for critical administrative actions, timelocks for sensitive changes, rigorous audits.",
+    "strategy": "Adherence to the Principle of Least Privilege in smart contract design. Strict access controls and function modifiers. Thorough security audits focusing on privilege escalation vectors. Formal verification.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a vulnerability in `Reward Vault Contract` (ID 310) to elevate their privileges. This could allow them to gain unauthorized control over administrative functions, withdraw other users' `Receipt Tokens` (ID 205), or manipulate/steal `$BGT Token` (ID 202) and `Incentive Tokens` (ID 206).",
+  "description": "A malicious or compromised Guardian (6) exploits a vulnerability in the Guardian Multisig contract (12) to gain elevated privileges, such as modifying the multisig's own parameters (e.g., signers, threshold) or directly manipulating the Governance System (3), bypassing intended controls for proposal (8) lifecycle management.",
   "trace_source": {
-    "doc_reference": "doc_25#reward-vaults",
-    "matched_capability": "Stake receipt tokens in Reward Vaults"
+    "doc_reference": "doc_3#guardian-oversight",
+    "matched_capability": "Cancel malicious proposals during the timelock period via multisig"
   }
 }

@@ -1,61 +1,60 @@
 {
-  "id": 3,
-  "stride_category": "Repudiation",
+  "id": 10,
+  "stride_category": "Elevation of Privilege",
   "origin": {
-    "from_chunk": false,
-    "actor_id": 104,
-    "behavior_id": 618,
-    "capability_match": "Develop dApps on Berachain"
+    "from_chunk": true,
+    "actor_id": 9,
+    "behavior_id": 9002,
+    "capability_match": "Receive initial token allocation"
   },
   "threat_target": {
-    "component_id": 320,
+    "component_id": 2,
     "asset_ids": [
-      219
+      1
     ]
   },
   "attack_surface": {
-    "behavior_id": 618,
-    "data_flow_id": 425,
-    "data_description": "RFRV Form data submission logs/records"
+    "behavior_id": 9002,
+    "data_flow_id": 0,
+    "data_description": "Interaction with a custom token allocation smart contract potentially developed or influenced by Big Bera Labs. Not a specifically modeled data_flow_id."
   },
   "trust_boundary_risk": {
-    "boundary_id": 506,
-    "boundary_name": "Off-chain to On-chain Governance Boundary",
+    "boundary_id": 0,
+    "boundary_name": "Conceptual: Partner Dev Environment to Core L1/Allocation Contract. Not a specifically modeled trust_boundary_id.",
     "between_component_ids": [
-      320,
-      321,
-      305
+      2
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The RFRV Submission System (320) may lack non-repudiation measures for submissions, allowing a Protocol Developer (104) to falsely deny submitting an RFRV, disrupting the review process by BGT Foundation (109)."
+    "availability_required": false,
+    "gap_description": "Lack of independent review and security audit for custom allocation contracts created by or for core contributors, potentially hiding EoP logic."
   },
   "actor_risk": {
-    "actor_id": 104,
+    "actor_id": 9,
     "type": "Partner System",
-    "overprivileged": false,
-    "description": "A Protocol Developer (104) might attempt to repudiate their RFRV submission to evade responsibility or manipulate the governance process."
+    "overprivileged": true,
+    "description": "Actor, by influencing the allocation contract's code (via core dev role), may embed privileged functions callable during their token claim."
   },
   "behavioral_risk": {
-    "behavior_id": 618,
-    "risk_level": "Low",
-    "rationale": "Repudiation can cause confusion and delays in the RFRV review and whitelisting process, impacting BGT Foundation's (109) operations, especially if off-chain submission records are the primary proof."
+    "behavior_id": 9002,
+    "risk_level": "High",
+    "rationale": "Exploiting a token claim process to trigger unauthorized privileged actions is a significant security breach."
   },
   "assumptions": [
-    "The RFRV Submission System (320) does not provide strong, verifiable proof of submission attributable to the specific submitter (e.g., no signed submissions, weak logging).",
-    "The associated Governance Forum post (doc_14) might not be considered definitive proof of the exact RFRV form content or its formal submission by itself for dispute resolution."
+    "The token allocation mechanism for Big Bera Labs involves a smart contract they helped design or implement.",
+    "This contract contains hidden functions or vulnerabilities that grant elevated privileges when Big Bera Labs claims their tokens.",
+    "Such EoP flaws were missed during audits or reviews."
   ],
   "mitigation": {
-    "strategy": "Require digitally signed RFRV submissions or utilize a submission platform with strong, immutable audit trails and robust submitter authentication for Component 320.",
+    "strategy": "Mandate independent, rigorous security audits for all smart contracts involved in token allocation, especially those for core contributors. Ensure contracts adhere to the principle of least privilege. Use standardized, audited contract templates for allocations where possible.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A Protocol Developer (104) submits an RFRV proposal via Component 320 and later denies having submitted it or claims the submitted content was different. This could complicate the BGT Foundation's (109) review and decision-making process.",
+  "description": "If the token allocation mechanism for Big Bera Labs is a custom smart contract they developed or influenced (as part of their 'Contribute to core blockchain development' capability), they might embed logic that grants them elevated privileges within that contract or connected systems upon claiming their $BERA allocation.",
   "trace_source": {
-    "doc_reference": "doc_14",
-    "matched_capability": "Review Request for Reward Vault (RFRV) proposals"
+    "doc_reference": "doc_29",
+    "matched_capability": "Receive initial token allocation"
   }
 }

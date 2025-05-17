@@ -1,61 +1,61 @@
 {
-  "id": 30,
+  "id": 15,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 101,
-    "behavior_id": 613,
-    "capability_match": "Redeem $BGT for $BERA"
+    "actor_id": 1,
+    "behavior_id": 8,
+    "capability_match": "Bridge NFTs between Ethereum and Berachain"
   },
   "threat_target": {
-    "component_id": 307,
+    "component_id": 10,
     "asset_ids": [
-      201,
-      202
+      4
     ]
   },
   "attack_surface": {
-    "behavior_id": 613,
-    "data_flow_id": 401,
-    "data_description": "Crafted $BGT redemption transaction"
+    "behavior_id": 8,
+    "data_flow_id": 9,
+    "data_description": "Interaction with Berachain NFT Bridge smart contracts on either Ethereum or Berachain."
   },
   "trust_boundary_risk": {
-    "boundary_id": 503,
-    "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+    "boundary_id": 4,
+    "boundary_name": "Berachain-Ethereum Bridge Boundary",
     "between_component_ids": [
-      307,
-      302
+      10,
+      2,
+      11
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "$BGT ownership and burn verification must be foolproof before $BERA is provided."
+    "gap_description": "A vulnerability in the NFT bridge's smart contracts could allow unauthorized minting, burning, or transfer of NFTs."
   },
   "actor_risk": {
-    "actor_id": 101,
+    "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "User attempts to exploit redemption logic to get $BERA without burning $BGT."
+    "description": "A malicious End User could exploit a flaw in the bridge contracts to steal or duplicate NFTs."
   },
   "behavioral_risk": {
-    "behavior_id": 613,
+    "behavior_id": 8,
     "risk_level": "High",
-    "rationale": "Exploiting redemption logic can lead to minting unbacked $BERA, undermining its value."
+    "rationale": "Bridge exploits can lead to large-scale theft of assets and loss of confidence in the ecosystem."
   },
   "assumptions": [
-    "A critical vulnerability (e.g., reentrancy, faulty balance check, incorrect burn accounting) exists in the $BGT smart contract's burn-and-redeem logic, accessible via BeraHub (307).",
-    "The user can craft a specific transaction to trigger this flaw."
+    "A critical vulnerability (e.g., reentrancy, signature replay, incorrect validation) exists in the Berachain NFT Bridge's smart contracts.",
+    "Attacker can craft transactions to exploit this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Implement secure smart contract programming practices (e.g., checks-effects-interactions pattern), conduct thorough security audits, and consider formal verification for critical token mechanisms.",
+    "strategy": "Extensive security audits (multiple independent auditors), formal verification of bridge contracts, bug bounty programs, and robust monitoring of bridge activity.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A user exploits a vulnerability in BeraHub (307) or the $BGT smart contract to redeem $BGT (Asset 202) for $BERA (Asset 201) without actually possessing or burning the corresponding $BGT, or by exploiting a flaw (e.g., reentrancy) to receive $BERA multiple times for a single $BGT burn.",
+  "description": "An attacker exploits a smart contract vulnerability in the Berachain NFT Bridge to mint unauthorized NFTs on the destination chain, steal NFTs locked in the bridge, or otherwise manipulate bridge operations to their advantage.",
   "trace_source": {
-    "doc_reference": "doc_27",
-    "matched_capability": "Redeem $BGT for $BERA"
+    "doc_reference": "berachain_nfts.md#doc_4",
+    "matched_capability": "Bridge NFTs between Ethereum and Berachain"
   }
 }

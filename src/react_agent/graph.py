@@ -61,18 +61,16 @@ def parallel_threats_processing(state: State):
         is_assessment_checklist=state.is_assessment_checklist,
         is_assessment_code_binding=state.is_assessment_code_binding,
         threat_list_length=state.threat_list_length,
+        current_threat_count=state.current_threat_count,
         checklist_list_length=state.checklist_list_length,
     )) for i in range(len(actors_map))]
     
 def parallel_checklist_processing(state: State):
     
-    global threat_count
-    threat_count += 1
-    
-    print("threat_count : ", threat_count)
+    print("state.current_threat_count : ", state.current_threat_count)
     print("threats_list : ", state.threat_list_length)
     
-    if threat_count == state.threat_list_length:
+    if state.current_threat_count == state.threat_list_length:
         
         threat_count = 0
         return [Send("generate_checklist", State(
@@ -93,9 +91,11 @@ def parallel_checklist_processing(state: State):
             is_assessment_checklist=state.is_assessment_checklist,
             is_assessment_code_binding=state.is_assessment_code_binding,
             threat_list_length=state.threat_list_length,
+            current_threat_count=state.current_threat_count,
             checklist_list_length=state.checklist_list_length,
         )) for i in range(state.threat_list_length)]
     else:
+        print("state.current_threat_count : ", state.current_threat_count)
         return "__end__"
 
 def parallel_feedback_checklist_processing(state: State):
@@ -117,6 +117,7 @@ def parallel_feedback_checklist_processing(state: State):
         is_assessment_checklist=state.is_assessment_checklist,
         is_assessment_code_binding=state.is_assessment_code_binding,
         threat_list_length=state.threat_list_length,
+        current_threat_count=state.current_threat_count,
         checklist_list_length=state.checklist_list_length,
     )) for i in range(state.checklist_list_length)]
 
@@ -130,7 +131,7 @@ builder.add_node(analyze_threats)
 builder.add_node(generate_checklist)
 builder.add_node(init_db)
 builder.add_node(code_binding)
-builder.add_node(assess_checklist)
+# builder.add_node(assess_checklist)
 builder.add_node(assess_code_binding)
 
 # define edges
@@ -144,8 +145,8 @@ builder.add_edge("assess_architecture", "analyze_architecture")
 builder.add_edge("analyze_threats", "init_db")
 
 builder.add_conditional_edges("analyze_threats", parallel_checklist_processing, ["generate_checklist", "__end__"])
-builder.add_conditional_edges("generate_checklist", checklist_feedback_loop_edge, ["assess_checklist", "code_binding"])
-builder.add_conditional_edges("assess_checklist", parallel_feedback_checklist_processing, ["generate_checklist", "__end__"])
+builder.add_edge("generate_checklist", "code_binding")
+# builder.add_conditional_edges("assess_checklist", parallel_feedback_checklist_processing, ["generate_checklist", "__end__"])
 builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["assess_code_binding", "__end__"])
 builder.add_edge("assess_code_binding", "code_binding")
 builder.add_edge("init_db", "__end__")

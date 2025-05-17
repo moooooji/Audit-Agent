@@ -1,28 +1,28 @@
 {
-  "id": 5,
-  "stride_category": "Denial of Service",
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
     "behavior_id": 1,
-    "capability_match": "Stake LP tokens (as PoL-eligible Receipt Tokens) in Reward Vaults"
+    "capability_match": "Stake Receipt Tokens in Reward Vaults"
   },
   "threat_target": {
     "component_id": 6,
     "asset_ids": [
-      11,
       2,
-      6
+      6,
+      10
     ]
   },
   "attack_surface": {
     "behavior_id": 1,
     "data_flow_id": 3,
-    "data_description": "The $BGT emissions data flow (Data Flow 3) to the Reward Vault Contract is disrupted, or the Reward Vault contract itself is made unavailable for staking/claiming."
+    "data_description": "Exploitable parameters or logic in the staking function of the Reward Vault Contract."
   },
   "trust_boundary_risk": {
-    "boundary_id": 6,
-    "boundary_name": "BeraHub - Reward Vault Smart Contract Boundary",
+    "boundary_id": 3,
+    "boundary_name": "dApp-SmartContract Boundary",
     "between_component_ids": [
       4,
       6
@@ -30,34 +30,33 @@
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The availability of the Reward Vault Contract for staking, withdrawals, and reward claims, as well as the inflow of rewards, is critical for LPs."
+    "gap_description": "The Reward Vault Contract might have flaws in its access control or state manipulation logic related to staking, allowing an attacker to gain unintended capabilities or control over assets."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "External User",
     "overprivileged": false,
-    "description": "Liquidity Provider is unable to stake, withdraw, claim rewards, or their expected rewards do not materialize due to a DoS condition."
+    "description": "External user whose staking action could unintentionally trigger a privilege escalation flaw."
   },
   "behavioral_risk": {
     "behavior_id": 1,
     "risk_level": "Medium",
-    "rationale": "DoS against the Reward Vault or its funding mechanisms directly impacts LP participation and earnings."
+    "rationale": "If the staking interaction can be manipulated to exploit a contract vulnerability, an LP (or an attacker acting as one) could gain unauthorized privileges within the Reward Vault system."
   },
   "assumptions": [
-    "The Reward Vault Contract has a vulnerability (e.g., gas-intensive loop, reentrancy lock) that can be triggered to make it unusable.",
-    "The $BGT Emitter/Distributor (source of Data Flow 3) can be subject to DoS, halting $BGT flow.",
-    "Network congestion or targeted transaction spam can prevent LPs from interacting with the Reward Vault."
+    "The Reward Vault Contract contains a vulnerability in its staking or reward accounting logic that can be triggered by a specifically crafted staking transaction.",
+    "This vulnerability allows an attacker to modify contract parameters, access/drain other users' staked funds or rewards, or perform administrative actions without authorization."
   ],
   "mitigation": {
-    "strategy": "Implement robust smart contract development practices (e.g., gas limits, reentrancy guards), ensure resilient infrastructure for critical components like $BGT Emitter, and provide alternative interaction methods if UIs like BeraHub are down.",
+    "strategy": "Conduct rigorous security audits of smart contract code, focusing on access control, reentrancy, and state management; implement the principle of least privilege for all contract functions; use formal verification methods if possible.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "An attacker causes a Denial of Service against the Reward Vault Contract (Component 6) or its dependent data flows (e.g., Data Flow 3 for $BGT emissions). This prevents Liquidity Provider (Actor 4) from performing staking actions (Behavior 1), claiming rewards, or results in rewards not being distributed.",
+  "description": "A malicious Liquidity Provider, or an attacker exploiting the staking process, triggers a vulnerability in the Reward Vault Contract. This allows them to gain elevated privileges, such as unauthorized withdrawal of other users' staked Receipt Tokens or undue claiming of $BGT or Incentive Token rewards.",
   "trace_source": {
-    "doc_reference": "pol/Reward Vaults (doc_25), pol/Block Production and Emissions (doc_20)",
-    "matched_capability": "Stake LP tokens (as PoL-eligible Receipt Tokens) in Reward Vaults"
+    "doc_reference": "pol/Reward Vaults#doc_25",
+    "matched_capability": "Stake Receipt Tokens in Reward Vaults"
   }
 }
