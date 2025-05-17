@@ -44,6 +44,11 @@ from react_agent.variables import (
     CODE_BINDING_FEEDBACK_LOOP_COUNT
 )
 
+# cache = gemini_client.caches.create(
+#     model=gemini_model,
+#       ttl="100000s",
+#   )
+
 def init_state(state: State) -> State:
     """initialize state"""
     state.is_threat_analysis = False
@@ -324,7 +329,7 @@ def generate_llm_response(state: State) -> str:
             tb_id = threats_list_copy[i]["trust_boundary_risk"]["boundary_id"]
             threats_list_copy[i]["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
                 
-        context.append(threats_list_copy[i])
+            context.append(threats_list_copy[i])
         
         initial_checklist = load_file("results/checklist.json")
         assessment_checklist_json = load_file("results/assessment_checklist.json")

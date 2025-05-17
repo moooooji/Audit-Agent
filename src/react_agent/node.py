@@ -87,6 +87,7 @@ processed_checklist_batches = 0  # 처리된 체크리스트 배치 수 추적
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
     state.is_threat_analysis = True
+    id_weight = 1
 
     global threat_count
     global processed_threats_batches
@@ -121,7 +122,7 @@ def analyze_threats(state: State) -> State:
     if threat_count == len(actors_map):
         # for all threats, assign sequential id weights
         threat_count = 0
-        id_weight = 1
+        
         for threat in threats_list:
             threat["id"] = id_weight
             id_weight += 1
@@ -136,12 +137,13 @@ def analyze_threats(state: State) -> State:
         sleep(60)
         print("gemini api initialized")
         
-    state.threat_list_length = len(threats_list)
-
-    return {"is_threat_analysis": False}
+    return {
+            "is_threat_analysis": False,
+            "threat_list_length": len(threats_list),
+            "current_threat_count": id_weight-1
+            }
 
 def generate_checklist(state: State) -> State:
-    
     
     global checklist_count
     global processed_checklist_batches
@@ -203,7 +205,6 @@ def generate_checklist(state: State) -> State:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
         
         print("checklist_items : ", len(checklist_items))
-        state.checklist_list_length = len(checklist_items)
         checklist_items = []
         
         
@@ -214,7 +215,7 @@ def generate_checklist(state: State) -> State:
         sleep(60)
         print("gemini api initialized")
     
-    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
+    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False, "checklist_list_length": len(checklist_items)}
 
 def assess_checklist(state: State) -> State:
     print("verifying checklist ...")
