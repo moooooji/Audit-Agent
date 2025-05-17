@@ -1,59 +1,61 @@
 {
-  "id": 2,
-  "stride_category": "Tampering",
+  "id": 6,
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
-    "behavior_id": 2,
-    "capability_match": "cast their votes during the voting period"
+    "behavior_id": 515,
+    "capability_match": "Claim incentives earned from $BGT delegation"
   },
   "threat_target": {
-    "component_id": 3,
+    "component_id": 227,
     "asset_ids": [
-      2
+      107,
+      122
     ]
   },
   "attack_surface": {
-    "behavior_id": 2,
-    "data_flow_id": 2,
-    "data_description": "Vote"
+    "behavior_id": 515,
+    "data_flow_id": 314,
+    "data_description": "Reliance on BGT Incentive Proof Service for claim validation"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Governance Trust Boundary",
+    "boundary_id": 401,
+    "boundary_name": "User Device to Web Application",
     "between_component_ids": [
-      3
+      201,
+      211
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Votes could be intercepted and altered before being recorded, skewing the outcome of a governance decision."
+    "gap_description": "The off-chain proof service (227) might erroneously deny a valid claim, and the user may have no recourse to prove its validity if the service disputes it."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "External User",
     "overprivileged": false,
-    "description": "External user with the ability to influence governance decisions."
+    "description": "User's ability to claim earned incentives depends on the correct and honest operation of an off-chain service."
   },
   "behavioral_risk": {
-    "behavior_id": 2,
+    "behavior_id": 515,
     "risk_level": "Low",
-    "rationale": "Vote tampering can significantly impact the governance process, but the risk is mitigated by integrity requirements."
+    "rationale": "Unfair denial of earned incentives damages user trust and system fairness."
   },
   "assumptions": [
-    "The voting process is vulnerable to man-in-the-middle attacks.",
-    "There is no end-to-end encryption or signature verification for votes."
+    "The BGT Incentive Proof Service (227) can make errors or act maliciously.",
+    "There is no independent, on-chain way for a user to verify or enforce their incentive claim if the proof service denies it."
   ],
   "mitigation": {
-    "strategy": "Implement end-to-end encryption and signature verification to ensure the integrity of votes.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Implement transparent logging and auditing for the BGT Incentive Proof Service (227). Provide a dispute resolution mechanism. Explore methods for users to independently verify their entitlement or reduce reliance on a single off-chain service (e.g., Merkle proofs with publicly available roots).",
+    "type": "Process Control",
+    "priority": "Medium"
   },
-  "description": "A malicious actor could intercept and tamper with votes, changing the outcome of governance proposals.",
+  "description": "User (1) attempts to claim Incentive Tokens (107) (Behavior 515), but the BGT Incentive Proof Service (227) provides an incorrect or no proof (122). The service operator denies any error, and the user cannot repudiate the service's decision, thus losing access to their earned incentives.",
   "trace_source": {
-    "doc_reference": "governance.md#active-voting",
-    "matched_capability": "cast their votes during the voting period"
+    "doc_reference": "doc_21",
+    "matched_capability": "Claim incentives earned from $BGT delegation"
   }
 }

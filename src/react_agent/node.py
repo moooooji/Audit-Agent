@@ -13,11 +13,6 @@ from react_agent.llm_utils import (
 # import variables
 from react_agent.variables import (
     actors_map,
-    components_map,
-    assets_map,
-    data_flows_map,
-    trust_boundaries_map,
-    behaviors_map,
     threats_list,
 )
 
@@ -32,6 +27,9 @@ from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 # architecture analysis node
 def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
+    
+    
+    
     # not feedback loop
     if state.architecture_feedback_loop_count == 0:
         print("first architecture analysis ...")
@@ -90,13 +88,13 @@ def analyze_threats(state: State) -> State:
     global threat_count
     global processed_threats_batches
     
-    # 스레드 안전한 카운터 증가
+    # prevent race condition
     with api_semaphore:
         threat_count += 1
         print("[+] threat_count : ", threat_count)
         print("[+] actors_map : ", len(actors_map))
         
-        # 배치 단위로 처리 확인
+        # for google gemini api RPM limit
         current_batch = (threat_count - 1) // BATCH_SIZE
         if current_batch > processed_threats_batches:
             processed_threats_batches = current_batch
@@ -112,13 +110,13 @@ def analyze_threats(state: State) -> State:
     print(f"[+] Threats count: {len(response_dict['threats'])}")
     for threat in response_dict["threats"]:
         threats_list.append(threat)
-        # ID 없이 개별 파일에 저장
+        
         save_json(threat, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
 
     print(f"Saved threats for actor {state.current_actor_id+1}")
     
     if threat_count == len(actors_map):
-        # 모든 위협이 수집된 후 ID를 순차적으로 부여
+        # for all threats, assign sequential id weights
         threat_count = 0
         id_weight = 1
         for threat in threats_list:
@@ -143,13 +141,13 @@ def generate_checklist(state: State) -> State:
     global checklist_count
     global processed_checklist_batches
     
-    # 스레드 안전한 카운터 증가
+    # prevent race condition
     with api_semaphore:
         checklist_count += 1
         print("[+] checklist_count : ", checklist_count)
         print("[+] actors_map : ", len(actors_map))
         
-        # 배치 단위로 처리 확인
+        # for google gemini api RPM limit
         current_batch = (checklist_count - 1) // BATCH_SIZE
         if current_batch > processed_checklist_batches:
             processed_checklist_batches = current_batch
@@ -168,8 +166,10 @@ def generate_checklist(state: State) -> State:
         response = generate_llm_response(state)
         print("completed feedback loop checklist analysis")
         
+        print("response : ", response)
+        
     # parsing response and save to file
-    response_dict = json_str_to_dict(response.text)
+    response_dict = json_str_to_dict(response.choices[0].message.content)
     for checklist_item in response_dict['checklist_items']:
         checklist_item['id'] = id_weight
         id_weight = id_weight+1
@@ -197,7 +197,7 @@ def assess_checklist(state: State) -> State:
     
     response = generate_llm_response(state)
     
-    response_dict = json_str_to_dict(response.text)
+    response_dict = json_str_to_dict(response.choices[0].message.content)
     save_json(response_dict, "results/assessment_checklist.json")
     
     print("completed verifying checklist")
@@ -266,7 +266,7 @@ def assess_code_binding(state: State) -> State:
     
     response = generate_llm_response(state)
     
-    response_dict = json_str_to_dict(response.text)
+    response_dict = json_str_to_dict(response.choices[0].message.content)
     save_json(response_dict, "results/assessment_code_binding.json")
     
     print("completed assessing code binding")

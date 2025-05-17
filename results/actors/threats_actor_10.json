@@ -1,60 +1,62 @@
 {
-  "id": 2,
-  "stride_category": "Denial of Service",
+  "id": 1008,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 10,
-    "behavior_id": 0,
-    "capability_match": "offer Incentive tokens for their respective Reward Vault"
+    "behavior_id": 502,
+    "capability_match": "receive $BERA token allocation"
   },
   "threat_target": {
-    "component_id": 7,
+    "component_id": 202,
     "asset_ids": [
-      2
+      115,
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 0,
-    "data_flow_id": 8,
-    "data_description": "Incentive Tokens"
+    "behavior_id": 502,
+    "data_flow_id": 302,
+    "data_description": "Investor (Actor 10) crafts a malicious transaction for Data Flow 302, attempting to alter claim parameters."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Smart Contract Trust Boundary",
+    "boundary_id": 404,
+    "boundary_name": "dApp-Blockchain Interface",
     "between_component_ids": [
-      7,
-      12
+      202,
+      225
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A large number of incentive tokens offered may cause a denial of service due to computational limits."
+    "gap_description": "The Airdrop Claim Website (202) or its backend smart contract might have vulnerabilities that allow tampering with claim amounts or eligibility data if input validation is insufficient."
   },
   "actor_risk": {
     "actor_id": 10,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "The protocol might unintentionally or maliciously flood the Reward Vaults with a large amount of incentive tokens."
+    "description": "Investor (Partner System) attempts to exploit weaknesses in the claim transaction processing."
   },
   "behavioral_risk": {
-    "behavior_id": 0,
-    "risk_level": "Medium",
-    "rationale": "Offering extremely high numbers of incentive tokens may lead to DoS issues on the system."
+    "behavior_id": 502,
+    "risk_level": "High",
+    "rationale": "Successful tampering could lead to unauthorized withdrawal of $BERA tokens, impacting the airdrop pool and fairness."
   },
   "assumptions": [
-    "The smart contracts lack proper rate limiting or resource management for incentive token distribution.",
-    "There are no mechanisms to prevent the offering of excessive incentive tokens."
+    "The claim transaction data (Data Flow 302) might be manipulable client-side before signing, or the smart contract processing the claim has a flaw.",
+    "Component 202 relies on client-provided data for claim details that might not be fully re-validated server-side/on-chain.",
+    "Actor 10 possesses technical skills to craft and submit tampered transactions."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting and resource management mechanisms to prevent DoS attacks through incentive token distribution.",
+    "strategy": "Ensure all claim parameters submitted via Data Flow 302 are rigorously validated on-chain by the smart contract associated with Component 202. Rely on secure, server-side/on-chain sources of truth for eligibility and amounts, not client-provided data.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "Protocol floods Reward Vaults with an extremely large amount of incentive tokens, leading to a Denial of Service.",
+  "description": "An Investor (Actor 10) attempts to tamper with the data in their airdrop claim transaction (Data Flow 302) submitted to the Berachain Airdrop Claim Website (Component 202). The goal is to modify the claim amount or eligibility criteria to receive more $BERA tokens (Asset 101) than entitled from the airdrop allocation (Asset 115).",
   "trace_source": {
-    "doc_reference": "pol/incentives.md",
-    "matched_capability": "offer Incentive tokens for their respective Reward Vault"
+    "doc_reference": "Doc 2 - $BERA Airdrop",
+    "matched_capability": "receive $BERA token allocation"
   }
 }

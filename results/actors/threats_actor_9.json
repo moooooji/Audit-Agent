@@ -1,59 +1,61 @@
 {
-  "id": 3,
-  "stride_category": "Denial of Service",
+  "id": 4,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
     "behavior_id": 7,
-    "capability_match": "boosts a validator with $BGT"
+    "capability_match": "Receive initial token allocation"
   },
   "threat_target": {
-    "component_id": 4,
+    "component_id": 13,
     "asset_ids": [
-      2
+      1
     ]
   },
   "attack_surface": {
     "behavior_id": 7,
-    "data_flow_id": 7,
-    "data_description": "$BGT"
+    "data_flow_id": 11,
+    "data_description": "Submission of forged identity or eligibility proofs to the token allocation mechanism to impersonate other legitimate core contributors or create fictitious ones."
   },
   "trust_boundary_risk": {
-    "boundary_id": 1,
-    "boundary_name": "Validator Trust Boundary",
+    "boundary_id": 2,
+    "boundary_name": "Wallet-Blockchain Boundary",
     "between_component_ids": [
-      4
+      1,
+      2
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
-    "availability_required": true,
-    "gap_description": "An attacker can spam the boost validator functionality, causing a denial of service."
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "The token allocation mechanism for core contributors like Big Bera Labs lacks robust, difficult-to-forge identity verification, allowing them to potentially claim more tokens than entitled by spoofing other eligible (perhaps fictitious or controlled) contributor identities."
   },
   "actor_risk": {
     "actor_id": 9,
-    "type": "External User",
+    "type": "Partner System",
     "overprivileged": false,
-    "description": "Any user that boosts a validator with $BGT"
+    "description": "Big Bera Labs, despite being a legitimate recipient, might exploit weaknesses in the allocation's identity verification process to claim tokens allocated to other misrepresented or controlled entities, thereby exceeding their rightful share."
   },
   "behavioral_risk": {
     "behavior_id": 7,
     "risk_level": "Medium",
-    "rationale": "Spamming the boost functionality can disrupt the normal operation of the validator boost system."
+    "rationale": "Spoofing identities to acquire undue token allocations undermines the fairness and intended distribution of network tokens, potentially leading to an over-concentration of tokens and reputational damage."
   },
   "assumptions": [
-    "There are no rate limits on the number of boost transactions a user can send.",
-    "The BeraHub component does not have rate limiting for the boost validator functionality."
+    "The process for verifying distinct identities and eligibility for initial core contributor token allocations is vulnerable to sophisticated spoofing.",
+    "Big Bera Labs can create or control multiple wallet addresses that can be convincingly presented as separate, eligible entities for allocation.",
+    "The total amount of tokens available for such allocations can be improperly claimed or misdirected through successful spoofing attacks."
   ],
   "mitigation": {
-    "strategy": "Implement rate limiting on the BeraHub component to prevent users from spamming the boost validator functionality.",
-    "type": "Technical Control",
+    "strategy": "Implement strong, multi-factor authentication and potentially KYB (Know Your Business) procedures for core contributor allocations. Utilize transparent, auditable on-chain distribution mechanisms where possible, and clearly define eligibility criteria to prevent ambiguity.",
+    "type": "Process Control",
     "priority": "Medium"
   },
-  "description": "An attacker can spam the boost validator functionality, causing a denial of service and disrupting the normal operation of the validator boost system.",
+  "description": "Big Bera Labs exploits weaknesses in the identity verification for the initial token allocation process. They spoof other entitled parties or create fictitious contributor identities under their control to claim a larger share of $BERA tokens than legitimately allocated to them.",
   "trace_source": {
-    "doc_reference": "guides/boost_a_validator.md",
-    "matched_capability": "boosts a validator with $BGT"
+    "doc_reference": "pol/tokens/tokenomics.md#doc_29",
+    "matched_capability": "Receive initial token allocation"
   }
 }

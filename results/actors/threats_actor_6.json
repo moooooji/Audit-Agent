@@ -1,59 +1,62 @@
 {
-  "id": 2,
-  "stride_category": "Spoofing",
+  "id": 11,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": 3,
-    "capability_match": "delegate them to validators"
+    "behavior_id": 518,
+    "capability_match": "submit Request for Reward Vault (RFRV) for whitelisting"
   },
   "threat_target": {
-    "component_id": 4,
+    "component_id": 226,
     "asset_ids": [
-      2
+      124,
+      126
     ]
   },
   "attack_surface": {
-    "behavior_id": 3,
-    "data_flow_id": 3,
-    "data_description": "$BGT Delegation"
+    "behavior_id": 518,
+    "data_flow_id": -1,
+    "data_description": "High volume of low-quality, off-topic, or disruptive forum posts on the Governance Forum Website, specifically targeting RFRV discussions relevant to Actor 6."
   },
   "trust_boundary_risk": {
-    "boundary_id": 1,
-    "boundary_name": "Validator Trust Boundary",
+    "boundary_id": -1,
+    "boundary_name": "User to Governance Forum Interface",
     "between_component_ids": [
-      4
+      6,
+      226
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "A malicious actor spoofs delegation source identity."
+    "gap_description": "The Governance Forum Website may be susceptible to spam, trolling, or coordinated FUD campaigns that disrupt constructive discussions about RFRVs, reducing the availability of meaningful discourse for actors like Protocol Owner 6."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "External User",
+    "type": "Partner System",
     "overprivileged": false,
-    "description": "accumulate tokens"
+    "description": "An attacker floods RFRV discussion threads relevant to Protocol Owner 6 with spam or FUD, making it difficult for legitimate discussion, community engagement, and review of their proposal."
   },
   "behavioral_risk": {
-    "behavior_id": 3,
+    "behavior_id": 518,
     "risk_level": "Low",
-    "rationale": "A malicious actor spoofs delegation source identity to undermine trust."
+    "rationale": "Abuse of the public forum can hinder the RFRV discussion process, which is an integral part of governance and whitelisting, affecting the proposal's progression."
   },
   "assumptions": [
-    "There is no sufficient identity validation for delegation transactions.",
-    "The system does not verify the source of delegation messages."
+    "The forum allows open participation and posting by any registered user.",
+    "Moderation resources might be limited or unable to prevent all disruptive behavior effectively or in a timely manner.",
+    "Constructive community discussion is valuable for the RFRV process."
   ],
   "mitigation": {
-    "strategy": "Implement strong identity validation for delegation transactions. Ensure source is cryptographically verified.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Implement robust forum moderation policies and tools (e.g., rate limiting, user reputation systems, content flagging, temporary bans for abusers). Establish clear codes of conduct. Create dedicated, moderated channels for RFRV discussions to isolate them from general chatter.",
+    "type": "Process Control",
+    "priority": "Low"
   },
-  "description": "A malicious actor could impersonate a legitimate BGT holder and delegate tokens on their behalf, potentially manipulating validator boost and compromising the governance process.",
+  "description": "An attacker disrupts meaningful discussion about a Protocol Owner's RFRV on the Governance Forum Website by spamming threads with irrelevant content, posting FUD, or engaging in trolling. This makes it difficult for the community and reviewers to assess the proposal, thereby hindering the RFRV process for that Protocol Owner.",
   "trace_source": {
-    "doc_reference": "guides/boost_a_validator.md",
-    "matched_capability": "delegate them to validators"
+    "doc_reference": "Doc 14: governance/Reward Vault Governance - Submission Process",
+    "matched_capability": "submit Request for Reward Vault (RFRV) for whitelisting"
   }
 }

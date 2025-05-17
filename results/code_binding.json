@@ -4,19 +4,19 @@
       "checklist_item_id": 0,
       "similar_functions": [
         {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
+          "contract_name": "BGT",
+          "function_name": "queueBoost",
+          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external checkUnboostedBalance(msg.sender, amount) {\n        userBoosts[msg.sender].queuedBoost += amount;\n        unchecked {\n            QueuedBoost storage qb = boostedQueue[msg.sender][pubkey];\n            uint128 balance = qb.balance + amount;\n            (qb.balance, qb.blockNumberLast) = (balance, uint32(block.number));\n        }\n        emit QueueBoost(msg.sender, pubkey, amount);\n    }"
         },
         {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
+          "contract_name": "BGT",
+          "function_name": "queueBoost",
+          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external checkUnboostedBalance(msg.sender, amount) {\n        userBoosts[msg.sender].queuedBoost += amount;\n        unchecked {\n            QueuedBoost storage qb = boostedQueue[msg.sender][pubkey];\n            uint128 balance = qb.balance + amount;\n            (qb.balance, qb.blockNumberLast) = (balance, uint32(block.number));\n        }\n        emit QueueBoost(msg.sender, pubkey, amount);\n    }"
         },
         {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
+          "contract_name": "BGT",
+          "function_name": "queueBoost",
+          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external checkUnboostedBalance(msg.sender, amount) {\n        userBoosts[msg.sender].queuedBoost += amount;\n        unchecked {\n            QueuedBoost storage qb = boostedQueue[msg.sender][pubkey];\n            uint128 balance = qb.balance + amount;\n            (qb.balance, qb.blockNumberLast) = (balance, uint32(block.number));\n        }\n        emit QueueBoost(msg.sender, pubkey, amount);\n    }"
         }
       ]
     },
@@ -24,359 +24,19 @@
       "checklist_item_id": 1,
       "similar_functions": [
         {
-          "contract_name": "BerachainGovernance",
-          "function_name": "_countVote",
-          "code": "function _countVote(\n        uint256 proposalId,\n        address account,\n        uint8 support,\n        uint256 totalWeight,\n        bytes memory params\n    )\n        internal\n        override(GovernorUpgradeable, GovernorCountingSimpleUpgradeable)\n        returns (uint256)\n    {\n        if (totalWeight == 0) {\n            GovernorZeroVoteWeight.selector.revertWith();\n        }\n        return GovernorCountingSimpleUpgradeable._countVote(proposalId, account, support, totalWeight, params);\n    }"
-        },
-        {
-          "contract_name": "BerachainGovernance",
-          "function_name": "_voteSucceeded",
-          "code": "function _voteSucceeded(uint256 proposalId)\n        internal\n        view\n        virtual\n        override(GovernorUpgradeable, GovernorCountingSimpleUpgradeable)\n        returns (bool)\n    {\n        (uint256 againstVotes, uint256 forVotes,) = proposalVotes(proposalId);\n        uint256 threshold = (forVotes + againstVotes) * 51 / 100;\n        return forVotes >= threshold;\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_checkIfERC20Votes",
-          "code": "function _checkIfERC20Votes(address token) internal view {\n        if (!_supportsERC20VotesAndMetadata(token)) {\n            revert(\"GovDeployer: token is not a valid ERC20Votes or ERC20Metadata\");\n        }\n    }"
-        }
-      ]
-    },
-    "2": {
-      "checklist_item_id": 2,
-      "similar_functions": [
-        {
-          "contract_name": "HoneyFactoryReader",
-          "function_name": "previewMintCollaterals",
-          "code": "function previewMintCollaterals(address asset, uint256 honey) public view returns (uint256[] memory amounts) {\n        (address[] memory collaterals, uint256 num) = _getCollaterals();\n        amounts = new uint256[](num);\n        uint256[] memory weights = honeyFactory.getWeights();\n        bool basketMode = honeyFactory.isBasketModeEnabled(true);\n        for (uint256 i = 0; i < num; i++) {\n            if (!basketMode && collaterals[i] != asset) {\n                continue;\n            }\n            if (!basketMode && collaterals[i] == asset) {\n                weights[i] = 1e18;\n            }\n            ERC4626 vault = honeyFactory.vaults(collaterals[i]);\n            uint256 mintRate = honeyFactory.mintRates(collaterals[i]);\n            uint256 shares = honey * weights[i] / mintRate;\n            amounts[i] = vault.convertToAssets(shares);\n        }\n    }"
-        },
-        {
-          "contract_name": "HoneyFactoryReader",
-          "function_name": "previewMintCollaterals",
-          "code": "function previewMintCollaterals(address asset, uint256 honey) public view returns (uint256[] memory amounts) {\n        (address[] memory collaterals, uint256 num) = _getCollaterals();\n        amounts = new uint256[](num);\n        uint256[] memory weights = honeyFactory.getWeights();\n        bool basketMode = honeyFactory.isBasketModeEnabled(true);\n        for (uint256 i = 0; i < num; i++) {\n            if (!basketMode && collaterals[i] != asset) {\n                continue;\n            }\n            if (!basketMode && collaterals[i] == asset) {\n                weights[i] = 1e18;\n            }\n            ERC4626 vault = honeyFactory.vaults(collaterals[i]);\n            uint256 mintRate = honeyFactory.mintRates(collaterals[i]);\n            uint256 shares = honey * weights[i] / mintRate;\n            amounts[i] = vault.convertToAssets(shares);\n        }\n    }"
-        },
-        {
-          "contract_name": "HoneyFactoryReader",
-          "function_name": "previewMintCollaterals",
-          "code": "function previewMintCollaterals(address asset, uint256 honey) public view returns (uint256[] memory amounts) {\n        (address[] memory collaterals, uint256 num) = _getCollaterals();\n        amounts = new uint256[](num);\n        uint256[] memory weights = honeyFactory.getWeights();\n        bool basketMode = honeyFactory.isBasketModeEnabled(true);\n        for (uint256 i = 0; i < num; i++) {\n            if (!basketMode && collaterals[i] != asset) {\n                continue;\n            }\n            if (!basketMode && collaterals[i] == asset) {\n                weights[i] = 1e18;\n            }\n            ERC4626 vault = honeyFactory.vaults(collaterals[i]);\n            uint256 mintRate = honeyFactory.mintRates(collaterals[i]);\n            uint256 shares = honey * weights[i] / mintRate;\n            amounts[i] = vault.convertToAssets(shares);\n        }\n    }"
-        }
-      ]
-    },
-    "3": {
-      "checklist_item_id": 3,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        }
-      ]
-    },
-    "4": {
-      "checklist_item_id": 4,
-      "similar_functions": [
-        {
-          "contract_name": "HoneyDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "HoneyDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "HoneyDeployer",
-          "function_name": "constructor",
-          "code": null
-        }
-      ]
-    },
-    "5": {
-      "checklist_item_id": 5,
-      "similar_functions": [
-        {
           "contract_name": "BGT",
-          "function_name": "burnExceedingReserves",
-          "code": "function burnExceedingReserves() external {\n        IBlockRewardController br = IBlockRewardController(_blockRewardController);\n        uint256 potentialMintableBGT = HISTORY_BUFFER_LENGTH * br.getMaxBGTPerBlock();\n        uint256 currentReservesAmount = address(this).balance;\n        uint256 outstandingRequiredAmount = totalSupply() + potentialMintableBGT;\n        if (currentReservesAmount <= outstandingRequiredAmount) return;\n        uint256 excessAmountToBurn = currentReservesAmount - outstandingRequiredAmount;\n        SafeTransferLib.safeTransferETH(address(0), excessAmountToBurn);\n        emit ExceedingReservesBurnt(msg.sender, excessAmountToBurn);\n    }"
+          "function_name": "redeem",
+          "code": "function redeem(\n        address receiver,\n        uint256 amount\n    )\n        external\n        invariantCheck\n        checkUnboostedBalance(msg.sender, amount)\n    {\n        super._burn(msg.sender, amount);\n        SafeTransferLib.safeTransferETH(receiver, amount);\n        emit Redeem(msg.sender, receiver, amount);\n    }"
         },
         {
           "contract_name": "BGT",
-          "function_name": "burnExceedingReserves",
-          "code": "function burnExceedingReserves() external {\n        IBlockRewardController br = IBlockRewardController(_blockRewardController);\n        uint256 potentialMintableBGT = HISTORY_BUFFER_LENGTH * br.getMaxBGTPerBlock();\n        uint256 currentReservesAmount = address(this).balance;\n        uint256 outstandingRequiredAmount = totalSupply() + potentialMintableBGT;\n        if (currentReservesAmount <= outstandingRequiredAmount) return;\n        uint256 excessAmountToBurn = currentReservesAmount - outstandingRequiredAmount;\n        SafeTransferLib.safeTransferETH(address(0), excessAmountToBurn);\n        emit ExceedingReservesBurnt(msg.sender, excessAmountToBurn);\n    }"
+          "function_name": "redeem",
+          "code": "function redeem(\n        address receiver,\n        uint256 amount\n    )\n        external\n        invariantCheck\n        checkUnboostedBalance(msg.sender, amount)\n    {\n        super._burn(msg.sender, amount);\n        SafeTransferLib.safeTransferETH(receiver, amount);\n        emit Redeem(msg.sender, receiver, amount);\n    }"
         },
         {
           "contract_name": "BGT",
-          "function_name": "burnExceedingReserves",
-          "code": "function burnExceedingReserves() external {\n        IBlockRewardController br = IBlockRewardController(_blockRewardController);\n        uint256 potentialMintableBGT = HISTORY_BUFFER_LENGTH * br.getMaxBGTPerBlock();\n        uint256 currentReservesAmount = address(this).balance;\n        uint256 outstandingRequiredAmount = totalSupply() + potentialMintableBGT;\n        if (currentReservesAmount <= outstandingRequiredAmount) return;\n        uint256 excessAmountToBurn = currentReservesAmount - outstandingRequiredAmount;\n        SafeTransferLib.safeTransferETH(address(0), excessAmountToBurn);\n        emit ExceedingReservesBurnt(msg.sender, excessAmountToBurn);\n    }"
-        }
-      ]
-    },
-    "6": {
-      "checklist_item_id": 6,
-      "similar_functions": [
-        {
-          "contract_name": "IBGT",
-          "function_name": "boosted",
-          "code": "function boosted(address account, bytes calldata pubkey) external view returns (uint128);"
-        },
-        {
-          "contract_name": "IBGT",
-          "function_name": "boosted",
-          "code": "function boosted(address account, bytes calldata pubkey) external view returns (uint128);"
-        },
-        {
-          "contract_name": "IBGT",
-          "function_name": "boosted",
-          "code": "function boosted(address account, bytes calldata pubkey) external view returns (uint128);"
-        }
-      ]
-    },
-    "7": {
-      "checklist_item_id": 7,
-      "similar_functions": [
-        {
-          "contract_name": "IBGT",
-          "function_name": "queueBoost",
-          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external;"
-        },
-        {
-          "contract_name": "IBGT",
-          "function_name": "queueBoost",
-          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external;"
-        },
-        {
-          "contract_name": "IBGT",
-          "function_name": "queueBoost",
-          "code": "function queueBoost(bytes calldata pubkey, uint128 amount) external;"
-        }
-      ]
-    },
-    "8": {
-      "checklist_item_id": 8,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "setMaxIncentiveTokensCount",
-          "code": "function setMaxIncentiveTokensCount(uint8 _maxIncentiveTokensCount) external onlyFactoryOwner {\n        if (_maxIncentiveTokensCount < whitelistedTokens.length) {\n            InvalidMaxIncentiveTokensCount.selector.revertWith();\n        }\n        maxIncentiveTokensCount = _maxIncentiveTokensCount;\n        emit MaxIncentiveTokensCountUpdated(_maxIncentiveTokensCount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "setMaxIncentiveTokensCount",
-          "code": "function setMaxIncentiveTokensCount(uint8 _maxIncentiveTokensCount) external onlyFactoryOwner {\n        if (_maxIncentiveTokensCount < whitelistedTokens.length) {\n            InvalidMaxIncentiveTokensCount.selector.revertWith();\n        }\n        maxIncentiveTokensCount = _maxIncentiveTokensCount;\n        emit MaxIncentiveTokensCountUpdated(_maxIncentiveTokensCount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "setMaxIncentiveTokensCount",
-          "code": "function setMaxIncentiveTokensCount(uint8 _maxIncentiveTokensCount) external onlyFactoryOwner {\n        if (_maxIncentiveTokensCount < whitelistedTokens.length) {\n            InvalidMaxIncentiveTokensCount.selector.revertWith();\n        }\n        maxIncentiveTokensCount = _maxIncentiveTokensCount;\n        emit MaxIncentiveTokensCountUpdated(_maxIncentiveTokensCount);\n    }"
-        }
-      ]
-    },
-    "9": {
-      "checklist_item_id": 9,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        }
-      ]
-    },
-    "10": {
-      "checklist_item_id": 10,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "_processIncentives",
-          "code": "function _processIncentives(bytes calldata pubkey, uint256 bgtEmitted) internal {\n        address _operator = beaconDepositContract.getOperator(pubkey);\n        IBeraChef beraChef = IDistributor(distributor).beraChef();\n        address bgtIncentiveDistributor = getBGTIncentiveDistributor();\n        uint256 whitelistedTokensCount = whitelistedTokens.length;\n        unchecked {\n            for (uint256 i; i < whitelistedTokensCount; ++i) {\n                address token = whitelistedTokens[i];\n                Incentive storage incentive = incentives[token];\n                uint256 amount = FixedPointMathLib.mulDiv(bgtEmitted, incentive.incentiveRate, PRECISION);\n                uint256 amountRemaining = incentive.amountRemaining;\n                amount = FixedPointMathLib.min(amount, amountRemaining);\n                uint256 validatorShare;\n                if (amount > 0) {\n                    validatorShare = beraChef.getValidatorIncentiveTokenShare(pubkey, amount);\n                    amount -= validatorShare;\n                }\n                if (validatorShare > 0) {\n                    bool success = token.trySafeTransfer(_operator, validatorShare);\n                    if (success) {\n                        amountRemaining -= validatorShare;\n                        emit IncentivesProcessed(pubkey, token, bgtEmitted, validatorShare);\n                    } else {\n                        emit IncentivesProcessFailed(pubkey, token, bgtEmitted, validatorShare);\n                    }\n                }\n                if (amount > 0) {\n                    bytes memory data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, amount));\n                    (bool success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                    if (success) {\n                        data = abi.encodeCall(IBGTIncentiveDistributor.receiveIncentive, (pubkey, token, amount));\n                        (success,) = bgtIncentiveDistributor.call{ gas: SAFE_GAS_LIMIT }(data);\n                        if (success) {\n                            amountRemaining -= amount;\n                            emit BGTBoosterIncentivesProcessed(pubkey, token, bgtEmitted, amount);\n                        } else {\n                            data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, 0));\n                            (success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                            emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                        }\n                    }\n                    else {\n                        emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                    }\n                }\n                incentive.amountRemaining = amountRemaining;\n            }\n        }\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "_processIncentives",
-          "code": "function _processIncentives(bytes calldata pubkey, uint256 bgtEmitted) internal {\n        address _operator = beaconDepositContract.getOperator(pubkey);\n        IBeraChef beraChef = IDistributor(distributor).beraChef();\n        address bgtIncentiveDistributor = getBGTIncentiveDistributor();\n        uint256 whitelistedTokensCount = whitelistedTokens.length;\n        unchecked {\n            for (uint256 i; i < whitelistedTokensCount; ++i) {\n                address token = whitelistedTokens[i];\n                Incentive storage incentive = incentives[token];\n                uint256 amount = FixedPointMathLib.mulDiv(bgtEmitted, incentive.incentiveRate, PRECISION);\n                uint256 amountRemaining = incentive.amountRemaining;\n                amount = FixedPointMathLib.min(amount, amountRemaining);\n                uint256 validatorShare;\n                if (amount > 0) {\n                    validatorShare = beraChef.getValidatorIncentiveTokenShare(pubkey, amount);\n                    amount -= validatorShare;\n                }\n                if (validatorShare > 0) {\n                    bool success = token.trySafeTransfer(_operator, validatorShare);\n                    if (success) {\n                        amountRemaining -= validatorShare;\n                        emit IncentivesProcessed(pubkey, token, bgtEmitted, validatorShare);\n                    } else {\n                        emit IncentivesProcessFailed(pubkey, token, bgtEmitted, validatorShare);\n                    }\n                }\n                if (amount > 0) {\n                    bytes memory data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, amount));\n                    (bool success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                    if (success) {\n                        data = abi.encodeCall(IBGTIncentiveDistributor.receiveIncentive, (pubkey, token, amount));\n                        (success,) = bgtIncentiveDistributor.call{ gas: SAFE_GAS_LIMIT }(data);\n                        if (success) {\n                            amountRemaining -= amount;\n                            emit BGTBoosterIncentivesProcessed(pubkey, token, bgtEmitted, amount);\n                        } else {\n                            data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, 0));\n                            (success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                            emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                        }\n                    }\n                    else {\n                        emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                    }\n                }\n                incentive.amountRemaining = amountRemaining;\n            }\n        }\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V1",
-          "function_name": "_processIncentives",
-          "code": "function _processIncentives(bytes calldata pubkey, uint256 bgtEmitted) internal {\n        address _operator = beaconDepositContract.getOperator(pubkey);\n        IBeraChef beraChef = IDistributor(distributor).beraChef();\n        address bgtIncentiveDistributor = getBGTIncentiveDistributor();\n        uint256 whitelistedTokensCount = whitelistedTokens.length;\n        unchecked {\n            for (uint256 i; i < whitelistedTokensCount; ++i) {\n                address token = whitelistedTokens[i];\n                Incentive storage incentive = incentives[token];\n                uint256 amount = FixedPointMathLib.mulDiv(bgtEmitted, incentive.incentiveRate, PRECISION);\n                uint256 amountRemaining = incentive.amountRemaining;\n                amount = FixedPointMathLib.min(amount, amountRemaining);\n                uint256 validatorShare;\n                if (amount > 0) {\n                    validatorShare = beraChef.getValidatorIncentiveTokenShare(pubkey, amount);\n                    amount -= validatorShare;\n                }\n                if (validatorShare > 0) {\n                    bool success = token.trySafeTransfer(_operator, validatorShare);\n                    if (success) {\n                        amountRemaining -= validatorShare;\n                        emit IncentivesProcessed(pubkey, token, bgtEmitted, validatorShare);\n                    } else {\n                        emit IncentivesProcessFailed(pubkey, token, bgtEmitted, validatorShare);\n                    }\n                }\n                if (amount > 0) {\n                    bytes memory data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, amount));\n                    (bool success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                    if (success) {\n                        data = abi.encodeCall(IBGTIncentiveDistributor.receiveIncentive, (pubkey, token, amount));\n                        (success,) = bgtIncentiveDistributor.call{ gas: SAFE_GAS_LIMIT }(data);\n                        if (success) {\n                            amountRemaining -= amount;\n                            emit BGTBoosterIncentivesProcessed(pubkey, token, bgtEmitted, amount);\n                        } else {\n                            data = abi.encodeCall(IERC20.approve, (bgtIncentiveDistributor, 0));\n                            (success,) = token.call{ gas: SAFE_GAS_LIMIT }(data);\n                            emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                        }\n                    }\n                    else {\n                        emit BGTBoosterIncentivesProcessFailed(pubkey, token, bgtEmitted, amount);\n                    }\n                }\n                incentive.amountRemaining = amountRemaining;\n            }\n        }\n    }"
-        }
-      ]
-    },
-    "11": {
-      "checklist_item_id": 11,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "addIncentive",
-          "code": "function addIncentive(\n        address token,\n        uint256 amount,\n        uint256 incentiveRate\n    )\n        external\n        nonReentrant\n        onlyWhitelistedToken(token)\n    {\n        if (incentiveRate > MAX_INCENTIVE_RATE) IncentiveRateTooHigh.selector.revertWith();\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);\n        incentive.amountRemaining = amountRemainingBefore + amount;\n        if (amountRemainingBefore == 0 && incentiveRate >= minIncentiveRate) {\n            incentive.incentiveRate = incentiveRate;\n        }\n        else if (incentiveRate > incentiveRateStored) {\n            uint256 rateDelta;\n            unchecked {\n                rateDelta = incentiveRate - incentiveRateStored;\n            }\n            if (amount >= FixedPointMathLib.mulDiv(amountRemainingBefore, rateDelta, incentiveRateStored)) {\n                incentive.incentiveRate = incentiveRate;\n            }\n        }\n        emit IncentiveAdded(token, msg.sender, amount, incentive.incentiveRate);\n    }"
-        }
-      ]
-    },
-    "12": {
-      "checklist_item_id": 12,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault",
-          "function_name": "delegateStake",
-          "code": "function delegateStake(address account, uint256 amount) external nonReentrant whenNotPaused {\n        if (msg.sender == account) NotDelegate.selector.revertWith();\n        _stake(account, amount);\n        unchecked {\n            DelegateStake storage info = _delegateStake[account];\n            info.delegateTotalStaked += amount;\n            info.stakedByDelegate[msg.sender] += amount;\n        }\n        emit DelegateStaked(account, msg.sender, amount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault",
-          "function_name": "delegateStake",
-          "code": "function delegateStake(address account, uint256 amount) external nonReentrant whenNotPaused {\n        if (msg.sender == account) NotDelegate.selector.revertWith();\n        _stake(account, amount);\n        unchecked {\n            DelegateStake storage info = _delegateStake[account];\n            info.delegateTotalStaked += amount;\n            info.stakedByDelegate[msg.sender] += amount;\n        }\n        emit DelegateStaked(account, msg.sender, amount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault",
-          "function_name": "delegateStake",
-          "code": "function delegateStake(address account, uint256 amount) external nonReentrant whenNotPaused {\n        if (msg.sender == account) NotDelegate.selector.revertWith();\n        _stake(account, amount);\n        unchecked {\n            DelegateStake storage info = _delegateStake[account];\n            info.delegateTotalStaked += amount;\n            info.stakedByDelegate[msg.sender] += amount;\n        }\n        emit DelegateStaked(account, msg.sender, amount);\n    }"
-        }
-      ]
-    },
-    "13": {
-      "checklist_item_id": 13,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "getDelegateStake",
-          "code": "function getDelegateStake(address account, address delegate) external view returns (uint256) {\n        return _delegateStake[account].stakedByDelegate[delegate];\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "getDelegateStake",
-          "code": "function getDelegateStake(address account, address delegate) external view returns (uint256) {\n        return _delegateStake[account].stakedByDelegate[delegate];\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V2",
-          "function_name": "getDelegateStake",
-          "code": "function getDelegateStake(address account, address delegate) external view returns (uint256) {\n        return _delegateStake[account].stakedByDelegate[delegate];\n    }"
-        }
-      ]
-    },
-    "14": {
-      "checklist_item_id": 14,
-      "similar_functions": [
-        {
-          "contract_name": "VaultAdmin",
-          "function_name": "__VaultAdmin_init",
-          "code": "function __VaultAdmin_init(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver,\n        address _beacon\n    )\n        internal\n        onlyInitializing\n    {\n        __AccessControl_init();\n        __Pausable_init();\n        __UUPSUpgradeable_init();\n        __VaultAdmin_init_unchained(_governance, _polFeeCollector, _feeReceiver, _beacon);\n        _setRoleAdmin(PAUSER_ROLE, MANAGER_ROLE);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin",
-          "function_name": "__VaultAdmin_init",
-          "code": "function __VaultAdmin_init(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver,\n        address _beacon\n    )\n        internal\n        onlyInitializing\n    {\n        __AccessControl_init();\n        __Pausable_init();\n        __UUPSUpgradeable_init();\n        __VaultAdmin_init_unchained(_governance, _polFeeCollector, _feeReceiver, _beacon);\n        _setRoleAdmin(PAUSER_ROLE, MANAGER_ROLE);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin",
-          "function_name": "__VaultAdmin_init",
-          "code": "function __VaultAdmin_init(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver,\n        address _beacon\n    )\n        internal\n        onlyInitializing\n    {\n        __AccessControl_init();\n        __Pausable_init();\n        __UUPSUpgradeable_init();\n        __VaultAdmin_init_unchained(_governance, _polFeeCollector, _feeReceiver, _beacon);\n        _setRoleAdmin(PAUSER_ROLE, MANAGER_ROLE);\n    }"
-        }
-      ]
-    },
-    "15": {
-      "checklist_item_id": 15,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "accountIncentives",
-          "code": "function accountIncentives(address token, uint256 amount) external nonReentrant onlyWhitelistedToken(token) {\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        uint256 incentiveBalance = IERC20(token).balanceOf(address(this));\n        if (amount > incentiveBalance - amountRemainingBefore) NotEnoughBalance.selector.revertWith();\n        incentive.amountRemaining += amount;\n        emit IncentiveAdded(token, msg.sender, amount, incentiveRateStored);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "accountIncentives",
-          "code": "function accountIncentives(address token, uint256 amount) external nonReentrant onlyWhitelistedToken(token) {\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        uint256 incentiveBalance = IERC20(token).balanceOf(address(this));\n        if (amount > incentiveBalance - amountRemainingBefore) NotEnoughBalance.selector.revertWith();\n        incentive.amountRemaining += amount;\n        emit IncentiveAdded(token, msg.sender, amount, incentiveRateStored);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "accountIncentives",
-          "code": "function accountIncentives(address token, uint256 amount) external nonReentrant onlyWhitelistedToken(token) {\n        Incentive storage incentive = incentives[token];\n        (uint256 minIncentiveRate, uint256 incentiveRateStored, uint256 amountRemainingBefore, address manager) =\n            (incentive.minIncentiveRate, incentive.incentiveRate, incentive.amountRemaining, incentive.manager);\n        if (msg.sender != manager) NotIncentiveManager.selector.revertWith();\n        if (amount < minIncentiveRate) AmountLessThanMinIncentiveRate.selector.revertWith();\n        uint256 incentiveBalance = IERC20(token).balanceOf(address(this));\n        if (amount > incentiveBalance - amountRemainingBefore) NotEnoughBalance.selector.revertWith();\n        incentive.amountRemaining += amount;\n        emit IncentiveAdded(token, msg.sender, amount, incentiveRateStored);\n    }"
-        }
-      ]
-    },
-    "16": {
-      "checklist_item_id": 16,
-      "similar_functions": [
-        {
-          "contract_name": "IRewardVault_V0",
-          "function_name": "updateIncentiveManager",
-          "code": "function updateIncentiveManager(address token, address newManager) external;"
-        },
-        {
-          "contract_name": "IRewardVault_V0",
-          "function_name": "updateIncentiveManager",
-          "code": "function updateIncentiveManager(address token, address newManager) external;"
-        },
-        {
-          "contract_name": "IRewardVault_V0",
-          "function_name": "updateIncentiveManager",
-          "code": "function updateIncentiveManager(address token, address newManager) external;"
-        }
-      ]
-    },
-    "17": {
-      "checklist_item_id": 17,
-      "similar_functions": [
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        }
-      ]
-    },
-    "18": {
-      "checklist_item_id": 18,
-      "similar_functions": [
-        {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
-        },
-        {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
-        },
-        {
-          "contract_name": "BerachainGovernance",
-          "function_name": "proposalThreshold",
-          "code": "function proposalThreshold()\n        public\n        view\n        override(GovernorUpgradeable, GovernorSettingsUpgradeable)\n        returns (uint256)\n    {\n        return GovernorSettingsUpgradeable.proposalThreshold();\n    }"
+          "function_name": "redeem",
+          "code": "function redeem(\n        address receiver,\n        uint256 amount\n    )\n        external\n        invariantCheck\n        checkUnboostedBalance(msg.sender, amount)\n    {\n        super._burn(msg.sender, amount);\n        SafeTransferLib.safeTransferETH(receiver, amount);\n        emit Redeem(msg.sender, receiver, amount);\n    }"
         }
       ]
     }

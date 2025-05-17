@@ -1,0 +1,61 @@
+{
+  "id": 4,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 5,
+    "behavior_id": 507,
+    "capability_match": "Add whitelisted incentive tokens to a Reward Vault"
+  },
+  "threat_target": {
+    "component_id": 214,
+    "asset_ids": [
+      107,
+      102,
+      106
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 507,
+    "data_flow_id": 312,
+    "data_description": "Parameters sent to incentive management functions within the Reward Vault Contract."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 1001,
+    "boundary_name": "Boundary between Token Manager (Actor 5) and Reward Vault Contract (Component 214)",
+    "between_component_ids": [
+      214
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "A flaw in the Reward Vault Contract's (214) authorization logic for incentive management might allow a Token Manager to exceed their intended permissions for a specific incentive, potentially affecting other incentives or vault functions."
+  },
+  "actor_risk": {
+    "actor_id": 5,
+    "type": "Partner System",
+    "overprivileged": true,
+    "description": "A Token Manager might exploit a contract flaw to gain unauthorized control over aspects of the Reward Vault beyond their designated incentive management scope."
+  },
+  "behavioral_risk": {
+    "behavior_id": 507,
+    "risk_level": "High",
+    "rationale": "Elevation of privilege within the Reward Vault could lead to theft of any managed assets (incentives, PoL tokens, BGT), unauthorized changes to vault parameters, or complete disruption of its function."
+  },
+  "assumptions": [
+    "The Reward Vault Contract (214) has sufficiently complex authorization logic for different managerial functions or multiple incentive types that it could contain a flaw.",
+    "A vulnerability exists in this authorization logic that can be exploited by an otherwise authorized Token Manager (Actor 5) when interacting with incentive management functions (via Data Flow 312)."
+  ],
+  "mitigation": {
+    "strategy": "Conduct thorough security audits of the Reward Vault Contract, specifically focusing on access control, function modifiers, and privilege separation for managing different incentives or vault aspects. Implement the principle of least privilege rigorously for all roles. Use formal verification methods if feasible.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "A Token Manager (Actor 5), while legitimately interacting with their authorized incentive management functions on Reward Vault Contract (214) via Data Flow 312, exploits a smart contract vulnerability to gain unauthorized control over other incentives, funds (other Incentive Tokens 107, $BGT 102, PoL-Eligible Receipt Tokens 106), or critical vault settings for which they are not the designated manager.",
+  "trace_source": {
+    "doc_reference": "pol/Incentive Marketplace (doc_21) - 'Only Incentive Token Managers...can offer Incentives.' This implies a specific, limited authority.",
+    "matched_capability": "Add whitelisted incentive tokens to a Reward Vault"
+  }
+}

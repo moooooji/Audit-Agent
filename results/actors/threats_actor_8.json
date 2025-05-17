@@ -1,57 +1,62 @@
 {
-  "id": 3,
-  "stride_category": "Denial of Service",
+  "id": 2,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 8,
-    "behavior_id": 8,
-    "capability_match": "offer Incentive Tokens"
+    "behavior_id": 3,
+    "capability_match": "Manage community initiatives and grants"
   },
   "threat_target": {
-    "component_id": 7,
+    "component_id": 3,
     "asset_ids": [
-      4
+      1,
+      8
     ]
   },
   "attack_surface": {
-    "behavior_id": 8,
-    "data_flow_id": 8,
-    "data_description": "Incentive Tokens"
+    "behavior_id": 3,
+    "data_flow_id": 5,
+    "data_description": "Foundation insider provides spoofed justification or details for a community grant, leading to a fraudulent grant proposal being created or passed."
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "",
-    "between_component_ids": []
+    "boundary_id": 5,
+    "boundary_name": "Governance Oversight Boundary",
+    "between_component_ids": [
+      3,
+      12
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
-    "availability_required": true,
-    "gap_description": "Malicious Token Manager may intentionally halt the offering of Incentive Tokens, causing a denial of service for the Reward Vault users."
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "Lack of independent verification for grant justifications and recipient legitimacy when such information is sourced from Foundation (Actor 8) recommendations that feed into governance proposals (Behavior 3)."
   },
   "actor_risk": {
     "actor_id": 8,
-    "type": "Internal Service",
-    "overprivileged": false,
-    "description": "One wallet address is responsible for offering an Incentive Token"
+    "type": "Partner System",
+    "overprivileged": true,
+    "description": "A rogue Berachain Foundation insider spoofs the legitimacy of a grant recipient or the purpose of a project to divert funds through the governance approval process."
   },
   "behavioral_risk": {
-    "behavior_id": 8,
-    "risk_level": "Low",
-    "rationale": "A malicious Token Manager could disrupt the system by halting the offering of Incentive Tokens, leading to a denial of service for Reward Vault users."
+    "behavior_id": 3,
+    "risk_level": "High",
+    "rationale": "Successful spoofing leads to misallocation or theft of community grant funds, damaging trust and resource availability."
   },
   "assumptions": [
-    "The Token Manager is a trusted entity that will always act in the best interest of the system.",
-    "There is no backup mechanism to continue offering Incentive Tokens if the Token Manager becomes unavailable or malicious."
+    "The Berachain Foundation's recommendations for community grants heavily influence or directly form the basis of governance proposals for fund disbursement.",
+    "A rogue insider within the Foundation has the means to create or promote spoofed grant applications or justifications.",
+    "The governance voting process (Behavior 3) may not possess adequate mechanisms to independently verify all details of Foundation-backed grant proposals, especially regarding recipient identity or project authenticity."
   ],
   "mitigation": {
-    "strategy": "Implement a multi-signature scheme for the Token Manager's wallet to prevent a single point of failure. Introduce a governance mechanism to replace a malicious or unavailable Token Manager.",
+    "strategy": "Implement a transparent and public grant application and review process. Require thorough public due diligence on prospective grant applicants and their projects. Mandate multi-party sign-off from diverse, independent entities for significant grant disbursements. Utilize identity verification tools where appropriate.",
     "type": "Process Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A malicious or unavailable Token Manager could halt the offering of Incentive Tokens, causing a denial of service for users of the Reward Vault.",
+  "description": "A rogue element within Berachain Foundation (Actor 8) spoofs the details or justification for a community grant, thereby manipulating the governance proposal process (Behavior 3) to have funds awarded to an illegitimate or non-existent entity.",
   "trace_source": {
-    "doc_reference": "guides/add_incentives_for_reward_vault.md",
-    "matched_capability": "offer Incentive Tokens"
+    "doc_reference": "Berachain Tokenomics (Doc #29 - mentions grants and community initiatives), general Berachain Governance process (Doc #3)",
+    "matched_capability": "Manage community initiatives and grants"
   }
 }

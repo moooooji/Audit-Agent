@@ -1,0 +1,60 @@
+{
+  "id": 8,
+  "stride_category": "Denial of Service",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 2,
+    "behavior_id": 504,
+    "capability_match": "Direct $BGT emissions to whitelisted Reward Vaults"
+  },
+  "threat_target": {
+    "component_id": 229,
+    "asset_ids": [
+      102
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 504,
+    "data_flow_id": 308,
+    "data_description": "Interaction with Distributor Contract for emission direction."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 403,
+    "boundary_name": "Berachain Network Boundary",
+    "between_component_ids": [
+      203,
+      202
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "The Distributor Contract may be susceptible to transaction spamming or resource exhaustion attacks, preventing legitimate emission directions."
+  },
+  "actor_risk": {
+    "actor_id": 2,
+    "type": "Internal Service",
+    "overprivileged": false,
+    "description": "An attacker targets the Distributor Contract, affecting all validators including Actor 2."
+  },
+  "behavioral_risk": {
+    "behavior_id": 504,
+    "risk_level": "Medium",
+    "rationale": "Inability to direct emissions disrupts the PoL incentive flow and reward distribution."
+  },
+  "assumptions": [
+    "The Distributor Contract (229) can be overloaded by a high volume of valid or invalid transactions.",
+    "The underlying network infrastructure (e.g., RPC nodes serving validators) can be targeted to prevent transaction submission to the Distributor Contract."
+  ],
+  "mitigation": {
+    "strategy": "Implement gas cost mechanisms that penalize spam, design Distributor Contract for high throughput and resilience. Ensure robust RPC infrastructure.",
+    "type": "Technical Control",
+    "priority": "Medium"
+  },
+  "description": "An attacker launches a Denial of Service attack against the Distributor Contract or related infrastructure, preventing Validators from successfully submitting their $BGT emission directives.",
+  "trace_source": {
+    "doc_reference": "pol/bgtmath.md#doc_20",
+    "matched_capability": "Direct $BGT emissions to whitelisted Reward Vaults"
+  }
+}

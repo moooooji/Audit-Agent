@@ -1,59 +1,61 @@
 {
-  "id": 3,
-  "stride_category": "Spoofing",
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 4,
-    "capability_match": "direct $BGT emissions to Reward Vaults"
+    "behavior_id": 503,
+    "capability_match": "Cancel malicious governance proposals during the timelock period"
   },
   "threat_target": {
-    "component_id": 7,
+    "component_id": 209,
     "asset_ids": [
-      2
+      108
     ]
   },
   "attack_surface": {
-    "behavior_id": 4,
-    "data_flow_id": 4,
-    "data_description": "$BGT Emissions"
+    "behavior_id": 503,
+    "data_flow_id": 306,
+    "data_description": "Parameters or payload of the 'Cancel Proposal Command' exploiting a vulnerability in the Timelock Contract's cancellation logic."
   },
   "trust_boundary_risk": {
-    "boundary_id": 1,
-    "boundary_name": "Validator Trust Boundary",
+    "boundary_id": 406,
+    "boundary_name": "Governance Process Boundary",
     "between_component_ids": [
-      4
+      208,
+      209,
+      210
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A malicious actor may spoof a valid validator identity to maliciously direct $BGT emissions."
+    "availability_required": false,
+    "gap_description": "A vulnerability in the Governance Timelock Contract's 'cancel' function allows an authorized Guardian (or an attacker spoofing them) to perform actions beyond simply cancelling a proposal."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Internal Service",
-    "overprivileged": false,
-    "description": "A malicious validator can compromise the integrity of BGT distribution."
+    "overprivileged": true,
+    "description": "A vulnerability in the Timelock Contract might allow a Guardian, when executing a cancel command, to gain unauthorized control over other governance functions or contract state."
   },
   "behavioral_risk": {
-    "behavior_id": 4,
-    "risk_level": "Medium",
-    "rationale": "If a validator's identity can be spoofed, the system loses control over emissions."
+    "behavior_id": 503,
+    "risk_level": "High",
+    "rationale": "Exploiting a flaw in the cancellation mechanism to gain broader control over governance would be a severe breach of the intended Guardian role."
   },
   "assumptions": [
-    "The validator key management is weak, leading to unauthorized use.",
-    "The on-chain validation of validator actions is insufficient."
+    "The 'cancel' function in the Governance Timelock Contract (209) has a flaw (e.g., reentrancy, incorrect access control on related functions, parameter manipulation leading to unintended side effects).",
+    "An attacker or a rogue Guardian crafts a specific 'Cancel Proposal Command' to trigger this flaw."
   ],
   "mitigation": {
-    "strategy": "Strengthen validator key management and multi-factor authentication. Implement on-chain checks to prevent unauthorized validator actions.",
+    "strategy": "Thoroughly audit the Governance Timelock Contract's code, especially the cancellation logic and its interactions with other state. Apply least privilege principle strictly. Use formal verification if possible.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker who gains control over a validator's identity can direct $BGT emissions to attacker-controlled reward vaults. This undermines the Proof-of-Liquidity model.",
+  "description": "An attacker or a rogue Guardian exploits a vulnerability in the Governance Timelock Contract when sending a 'Cancel Proposal Command', allowing them to perform unauthorized actions beyond proposal cancellation, such as modifying other proposals, contract parameters, or executing arbitrary code.",
   "trace_source": {
-    "doc_reference": "pol/bgtmath.md",
-    "matched_capability": "direct $BGT emissions to Reward Vaults"
+    "doc_reference": "doc_3#guardian-oversight",
+    "matched_capability": "Cancel malicious governance proposals during the timelock period"
   }
 }

@@ -1,56 +1,61 @@
 {
-  "id": 4,
+  "id": 6,
   "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": 6,
-    "capability_match": "Earn `$BGT` by providing liquidity"
+    "behavior_id": 502,
+    "capability_match": "Propose core protocol upgrades via governance"
   },
   "threat_target": {
-    "component_id": 1,
+    "component_id": 208,
     "asset_ids": [
-      1
+      108
     ]
   },
   "attack_surface": {
-    "behavior_id": 6,
-    "data_flow_id": 6,
-    "data_description": "$BERA"
+    "behavior_id": 502,
+    "data_flow_id": 303,
+    "data_description": "Governance proposal submitted via compromised Core Team account."
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "",
-    "between_component_ids": []
+    "boundary_id": 406,
+    "boundary_name": "Governance Process Boundary",
+    "between_component_ids": [
+      208,
+      209,
+      210
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "User can spoof the burn call for $BGT for $BERA"
+    "gap_description": "If a Core Team member's account/credentials for proposal submission are compromised, an attacker can spoof legitimate Core Team proposals."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "External User",
+    "type": "Internal Service",
     "overprivileged": false,
-    "description": "User redeeming $BGT for $BERA."
+    "description": "Compromise of a Core Team member's access allows an attacker to act with the Core Team's authority."
   },
   "behavioral_risk": {
-    "behavior_id": 6,
-    "risk_level": "Low",
-    "rationale": "A user may spoof an authorization to burn the contract and call a different contract.  "
+    "behavior_id": 502,
+    "risk_level": "High",
+    "rationale": "A proposal submitted via a compromised Core Team account would appear legitimate, potentially bypassing scrutiny and leading to severe consequences."
   },
   "assumptions": [
-    "No user input to specify who is receiving $BERA."
+    "An attacker gains access to a Core Team member's credentials or systems used for submitting governance proposals.",
+    "There are no multi-factor authentication or multi-signature requirements for Core Team proposals that could prevent a single compromised account from submitting."
   ],
   "mitigation": {
-    "strategy": "Check for signature of original caller.",
+    "strategy": "Enforce MFA for all Core Team accounts with governance proposal rights. Require multi-signature approvals from multiple Core Team members for submitting critical proposals. Regular security training and phishing awareness.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "User calls a separate smart contract that initiates the burning of their $BGT. The attacker could initiate a separate smart contract that calls the burn function on the $BGT but sends the $BERA to a different user.",
+  "description": "An attacker, having compromised a Berachain Core/Foundation Team member's account, spoofs their identity to submit a malicious core protocol upgrade through the governance process.",
   "trace_source": {
-    "doc_reference": "pol/tokens/$BGT",
-    "matched_capability": "Redeem $BGT for $BERA"
+    "doc_reference": "governance.md#creating-your-governance-proposal",
+    "matched_capability": "Propose core protocol upgrades via governance"
   }
 }

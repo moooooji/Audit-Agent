@@ -19,10 +19,9 @@ from react_agent.config import (
     ARCHITECTURE_ASSESSMENT_CONFIG,
     ARCHITECTURE_CORRECTION_CONFIG,
     THREAT_ANALYSIS_CONFIG,
-    CHECKLIST_CONFIG,
-    CHECKLIST_CORRECTION_CONFIG,
-    CHECKLIST_ASSESSMENT_CONFIG,
-    CODE_BINDING_ASSESSMENT_CONFIG
+    ChecklistConfig,
+    ChecklistAssessmentConfig,
+    CodeBindingAssessmentConfig
 )
 from react_agent.Utils.FunctionParser import FunctionParser
 from react_agent.Utils.RedisUtil import RedisUtil
@@ -35,8 +34,10 @@ from react_agent.variables import (
     data_flows_map,
     trust_boundaries_map,
     behaviors_map,
-    model,
-    client,
+    gemini_model,
+    gemini_client,
+    chatgpt_model,
+    chatgpt_client,
     threats_list,
     ARCHITECTURE_FEEDBACK_LOOP_COUNT,
     CHECKLIST_FEEDBACK_LOOP_COUNT,
@@ -81,14 +82,21 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
     if isinstance(data, str):
         data = json.loads(data)
         
-    actor = next((a for a in data["actors"] if a["id"] == actor_id), None)
-    if not actor:
-        raise ValueError(f"Actor with id {actor_id} not found")
-
+    # 실제 actor_id를 얻는 방법 변경
+    # 인덱스 대신 실제 액터의 ID를 가져오도록 수정
+    actual_actors = data["actors"]
+    if actor_id > len(actual_actors):
+        raise ValueError(f"Actor index {actor_id} out of range (total actors: {len(actual_actors)})")
+    
+    # 인덱스를 사용하여 액터 가져오기 (0부터 시작)
+    actor_index = actor_id - 1
+    actor = actual_actors[actor_index]
+    actual_actor_id = actor["id"]  # 실제 JSON에 있는 액터 ID (예: 101, 102 등)
+    
     # 1. related behaviors
     behaviors = [
         b for b in data["behaviors"]
-        if b["initiator_type"] == "Actor" and b["initiator_id"] == actor_id
+        if b["initiator_type"] == "Actor" and b["initiator_id"] == actual_actor_id
     ]
 
     # 2. related components (target of behaviors)
@@ -102,7 +110,7 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
     # 4. related data_flows (actor or related component involved)
     data_flows = [
         df for df in data["data_flows"]
-        if df["source_id"] == actor_id or df["destination_id"] in component_ids
+        if df["source_id"] == actual_actor_id or df["destination_id"] in component_ids
     ]
 
     # 5. related trust boundaries
@@ -124,6 +132,7 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
 
     return chunk
 
+
 def generate_llm_response(state: State) -> str:
     """generate llm response"""
     
@@ -141,8 +150,8 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = client.models.generate_content(
-            model=model,
+        response = gemini_client.models.generate_content(
+            model=gemini_model,
             contents=contents,
             config=ARCHITECTURE_RESPONSE_CONFIG,
         )
@@ -168,8 +177,8 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = client.models.generate_content(
-            model=model,
+        response = gemini_client.models.generate_content(
+            model=gemini_model,
             contents=contents,
             config=ARCHITECTURE_ASSESSMENT_CONFIG,
         )
@@ -198,8 +207,8 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = client.models.generate_content(
-            model=model,
+        response = gemini_client.models.generate_content(
+            model=gemini_model,
             contents=contents,
             config=ARCHITECTURE_CORRECTION_CONFIG,
         )
@@ -230,8 +239,8 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
 
-        response = client.models.generate_content(
-            model=model,
+        response = gemini_client.models.generate_content(
+            model=gemini_model,
             contents=contents,
             config=THREAT_ANALYSIS_CONFIG,
         )
@@ -266,8 +275,6 @@ def generate_llm_response(state: State) -> str:
             
             context.append(threats_list_copy[i])
         
-        print("[+] context: ", context)
-        
         target_docs = load_file(state.target_docs_path)
         threat_analysis = load_file("results/all_threats.json")
         prompt = CHECKLIST_TEMPLATE.replace(
@@ -277,16 +284,16 @@ def generate_llm_response(state: State) -> str:
             )
         
         contents = [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            ),
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
 
-        response = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=CHECKLIST_CONFIG,
+        response = chatgpt_client.beta.chat.completions.parse(
+            model=chatgpt_model,
+            messages=contents,
+            response_format=ChecklistConfig
         )
         return response
     
@@ -330,16 +337,16 @@ def generate_llm_response(state: State) -> str:
             )
         
         contents = [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            ),
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
 
-        response = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=CHECKLIST_CORRECTION_CONFIG,
+        response = chatgpt_client.beta.chat.completions.parse(
+            model=chatgpt_model,
+            messages=contents,
+            response_format=ChecklistConfig
         )
         return response
     
@@ -357,16 +364,16 @@ def generate_llm_response(state: State) -> str:
             )
         
         contents = [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            ),
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
 
-        response = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=CHECKLIST_ASSESSMENT_CONFIG,
+        response = chatgpt_client.beta.chat.completions.parse(
+            model=chatgpt_model,
+            messages=contents,
+            response_format=ChecklistAssessmentConfig
         )
         
         return response
@@ -385,16 +392,16 @@ def generate_llm_response(state: State) -> str:
         )
         
         contents = [
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            ),
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
         
-        response = client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=CODE_BINDING_ASSESSMENT_CONFIG,
+        response = chatgpt_client.beta.chat.completions.parse(
+            model=chatgpt_model,
+            messages=contents,
+            response_format=CodeBindingAssessmentConfig
         )
         
         return response

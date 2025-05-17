@@ -1,54 +1,144 @@
 {
   "evaluation_summary": {
-    "actors": "The actors are well-defined and extracted from the documentation, covering various roles within the Berachain ecosystem. However, there might be some missing actors, such as the BGT Foundation.",
-    "assets": "The assets are comprehensively extracted, including tokens, NFTs, and other relevant items. The sensitivity levels are generally appropriate, but some might need further review.",
-    "components": "The components are generally well-extracted, covering key infrastructure elements. The trust levels seem reasonable, but a closer examination might be needed to ensure accuracy.",
-    "data_flows": "No data flows were extracted. This needs to be reviewed.",
-    "trust_boundaries": "No trust boundaries were extracted. This needs to be reviewed.",
-    "behaviors": "The behaviors are well-defined and extracted, covering key interactions within the Berachain ecosystem. The risk levels seem appropriate, but a closer examination might be needed to ensure accuracy."
+    "actors": "Actors are generally well-traced to the documentation. Most key participants are identified. Some specific roles like 'Booster' are covered by broader actor definitions. Completeness is good.",
+    "assets": "Assets are largely traceable, covering tokens, NFTs, and key data elements. Some specific token types mentioned in pools or as collateral (e.g., $WETH, $WBTC, stgUSDC) and 'Vault Shares' for $HONEY are missing. Sensitivity levels are assigned without explicit documentary basis.",
+    "components": "Components are well-identified, including websites, smart contracts, and backend systems. Some external dependencies or very minor tools (Discord, Blog) are not listed, which is acceptable. Trust levels are assigned without explicit documentary basis. Some `assets_managed` fields reference non-existent asset IDs.",
+    "data_flows": "Key data flows are identified, but the list is not exhaustive. Many detailed interactions, error handlings, or secondary flows are missing. Security properties are assigned without explicit documentary basis. One flow references a missing asset concept.",
+    "trust_boundaries": "High-level trust boundaries are identified. More granular internal boundaries or boundaries for all user-facing components could be added. `validation_required` is uniformly true but not explicitly justified for each in docs.",
+    "behaviors": "Core user and system behaviors are captured. However, similar to data flows, this is not an exhaustive list of all possible actions. Risk levels are assigned without explicit documentary basis."
   },
   "findings": [
     {
-      "category": "actors",
+      "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Actor `BGT Foundation` is mentioned in the documentation but was not extracted."
+      "description": "Asset '$WETH' is mentioned as a BEX liquidity pool asset (doc_11) but not extracted."
     },
     {
       "category": "assets",
-      "type": "hallucinated",
-      "id": 18,
-      "description": "Asset `Voting Power` is not explicitly mentioned as an asset in the documentation."
+      "type": "missing",
+      "id": null,
+      "description": "Asset '$WBTC' is mentioned as a BEX liquidity pool asset (doc_11) but not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'stgUSDC' is mentioned as a stablecoin for minting $HONEY during Testnet (doc_18) but not extracted. $USDC is present, but stgUSDC is listed separately in the docs."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'Vault Shares' (for $HONEY minting) is described in doc_28 ('The HoneyFactory custodies the shares minted by the vault') but not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "inconsistent",
+      "id": 101,
+      "description": "Sensitivity levels for assets (e.g., 'High' for Asset 101 '$BERA Token') are assigned without explicit documentary basis, making consistent verification difficult. This applies to all assets with a sensitivity level."
     },
     {
       "category": "components",
       "type": "invalid_reference",
-      "id": 1,
-      "description": "The `Berachain Bridge` component does not explicitly manage `$BERA` as stated in `assets_managed`."
+      "id": 207,
+      "description": "`assets_managed` for Component 207 (User Wallet Software) refers to asset IDs 120 and 121, which are not found in the assets list."
     },
     {
       "category": "components",
       "type": "invalid_reference",
-      "id": 5,
-      "description": "The `BEX` component does not explicitly manage `$HONEY` as stated in `assets_managed`."
+      "id": 209,
+      "description": "`assets_managed` for Component 209 (Berachain Bridge (LayerZero)) refers to asset IDs 120 and 121, which are not found in the assets list."
     },
     {
       "category": "components",
       "type": "invalid_reference",
-      "id": 6,
-      "description": "The `Honey Swap` component does not explicitly manage `$HONEY` as stated in `assets_managed`."
+      "id": 225,
+      "description": "`assets_managed` for Component 225 (Berachain Blockchain (L1 Network)) refers to asset IDs 120 and 121, which are not found in the assets list."
+    },
+    {
+      "category": "components",
+      "type": "invalid_reference",
+      "id": 232,
+      "description": "`assets_managed` for Component 232 (Ethereum Mainnet) refers to asset IDs 120 and 121, which are not found in the assets list."
+    },
+    {
+      "category": "components",
+      "type": "inconsistent",
+      "id": 201,
+      "description": "Trust levels for components (e.g., 'Medium' for Component 201 'Berachain Airdrop Checker Website') are assigned without explicit documentary basis, making consistent verification difficult. This applies to all components with a trust_level."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'BeraScan Block Explorer' is mentioned in doc_18 for checking block times but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flows are missing. The interactions between actors and components should be represented as data flows."
+      "description": "Data flow for user connecting wallet to Berachain (doc_5) is not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow for $HONEY redemption, including Basket Mode operations (doc_28), is not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow for FeeCollector auctioning dApp fees for $WBERA and distributing them (doc_27) is not extracted beyond DF 320."
+    },
+    {
+      "category": "data_flows",
+      "type": "inconsistent",
+      "id": 301,
+      "description": "Security properties for data flows (e.g., confidentiality_required for DF 301) are assigned without explicit documentary basis, making consistent verification difficult. This applies to all data_flows with security_properties."
+    },
+    {
+      "category": "data_flows",
+      "type": "inconsistent",
+      "id": 317,
+      "description": "Data flow 317 ('Collateral Deposit, Receives Vault Shares') describes 'Vault Shares' which is a missing asset. The `data` field is a string, but ideally it would reference the specific asset if it were defined."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundaries are missing. The documentation implies trust relationships between different components and actors."
+      "description": "Trust boundary between User (Actor 1) and Centralized Exchange (Component 210) is not extracted."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "inconsistent",
+      "id": 401,
+      "description": "`validation_required` for trust boundaries (e.g., true for TB 401) is assigned without explicit documentary basis for each specific boundary, making consistent verification difficult. This applies to all trust_boundaries."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior for user connecting wallet (doc_5) is not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior for user boosting a validator, including queueing and activating boost (doc_16), is not fully extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior for $HONEY redemption (doc_28) is not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "inconsistent",
+      "id": 501,
+      "description": "Risk levels for behaviors (e.g., 'Low' for Behavior 501) are assigned without explicit documentary basis, making consistent verification difficult. This applies to all behaviors with a risk_level."
     }
   ]
 }

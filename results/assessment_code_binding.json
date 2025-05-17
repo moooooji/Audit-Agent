@@ -1,100 +1,10 @@
 {
-  "summary": "The code binding output provides mappings between checklist items and similar functions. However, there are potential issues with completeness, relevance, and accuracy. Some checklist items may not have corresponding code bindings, and some of the bound code artifacts may not be directly relevant to the security concerns outlined in the checklist items. Additionally, there are functions with null code, which may indicate missing information.",
+  "summary": "The code binding output shows some traceability between checklist items and code artifacts. However, there are issues with completeness, as not all checklist items are bound to code. The relevance of some bindings needs further scrutiny. There are no schema errors detected.",
   "findings": [
-    {
-      "type": "missing_binding",
-      "checklist_id": 1,
-      "description": "Checklist item 1 is not bound to any code artifact."
-    },
     {
       "type": "missing_binding",
       "checklist_id": 2,
       "description": "Checklist item 2 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 3,
-      "description": "Checklist item 3 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 4,
-      "description": "Checklist item 4 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 5,
-      "description": "Checklist item 5 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 6,
-      "description": "Checklist item 6 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 7,
-      "description": "Checklist item 7 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 8,
-      "description": "Checklist item 8 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 9,
-      "description": "Checklist item 9 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 10,
-      "description": "Checklist item 10 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 11,
-      "description": "Checklist item 11 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 12,
-      "description": "Checklist item 12 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 13,
-      "description": "Checklist item 13 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 14,
-      "description": "Checklist item 14 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 15,
-      "description": "Checklist item 15 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 16,
-      "description": "Checklist item 16 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 17,
-      "description": "Checklist item 17 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 18,
-      "description": "Checklist item 18 is not bound to any code artifact."
-    },
-    {
-      "type": "missing_binding",
-      "checklist_id": 19,
-      "description": "Checklist item 19 is not bound to any code artifact."
     }
   ]
 }
