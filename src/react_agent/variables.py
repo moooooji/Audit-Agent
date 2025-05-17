@@ -1,17 +1,18 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+from openai import OpenAI
 
 load_dotenv()
 
-# 빈 맵 초기화
+# empty map initialization
 actors_map = {}
 assets_map = {}
 components_map = {}
 data_flows_map = {}
 trust_boundaries_map = {}
 behaviors_map = {}
-# 아키텍처 분석을 위한 프롬프트 호출
+# for architecture analysis
 architecture_analysis = {
     "system_context": {
         "docs": {
@@ -31,10 +32,18 @@ architecture_analysis = {
 all_threats = []
 # threats list
 threats_list = []
-model = "gemini-2.0-flash"
+gemini_model = "gemini-2.5-pro-preview-05-06"
+
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-client = genai.Client(
+gemini_client = genai.Client(
     api_key=GOOGLE_API_KEY
+)
+
+chatgpt_model = "gpt-4.1-2025-04-14"
+embedding_model = "text-embedding-3-large"
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+chatgpt_client = OpenAI(
+    api_key=OPENAI_API_KEY
 )
 
 ARCHITECTURE_FEEDBACK_LOOP_COUNT = 1

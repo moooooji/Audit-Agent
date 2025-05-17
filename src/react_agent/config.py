@@ -1,5 +1,7 @@
 from google.genai import types
 from google import genai
+from openai import OpenAI
+from pydantic import BaseModel
 
 ARCHITECTURE_RESPONSE_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
@@ -629,255 +631,44 @@ THREAT_ANALYSIS_CONFIG = types.GenerateContentConfig(
         ),
     )
 
-CHECKLIST_CONFIG = types.GenerateContentConfig(
-        response_mime_type="application/json",
-        response_schema=genai.types.Schema(
-            type = genai.types.Type.OBJECT,
-            required = ["checklist_items"],
-            properties = {
-                "checklist_items": genai.types.Schema(
-                    type = genai.types.Type.ARRAY,
-                    items = genai.types.Schema(
-                        type = genai.types.Type.OBJECT,
-                        required = ["id", "title", "description", "linked_threat_id", "category", "check_type", "target_entity", "target_type", "security_property", "priority", "assumption_ref", "mitigation_ref", "evidence_required", "automatable", "status", "owner"],
-                        properties = {
-                            "id": genai.types.Schema(
-                                type = genai.types.Type.INTEGER,
-                                description = "Unique ID for the check item",
-                            ),
-                            "title": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Short, clear, and actionable title",
-                            ),
-                            "description": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Explanation of what needs to be checked and why",
-                            ),
-                            "linked_threat_id": genai.types.Schema(
-                                type = genai.types.Type.INTEGER,
-                                description = "Threat ID this check is associated with",
-                            ),
-                            "category": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                enum = ["Authentication", "Authorization", "Input Validation", "Configuration", "UX Verification", "Logging", "Monitoring", "Policy"],
-                            ),
-                            "check_type": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                enum = ["Technical", "Procedural", "Manual Review", "Automated Test"],
-                            ),
-                            "target_entity": genai.types.Schema(
-                                type = genai.types.Type.INTEGER,
-                                description = "ID of the component or asset being verified",
-                            ),
-                            "target_type": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Type of the target entity",
-                                enum = ["Component", "Asset", "Behavior", "TrustBoundary"],
-                            ),
-                            "security_property": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                enum = ["Integrity", "Confidentiality", "Availability"],
-                            ),
-                            "priority": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                enum = ["High", "Medium", "Low"],
-                            ),
-                            "assumption_ref": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Assumption that motivates this check",
-                            ),
-                            "mitigation_ref": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Mitigation action related to this check",
-                            ),
-                            "evidence_required": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Evidence needed to prove the check",
-                            ),
-                            "automatable": genai.types.Schema(
-                                type = genai.types.Type.BOOLEAN,
-                                description = "Whether this check can be automated",
-                            ),
-                            "status": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                enum = ["Not Started", "In Progress", "Completed", "Blocked"],
-                            ),
-                            "last_checked": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Timestamp of last validation",
-                                format = "date-time",
-                                nullable = "True",
-                            ),
-                            "owner": genai.types.Schema(
-                                type = genai.types.Type.STRING,
-                                description = "Team or person responsible",
-                            ),
-                        },
-                    ),
-                ),
-            },
-        ),
-    )
 
-CHECKLIST_CORRECTION_CONFIG = types.GenerateContentConfig(
-    response_mime_type="application/json",
-    temperature=0,
-    response_schema=genai.types.Schema(
-        type = genai.types.Type.OBJECT,
-        required=["checklist_items"],
-        properties={
-            "checklist_items": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=[
-                        "id", "title", "description", "linked_threat_id", "category",
-                        "check_type", "target_entity", "target_type", "security_property",
-                        "priority", "assumption_ref", "mitigation_ref", "evidence_required",
-                        "automatable", "status", "owner"
-                    ],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                        ),
-                        "title": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "linked_threat_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                        ),
-                        "category": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "check_type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "target_entity": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                        ),
-                        "target_type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "security_property": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "priority": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "assumption_ref": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "mitigation_ref": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "evidence_required": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "automatable": genai.types.Schema(
-                            type=genai.types.Type.BOOLEAN,
-                        ),
-                        "status": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                        "last_checked": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ), 
-                        "owner": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                    }
-                )
-            )
-        }
-    )
-)
+class ChecklistItemsConfig(BaseModel):
+    id: int
+    title: str
+    description: str
+    linked_threat_id: int
+    category: str
+    check_type: str
+    target_entity: int
+    target_type: str
+    security_property: str
+    priority: str
+    assumption_ref: str
+    mitigation_ref: str
+    evidence_required: str
+    automatable: bool
+    status: str
+    last_checked: str
+    owner: str
+    
+class ChecklistConfig(BaseModel):
+    checklist_items: list[ChecklistItemsConfig]
+    
+class ChecklistAssessmentFinding(BaseModel):
+    category: str
+    type: str
+    checklist_id: int
+    description: str
 
-CHECKLIST_ASSESSMENT_CONFIG = types.GenerateContentConfig(
-    response_mime_type="application/json",
-    temperature=0,
-    response_schema=genai.types.Schema(
-        type=genai.types.Type.OBJECT,
-        required=["evaluation_summary", "findings"],
-        properties={
-            "evaluation_summary": genai.types.Schema(
-                type=genai.types.Type.STRING,
-                description="A concise overall evaluation summary of the checklist_items section"
-            ),
-            "findings": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["category", "type", "id", "description"],
-                    properties={
-                        "category": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=["checklist_items"],
-                        ),
-                        "type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=[
-                                "missing",          # 명백히 빠진 항목
-                                "hallucinated",     # 존재하지 않는 내용 생성
-                                "schema_error",     # 필드 누락이나 포맷 오류
-                                "clarity_issue"     # 모호하거나 비실용적인 표현
-                            ],
-                        ),
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            nullable="True",
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                        ),
-                    },
-                ),
-            ),
-        },
-    )
-)
+class ChecklistAssessmentConfig(BaseModel):
+    summary: str
+    findings: list[ChecklistAssessmentFinding]
 
-CODE_BINDING_ASSESSMENT_CONFIG = types.GenerateContentConfig(
-    response_mime_type="application/json",
-    temperature=0,
-    response_schema=genai.types.Schema(
-        type=genai.types.Type.OBJECT,
-        required=["summary", "findings"],
-        properties={
-            "summary": genai.types.Schema(
-                type=genai.types.Type.STRING
-            ),
-            "findings": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["type", "description"],
-                    properties={
-                        "type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=[
-                                "missing_binding",
-                                "invalid_reference",
-                                "irrelevant_binding",
-                                "schema_error"
-                            ]
-                        ),
-                        "threat_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            nullable="True"
-                        ),
-                        "checklist_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            nullable="True"
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING
-                        ),
-                    },
-                ),
-            ),
-        },
-    )
-)
+class CodeBindingAssessmentFinding(BaseModel):
+    type: str
+    checklist_id: int
+    description: str
+
+class CodeBindingAssessmentConfig(BaseModel):
+    summary: str
+    findings: list[CodeBindingAssessmentFinding]
