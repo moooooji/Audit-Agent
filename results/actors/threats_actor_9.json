@@ -1,61 +1,61 @@
 {
-  "id": 4,
-  "stride_category": "Spoofing",
+  "id": 3,
+  "stride_category": "Repudiation",
   "origin": {
-    "from_chunk": true,
-    "actor_id": 9,
-    "behavior_id": 7,
-    "capability_match": "Receive initial token allocation"
+    "from_chunk": false,
+    "actor_id": 104,
+    "behavior_id": 618,
+    "capability_match": "Develop dApps on Berachain"
   },
   "threat_target": {
-    "component_id": 13,
+    "component_id": 320,
     "asset_ids": [
-      1
+      219
     ]
   },
   "attack_surface": {
-    "behavior_id": 7,
-    "data_flow_id": 11,
-    "data_description": "Submission of forged identity or eligibility proofs to the token allocation mechanism to impersonate other legitimate core contributors or create fictitious ones."
+    "behavior_id": 618,
+    "data_flow_id": 425,
+    "data_description": "RFRV Form data submission logs/records"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Wallet-Blockchain Boundary",
+    "boundary_id": 506,
+    "boundary_name": "Off-chain to On-chain Governance Boundary",
     "between_component_ids": [
-      1,
-      2
+      320,
+      321,
+      305
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The token allocation mechanism for core contributors like Big Bera Labs lacks robust, difficult-to-forge identity verification, allowing them to potentially claim more tokens than entitled by spoofing other eligible (perhaps fictitious or controlled) contributor identities."
+    "availability_required": true,
+    "gap_description": "The RFRV Submission System (320) may lack non-repudiation measures for submissions, allowing a Protocol Developer (104) to falsely deny submitting an RFRV, disrupting the review process by BGT Foundation (109)."
   },
   "actor_risk": {
-    "actor_id": 9,
+    "actor_id": 104,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "Big Bera Labs, despite being a legitimate recipient, might exploit weaknesses in the allocation's identity verification process to claim tokens allocated to other misrepresented or controlled entities, thereby exceeding their rightful share."
+    "description": "A Protocol Developer (104) might attempt to repudiate their RFRV submission to evade responsibility or manipulate the governance process."
   },
   "behavioral_risk": {
-    "behavior_id": 7,
-    "risk_level": "Medium",
-    "rationale": "Spoofing identities to acquire undue token allocations undermines the fairness and intended distribution of network tokens, potentially leading to an over-concentration of tokens and reputational damage."
+    "behavior_id": 618,
+    "risk_level": "Low",
+    "rationale": "Repudiation can cause confusion and delays in the RFRV review and whitelisting process, impacting BGT Foundation's (109) operations, especially if off-chain submission records are the primary proof."
   },
   "assumptions": [
-    "The process for verifying distinct identities and eligibility for initial core contributor token allocations is vulnerable to sophisticated spoofing.",
-    "Big Bera Labs can create or control multiple wallet addresses that can be convincingly presented as separate, eligible entities for allocation.",
-    "The total amount of tokens available for such allocations can be improperly claimed or misdirected through successful spoofing attacks."
+    "The RFRV Submission System (320) does not provide strong, verifiable proof of submission attributable to the specific submitter (e.g., no signed submissions, weak logging).",
+    "The associated Governance Forum post (doc_14) might not be considered definitive proof of the exact RFRV form content or its formal submission by itself for dispute resolution."
   ],
   "mitigation": {
-    "strategy": "Implement strong, multi-factor authentication and potentially KYB (Know Your Business) procedures for core contributor allocations. Utilize transparent, auditable on-chain distribution mechanisms where possible, and clearly define eligibility criteria to prevent ambiguity.",
-    "type": "Process Control",
+    "strategy": "Require digitally signed RFRV submissions or utilize a submission platform with strong, immutable audit trails and robust submitter authentication for Component 320.",
+    "type": "Technical Control",
     "priority": "Medium"
   },
-  "description": "Big Bera Labs exploits weaknesses in the identity verification for the initial token allocation process. They spoof other entitled parties or create fictitious contributor identities under their control to claim a larger share of $BERA tokens than legitimately allocated to them.",
+  "description": "A Protocol Developer (104) submits an RFRV proposal via Component 320 and later denies having submitted it or claims the submitted content was different. This could complicate the BGT Foundation's (109) review and decision-making process.",
   "trace_source": {
-    "doc_reference": "pol/tokens/tokenomics.md#doc_29",
-    "matched_capability": "Receive initial token allocation"
+    "doc_reference": "doc_14",
+    "matched_capability": "Review Request for Reward Vault (RFRV) proposals"
   }
 }

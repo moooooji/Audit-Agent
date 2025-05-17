@@ -1,62 +1,60 @@
 {
-  "id": 5,
-  "stride_category": "Tampering",
+  "id": 4,
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
     "actor_id": 11,
-    "behavior_id": 510,
+    "behavior_id": 604,
     "capability_match": "use EVM tooling"
   },
   "threat_target": {
-    "component_id": 213,
+    "component_id": 225,
     "asset_ids": [
-      125,
-      106
+      0
     ]
   },
   "attack_surface": {
-    "behavior_id": 510,
-    "data_flow_id": 312,
-    "data_description": "Crafted transaction exploiting a smart contract vulnerability in a target dApp (e.g., BEX) to alter its state or drain funds."
+    "behavior_id": 604,
+    "data_flow_id": 322,
+    "data_description": "Developer reads and analyzes contract bytecode and storage from the public Berachain blockchain."
   },
   "trust_boundary_risk": {
-    "boundary_id": 404,
-    "boundary_name": "dApp-Blockchain Interface",
+    "boundary_id": 0,
+    "boundary_name": "Public Blockchain Data Access",
     "between_component_ids": [
-      213,
       225
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A third-party or core dApp (e.g., BEX component 213) contains an exploitable vulnerability (e.g., reentrancy, logic error, oracle manipulation) in its smart contract."
+    "confidentiality_required": true,
+    "integrity_required": false,
+    "availability_required": false,
+    "gap_description": "Smart contracts, once deployed, are public and their bytecode can be reverse-engineered. Sensitive business logic, unverified parameters, or exploitable patterns might be unintentionally exposed if not carefully designed."
   },
   "actor_risk": {
     "actor_id": 11,
     "type": "External User",
     "overprivileged": false,
-    "description": "Developer uses advanced EVM analysis tools (debuggers, decompilers, fuzzers) to find and actively exploit vulnerabilities in deployed smart contracts."
+    "description": "Developer possesses skills and standard EVM tooling to analyze, decompile, and understand EVM bytecode and contract state."
   },
   "behavioral_risk": {
-    "behavior_id": 510,
-    "risk_level": "High",
-    "rationale": "Successful exploitation of dApp vulnerabilities can lead to significant financial losses for the dApp and its users, damaging the ecosystem's reputation."
+    "behavior_id": 604,
+    "risk_level": "Medium",
+    "rationale": "Disclosure of sensitive contract logic or embedded data could lead to targeted exploits by other malicious actors, loss of competitive advantage for dApp owners, or privacy violations for users if PII-like data is mishandled."
   },
   "assumptions": [
-    "A deployed dApp on Berachain (e.g., BEX - component 213) has an unpatched critical vulnerability.",
-    "The developer (Actor 11) possesses the skills and EVM tooling to discover and write an exploit for this vulnerability.",
-    "The exploit allows unauthorized alteration of the dApp's state, access to its funds (e.g., asset 125), or manipulation of its core logic."
+    "Some deployed smart contracts on Berachain may contain sensitive information (e.g., proprietary algorithms, critical parameters, keys for off-chain systems if poorly managed) or subtle exploitable logic not intended for easy public discovery.",
+    "Standard EVM tooling allows for effective decompilation and in-depth analysis of smart contract bytecode and storage.",
+    "Developers are motivated to find such information for various purposes including security research (white-hat), malicious exploitation (black-hat), or competitive analysis."
   ],
   "mitigation": {
-    "strategy": "Mandatory/strongly encouraged comprehensive security audits for all dApps. Robust bug bounty programs. Formal verification for critical contracts. Proactive on-chain monitoring for suspicious activities and rapid response capabilities.",
+    "strategy": "Promote secure coding practices for smart contract development, specifically avoiding the storage of highly sensitive data directly on-chain. Encourage thorough pre-deployment security reviews and audits. Use formal verification for critical contracts. While code obfuscation has limited effectiveness, it can be a minor deterrent.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A malicious developer (Actor 11), using advanced 'EVM tooling' (capability), finds and exploits a vulnerability in a deployed dApp (e.g., BEX - component 213), tampering with its state or stealing managed assets like Liquidity Pool Assets (asset 125) or LP tokens (asset 106).",
+  "description": "A Developer (Actor 11) utilizes their 'use EVM tooling' capability to reverse-engineer and analyze smart contracts deployed on the Berachain L1 (Component 225). This activity could lead to the discovery of sensitive business logic, hidden vulnerabilities, or private data unintentionally embedded or exposed in contracts, resulting in an information disclosure that could be exploited.",
   "trace_source": {
-    "doc_reference": "Doc 9 (Berachain EVM Identical), Doc 11 (dapps/Berachain BEX)",
+    "doc_reference": "learn.md",
     "matched_capability": "use EVM tooling"
   }
 }

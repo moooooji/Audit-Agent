@@ -1,60 +1,59 @@
 {
-  "id": 8,
-  "stride_category": "Denial of Service",
+  "id": 4,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 2,
-    "behavior_id": 504,
-    "capability_match": "Direct $BGT emissions to whitelisted Reward Vaults"
+    "actor_id": 102,
+    "behavior_id": 614,
+    "capability_match": "Set commission rate for incentives"
   },
   "threat_target": {
-    "component_id": 229,
+    "component_id": 302,
     "asset_ids": [
-      102
+      214
     ]
   },
   "attack_surface": {
-    "behavior_id": 504,
-    "data_flow_id": 308,
-    "data_description": "Interaction with Distributor Contract for emission direction."
+    "behavior_id": 614,
+    "data_flow_id": 401,
+    "data_description": "Validator's signed transaction to update_commission_rate, potentially exploiting logic flaws."
   },
   "trust_boundary_risk": {
-    "boundary_id": 403,
-    "boundary_name": "Berachain Network Boundary",
+    "boundary_id": 502,
+    "boundary_name": "Berachain L1 Network Boundary",
     "between_component_ids": [
-      203,
-      202
+      302
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Distributor Contract may be susceptible to transaction spamming or resource exhaustion attacks, preventing legitimate emission directions."
+    "gap_description": "Lack of stringent validation on commission rate parameters or bypassable control mechanisms (like the waiting period) could allow a validator to set unauthorized rates."
   },
   "actor_risk": {
-    "actor_id": 2,
+    "actor_id": 102,
     "type": "Internal Service",
     "overprivileged": false,
-    "description": "An attacker targets the Distributor Contract, affecting all validators including Actor 2."
+    "description": "A validator (even legitimate) might attempt to exploit system rules for undue gain."
   },
   "behavioral_risk": {
-    "behavior_id": 504,
+    "behavior_id": 614,
     "risk_level": "Medium",
-    "rationale": "Inability to direct emissions disrupts the PoL incentive flow and reward distribution."
+    "rationale": "Bypassing controls or setting invalid commission rates grants unauthorized financial advantage."
   },
   "assumptions": [
-    "The Distributor Contract (229) can be overloaded by a high volume of valid or invalid transactions.",
-    "The underlying network infrastructure (e.g., RPC nodes serving validators) can be targeted to prevent transaction submission to the Distributor Contract."
+    "The smart contract logic for `update_commission_rate` on L1 (302) might have vulnerabilities in input validation for commission percentages (e.g., allowing >100%).",
+    "The mandatory waiting period for commission rate changes could be bypassed through an exploit."
   ],
   "mitigation": {
-    "strategy": "Implement gas cost mechanisms that penalize spam, design Distributor Contract for high throughput and resilience. Ensure robust RPC infrastructure.",
+    "strategy": "Implement strict input validation for commission rates (e.g., bounds checking 0-100%). Ensure timelock/waiting period mechanisms are non-bypassable. Regular audits of the L1 module.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "An attacker launches a Denial of Service attack against the Distributor Contract or related infrastructure, preventing Validators from successfully submitting their $BGT emission directives.",
+  "description": "A malicious or compromised Validator (102) attempts to elevate its privilege by setting an out-of-bounds incentive commission rate or bypassing the mandatory waiting period when updating its commission rate on the Berachain L1 Network (302).",
   "trace_source": {
-    "doc_reference": "pol/bgtmath.md#doc_20",
-    "matched_capability": "Direct $BGT emissions to whitelisted Reward Vaults"
+    "doc_reference": "pol/incentives.md#incentive-commission-and-distribution",
+    "matched_capability": "Set commission rate for incentives"
   }
 }

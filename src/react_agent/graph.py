@@ -17,7 +17,7 @@ from react_agent.variables import (
     ARCHITECTURE_FEEDBACK_LOOP_COUNT, 
     CHECKLIST_FEEDBACK_LOOP_COUNT, 
     CODE_BINDING_FEEDBACK_LOOP_COUNT,
-    actors_map
+    actors_map,
     )
 
 from langgraph.types import Send
@@ -60,6 +60,8 @@ def parallel_threats_processing(state: State):
         is_init_db=state.is_init_db,
         is_assessment_checklist=state.is_assessment_checklist,
         is_assessment_code_binding=state.is_assessment_code_binding,
+        threat_list_length=state.threat_list_length,
+        checklist_list_length=state.checklist_list_length,
     )) for i in range(len(actors_map))]
     
 def parallel_checklist_processing(state: State):
@@ -67,7 +69,11 @@ def parallel_checklist_processing(state: State):
     global threat_count
     threat_count += 1
     
-    if threat_count == len(actors_map):
+    print("threat_count : ", threat_count)
+    print("threats_list : ", state.threat_list_length)
+    
+    if threat_count == state.threat_list_length:
+        
         threat_count = 0
         return [Send("generate_checklist", State(
             target_docs_path=state.target_docs_path,
@@ -86,7 +92,9 @@ def parallel_checklist_processing(state: State):
             is_init_db=state.is_init_db,
             is_assessment_checklist=state.is_assessment_checklist,
             is_assessment_code_binding=state.is_assessment_code_binding,
-        )) for i in range(len(actors_map))]
+            threat_list_length=state.threat_list_length,
+            checklist_list_length=state.checklist_list_length,
+        )) for i in range(state.threat_list_length)]
     else:
         return "__end__"
 
@@ -108,7 +116,9 @@ def parallel_feedback_checklist_processing(state: State):
         is_init_db=state.is_init_db,
         is_assessment_checklist=state.is_assessment_checklist,
         is_assessment_code_binding=state.is_assessment_code_binding,
-    )) for i in range(len(actors_map))]
+        threat_list_length=state.threat_list_length,
+        checklist_list_length=state.checklist_list_length,
+    )) for i in range(state.checklist_list_length)]
 
 # define a new graph
 builder = StateGraph(State, input=InputState)

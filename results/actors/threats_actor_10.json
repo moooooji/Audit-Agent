@@ -1,62 +1,62 @@
 {
-  "id": 1008,
-  "stride_category": "Tampering",
+  "id": 1003,
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
     "actor_id": 10,
-    "behavior_id": 502,
+    "behavior_id": 501,
     "capability_match": "receive $BERA token allocation"
   },
   "threat_target": {
-    "component_id": 202,
+    "component_id": 201,
     "asset_ids": [
       115,
-      101
+      123
     ]
   },
   "attack_surface": {
-    "behavior_id": 502,
-    "data_flow_id": 302,
-    "data_description": "Investor (Actor 10) crafts a malicious transaction for Data Flow 302, attempting to alter claim parameters."
+    "behavior_id": 501,
+    "data_flow_id": 301,
+    "data_description": "Investor's allocation data, potentially including specific amounts, vesting details, and associated wallet address, accessed via an allocation checking tool."
   },
   "trust_boundary_risk": {
-    "boundary_id": 404,
-    "boundary_name": "dApp-Blockchain Interface",
+    "boundary_id": 9403,
+    "boundary_name": "Investor to Allocation Checker Interface",
     "between_component_ids": [
-      202,
-      225
+      207,
+      201
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The Airdrop Claim Website (202) or its backend smart contract might have vulnerabilities that allow tampering with claim amounts or eligibility data if input validation is insufficient."
+    "confidentiality_required": true,
+    "integrity_required": false,
+    "availability_required": false,
+    "gap_description": "Lack of strong access controls, encryption, or data segregation for sensitive investor allocation details on the allocation checker website or its backend systems."
   },
   "actor_risk": {
     "actor_id": 10,
     "type": "Partner System",
     "overprivileged": false,
-    "description": "Investor (Partner System) attempts to exploit weaknesses in the claim transaction processing."
+    "description": "Investor's financial details and association with the project could be exposed, leading to privacy violations or targeted social engineering attacks."
   },
   "behavioral_risk": {
-    "behavior_id": 502,
-    "risk_level": "High",
-    "rationale": "Successful tampering could lead to unauthorized withdrawal of $BERA tokens, impacting the airdrop pool and fairness."
+    "behavior_id": 501,
+    "risk_level": "Medium",
+    "rationale": "Disclosure of specific investor allocations can lead to reputational damage for the project, unwanted attention for the investor, or targeted phishing attempts."
   },
   "assumptions": [
-    "The claim transaction data (Data Flow 302) might be manipulable client-side before signing, or the smart contract processing the claim has a flaw.",
-    "Component 202 relies on client-provided data for claim details that might not be fully re-validated server-side/on-chain.",
-    "Actor 10 possesses technical skills to craft and submit tampered transactions."
+    "Investors may use a web-based tool (such as component 201, the Airdrop Checker) to check their token allocation and vesting details.",
+    "This tool or its backend systems might store or process sensitive, non-public details about investor allocations that should not be broadly accessible.",
+    "The tool may have vulnerabilities (e.g., insecure direct object references, weak authentication, data leaks through APIs) allowing unauthorized access to this data."
   ],
   "mitigation": {
-    "strategy": "Ensure all claim parameters submitted via Data Flow 302 are rigorously validated on-chain by the smart contract associated with Component 202. Rely on secure, server-side/on-chain sources of truth for eligibility and amounts, not client-provided data.",
+    "strategy": "Implement strong authentication and authorization specifically for accessing investor-level allocation data. Encrypt sensitive data at rest and in transit. Ensure proper data segregation. Conduct regular security testing of any portal displaying such information.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "An Investor (Actor 10) attempts to tamper with the data in their airdrop claim transaction (Data Flow 302) submitted to the Berachain Airdrop Claim Website (Component 202). The goal is to modify the claim amount or eligibility criteria to receive more $BERA tokens (Asset 101) than entitled from the airdrop allocation (Asset 115).",
+  "description": "Sensitive details of an Investor's $BERA token allocation (e.g., specific amount, vesting terms, linked wallet address) are improperly disclosed through the allocation checking website (e.g., component 201) or its backend systems due to a vulnerability or misconfiguration.",
   "trace_source": {
-    "doc_reference": "Doc 2 - $BERA Airdrop",
+    "doc_reference": "claim_bera_airdrop.md#check-bera-airdrop-\ud83d\udd0d",
     "matched_capability": "receive $BERA token allocation"
   }
 }

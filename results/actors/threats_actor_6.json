@@ -1,62 +1,61 @@
 {
-  "id": 11,
-  "stride_category": "Denial of Service",
+  "id": 8,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 6,
-    "behavior_id": 518,
-    "capability_match": "submit Request for Reward Vault (RFRV) for whitelisting"
+    "actor_id": 106,
+    "behavior_id": 604,
+    "capability_match": "Stake receipt tokens in Reward Vaults"
   },
   "threat_target": {
-    "component_id": 226,
+    "component_id": 310,
     "asset_ids": [
-      124,
-      126
+      205,
+      202,
+      206
     ]
   },
   "attack_surface": {
-    "behavior_id": 518,
-    "data_flow_id": -1,
-    "data_description": "High volume of low-quality, off-topic, or disruptive forum posts on the Governance Forum Website, specifically targeting RFRV discussions relevant to Actor 6."
+    "behavior_id": 604,
+    "data_flow_id": 0,
+    "data_description": "Exploitable function call, potentially targeting administrative functions or bypassing authorization for user functions within Reward Vault Contract."
   },
   "trust_boundary_risk": {
-    "boundary_id": -1,
-    "boundary_name": "User to Governance Forum Interface",
+    "boundary_id": 0,
+    "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
     "between_component_ids": [
-      6,
-      226
+      310
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Governance Forum Website may be susceptible to spam, trolling, or coordinated FUD campaigns that disrupt constructive discussions about RFRVs, reducing the availability of meaningful discourse for actors like Protocol Owner 6."
+    "gap_description": "Reward Vault Contract may lack robust access control for privileged functions or may have vulnerabilities allowing unauthorized execution of actions."
   },
   "actor_risk": {
-    "actor_id": 6,
-    "type": "Partner System",
-    "overprivileged": false,
-    "description": "An attacker floods RFRV discussion threads relevant to Protocol Owner 6 with spam or FUD, making it difficult for legitimate discussion, community engagement, and review of their proposal."
+    "actor_id": 106,
+    "type": "External User",
+    "overprivileged": true,
+    "description": "An attacker (acting as an External User like ID 106) gains unauthorized administrative or user-level privileges within the Reward Vault Contract via an exploit."
   },
   "behavioral_risk": {
-    "behavior_id": 518,
-    "risk_level": "Low",
-    "rationale": "Abuse of the public forum can hinder the RFRV discussion process, which is an integral part of governance and whitelisting, affecting the proposal's progression."
+    "behavior_id": 604,
+    "risk_level": "High",
+    "rationale": "Elevation of privilege in a contract managing funds can lead to complete loss of assets or systemic compromise of the vault's integrity."
   },
   "assumptions": [
-    "The forum allows open participation and posting by any registered user.",
-    "Moderation resources might be limited or unable to prevent all disruptive behavior effectively or in a timely manner.",
-    "Constructive community discussion is valuable for the RFRV process."
+    "The Reward Vault Contract (ID 310) has administrative functions or allows certain users to perform sensitive operations (e.g., pause, upgrade, parameter changes, emergency withdrawal).",
+    "A vulnerability exists (e.g., improper access control checks, reentrancy exploiting state changes, delegatecall abuse) that an attacker can leverage to call these privileged functions or perform actions as if they were an authorized party or another user."
   ],
   "mitigation": {
-    "strategy": "Implement robust forum moderation policies and tools (e.g., rate limiting, user reputation systems, content flagging, temporary bans for abusers). Establish clear codes of conduct. Create dedicated, moderated channels for RFRV discussions to isolate them from general chatter.",
-    "type": "Process Control",
-    "priority": "Low"
+    "strategy": "Implementation of the principle of least privilege, use of secure and audited access control patterns (e.g., OpenZeppelin's Ownable/AccessControl), multi-signature requirements for critical administrative actions, timelocks for sensitive changes, rigorous audits.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "An attacker disrupts meaningful discussion about a Protocol Owner's RFRV on the Governance Forum Website by spamming threads with irrelevant content, posting FUD, or engaging in trolling. This makes it difficult for the community and reviewers to assess the proposal, thereby hindering the RFRV process for that Protocol Owner.",
+  "description": "An attacker exploits a vulnerability in `Reward Vault Contract` (ID 310) to elevate their privileges. This could allow them to gain unauthorized control over administrative functions, withdraw other users' `Receipt Tokens` (ID 205), or manipulate/steal `$BGT Token` (ID 202) and `Incentive Tokens` (ID 206).",
   "trace_source": {
-    "doc_reference": "Doc 14: governance/Reward Vault Governance - Submission Process",
-    "matched_capability": "submit Request for Reward Vault (RFRV) for whitelisting"
+    "doc_reference": "doc_25#reward-vaults",
+    "matched_capability": "Stake receipt tokens in Reward Vaults"
   }
 }

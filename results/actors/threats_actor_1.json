@@ -1,61 +1,61 @@
 {
-  "id": 6,
-  "stride_category": "Repudiation",
+  "id": 30,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 515,
-    "capability_match": "Claim incentives earned from $BGT delegation"
+    "actor_id": 101,
+    "behavior_id": 613,
+    "capability_match": "Redeem $BGT for $BERA"
   },
   "threat_target": {
-    "component_id": 227,
+    "component_id": 307,
     "asset_ids": [
-      107,
-      122
+      201,
+      202
     ]
   },
   "attack_surface": {
-    "behavior_id": 515,
-    "data_flow_id": 314,
-    "data_description": "Reliance on BGT Incentive Proof Service for claim validation"
+    "behavior_id": 613,
+    "data_flow_id": 401,
+    "data_description": "Crafted $BGT redemption transaction"
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Device to Web Application",
+    "boundary_id": 503,
+    "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
     "between_component_ids": [
-      201,
-      211
+      307,
+      302
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The off-chain proof service (227) might erroneously deny a valid claim, and the user may have no recourse to prove its validity if the service disputes it."
+    "gap_description": "$BGT ownership and burn verification must be foolproof before $BERA is provided."
   },
   "actor_risk": {
-    "actor_id": 1,
+    "actor_id": 101,
     "type": "External User",
     "overprivileged": false,
-    "description": "User's ability to claim earned incentives depends on the correct and honest operation of an off-chain service."
+    "description": "User attempts to exploit redemption logic to get $BERA without burning $BGT."
   },
   "behavioral_risk": {
-    "behavior_id": 515,
-    "risk_level": "Low",
-    "rationale": "Unfair denial of earned incentives damages user trust and system fairness."
+    "behavior_id": 613,
+    "risk_level": "High",
+    "rationale": "Exploiting redemption logic can lead to minting unbacked $BERA, undermining its value."
   },
   "assumptions": [
-    "The BGT Incentive Proof Service (227) can make errors or act maliciously.",
-    "There is no independent, on-chain way for a user to verify or enforce their incentive claim if the proof service denies it."
+    "A critical vulnerability (e.g., reentrancy, faulty balance check, incorrect burn accounting) exists in the $BGT smart contract's burn-and-redeem logic, accessible via BeraHub (307).",
+    "The user can craft a specific transaction to trigger this flaw."
   ],
   "mitigation": {
-    "strategy": "Implement transparent logging and auditing for the BGT Incentive Proof Service (227). Provide a dispute resolution mechanism. Explore methods for users to independently verify their entitlement or reduce reliance on a single off-chain service (e.g., Merkle proofs with publicly available roots).",
-    "type": "Process Control",
-    "priority": "Medium"
+    "strategy": "Implement secure smart contract programming practices (e.g., checks-effects-interactions pattern), conduct thorough security audits, and consider formal verification for critical token mechanisms.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "User (1) attempts to claim Incentive Tokens (107) (Behavior 515), but the BGT Incentive Proof Service (227) provides an incorrect or no proof (122). The service operator denies any error, and the user cannot repudiate the service's decision, thus losing access to their earned incentives.",
+  "description": "A user exploits a vulnerability in BeraHub (307) or the $BGT smart contract to redeem $BGT (Asset 202) for $BERA (Asset 201) without actually possessing or burning the corresponding $BGT, or by exploiting a flaw (e.g., reentrancy) to receive $BERA multiple times for a single $BGT burn.",
   "trace_source": {
-    "doc_reference": "doc_21",
-    "matched_capability": "Claim incentives earned from $BGT delegation"
+    "doc_reference": "doc_27",
+    "matched_capability": "Redeem $BGT for $BERA"
   }
 }

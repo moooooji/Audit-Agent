@@ -32,6 +32,9 @@ architecture_analysis = {
 all_threats = []
 # threats list
 threats_list = []
+
+checklist_items = []
+
 gemini_model = "gemini-2.5-pro-preview-05-06"
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
@@ -39,7 +42,7 @@ gemini_client = genai.Client(
     api_key=GOOGLE_API_KEY
 )
 
-chatgpt_model = "gpt-4.1-2025-04-14"
+chatgpt_model = "gpt-4.1-nano-2025-04-14"
 embedding_model = "text-embedding-3-large"
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 chatgpt_client = OpenAI(

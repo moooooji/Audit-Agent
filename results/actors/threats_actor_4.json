@@ -1,61 +1,63 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 5,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 503,
-    "capability_match": "Cancel malicious governance proposals during the timelock period"
+    "behavior_id": 1,
+    "capability_match": "Stake LP tokens (as PoL-eligible Receipt Tokens) in Reward Vaults"
   },
   "threat_target": {
-    "component_id": 209,
+    "component_id": 6,
     "asset_ids": [
-      108
+      11,
+      2,
+      6
     ]
   },
   "attack_surface": {
-    "behavior_id": 503,
-    "data_flow_id": 306,
-    "data_description": "Parameters or payload of the 'Cancel Proposal Command' exploiting a vulnerability in the Timelock Contract's cancellation logic."
+    "behavior_id": 1,
+    "data_flow_id": 3,
+    "data_description": "The $BGT emissions data flow (Data Flow 3) to the Reward Vault Contract is disrupted, or the Reward Vault contract itself is made unavailable for staking/claiming."
   },
   "trust_boundary_risk": {
-    "boundary_id": 406,
-    "boundary_name": "Governance Process Boundary",
+    "boundary_id": 6,
+    "boundary_name": "BeraHub - Reward Vault Smart Contract Boundary",
     "between_component_ids": [
-      208,
-      209,
-      210
+      4,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "A vulnerability in the Governance Timelock Contract's 'cancel' function allows an authorized Guardian (or an attacker spoofing them) to perform actions beyond simply cancelling a proposal."
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "The availability of the Reward Vault Contract for staking, withdrawals, and reward claims, as well as the inflow of rewards, is critical for LPs."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "Internal Service",
-    "overprivileged": true,
-    "description": "A vulnerability in the Timelock Contract might allow a Guardian, when executing a cancel command, to gain unauthorized control over other governance functions or contract state."
+    "type": "External User",
+    "overprivileged": false,
+    "description": "Liquidity Provider is unable to stake, withdraw, claim rewards, or their expected rewards do not materialize due to a DoS condition."
   },
   "behavioral_risk": {
-    "behavior_id": 503,
-    "risk_level": "High",
-    "rationale": "Exploiting a flaw in the cancellation mechanism to gain broader control over governance would be a severe breach of the intended Guardian role."
+    "behavior_id": 1,
+    "risk_level": "Medium",
+    "rationale": "DoS against the Reward Vault or its funding mechanisms directly impacts LP participation and earnings."
   },
   "assumptions": [
-    "The 'cancel' function in the Governance Timelock Contract (209) has a flaw (e.g., reentrancy, incorrect access control on related functions, parameter manipulation leading to unintended side effects).",
-    "An attacker or a rogue Guardian crafts a specific 'Cancel Proposal Command' to trigger this flaw."
+    "The Reward Vault Contract has a vulnerability (e.g., gas-intensive loop, reentrancy lock) that can be triggered to make it unusable.",
+    "The $BGT Emitter/Distributor (source of Data Flow 3) can be subject to DoS, halting $BGT flow.",
+    "Network congestion or targeted transaction spam can prevent LPs from interacting with the Reward Vault."
   ],
   "mitigation": {
-    "strategy": "Thoroughly audit the Governance Timelock Contract's code, especially the cancellation logic and its interactions with other state. Apply least privilege principle strictly. Use formal verification if possible.",
+    "strategy": "Implement robust smart contract development practices (e.g., gas limits, reentrancy guards), ensure resilient infrastructure for critical components like $BGT Emitter, and provide alternative interaction methods if UIs like BeraHub are down.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "An attacker or a rogue Guardian exploits a vulnerability in the Governance Timelock Contract when sending a 'Cancel Proposal Command', allowing them to perform unauthorized actions beyond proposal cancellation, such as modifying other proposals, contract parameters, or executing arbitrary code.",
+  "description": "An attacker causes a Denial of Service against the Reward Vault Contract (Component 6) or its dependent data flows (e.g., Data Flow 3 for $BGT emissions). This prevents Liquidity Provider (Actor 4) from performing staking actions (Behavior 1), claiming rewards, or results in rewards not being distributed.",
   "trace_source": {
-    "doc_reference": "doc_3#guardian-oversight",
-    "matched_capability": "Cancel malicious governance proposals during the timelock period"
+    "doc_reference": "pol/Reward Vaults (doc_25), pol/Block Production and Emissions (doc_20)",
+    "matched_capability": "Stake LP tokens (as PoL-eligible Receipt Tokens) in Reward Vaults"
   }
 }

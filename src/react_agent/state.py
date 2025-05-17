@@ -30,6 +30,8 @@ class State(InputState):
     is_feedback_code_binding: bool = field(default=False)
     is_assessment_checklist: bool = field(default=False)
     is_assessment_code_binding: bool = field(default=False)
+    threat_list_length: int = field(default=0)
+    checklist_list_length: int = field(default=0)
     
     # node info
     current_actor_id: int = field(default=0)

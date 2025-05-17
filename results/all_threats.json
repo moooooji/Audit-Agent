@@ -1,3 +1,3451 @@
 {
-  "threats": []
+  "threats": [
+    {
+      "id": 1,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 107,
+        "behavior_id": 607,
+        "capability_match": "Offer incentive tokens to a Reward Vault"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 607,
+        "data_flow_id": 401,
+        "data_description": "Transaction to add incentives, specifying token, amount, and rate."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Insufficient sender authentication or authorization for managing specific incentive tokens in the Reward Vault contract."
+      },
+      "actor_risk": {
+        "actor_id": 107,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Incentive Token Manager is an external user. Compromise of their wallet (holding private key for actor ID 107) allows an attacker to impersonate them."
+      },
+      "behavioral_risk": {
+        "behavior_id": 607,
+        "risk_level": "Medium",
+        "rationale": "If an unauthorized party can offer incentives as a legitimate manager, it can lead to misdirected $BGT emissions or financial loss."
+      },
+      "assumptions": [
+        "An attacker gains access to the private key of the designated Incentive Token Manager (Actor 107).",
+        "The Reward Vault contract may not perfectly enforce that only the designated manager for a *specific* incentive token can modify *that specific* incentive's parameters via the 'add_incentives' action."
+      ],
+      "mitigation": {
+        "strategy": "Enforce strict msg.sender validation against pre-defined manager addresses per incentive token within the Reward Vault. Secure private key management for managers.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker who compromises the Incentive Token Manager's (107) wallet could illegitimately offer or alter incentives in the Reward Vault (310), potentially with malicious tokens or rates.",
+      "trace_source": {
+        "doc_reference": "guides/add_incentives_for_reward_vault.md#requirements",
+        "matched_capability": "Offer incentive tokens to a Reward Vault"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 107,
+        "behavior_id": 607,
+        "capability_match": "Define incentive rate"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 607,
+        "data_flow_id": 401,
+        "data_description": "Incentive parameters (token, amount, rate) within the transaction to the Reward Vault."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Reward Vault contract may not fully enforce business rules for incentive modification (e.g., 'cannot decrease rate'), or transaction data could be altered pre-signing via a compromised frontend."
+      },
+      "actor_risk": {
+        "actor_id": 107,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The Incentive Token Manager interacts with stateful rules for incentives. A compromised frontend could alter transaction details before signing."
+      },
+      "behavioral_risk": {
+        "behavior_id": 607,
+        "risk_level": "Medium",
+        "rationale": "Tampering with incentive parameters or bypassing rules can disrupt the incentive mechanism, leading to unfair advantages or economic exploits."
+      },
+      "assumptions": [
+        "The frontend used by the Incentive Token Manager to submit transactions is compromised, allowing alteration of unsigned transaction data.",
+        "The Reward Vault contract has a logic flaw that allows bypassing documented immutability rules for active incentives (e.g., rate changes, token reclamation) when adding/modifying incentives."
+      ],
+      "mitigation": {
+        "strategy": "Secure frontend development practices; user diligence in verifying transaction details before signing. Rigorous auditing of smart contract logic to enforce incentive rules.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker could tamper with the incentive offering (e.g., modify rates against rules, change token address) by altering transaction data pre-signing or by exploiting a logic flaw in the Reward Vault (310) contract.",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#offering-incentives",
+        "matched_capability": "Define incentive rate"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 107,
+        "behavior_id": 607,
+        "capability_match": "Deposit additional incentive tokens"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 607,
+        "data_flow_id": 401,
+        "data_description": "Function call to add/deposit incentives on Reward Vault contract."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The 'add_incentives' function in the Reward Vault or the incentive token contract may have a gas griefing or unexpected revert vulnerability, preventing deposits."
+      },
+      "actor_risk": {
+        "actor_id": 107,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "The Incentive Token Manager relies on the availability of the Reward Vault's 'add_incentives' function and the correct functioning of the incentive token contracts."
+      },
+      "behavioral_risk": {
+        "behavior_id": 607,
+        "risk_level": "Medium",
+        "rationale": "Inability to offer or replenish incentives disrupts the PoL mechanism and can impact protocols relying on these incentives."
+      },
+      "assumptions": [
+        "The 'add_incentives' function of the Reward Vault (310) is vulnerable to gas-limit issues or forced reverts due to specific malicious inputs or manipulated states.",
+        "The contract of the Incentive Token (Asset 206) being deposited has a flaw (e.g., malicious transferFrom behavior, unexpected revert) that is triggered by the Reward Vault, causing 'add_incentives' to fail."
+      ],
+      "mitigation": {
+        "strategy": "Robust smart contract development following best practices for gas efficiency, and external call safety. Thorough vetting of whitelisted incentive token contracts.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker could prevent the Incentive Token Manager (107) from adding incentives to the Reward Vault (310) by exploiting gas vulnerabilities or forced reverts in the vault or the incentive token contract.",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#offering-incentives",
+        "matched_capability": "Deposit additional incentive tokens"
+      }
+    },
+    {
+      "id": 4,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 107,
+        "behavior_id": 607,
+        "capability_match": "Offer incentive tokens to a Reward Vault"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          202,
+          205,
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 607,
+        "data_flow_id": 401,
+        "data_description": "Function call to 'add_incentives' potentially with malformed parameters or exploiting an internal logic flaw."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Insufficient authorization checks in the Reward Vault contract might allow an Incentive Token Manager to affect incentives they don't manage or perform administrative actions beyond their scope."
+      },
+      "actor_risk": {
+        "actor_id": 107,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "If the contract is flawed, the Incentive Token Manager (or an attacker spoofing them) might gain unauthorized control over aspects of the Reward Vault."
+      },
+      "behavioral_risk": {
+        "behavior_id": 607,
+        "risk_level": "Medium",
+        "rationale": "Gaining unauthorized control over incentives or vault functions can lead to theft of funds or manipulation of the PoL system."
+      },
+      "assumptions": [
+        "The Reward Vault (310) contract incorrectly checks permissions, allowing a manager for incentive A to control parameters for incentive B when calling 'add_incentives'.",
+        "A vulnerability in the 'add_incentives' function allows for arbitrary storage writes or calls to privileged functions within the Reward Vault by the Incentive Token Manager."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict, granular access control within the Reward Vault contract. Adhere to the principle of least privilege. Conduct thorough security audits.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A flaw in the Reward Vault (310) could allow an Incentive Token Manager (107), when offering incentives, to gain unauthorized privileges, such as managing other protocols' incentives or altering critical vault parameters.",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#incentive-token-managers",
+        "matched_capability": "Offer incentive tokens to a Reward Vault"
+      }
+    },
+    {
+      "id": 5,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 102,
+        "behavior_id": 606,
+        "capability_match": "Direct $BGT emissions to Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 315,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 606,
+        "data_flow_id": 401,
+        "data_description": "Validator's signed transaction to set_emission_allocation on Distributor Contract"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 502,
+        "boundary_name": "Berachain L1 Network Boundary",
+        "between_component_ids": [
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "If validator keys are compromised, an attacker can impersonate the validator to misdirect $BGT emissions."
+      },
+      "actor_risk": {
+        "actor_id": 102,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "A compromised Validator (Internal Service) can lead to misallocation of rewards."
+      },
+      "behavioral_risk": {
+        "behavior_id": 606,
+        "risk_level": "Medium",
+        "rationale": "Spoofing validator identity to alter critical reward distribution can have significant economic impact."
+      },
+      "assumptions": [
+        "Validator's private keys for signing configuration changes can be stolen or compromised.",
+        "The Distributor Contract (315) relies solely on transaction signature for authenticating validator's intent for emission allocation."
+      ],
+      "mitigation": {
+        "strategy": "Implement multi-factor authentication for critical validator operations if feasible, strict key management practices, and monitoring for unusual allocation changes.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker, having compromised a Validator's keys, spoofs its identity to change $BGT emission allocations on the Distributor Contract (315), redirecting $BGT (202) to unintended Reward Vaults.",
+      "trace_source": {
+        "doc_reference": "pol/bgtmath.md#bgt-distribution",
+        "matched_capability": "Direct $BGT emissions to Reward Vaults"
+      }
+    },
+    {
+      "id": 6,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 102,
+        "behavior_id": 606,
+        "capability_match": "Direct $BGT emissions to Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 315,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 606,
+        "data_flow_id": 401,
+        "data_description": "Validator's signed transaction to set_emission_allocation, if intercepted or modified before final inclusion."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 502,
+        "boundary_name": "Berachain L1 Network Boundary",
+        "between_component_ids": [
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The parameters for emission allocation within the transaction could be altered if transaction integrity is not end-to-end guaranteed up to the smart contract execution."
+      },
+      "actor_risk": {
+        "actor_id": 102,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "Validator submits configuration data that must maintain integrity."
+      },
+      "behavioral_risk": {
+        "behavior_id": 606,
+        "risk_level": "Medium",
+        "rationale": "Tampering with emission allocation parameters changes reward flow, impacting PoL economics."
+      },
+      "assumptions": [
+        "An attacker can intercept and modify a validator's set_emission_allocation transaction before it's mined, without invalidating the signature (e.g., if parts of the payload are not signed).",
+        "The Distributor Contract (315) might not have sufficient internal checks to detect inconsistencies caused by tampering if the transaction is still structurally valid."
+      ],
+      "mitigation": {
+        "strategy": "Ensure all critical parameters in transactions are covered by cryptographic signatures. Robust smart contract validation of inputs.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker tampers with a Validator's transaction to set $BGT emission allocations (Behavior 606), modifying the target Reward Vaults or percentages, causing misdirection of $BGT (202) via the Distributor Contract (315).",
+      "trace_source": {
+        "doc_reference": "pol/participants.md#validators-\u2705",
+        "matched_capability": "Direct $BGT emissions to Reward Vaults"
+      }
+    },
+    {
+      "id": 7,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 102,
+        "behavior_id": 614,
+        "capability_match": "Set commission rate for incentives"
+      },
+      "threat_target": {
+        "component_id": 302,
+        "asset_ids": [
+          214
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 614,
+        "data_flow_id": 401,
+        "data_description": "Validator's signed transaction to update_commission_rate on Berachain L1 Network"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 502,
+        "boundary_name": "Berachain L1 Network Boundary",
+        "between_component_ids": [
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Compromised validator keys allow an attacker to impersonate the validator and change its commission rate, affecting incentive distribution."
+      },
+      "actor_risk": {
+        "actor_id": 102,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "A compromised Validator can manipulate its financial parameters like commission rates."
+      },
+      "behavioral_risk": {
+        "behavior_id": 614,
+        "risk_level": "Medium",
+        "rationale": "Unauthorized changes to commission rates can financially harm delegators or the validator."
+      },
+      "assumptions": [
+        "Validator's private keys for signing commission rate changes can be stolen.",
+        "The L1 mechanism for updating commission rates relies solely on transaction signature for validator authentication."
+      ],
+      "mitigation": {
+        "strategy": "Strict key management for validators. Monitoring of commission rate changes. Enforced timelocks for changes provide visibility.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker, having compromised a Validator's keys, spoofs its identity to maliciously change its incentive commission rate on the Berachain L1 Network (302), impacting future distribution of Incentive Tokens (206) and $BGT (202) rewards.",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#incentive-commission-and-distribution",
+        "matched_capability": "Set commission rate for incentives"
+      }
+    },
+    {
+      "id": 8,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 102,
+        "behavior_id": 614,
+        "capability_match": "Set commission rate for incentives"
+      },
+      "threat_target": {
+        "component_id": 302,
+        "asset_ids": [
+          214
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 614,
+        "data_flow_id": 401,
+        "data_description": "Validator's signed transaction to update_commission_rate, potentially exploiting logic flaws."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 502,
+        "boundary_name": "Berachain L1 Network Boundary",
+        "between_component_ids": [
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of stringent validation on commission rate parameters or bypassable control mechanisms (like the waiting period) could allow a validator to set unauthorized rates."
+      },
+      "actor_risk": {
+        "actor_id": 102,
+        "type": "Internal Service",
+        "overprivileged": false,
+        "description": "A validator (even legitimate) might attempt to exploit system rules for undue gain."
+      },
+      "behavioral_risk": {
+        "behavior_id": 614,
+        "risk_level": "Medium",
+        "rationale": "Bypassing controls or setting invalid commission rates grants unauthorized financial advantage."
+      },
+      "assumptions": [
+        "The smart contract logic for `update_commission_rate` on L1 (302) might have vulnerabilities in input validation for commission percentages (e.g., allowing >100%).",
+        "The mandatory waiting period for commission rate changes could be bypassed through an exploit."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict input validation for commission rates (e.g., bounds checking 0-100%). Ensure timelock/waiting period mechanisms are non-bypassable. Regular audits of the L1 module.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious or compromised Validator (102) attempts to elevate its privilege by setting an out-of-bounds incentive commission rate or bypassing the mandatory waiting period when updating its commission rate on the Berachain L1 Network (302).",
+      "trace_source": {
+        "doc_reference": "pol/incentives.md#incentive-commission-and-distribution",
+        "matched_capability": "Set commission rate for incentives"
+      }
+    },
+    {
+      "id": 9,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          208,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "Signed transaction for governance proposal submission from $BGT Holder's wallet to Berachain L1."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Compromise of $BGT Holder's private key bypasses identity verification for proposal submission."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder (External User) authentication for proposal submission relies solely on private key security."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "High",
+        "rationale": "A spoofed proposal due to private key compromise can lead to unauthorized protocol changes or asset misappropriation, significantly impacting the system."
+      },
+      "assumptions": [
+        "Attacker gains access to the private key of a $BGT Holder (105) who meets the proposal creation threshold.",
+        "The compromised key is used to sign and submit a malicious governance proposal to Component 305."
+      ],
+      "mitigation": {
+        "strategy": "Promote secure private key management (e.g., hardware wallets, phishing awareness). Consider social recovery or institutional custody solutions for high-value $BGT holders.",
+        "type": "Process Control",
+        "priority": "High"
+      },
+      "description": "An attacker compromises a $BGT Holder's (105) private key to spoof their identity and submit a malicious Governance Proposal (208) to the Governance System (305).",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 10,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          208
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "Governance proposal content before signing, or via compromised submission interface interacting with Berachain L1."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Proposal content could be altered before on-chain submission if user interface or device is compromised."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder relies on the integrity of their device and submission interface (e.g., BeraHub) when crafting proposals."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "Medium",
+        "rationale": "Tampering with proposal content before signing can lead to unintended governance actions. Risk level matches behavior's."
+      },
+      "assumptions": [
+        "Proposal details are manipulated on the user's device or through a compromised frontend before the final transaction is signed.",
+        "The $BGT Holder does not meticulously verify the signed data hash against the intended proposal details."
+      ],
+      "mitigation": {
+        "strategy": "Educate users to verify transaction details carefully before signing, especially for governance actions. Ensure secure and audited frontend interfaces for proposal submission.",
+        "type": "Process Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker tampers with the content of a Governance Proposal (208) initiated by a $BGT Holder (105) before it is signed and submitted to the Governance System (305), leading to an unintended on-chain proposal.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 11,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          208
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "Proposal content discussed or stored in off-chain systems (e.g., forum, RFRV form) before on-chain submission."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Sensitive proposal details may be leaked from less secure off-chain platforms if used for drafting or discussion prior to formal on-chain submission via Component 305."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder may use off-chain platforms for proposal discussion which lack the security of the on-chain system."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "Medium",
+        "rationale": "Premature disclosure of sensitive proposal content can enable front-running or countermeasures, undermining the proposal's effectiveness."
+      },
+      "assumptions": [
+        "Governance proposals with market-sensitive information are discussed or drafted on public or semi-public off-chain forums/systems (implied by boundary 506 components like 320, 321).",
+        "These off-chain systems have weaker confidentiality guarantees than the on-chain Governance System (305)."
+      ],
+      "mitigation": {
+        "strategy": "Provide secure channels for sensitive proposal discussion. Advise users on OPSEC for market-sensitive proposals. Implement clear data handling policies for off-chain submission systems (e.g., RFRV forms).",
+        "type": "Process Control",
+        "priority": "Medium"
+      },
+      "description": "The content of a sensitive Governance Proposal (208) being prepared by a $BGT Holder (105) is disclosed prematurely from an off-chain system before on-chain submission to Governance System (305), allowing others to act on the information.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 12,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          208
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "Mechanism for submitting proposals to the Governance System (305) on Berachain L1."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The governance process may be overwhelmed if proposal creation is too cheap or lacks rate limiting, preventing legitimate proposals."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Any $BGT Holder meeting the threshold can submit proposals; coordination could lead to spam."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "Medium",
+        "rationale": "Proposal spam can degrade governance effectiveness and increase operational load for voters and guardians."
+      },
+      "assumptions": [
+        "The cost (gas fees, $BGT deposit if any beyond threshold) to create a Governance Proposal is low enough for an attacker to submit many.",
+        "There are no effective rate limits on proposal submission per account or globally within the Governance System (305) beyond the $BGT holding requirement."
+      ],
+      "mitigation": {
+        "strategy": "Implement escalating proposal deposit/fee mechanisms. Introduce reputation systems or time-based rate limits for proposal creation. Guardians could also play a role in filtering spam if empowered.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker or colluding $BGT Holders (105) spam the Governance System (305) with numerous Governance Proposals (208), overwhelming the review/voting process or making it too costly for legitimate proposals to gain attention.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 13,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202,
+          208
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "$BGT balance check mechanism within Governance System (305) during proposal submission."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "A flaw in the $BGT balance verification logic within Component 305 could allow proposal creation without sufficient $BGT."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Actor 105 is intended to be gated by $BGT balance for this capability."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "High",
+        "rationale": "Bypassing the $BGT threshold for proposal creation undermines governance security and allows unauthorized actors to influence the protocol."
+      },
+      "assumptions": [
+        "The Governance System (305) smart contract has a vulnerability in how it checks the proposing actor's $BGT (Asset 202) balance.",
+        "An attacker can exploit this vulnerability to submit a proposal without meeting the 10,000 $BGT requirement."
+      ],
+      "mitigation": {
+        "strategy": "Rigorous security audits and formal verification of the Governance System (305) smart contract, specifically the logic for proposal eligibility and $BGT balance checks. Use well-tested OpenZeppelin Governor contracts or similar.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the Governance System (305) to create a Governance Proposal (208) without possessing the required 10,000 $BGT (Asset 202), bypassing a key governance entry criterion.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 14,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 602,
+        "capability_match": "Create governance proposals (if holding 10,000 $BGT)"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          208
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 602,
+        "data_flow_id": 401,
+        "data_description": "Proposal execution logic within Governance System (305), particularly concerning timelocks and Guardian interactions."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 505,
+        "boundary_name": "Governance Timelock Boundary",
+        "between_component_ids": [
+          305,
+          306
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "A flaw in proposal parameter handling or execution logic in Component 305 could allow a proposal to bypass safety mechanisms like timelock or Guardian review."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder submits proposals that are intended to be subject to timelock and Guardian review."
+      },
+      "behavioral_risk": {
+        "behavior_id": 602,
+        "risk_level": "High",
+        "rationale": "Bypassing timelock or Guardian review can lead to immediate execution of malicious proposals, causing severe damage."
+      },
+      "assumptions": [
+        "The Governance System (305) has a vulnerability allowing specially crafted proposals to alter their own execution lifecycle (e.g., timelock duration, cancellability).",
+        "Guardians (Actor 103, via Component 306 which is part of boundary 505) might not detect or be able to act on such a proposal if it bypasses normal checks."
+      ],
+      "mitigation": {
+        "strategy": "Extensive auditing of the Governance System (305) focusing on lifecycle management of proposals. Ensure Guardian multisig (Component 306) has irrevocable power during timelock. Immutable timelock parameters for proposals.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A $BGT Holder (105) crafts a malicious Governance Proposal (208) submitted to the Governance System (305) that, due to a flaw, bypasses or shortens the timelock (Trust Boundary 505) or evades Guardian review, enabling rapid execution of harmful changes.",
+      "trace_source": {
+        "doc_reference": "doc_3",
+        "matched_capability": "Create governance proposals (if holding 10,000 $BGT)"
+      }
+    },
+    {
+      "id": 15,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 615,
+        "capability_match": "Delegate $BGT voting power for governance"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 615,
+        "data_flow_id": 401,
+        "data_description": "Signed transaction for $BGT voting power delegation from $BGT Holder's wallet to Berachain L1."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Compromise of $BGT Holder's private key bypasses identity verification for voting power delegation."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder (External User) authentication for delegation relies solely on private key security."
+      },
+      "behavioral_risk": {
+        "behavior_id": 615,
+        "risk_level": "High",
+        "rationale": "Spoofed delegation due to key compromise can centralize voting power or delegate to malicious actors, undermining governance integrity."
+      },
+      "assumptions": [
+        "Attacker gains access to the private key of a $BGT Holder (105).",
+        "The compromised key is used to sign and submit a transaction to Component 305 delegating the victim's $BGT voting power to an attacker-controlled address."
+      ],
+      "mitigation": {
+        "strategy": "Promote secure private key management (e.g., hardware wallets). Implement transaction screening or warnings for delegations to known malicious addresses if possible via wallet interfaces.",
+        "type": "Process Control",
+        "priority": "High"
+      },
+      "description": "An attacker who compromises a $BGT Holder's (105) private key spoofs their identity to delegate the voting power of their $BGT Tokens (202) to an attacker-controlled address via the Governance System (305).",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Delegate $BGT voting power for governance"
+      }
+    },
+    {
+      "id": 16,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 615,
+        "capability_match": "Delegate $BGT voting power for governance"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 615,
+        "data_flow_id": 401,
+        "data_description": "Delegation transaction details (target delegate address) before signing, or via compromised submission interface."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Delegation target address could be altered if user interface or device is compromised before transaction signing."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder relies on the integrity of their device and submission interface when delegating voting power."
+      },
+      "behavioral_risk": {
+        "behavior_id": 615,
+        "risk_level": "Medium",
+        "rationale": "Tampering with delegation target can misdirect voting power, potentially to malicious actors. Risk is behavior's Low, raised to Medium due to governance impact."
+      },
+      "assumptions": [
+        "The target delegate address in a delegation transaction is manipulated on the user's device or through a compromised frontend before signing.",
+        "The $BGT Holder does not verify the final transaction details before signing."
+      ],
+      "mitigation": {
+        "strategy": "Educate users to verify transaction details, especially recipient addresses, before signing. Use ENS or similar naming services for known delegates to reduce address error/tampering risk. Secure and audited frontends for delegation.",
+        "type": "Process Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker tampers with a $BGT (Asset 202) voting power delegation transaction initiated by a $BGT Holder (105) to change the target delegate address before the transaction is signed and submitted to the Governance System (305).",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Delegate $BGT voting power for governance"
+      }
+    },
+    {
+      "id": 17,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 615,
+        "capability_match": "Delegate $BGT voting power for governance"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 615,
+        "data_flow_id": 401,
+        "data_description": "Delegation transaction submission to Governance System (305) on Berachain L1."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "High network fees or a bug in the delegation contract logic could prevent users from delegating or changing delegations."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "$BGT Holder needs to successfully submit transactions to manage their delegations."
+      },
+      "behavioral_risk": {
+        "behavior_id": 615,
+        "risk_level": "Low",
+        "rationale": "Inability to delegate or re-delegate can disenfranchise $BGT holders or lock them into undesirable delegations. Risk level matches behavior's."
+      },
+      "assumptions": [
+        "The Berachain L1 network experiences extreme congestion leading to unaffordable gas fees for delegation transactions.",
+        "Alternatively, the Governance System (305) contract has a bug causing legitimate delegation transactions to fail under certain conditions."
+      ],
+      "mitigation": {
+        "strategy": "Optimize delegation contract for gas efficiency. Rigorous testing of delegation logic in Component 305. L1 scaling solutions to manage network congestion.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "A $BGT Holder (105) is prevented from delegating their $BGT (Asset 202) voting power due to excessively high gas fees on L1 or a bug in the Governance System (305) causing delegation transactions to fail.",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Delegate $BGT voting power for governance"
+      }
+    },
+    {
+      "id": 18,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 615,
+        "capability_match": "Delegate $BGT voting power for governance"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 615,
+        "data_flow_id": 401,
+        "data_description": "$BGT balance and ownership tracking within Governance System (305) for delegation operations."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "A flaw in Component 305's logic could allow delegation of more voting power than owned or delegation of unowned $BGT."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Actor 105 should only be able to delegate voting power corresponding to their owned $BGT."
+      },
+      "behavioral_risk": {
+        "behavior_id": 615,
+        "risk_level": "High",
+        "rationale": "Delegating unowned or inflated $BGT voting power severely compromises governance integrity and fairness."
+      },
+      "assumptions": [
+        "The Governance System (305) smart contract has a vulnerability in its accounting or authorization logic for $BGT (Asset 202) delegation.",
+        "An attacker can exploit this to delegate voting power they are not entitled to."
+      ],
+      "mitigation": {
+        "strategy": "Rigorous security audits and formal verification of the Governance System (305) smart contract, specifically its token accounting and delegation authorization logic. Use standard, audited token contracts (e.g., ERC20Votes).",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in the Governance System (305) to delegate voting power from $BGT Tokens (202) they do not own, or delegate more voting power than their actual $BGT balance allows.",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Delegate $BGT voting power for governance"
+      }
+    },
+    {
+      "id": 19,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 105,
+        "behavior_id": 615,
+        "capability_match": "Delegate $BGT voting power for governance"
+      },
+      "threat_target": {
+        "component_id": 305,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 615,
+        "data_flow_id": 401,
+        "data_description": "Authorization checks for modifying existing delegations within Governance System (305)."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 506,
+        "boundary_name": "Off-chain to On-chain Governance Boundary",
+        "between_component_ids": [
+          320,
+          321,
+          305
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "A flaw in Component 305's authorization logic could allow an attacker to modify or revoke delegations made by other users."
+      },
+      "actor_risk": {
+        "actor_id": 105,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Actor 105 (or any actor) should not be able to control delegations of other $BGT holders."
+      },
+      "behavioral_risk": {
+        "behavior_id": 615,
+        "risk_level": "High",
+        "rationale": "Unauthorized modification of delegations can lead to vote manipulation and disenfranchisement of legitimate $BGT holders."
+      },
+      "assumptions": [
+        "The Governance System (305) smart contract has an access control vulnerability related to managing delegations.",
+        "An attacker can call functions to change or cancel other users' $BGT (Asset 202) delegations without proper authorization."
+      ],
+      "mitigation": {
+        "strategy": "Strict adherence to sender authentication (msg.sender checks) for all state-changing delegation functions in the Governance System (305) contract. Comprehensive security audits focusing on access control.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a flaw in the Governance System (305) to modify or revoke existing $BGT (Asset 202) voting power delegations made by other $BGT Holders (105) without their consent.",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Delegate $BGT voting power for governance"
+      }
+    },
+    {
+      "id": 20,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "User's signed transaction to stake tokens, submitted via a (malicious) frontend."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "User Interface to Blockchain Interaction Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "User may be tricked into signing malicious transactions via a spoofed interface, compromising integrity of their stake action."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Liquidity Provider trusts the interface they interact with for staking, making them vulnerable to phishing that leads to unintended transaction signing."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "High",
+        "rationale": "Staking involves valuable assets and relies on user correctly identifying legitimate interfaces and verifying transaction details."
+      },
+      "assumptions": [
+        "User interacts with a malicious frontend impersonating the legitimate staking dApp.",
+        "The malicious frontend crafts transactions that appear legitimate but have malicious effects (e.g., wrong recipient, excessive approval).",
+        "User signs the malicious transaction without careful verification of all transaction parameters."
+      ],
+      "mitigation": {
+        "strategy": "User education on phishing prevention, wallet security features (e.g., transaction simulation, known contract address checks), dApp domain verification, clear transaction signing interfaces.",
+        "type": "Process Control",
+        "priority": "High"
+      },
+      "description": "A Liquidity Provider (ID 106) is tricked by a spoofed dApp interface into signing a malicious transaction when attempting to stake `Receipt Tokens` (ID 205) via behavior 604, potentially leading to loss of funds or unintended approvals targeting `Reward Vault Contract` (ID 310).",
+      "trace_source": {
+        "doc_reference": "doc_25#user-interactions",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 21,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "Exploitable function call to Reward Vault Contract's staking or reward logic."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Reward Vault Contract may lack robustness against tampering of internal staking records or reward calculations."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "An attacker (acting as an External User like ID 106) exploits a contract flaw to modify data."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "High",
+        "rationale": "Vulnerability in a high-trust contract managing valuable assets can lead to direct financial loss."
+      },
+      "assumptions": [
+        "The Reward Vault Contract (ID 310) contains a flaw in its logic for handling stakes or rewards.",
+        "An attacker can craft a transaction that exploits this flaw to alter staking data or reward entitlements."
+      ],
+      "mitigation": {
+        "strategy": "Rigorous smart contract audits, formal verification, bug bounty programs, use of established and secure contract patterns, immutable state variables where appropriate.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a smart contract vulnerability in `Reward Vault Contract` (ID 310) to tamper with staking balances of `Receipt Tokens` (ID 205) or reward accrual, leading to incorrect `$BGT Token` (ID 202) reward distribution or theft of staked assets.",
+      "trace_source": {
+        "doc_reference": "doc_25#reward-vaults",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 22,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Earn $BGT from Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 404,
+        "data_description": "Incoming $BGT from Distributor Contract or internal reward accounting within Reward Vault."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Reward Distribution Integrity Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of $BGT reward distribution to or accounting within the Reward Vault is compromised."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "An attacker (acting as an External User like ID 106) manipulates $BGT reward flow or accounting related to the Reward Vault."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "Medium",
+        "rationale": "Compromise of reward mechanism undermines participation incentive and can lead to fund loss."
+      },
+      "assumptions": [
+        "The Reward Vault Contract (ID 310) has a flaw in how it receives or accounts for $BGT rewards from Data Flow 404.",
+        "Alternatively, the contract's logic for calculating or distributing earned $BGT to stakers is vulnerable.",
+        "An attacker can exploit this to redirect or steal $BGT."
+      ],
+      "mitigation": {
+        "strategy": "Secure smart contract design for reward handling, audits, monitoring of reward distribution, secure interaction protocols with Distributor Contract.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the flow of `$BGT Tokens` (ID 202) via Data Flow 404 to the `Reward Vault Contract` (ID 310) or manipulates the vault's internal accounting to redirect or steal `$BGT` rewards intended for legitimate Liquidity Providers (ID 106).",
+      "trace_source": {
+        "doc_reference": "doc_25#earning-bgt",
+        "matched_capability": "Earn $BGT from Reward Vaults"
+      }
+    },
+    {
+      "id": 23,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "Internal record-keeping of stakes within Reward Vault Contract."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Reward Vault Contract fails to reliably persist or allows deletion/alteration of staking records, preventing users from proving their stake."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Liquidity Provider's stake is not reliably recorded or is erased by the system due to a flaw, making the staking action effectively repudiated by the system."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "Medium",
+        "rationale": "Loss of stake record leads to financial loss for the user and damages trust in the system."
+      },
+      "assumptions": [
+        "The Reward Vault Contract (ID 310) has a bug causing staking records to be unrecorded, overwritten, or deleted under certain conditions.",
+        "There are no reliable off-chain backups or alternative on-chain mechanisms for the user to prove their stake if the contract record is lost or corrupted."
+      ],
+      "mitigation": {
+        "strategy": "Robust contract design ensuring data persistence (e.g., using mappings correctly), thorough testing of all state-changing functions, emission of events for all stakes and unstakes for external verifiability.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "Due to a flaw or malicious action affecting `Reward Vault Contract` (ID 310), a Liquidity Provider's (ID 106) staking record of `Receipt Tokens` (ID 205) is lost or not properly recorded after behavior 604. Consequently, the LP cannot prove their stake to claim `$BGT Token` (ID 202) rewards or withdraw their stake.",
+      "trace_source": {
+        "doc_reference": "doc_25#staking-with-a-reward-vault",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 24,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "Publicly queryable staking data, transaction history, and event logs on the blockchain."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Public Blockchain Data Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Inherent public nature of blockchain transactions reveals Liquidity Provider's staking activities, balances, and potentially financial strategies."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Liquidity Provider's financial activities related to staking are exposed due to blockchain transparency, which could be leveraged by attackers."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "Low",
+        "rationale": "Public data is a characteristic of many blockchains; risk depends on user's privacy needs and attacker capabilities to link addresses to identities."
+      },
+      "assumptions": [
+        "All staking transactions, balances, and reward claims related to the Reward Vault Contract (ID 310) are publicly readable on the blockchain.",
+        "Attackers can monitor blockchain activity and potentially correlate addresses with individuals or entities to gather intelligence."
+      ],
+      "mitigation": {
+        "strategy": "User awareness regarding the public nature of blockchain ledgers. Use of multiple addresses or privacy-enhancing technologies where feasible (though often complex for DeFi interactions). DApps should clearly communicate data visibility.",
+        "type": "Process Control",
+        "priority": "Low"
+      },
+      "description": "A Liquidity Provider's (ID 106) actions of staking `Receipt Tokens` (ID 205) in `Reward Vault Contract` (ID 310) and subsequent accumulation of `$BGT Token` (ID 202) rewards are publicly visible on the blockchain. This information disclosure can expose the LP's financial strategies and holdings, making them a potential target for social engineering or other attacks.",
+      "trace_source": {
+        "doc_reference": "doc_25#user-interactions",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 25,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205,
+          202,
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "Exploitable function call (e.g., causing revert, gas exhaustion, logic error) in Reward Vault Contract."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Reward Vault Contract may be vulnerable to attacks that render its staking, unstaking, or claiming functions non-functional."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "An attacker (acting as an External User like ID 106) exploits a contract flaw to cause a Denial of Service, affecting all users of the vault."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "High",
+        "rationale": "Denial of Service on a core DeFi contract like a Reward Vault can lock user funds and disrupt essential functionality."
+      },
+      "assumptions": [
+        "The Reward Vault Contract (ID 310) has a vulnerability (e.g., unbounded loop, reentrancy leading to resource exhaustion, logic error causing revert for all users) that can be triggered by an attacker.",
+        "Triggering the vulnerability makes the contract, or its key functions like stake/unstake/claim, unusable for legitimate Liquidity Providers."
+      ],
+      "mitigation": {
+        "strategy": "Implementation of gas limits, reentrancy guards, careful design of loops and external calls, thorough testing for Denial of Service vectors, contract upgradeability mechanisms for critical bug fixes, circuit breakers.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in `Reward Vault Contract` (ID 310) via behavior 604 or other functions, causing a denial of service. This prevents Liquidity Providers (ID 106) from staking new `Receipt Tokens` (ID 205), withdrawing existing stakes, or claiming earned `$BGT Token` (ID 202) rewards.",
+      "trace_source": {
+        "doc_reference": "doc_25#reward-vaults",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 26,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Earn $BGT from Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 0,
+        "data_flow_id": 404,
+        "data_description": "$BGT Tokens from Distributor Contract (ID 315) to Reward Vault Contract (ID 310)."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Inter-Contract Dependency Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Availability of $BGT reward inflow from the Distributor Contract (implicated by Data Flow 404) to the Reward Vault is compromised."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Liquidity Provider's reward earnings are disrupted due to failure in an upstream component (Distributor Contract ID 315) or data flow (ID 404)."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "Medium",
+        "rationale": "Failure of reward distribution makes staking less attractive and impacts user trust, even if the Reward Vault itself is secure."
+      },
+      "assumptions": [
+        "The Distributor Contract (ID 315, source of Data Flow 404) is a critical dependency for Reward Vault (ID 310) to receive $BGT rewards.",
+        "The Distributor Contract (ID 315) or Data Flow 404 can be subject to a Denial of Service attack or operational failure, halting reward distribution."
+      ],
+      "mitigation": {
+        "strategy": "Resilient design of the Distributor Contract, robust monitoring of Data Flow 404, potential for alternative reward mechanisms if the primary flow fails, clear communication to users about such dependencies.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "A Denial of Service attack on the `Distributor Contract` (ID 315, source of Data Flow 404) or disruption of Data Flow 404 prevents `$BGT Tokens` (ID 202) from reaching `Reward Vault Contract` (ID 310), thereby denying Liquidity Providers (ID 106) their earned rewards.",
+      "trace_source": {
+        "doc_reference": "doc_25#bgt-flow",
+        "matched_capability": "Earn $BGT from Reward Vaults"
+      }
+    },
+    {
+      "id": 27,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 106,
+        "behavior_id": 604,
+        "capability_match": "Stake receipt tokens in Reward Vaults"
+      },
+      "threat_target": {
+        "component_id": 310,
+        "asset_ids": [
+          205,
+          202,
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 604,
+        "data_flow_id": 0,
+        "data_description": "Exploitable function call, potentially targeting administrative functions or bypassing authorization for user functions within Reward Vault Contract."
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "Smart Contract Logic Integrity Boundary (Conceptual - Not Defined in Chunk)",
+        "between_component_ids": [
+          310
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Reward Vault Contract may lack robust access control for privileged functions or may have vulnerabilities allowing unauthorized execution of actions."
+      },
+      "actor_risk": {
+        "actor_id": 106,
+        "type": "External User",
+        "overprivileged": true,
+        "description": "An attacker (acting as an External User like ID 106) gains unauthorized administrative or user-level privileges within the Reward Vault Contract via an exploit."
+      },
+      "behavioral_risk": {
+        "behavior_id": 604,
+        "risk_level": "High",
+        "rationale": "Elevation of privilege in a contract managing funds can lead to complete loss of assets or systemic compromise of the vault's integrity."
+      },
+      "assumptions": [
+        "The Reward Vault Contract (ID 310) has administrative functions or allows certain users to perform sensitive operations (e.g., pause, upgrade, parameter changes, emergency withdrawal).",
+        "A vulnerability exists (e.g., improper access control checks, reentrancy exploiting state changes, delegatecall abuse) that an attacker can leverage to call these privileged functions or perform actions as if they were an authorized party or another user."
+      ],
+      "mitigation": {
+        "strategy": "Implementation of the principle of least privilege, use of secure and audited access control patterns (e.g., OpenZeppelin's Ownable/AccessControl), multi-signature requirements for critical administrative actions, timelocks for sensitive changes, rigorous audits.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker exploits a vulnerability in `Reward Vault Contract` (ID 310) to elevate their privileges. This could allow them to gain unauthorized control over administrative functions, withdraw other users' `Receipt Tokens` (ID 205), or manipulate/steal `$BGT Token` (ID 202) and `Incentive Tokens` (ID 206).",
+      "trace_source": {
+        "doc_reference": "doc_25#reward-vaults",
+        "matched_capability": "Stake receipt tokens in Reward Vaults"
+      }
+    },
+    {
+      "id": 28,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 601,
+        "capability_match": "Claim airdrop tokens"
+      },
+      "threat_target": {
+        "component_id": 304,
+        "asset_ids": [
+          201
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 601,
+        "data_flow_id": 401,
+        "data_description": "Wallet address/signature for airdrop claim"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          304,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Airdrop claim mechanism might not robustly verify the true owner of the allocation if private keys are compromised or the dApp has an identity verification flaw."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User (or attacker impersonating user) interacts with the Airdrop Claim dApp."
+      },
+      "behavioral_risk": {
+        "behavior_id": 601,
+        "risk_level": "Medium",
+        "rationale": "Claiming an airdrop involves asset transfer based on prior eligibility; spoofing eligibility or identity leads to theft."
+      },
+      "assumptions": [
+        "Attacker has obtained an eligible user's private key.",
+        "Alternatively, the Airdrop Claim dApp (304) has a vulnerability in its logic for verifying claimant identity against eligible addresses."
+      ],
+      "mitigation": {
+        "strategy": "Enforce strong wallet signature verification for claims; educate users on secure key management; robust dApp authentication logic.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker spoofs an eligible user's identity (e.g., using a compromised private key) to claim their $BERA airdrop via the Airdrop Claim dApp (304).",
+      "trace_source": {
+        "doc_reference": "doc_2",
+        "matched_capability": "Claim airdrop tokens"
+      }
+    },
+    {
+      "id": 29,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 601,
+        "capability_match": "Claim airdrop tokens"
+      },
+      "threat_target": {
+        "component_id": 304,
+        "asset_ids": [
+          201
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 601,
+        "data_flow_id": 401,
+        "data_description": "Airdrop claim transaction parameters"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          304,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The claim transaction parameters could be altered before finalization if controls are insufficient."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User (or attacker manipulating user's interaction) interacts with the Airdrop Claim dApp."
+      },
+      "behavioral_risk": {
+        "behavior_id": 601,
+        "risk_level": "Medium",
+        "rationale": "Tampering with claim details could lead to misdirected or incorrect airdrop amounts."
+      },
+      "assumptions": [
+        "Attacker can intercept or manipulate the transaction data before it's signed or submitted (e.g., via malicious browser extension, compromised dApp frontend).",
+        "The smart contract has a flaw that allows tampered parameters (e.g., recipient address) to be effective."
+      ],
+      "mitigation": {
+        "strategy": "Users must carefully verify transaction details in their wallet before signing. dApp ensures integrity of parameters. Smart contract validates inputs.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker tampers with the airdrop claim transaction data (e.g., destination address if changeable) submitted through Airdrop Claim dApp (304), aiming to redirect the claimed $BERA tokens.",
+      "trace_source": {
+        "doc_reference": "doc_2",
+        "matched_capability": "Claim airdrop tokens"
+      }
+    },
+    {
+      "id": 30,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 601,
+        "capability_match": "Claim airdrop tokens"
+      },
+      "threat_target": {
+        "component_id": 304,
+        "asset_ids": [
+          213
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 601,
+        "data_flow_id": 401,
+        "data_description": "User interaction with dApp frontend (HTTP requests, IP address)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          304,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "The dApp might link user's network identifiers (IP) with their blockchain address."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User interacting with the Airdrop Claim dApp."
+      },
+      "behavioral_risk": {
+        "behavior_id": 601,
+        "risk_level": "Low",
+        "rationale": "Linking IP to wallet address can erode privacy, though airdrop claims are public on-chain actions."
+      },
+      "assumptions": [
+        "The Airdrop Claim dApp (304) logs user IP addresses during interaction.",
+        "These logs are not properly secured or are used to link IPs to wallet addresses (Asset 213)."
+      ],
+      "mitigation": {
+        "strategy": "dApp should minimize PII collection, anonymize logs, or use privacy-preserving infrastructure (e.g., VPN, Tor by user).",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "The Airdrop Claim dApp (304) may collect and leak user's network information (e.g., IP address), linking it to their wallet address used for claiming the airdrop.",
+      "trace_source": {
+        "doc_reference": "doc_2",
+        "matched_capability": "Claim airdrop tokens"
+      }
+    },
+    {
+      "id": 31,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 601,
+        "capability_match": "Claim airdrop tokens"
+      },
+      "threat_target": {
+        "component_id": 304,
+        "asset_ids": [
+          201
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 601,
+        "data_flow_id": 401,
+        "data_description": "Airdrop claim requests"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          304,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The claim functionality's availability can be impacted by excessive load."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "An attacker (acting as a User) generates excessive claim requests."
+      },
+      "behavioral_risk": {
+        "behavior_id": 601,
+        "risk_level": "Medium",
+        "rationale": "High volume of claim attempts could overwhelm the dApp or contract, preventing legitimate claims."
+      },
+      "assumptions": [
+        "The Airdrop Claim dApp (304) or its underlying smart contract is susceptible to high transaction volumes.",
+        "The cost of submitting many transactions (gas fees) is not a sufficient deterrent for the attacker."
+      ],
+      "mitigation": {
+        "strategy": "Implement rate limiting on the dApp frontend, design robust smart contracts, utilize gas costs as a deterrent, and ensure scalable infrastructure.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker submits a high volume of transactions to the Airdrop Claim dApp (304) or its smart contract, potentially degrading service availability for legitimate users trying to claim their $BERA tokens.",
+      "trace_source": {
+        "doc_reference": "doc_2",
+        "matched_capability": "Claim airdrop tokens"
+      }
+    },
+    {
+      "id": 32,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 601,
+        "capability_match": "Claim airdrop tokens"
+      },
+      "threat_target": {
+        "component_id": 304,
+        "asset_ids": [
+          201
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 601,
+        "data_flow_id": 401,
+        "data_description": "Crafted airdrop claim request"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          304,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Flaws in eligibility or amount calculation logic could allow unauthorized claims."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User attempts to exploit a flaw to gain unauthorized access to airdrop funds."
+      },
+      "behavioral_risk": {
+        "behavior_id": 601,
+        "risk_level": "High",
+        "rationale": "Exploiting claim logic can lead to direct theft of airdropped assets."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Airdrop Claim dApp (304) or its smart contract's logic for verifying eligibility or determining claimable amounts.",
+        "The user can craft a specific transaction to trigger this vulnerability."
+      ],
+      "mitigation": {
+        "strategy": "Conduct rigorous security audits of smart contracts, implement formal verification where possible, and secure off-chain eligibility determination processes if used.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user exploits a vulnerability in the Airdrop Claim dApp (304) or its associated smart contract to claim more $BERA tokens than allocated, or to claim tokens without meeting eligibility criteria.",
+      "trace_source": {
+        "doc_reference": "doc_2",
+        "matched_capability": "Claim airdrop tokens"
+      }
+    },
+    {
+      "id": 33,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 605,
+        "capability_match": "Boost validators with $BGT"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          211,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 605,
+        "data_flow_id": 401,
+        "data_description": "Delegation transaction with $BGT amount and validator choice"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "$BGT ownership for boosting might be spoofed if contract validation is flawed."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker attempts to boost without legitimate $BGT."
+      },
+      "behavioral_risk": {
+        "behavior_id": 605,
+        "risk_level": "Medium",
+        "rationale": "Spoofing $BGT ownership could manipulate validator boost levels and associated rewards."
+      },
+      "assumptions": [
+        "A vulnerability in BeraHub (307) or the underlying delegation contract allows bypassing $BGT balance/ownership checks.",
+        "Client-side validation, if any, can be circumvented."
+      ],
+      "mitigation": {
+        "strategy": "Smart contract must rigorously enforce $BGT balance and ownership checks before processing a delegation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker attempts to boost a validator via BeraHub (307) by spoofing ownership or amount of $BGT, aiming to illegitimately influence validator rewards or gain unearned incentives.",
+      "trace_source": {
+        "doc_reference": "doc_16",
+        "matched_capability": "Boost validators with $BGT"
+      }
+    },
+    {
+      "id": 34,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 605,
+        "capability_match": "Boost validators with $BGT"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          211
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 605,
+        "data_flow_id": 401,
+        "data_description": "Boost transaction parameters (validator ID, $BGT amount)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Parameters of the boost transaction could be altered, leading to misdelegation."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User or attacker manipulating the boost transaction."
+      },
+      "behavioral_risk": {
+        "behavior_id": 605,
+        "risk_level": "Medium",
+        "rationale": "Tampering with boost parameters can result in financial loss or unintended validator support."
+      },
+      "assumptions": [
+        "User is tricked into signing a malicious transaction (e.g., via a phishing version of BeraHub).",
+        "A vulnerability in the BeraHub frontend allows attackers to modify transaction data before signing."
+      ],
+      "mitigation": {
+        "strategy": "User must meticulously verify all transaction details (target validator, amount) in their wallet before signing. Secure BeraHub frontend development.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "A user or an attacker tampers with the parameters of a $BGT boost transaction (e.g., target validator ID, $BGT amount) submitted via BeraHub (307), leading to misdirected delegation or an incorrect boost amount.",
+      "trace_source": {
+        "doc_reference": "doc_16",
+        "matched_capability": "Boost validators with $BGT"
+      }
+    },
+    {
+      "id": 35,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 605,
+        "capability_match": "Boost validators with $BGT"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          211,
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 605,
+        "data_flow_id": 401,
+        "data_description": "Boost transaction submission and confirmation display, especially queue/activate steps"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "BeraHub dApp might not reliably prove the user's intended multi-step boost action if its state representation is flawed."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User encounters issues with the multi-step boost process via BeraHub."
+      },
+      "behavioral_risk": {
+        "behavior_id": 605,
+        "risk_level": "Low",
+        "rationale": "Discrepancies between user intent and dApp's handling of multi-step boost process can lead to disputes over incentives or delegation status."
+      },
+      "assumptions": [
+        "A bug exists in BeraHub's (307) state management or its interaction with the queue and activate boost mechanism.",
+        "The dApp's representation of the boost status is inaccurate or misleading, even if the on-chain transaction eventually succeeds or fails."
+      ],
+      "mitigation": {
+        "strategy": "Ensure robust dApp state management for multi-step processes, provide clear feedback on transaction status, and ensure the dApp accurately reflects blockchain state. Users should verify on-chain if unsure.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "BeraHub dApp (307) incorrectly processes or displays the status of a user's $BGT boost, particularly during the 'Queue Boost' and 'Activate Boost' stages. This could prevent the user from reliably proving their action or its intended parameters through the dApp interface, possibly leading to disputes over incentives (Asset 206) or delegation status (Asset 211).",
+      "trace_source": {
+        "doc_reference": "doc_16",
+        "matched_capability": "Boost validators with $BGT"
+      }
+    },
+    {
+      "id": 36,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 605,
+        "capability_match": "Boost validators with $BGT"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          211
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 605,
+        "data_flow_id": 401,
+        "data_description": "$BGT boost/delegation requests"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The availability of the validator boosting function can be impacted by excessive load."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "An attacker (acting as a User) generates excessive boost requests."
+      },
+      "behavioral_risk": {
+        "behavior_id": 605,
+        "risk_level": "Medium",
+        "rationale": "High volume of boost attempts could overwhelm BeraHub or the delegation contract, preventing legitimate boosting."
+      },
+      "assumptions": [
+        "The BeraHub dApp (307) or the underlying delegation smart contract is susceptible to transaction spam.",
+        "Gas costs are not a sufficient deterrent for the attacker."
+      ],
+      "mitigation": {
+        "strategy": "Implement gas costs as a primary deterrent, consider rate limiting on the dApp for certain actions, and design robust smart contracts.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker submits a high volume of $BGT delegation transactions to BeraHub (307) or its associated smart contract, degrading performance or preventing other users from boosting validators.",
+      "trace_source": {
+        "doc_reference": "doc_16",
+        "matched_capability": "Boost validators with $BGT"
+      }
+    },
+    {
+      "id": 37,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 608,
+        "capability_match": "Mint/burn $HONEY"
+      },
+      "threat_target": {
+        "component_id": 312,
+        "asset_ids": [
+          203,
+          212
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 608,
+        "data_flow_id": 401,
+        "data_description": "$HONEY minting transaction (collateral type, amount)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          312,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of minting parameters and collateral validation is crucial for $HONEY stability."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User or attacker manipulating $HONEY minting parameters."
+      },
+      "behavioral_risk": {
+        "behavior_id": 608,
+        "risk_level": "High",
+        "rationale": "Tampering with minting could lead to uncollateralized $HONEY or theft of collateral."
+      },
+      "assumptions": [
+        "A vulnerability exists in Honey Swap dApp (312) frontend, HoneyFactory (313), or $HONEY Collateral Vault (314) contracts allowing manipulation of minting ratios or collateral validation.",
+        "Client-side checks performed by the dApp can be bypassed."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict on-chain validation of collateral type, amount, and minting ratios by HoneyFactory and vault contracts. Users verify transactions carefully.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user or attacker tampers with $HONEY minting parameters submitted via Honey Swap dApp (312), attempting to mint an incorrect amount of $HONEY relative to the deposited collateral (Asset 212), or use non-whitelisted collateral.",
+      "trace_source": {
+        "doc_reference": "doc_28",
+        "matched_capability": "Mint/burn $HONEY"
+      }
+    },
+    {
+      "id": 38,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 608,
+        "capability_match": "Mint/burn $HONEY"
+      },
+      "threat_target": {
+        "component_id": 312,
+        "asset_ids": [
+          212
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 608,
+        "data_flow_id": 401,
+        "data_description": "Collateral status/price feed data displayed on Honey Swap dApp UI"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          312,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Premature disclosure of sensitive market data related to collateral health."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User observing potentially sensitive data on the Honey Swap dApp UI."
+      },
+      "behavioral_risk": {
+        "behavior_id": 608,
+        "risk_level": "Low",
+        "rationale": "Leaking exploitable pre-public information about collateral stability or Basket Mode could enable front-running."
+      },
+      "assumptions": [
+        "The Honey Swap dApp (312) UI displays privileged, real-time information about collateral de-pegging risks or Basket Mode triggers not yet widely public or confirmed.",
+        "This information can be exploited by an observant user for financial gain."
+      ],
+      "mitigation": {
+        "strategy": "Careful design of the dApp UI to only display necessary, non-exploitable public information. Ensure data feeds are consistent and not prone to leaking sensitive states.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "The Honey Swap dApp (312) UI could inadvertently leak sensitive real-time data about collateral (Asset 212) de-pegging risks or imminent Basket Mode activation before this information is broadly disseminated, potentially enabling front-running or other exploits.",
+      "trace_source": {
+        "doc_reference": "doc_28",
+        "matched_capability": "Mint/burn $HONEY"
+      }
+    },
+    {
+      "id": 39,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 608,
+        "capability_match": "Mint/burn $HONEY"
+      },
+      "threat_target": {
+        "component_id": 312,
+        "asset_ids": [
+          203,
+          212
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 608,
+        "data_flow_id": 401,
+        "data_description": "$HONEY mint/burn requests"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          312,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Availability of $HONEY minting/burning functionality can be impacted by spam."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker (acting as User) spams $HONEY operations."
+      },
+      "behavioral_risk": {
+        "behavior_id": 608,
+        "risk_level": "Medium",
+        "rationale": "Spamming mint/burn operations can disrupt $HONEY's core functionality, especially during market stress."
+      },
+      "assumptions": [
+        "The Honey Swap dApp (312), HoneyFactory (313), or underlying vault contracts are vulnerable to transaction spam, affecting performance or oracle updates.",
+        "Exploiting oracle delays during spam could be profitable or disruptive for the attacker."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust smart contract design, utilize reliable oracle feeds, and rely on gas costs to deter spam. Scalable infrastructure for dApp services.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker spams the Honey Swap dApp (312) or underlying minting contracts (HoneyFactory 313) with $HONEY mint/burn transactions, potentially causing congestion, exploiting oracle dependencies, or disrupting $HONEY operations for other users.",
+      "trace_source": {
+        "doc_reference": "doc_28",
+        "matched_capability": "Mint/burn $HONEY"
+      }
+    },
+    {
+      "id": 40,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 608,
+        "capability_match": "Mint/burn $HONEY"
+      },
+      "threat_target": {
+        "component_id": 312,
+        "asset_ids": [
+          203,
+          212
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 608,
+        "data_flow_id": 401,
+        "data_description": "Crafted $HONEY mint transaction"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          312,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Flaws in collateralization checks or value assessment could lead to theft."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User attempts to exploit $HONEY system for unbacked minting or collateral theft."
+      },
+      "behavioral_risk": {
+        "behavior_id": 608,
+        "risk_level": "High",
+        "rationale": "Exploiting $HONEY minting logic can directly lead to financial loss and de-stabilize the stablecoin."
+      },
+      "assumptions": [
+        "A vulnerability exists in the smart contract logic of Honey Swap dApp (312), HoneyFactory (313), or collateral vaults (314) concerning collateral valuation, deposit verification, or state transitions like Basket Mode.",
+        "Oracle price feeds can be manipulated or are slow to update, creating exploitable windows."
+      ],
+      "mitigation": {
+        "strategy": "Ensure secure smart contract logic through audits and formal verification, use robust and manipulation-resistant oracle solutions, and carefully design handling of state transitions (e.g., Basket Mode).",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user exploits a vulnerability in the $HONEY minting process via Honey Swap dApp (312) to mint $HONEY (Asset 203) with insufficient or manipulated collateral (Asset 212), or to unfairly extract collateral.",
+      "trace_source": {
+        "doc_reference": "doc_28",
+        "matched_capability": "Mint/burn $HONEY"
+      }
+    },
+    {
+      "id": 41,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 609,
+        "capability_match": "Bridge NFTs and tokens"
+      },
+      "threat_target": {
+        "component_id": 308,
+        "asset_ids": [
+          204
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 609,
+        "data_flow_id": 411,
+        "data_description": "NFT identifier and ownership proof for bridging from Ethereum to Berachain"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 504,
+        "boundary_name": "Cross-Chain Bridge Boundary",
+        "between_component_ids": [
+          308,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Bridge must verify authenticity of NFTs being bridged."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker attempts to bridge a fake NFT."
+      },
+      "behavioral_risk": {
+        "behavior_id": 609,
+        "risk_level": "Medium",
+        "rationale": "Bridging counterfeit NFTs pollutes the destination chain's ecosystem and devalues legitimate assets."
+      },
+      "assumptions": [
+        "The Berachain NFT Bridge (308) has a vulnerability in its validation logic for NFT contract addresses or token IDs from the source chain (Ethereum).",
+        "The bridge does not strictly check against a whitelist of official NFT contracts for supported collections."
+      ],
+      "mitigation": {
+        "strategy": "The bridge contract must strictly validate NFT contract addresses against an official, up-to-date whitelist for each supported collection before minting on Berachain.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker attempts to bridge a non-official or counterfeit NFT from Ethereum to Berachain via the Berachain NFT Bridge (308) by spoofing its contract address or token ID, aiming to receive a recognized Berachain NFT (Asset 204) representation.",
+      "trace_source": {
+        "doc_reference": "doc_4",
+        "matched_capability": "Bridge NFTs and tokens"
+      }
+    },
+    {
+      "id": 42,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 609,
+        "capability_match": "Bridge NFTs and tokens"
+      },
+      "threat_target": {
+        "component_id": 308,
+        "asset_ids": [
+          204
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 609,
+        "data_flow_id": 411,
+        "data_description": "Bridging parameters (NFT ID, destination address, mint signal)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 504,
+        "boundary_name": "Cross-Chain Bridge Boundary",
+        "between_component_ids": [
+          308,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of 1:1 asset representation and ownership transfer across chains is vital."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker manipulates the bridging process."
+      },
+      "behavioral_risk": {
+        "behavior_id": 609,
+        "risk_level": "High",
+        "rationale": "Tampering can lead to duplicate NFTs or theft of bridged assets."
+      },
+      "assumptions": [
+        "A vulnerability exists in the Berachain NFT Bridge's (308) lock/mint mechanism (e.g., reentrancy, race condition, signature replay if cross-chain messaging is weak).",
+        "The bridge's message validation or event sequencing for minting on Berachain (via DF 411) can be manipulated."
+      ],
+      "mitigation": {
+        "strategy": "Ensure atomicity of lock/mint operations, implement robust replay protection for cross-chain messages, use secure cross-chain communication protocols, and conduct thorough audits of bridge contracts.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the NFT bridging process (Ethereum to Berachain) via Berachain NFT Bridge (308) to illicitly mint duplicate Berachain NFTs (Asset 204) on Berachain for a single NFT locked on Ethereum, or to redirect the bridged NFT to an unauthorized address on Berachain.",
+      "trace_source": {
+        "doc_reference": "doc_4",
+        "matched_capability": "Bridge NFTs and tokens"
+      }
+    },
+    {
+      "id": 43,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 609,
+        "capability_match": "Bridge NFTs and tokens"
+      },
+      "threat_target": {
+        "component_id": 308,
+        "asset_ids": [
+          204
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 609,
+        "data_flow_id": 411,
+        "data_description": "Cross-chain bridging messages, confirmations, and NFT mint signal"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 504,
+        "boundary_name": "Cross-Chain Bridge Boundary",
+        "between_component_ids": [
+          308,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Bridge process must be auditable and recoverable to prevent disputes over lost assets."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User experiences issues with NFT bridging and disputes outcome."
+      },
+      "behavioral_risk": {
+        "behavior_id": 609,
+        "risk_level": "Medium",
+        "rationale": "Stuck or lost NFTs during bridging can lead to user disputes if the process isn't transparent and robust."
+      },
+      "assumptions": [
+        "The cross-chain messaging layer used by the NFT bridge (308) can experience significant delays or failures.",
+        "The bridge lacks robust mechanisms for tracking transaction status across chains and for recovering from failures."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust transaction tracking across chains, provide clear status updates to users, develop retry mechanisms for failed cross-chain messages, and offer support channels for resolving stuck NFTs.",
+        "type": "Process Control",
+        "priority": "Medium"
+      },
+      "description": "A user's NFT gets stuck or appears lost during the bridging process from Ethereum to Berachain via Berachain NFT Bridge (308) due to cross-chain communication failures or errors. The user may then repudiate the receipt of the NFT (Asset 204) on Berachain or claim the NFT was lost by the bridge if logs and proofs are insufficient.",
+      "trace_source": {
+        "doc_reference": "doc_4",
+        "matched_capability": "Bridge NFTs and tokens"
+      }
+    },
+    {
+      "id": 44,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 609,
+        "capability_match": "Bridge NFTs and tokens"
+      },
+      "threat_target": {
+        "component_id": 308,
+        "asset_ids": [
+          204
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 609,
+        "data_flow_id": 411,
+        "data_description": "NFT bridge requests and mint signals"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 504,
+        "boundary_name": "Cross-Chain Bridge Boundary",
+        "between_component_ids": [
+          308,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Availability of the NFT bridging service can be impacted by spam."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker (acting as User) spams the NFT bridge."
+      },
+      "behavioral_risk": {
+        "behavior_id": 609,
+        "risk_level": "Medium",
+        "rationale": "Spamming the bridge can disrupt a key ecosystem feature and prevent legitimate NFT transfers."
+      },
+      "assumptions": [
+        "The Berachain NFT Bridge (308) has limited processing capacity or relies on relayers/oracles that can be overwhelmed.",
+        "Gas costs on source (Ethereum) or destination (Berachain) chains are not a sufficient deterrent for a determined attacker."
+      ],
+      "mitigation": {
+        "strategy": "Implement rate limiting where feasible, ensure scalable bridge infrastructure, utilize gas costs as a deterrent, and potentially prioritize transactions based on certain criteria.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker spams the Berachain NFT Bridge (308) with numerous bridging requests (Ethereum to Berachain), potentially overwhelming its capacity, increasing operational costs, or causing significant delays for legitimate users attempting to bridge their NFTs (Asset 204).",
+      "trace_source": {
+        "doc_reference": "doc_4",
+        "matched_capability": "Bridge NFTs and tokens"
+      }
+    },
+    {
+      "id": 45,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 609,
+        "capability_match": "Bridge NFTs and tokens"
+      },
+      "threat_target": {
+        "component_id": 308,
+        "asset_ids": [
+          204
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 609,
+        "data_flow_id": 411,
+        "data_description": "Crafted NFT bridge transaction / mint signal"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 504,
+        "boundary_name": "Cross-Chain Bridge Boundary",
+        "between_component_ids": [
+          308,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Bridge must correctly verify ownership and bridgeable status of NFTs."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User attempts to exploit bridge logic to gain unauthorized NFT assets."
+      },
+      "behavioral_risk": {
+        "behavior_id": 609,
+        "risk_level": "High",
+        "rationale": "Exploiting bridge logic can lead to theft of valuable NFTs."
+      },
+      "assumptions": [
+        "A flaw exists in the Berachain NFT Bridge's (308) smart contract logic for verifying NFT ownership on the source chain (Ethereum).",
+        "The bridge fails to check against blacklists/whitelists of bridgeable NFTs or interacts with NFT contracts on Ethereum that have vulnerabilities (e.g., allowing unauthorized transfers by the bridge's operational address)."
+      ],
+      "mitigation": {
+        "strategy": "Implement rigorous ownership checks (e.g., `ownerOf()` on Ethereum) before locking/burning, ensure secure interaction with NFT contracts, conduct thorough audits of bridge contracts, and maintain whitelists/blacklists if applicable.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user exploits a vulnerability in the Berachain NFT Bridge (308) to bridge an NFT (Asset 204) from Ethereum that they do not legitimately own, or to bypass restrictions on which NFTs can be bridged, effectively minting an unauthorized NFT on Berachain.",
+      "trace_source": {
+        "doc_reference": "doc_4",
+        "matched_capability": "Bridge NFTs and tokens"
+      }
+    },
+    {
+      "id": 46,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 611,
+        "capability_match": "Swap tokens"
+      },
+      "threat_target": {
+        "component_id": 311,
+        "asset_ids": [
+          201,
+          203,
+          205
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 611,
+        "data_flow_id": 401,
+        "data_description": "Swap transaction parameters (input/output tokens, amounts, slippage, recipient)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          311,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of swap parameters is crucial to prevent financial loss."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User or attacker manipulating swap transaction details."
+      },
+      "behavioral_risk": {
+        "behavior_id": 611,
+        "risk_level": "High",
+        "rationale": "Tampering with swap parameters can lead to significant financial loss for the user."
+      },
+      "assumptions": [
+        "User is phished with a malicious BEX dApp (311) interface, or the legitimate frontend has a vulnerability allowing parameter injection.",
+        "User does not carefully verify all transaction details (token addresses, amounts, recipient, slippage) in their wallet before signing."
+      ],
+      "mitigation": {
+        "strategy": "User wallets must clearly and comprehensively display all swap parameters for verification. Secure dApp frontend development practices. User education on checking transaction details and understanding slippage.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with token swap parameters (e.g., slippage, token amounts, recipient address) submitted via the BEX dApp (311) interface or directly in the transaction, causing the user to receive far fewer tokens than expected, swap unintended tokens, or send swapped tokens to a malicious address.",
+      "trace_source": {
+        "doc_reference": "doc_11",
+        "matched_capability": "Swap tokens"
+      }
+    },
+    {
+      "id": 47,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 611,
+        "capability_match": "Swap tokens"
+      },
+      "threat_target": {
+        "component_id": 311,
+        "asset_ids": [
+          201,
+          203,
+          205
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 611,
+        "data_flow_id": 401,
+        "data_description": "AMM pool data, mempool insights potentially displayed on BEX dApp UI"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          311,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Disclosure of sensitive pre-trade information can enable front-running."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User (or observing attacker) leverages overly detailed information from BEX UI."
+      },
+      "behavioral_risk": {
+        "behavior_id": 611,
+        "risk_level": "Low",
+        "rationale": "If BEX UI provides advanced, non-public predictive information, it could facilitate front-running by sophisticated users."
+      },
+      "assumptions": [
+        "The BEX dApp (311) provides users with advanced, real-time, non-public predictive information about transaction ordering, optimal gas prices for inclusion, or fine-grained AMM internal states.",
+        "This information goes beyond what is typically available through public block explorers or mempool visualizers."
+      ],
+      "mitigation": {
+        "strategy": "BEX dApp should primarily display standard public data. If advanced MEV-related data is shown, its implications should be clear. Consider MEV mitigation strategies at L1 or dApp level where appropriate.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "The BEX dApp (311) UI might expose highly detailed real-time mempool data or AMM internal states beyond typical public information, potentially enabling sophisticated users (or bots observing the UI) to front-run other users' swaps more effectively.",
+      "trace_source": {
+        "doc_reference": "doc_11",
+        "matched_capability": "Swap tokens"
+      }
+    },
+    {
+      "id": 48,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 611,
+        "capability_match": "Swap tokens"
+      },
+      "threat_target": {
+        "component_id": 311,
+        "asset_ids": [
+          201,
+          203,
+          205
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 611,
+        "data_flow_id": 401,
+        "data_description": "Token swap requests"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          311,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Availability of token swapping can be impacted by transaction spam."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker (acting as User) spams BEX with swap transactions."
+      },
+      "behavioral_risk": {
+        "behavior_id": 611,
+        "risk_level": "Medium",
+        "rationale": "Spamming BEX pools can cause high gas fees, excessive slippage, or transaction failures, disrupting trading for others."
+      },
+      "assumptions": [
+        "BEX (311) AMM liquidity pools or router contracts are susceptible to performance degradation or undesirable market effects (e.g., extreme slippage) under very high transaction load.",
+        "Gas costs are not a sufficient deterrent for an attacker aiming to disrupt BEX."
+      ],
+      "mitigation": {
+        "strategy": "Rely on efficient smart contract design for AMM pools and routers. L1 scalability helps. Gas costs act as a primary deterrent against spam.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker floods BEX dApp (311) liquidity pools with a high volume of swap transactions, aiming to cause network congestion, excessive slippage for specific pairs, or denial of service for other users trying to trade.",
+      "trace_source": {
+        "doc_reference": "doc_11",
+        "matched_capability": "Swap tokens"
+      }
+    },
+    {
+      "id": 49,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 611,
+        "capability_match": "Swap tokens"
+      },
+      "threat_target": {
+        "component_id": 311,
+        "asset_ids": [
+          201,
+          203,
+          205
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 611,
+        "data_flow_id": 401,
+        "data_description": "Crafted swap transaction, possibly part of a complex sequence (e.g., flash loan attack)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          311,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of AMM pricing logic and pool funds against economic exploits."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User (attacker) attempts an economic exploit against BEX pools."
+      },
+      "behavioral_risk": {
+        "behavior_id": 611,
+        "risk_level": "High",
+        "rationale": "Successful economic attacks can drain significant value from liquidity pools."
+      },
+      "assumptions": [
+        "A vulnerability exists in the BEX (311) AMM's pricing formula, reentrancy protection, or its handling of large, rapid trades (e.g., from a flash loan).",
+        "Some BEX pools might use external oracles that can be manipulated, or internal price calculations are flawed."
+      ],
+      "mitigation": {
+        "strategy": "Utilize audited and battle-tested AMM smart contract implementations. Implement strong protection against reentrancy. If complex pools use oracles, ensure they are manipulation-resistant (e.g., TWAP-based). Monitor for suspicious activities and large, unusual trades.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user executes an economic attack on a BEX (311) liquidity pool, possibly leveraging flash loans or exploiting oracle dependencies (if any exist within specific pools), to manipulate token prices and drain assets (e.g., 201, 203, 205) from the pool at an unfair rate.",
+      "trace_source": {
+        "doc_reference": "doc_11",
+        "matched_capability": "Swap tokens"
+      }
+    },
+    {
+      "id": 50,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 612,
+        "capability_match": "Claim incentives"
+      },
+      "threat_target": {
+        "component_id": 316,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 612,
+        "data_flow_id": 401,
+        "data_description": "Incentive claim proof and user address submitted to BGTIncentiveDistributor"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Claim proof validation must be robust to prevent unauthorized claims."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker attempts to claim incentives without legitimate entitlement."
+      },
+      "behavioral_risk": {
+        "behavior_id": 612,
+        "risk_level": "High",
+        "rationale": "Spoofing claim proofs allows theft of incentive tokens from the distributor."
+      },
+      "assumptions": [
+        "The off-chain backend service that generates proofs for incentive claims (mentioned in doc_21) has a vulnerability allowing proof forgery or replay.",
+        "The BGTIncentiveDistributor smart contract (316) incorrectly validates these proofs or allows replay of valid proofs."
+      ],
+      "mitigation": {
+        "strategy": "Implement secure off-chain proof generation (e.g., Merkle proofs with unique nonces per user/period). The contract must perform strong signature validation and ensure proofs are non-replayable.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker attempts to illegitimately claim incentive tokens (Asset 206) from the BGTIncentiveDistributor contract (316) by forging or replaying a claim proof, or by impersonating an eligible booster. The claim is typically initiated via BeraHub (307).",
+      "trace_source": {
+        "doc_reference": "doc_17",
+        "matched_capability": "Claim incentives"
+      }
+    },
+    {
+      "id": 51,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 612,
+        "capability_match": "Claim incentives"
+      },
+      "threat_target": {
+        "component_id": 316,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 612,
+        "data_flow_id": 401,
+        "data_description": "Incentive claim proof parameters (amount, recipient) within the transaction"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The claim amount and recipient within the proof or transaction must be immutable post-generation."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker manipulates a legitimate claim proof or transaction."
+      },
+      "behavioral_risk": {
+        "behavior_id": 612,
+        "risk_level": "Medium",
+        "rationale": "Tampering with claim data can lead to incorrect distribution of incentives."
+      },
+      "assumptions": [
+        "The structure of the claim proof allows parts of it (like amount or recipient if not cryptographically bound) to be modified without invalidating the entire proof.",
+        "The BGTIncentiveDistributor contract (316) does not fully verify all components of the proof against expected or signed values."
+      ],
+      "mitigation": {
+        "strategy": "Ensure claim proofs cryptographically bind all critical data (user, amount, token type, claim period). The contract must validate the entire proof integrity.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker tampers with a valid incentive claim proof or the claiming transaction (e.g., submitted via BeraHub to contract 316) to alter the amount of incentive tokens (Asset 206) claimed or the recipient address.",
+      "trace_source": {
+        "doc_reference": "doc_17",
+        "matched_capability": "Claim incentives"
+      }
+    },
+    {
+      "id": 52,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 612,
+        "capability_match": "Claim incentives"
+      },
+      "threat_target": {
+        "component_id": 316,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 612,
+        "data_flow_id": 401,
+        "data_description": "Incentive claim transaction and UI feedback, considering proof update delays"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Timeliness and accuracy of claim status information are important for user trust."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User experiences issues with incentive claim visibility due to system delays."
+      },
+      "behavioral_risk": {
+        "behavior_id": 612,
+        "risk_level": "Low",
+        "rationale": "Delays in proof updates (doc_21 mentions 24hr updates) can lead to user confusion and disputes if claims aren't reflected promptly in UIs like BeraHub."
+      },
+      "assumptions": [
+        "The 24-hour update cycle for incentive claim proofs can lead to perceived discrepancies between an on-chain claim action and its reflection in the claimable balance via BeraHub (307).",
+        "BeraHub UI might not handle these intermediate states or delays gracefully, causing user confusion."
+      ],
+      "mitigation": {
+        "strategy": "Clearly communicate the proof update cycles to users. Provide robust UI feedback on transaction submission and processing. Ensure on-chain events for claims can be independently verified by users.",
+        "type": "Process Control",
+        "priority": "Low"
+      },
+      "description": "A user claims incentives from BGTIncentiveDistributor (316) via BeraHub (307), but due to inherent delays in the off-chain proof system updating (e.g., 24-hour cycle) or UI lags, the user cannot immediately verify the claim's success or updated balance. This might lead to the user disputing the receipt of incentives (Asset 206) if issues or confusion arise later.",
+      "trace_source": {
+        "doc_reference": "doc_17",
+        "matched_capability": "Claim incentives"
+      }
+    },
+    {
+      "id": 53,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 612,
+        "capability_match": "Claim incentives"
+      },
+      "threat_target": {
+        "component_id": 316,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 612,
+        "data_flow_id": 401,
+        "data_description": "Incentive claim requests to contract / proof requests to off-chain API"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Availability of both on-chain contract and off-chain proof generation is crucial for claiming."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker (acting as User) targets incentive claim mechanisms."
+      },
+      "behavioral_risk": {
+        "behavior_id": 612,
+        "risk_level": "Medium",
+        "rationale": "DoS on claim mechanism prevents users from accessing their earned rewards."
+      },
+      "assumptions": [
+        "The off-chain proof generation service required for claiming incentives is a single point of failure or vulnerable to DoS attacks.",
+        "Alternatively, the BGTIncentiveDistributor smart contract (316) itself can be overwhelmed by transaction spam."
+      ],
+      "mitigation": {
+        "strategy": "Ensure the off-chain proof service is resilient, distributed, and monitored. For on-chain DoS, rely on gas costs and optimized contract design. Consider fallback mechanisms if primary proof service is down.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker targets the BGTIncentiveDistributor contract (316) with spam transactions, or attacks the off-chain service responsible for generating claim proofs. This prevents legitimate users from claiming their earned incentive tokens (Asset 206) via BeraHub (307).",
+      "trace_source": {
+        "doc_reference": "doc_17",
+        "matched_capability": "Claim incentives"
+      }
+    },
+    {
+      "id": 54,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 612,
+        "capability_match": "Claim incentives"
+      },
+      "threat_target": {
+        "component_id": 316,
+        "asset_ids": [
+          206
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 612,
+        "data_flow_id": 401,
+        "data_description": "Crafted incentive claim proof/transaction"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of entitlement calculation and single-claim enforcement is critical."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User attempts to exploit claim logic for unauthorized incentives."
+      },
+      "behavioral_risk": {
+        "behavior_id": 612,
+        "risk_level": "High",
+        "rationale": "Exploiting claim proof logic can lead to direct theft of incentive tokens."
+      },
+      "assumptions": [
+        "Incentive claim proofs can be forged, manipulated to increase amounts, or replayed for different periods/users due to flaws in their generation or cryptographic binding.",
+        "The BGTIncentiveDistributor contract (316) does not correctly track claimed periods/amounts per user, allowing double-claiming."
+      ],
+      "mitigation": {
+        "strategy": "Implement secure proof generation (e.g., unique Merkle roots per distribution period, user-specific nonces). The contract logic must prevent double-claiming for the same entitlement and validate proof authenticity rigorously.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user exploits a vulnerability in the BGTIncentiveDistributor contract (316) or its associated off-chain proof generation system to claim more incentive tokens (Asset 206) than earned, claim for periods/validators they were not eligible for, or replay already processed claims.",
+      "trace_source": {
+        "doc_reference": "doc_17",
+        "matched_capability": "Claim incentives"
+      }
+    },
+    {
+      "id": 55,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 613,
+        "capability_match": "Redeem $BGT for $BERA"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          201,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 613,
+        "data_flow_id": 401,
+        "data_description": "$BGT to $BERA redemption transaction ($BGT amount)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The 1:1 redemption ratio and $BGT burn verification must be strictly enforced."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker manipulates redemption transaction."
+      },
+      "behavioral_risk": {
+        "behavior_id": 613,
+        "risk_level": "Medium",
+        "rationale": "Tampering with redemption could lead to minting unbacked $BERA or insufficient $BGT burn."
+      },
+      "assumptions": [
+        "A vulnerability exists in the BeraHub (307) frontend or the underlying $BGT smart contract's burn/redeem mechanism, allowing manipulation of the redemption ratio or incorrect accounting of $BGT burned vs $BERA minted.",
+        "Client-side validation of amounts can be bypassed."
+      ],
+      "mitigation": {
+        "strategy": "The $BGT smart contract must strictly enforce the 1:1 burn-to-mint/transfer ratio for $BERA and verify $BGT ownership and successful burn before providing $BERA. Users should verify transaction details.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker tampers with the $BGT to $BERA redemption transaction initiated via BeraHub (307). They attempt to receive more $BERA (Asset 201) than the 1:1 equivalent of $BGT (Asset 202) submitted, or to burn less $BGT than required for the $BERA received.",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Redeem $BGT for $BERA"
+      }
+    },
+    {
+      "id": 56,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 613,
+        "capability_match": "Redeem $BGT for $BERA"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          201,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 613,
+        "data_flow_id": 401,
+        "data_description": "$BGT redemption requests"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Availability of the $BGT redemption function can be impacted by transaction spam."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "Attacker (acting as User) spams $BGT redemption function."
+      },
+      "behavioral_risk": {
+        "behavior_id": 613,
+        "risk_level": "Low",
+        "rationale": "Spamming redemption requests could cause transaction delays or increased gas costs, hindering users from converting $BGT to $BERA."
+      },
+      "assumptions": [
+        "The $BGT redemption function in the BeraHub dApp (307) or the $BGT smart contract is susceptible to performance degradation under high load.",
+        "Gas costs are not a sufficient deterrent for an attacker aiming to disrupt this specific function."
+      ],
+      "mitigation": {
+        "strategy": "Rely on gas costs as the primary deterrent. Ensure efficient smart contract logic for the redemption function.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "An attacker spams the BeraHub dApp (307) or the $BGT smart contract with redemption requests, potentially causing transaction delays or increased gas costs for other users attempting to redeem their $BGT (Asset 202) for $BERA (Asset 201).",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Redeem $BGT for $BERA"
+      }
+    },
+    {
+      "id": 57,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 101,
+        "behavior_id": 613,
+        "capability_match": "Redeem $BGT for $BERA"
+      },
+      "threat_target": {
+        "component_id": 307,
+        "asset_ids": [
+          201,
+          202
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 613,
+        "data_flow_id": 401,
+        "data_description": "Crafted $BGT redemption transaction"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 503,
+        "boundary_name": "dApp Frontend to Backend/Blockchain Boundary",
+        "between_component_ids": [
+          307,
+          302
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "$BGT ownership and burn verification must be foolproof before $BERA is provided."
+      },
+      "actor_risk": {
+        "actor_id": 101,
+        "type": "External User",
+        "overprivileged": false,
+        "description": "User attempts to exploit redemption logic to get $BERA without burning $BGT."
+      },
+      "behavioral_risk": {
+        "behavior_id": 613,
+        "risk_level": "High",
+        "rationale": "Exploiting redemption logic can lead to minting unbacked $BERA, undermining its value."
+      },
+      "assumptions": [
+        "A critical vulnerability (e.g., reentrancy, faulty balance check, incorrect burn accounting) exists in the $BGT smart contract's burn-and-redeem logic, accessible via BeraHub (307).",
+        "The user can craft a specific transaction to trigger this flaw."
+      ],
+      "mitigation": {
+        "strategy": "Implement secure smart contract programming practices (e.g., checks-effects-interactions pattern), conduct thorough security audits, and consider formal verification for critical token mechanisms.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A user exploits a vulnerability in BeraHub (307) or the $BGT smart contract to redeem $BGT (Asset 202) for $BERA (Asset 201) without actually possessing or burning the corresponding $BGT, or by exploiting a flaw (e.g., reentrancy) to receive $BERA multiple times for a single $BGT burn.",
+      "trace_source": {
+        "doc_reference": "doc_27",
+        "matched_capability": "Redeem $BGT for $BERA"
+      }
+    }
+  ]
 }

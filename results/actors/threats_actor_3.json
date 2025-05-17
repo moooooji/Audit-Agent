@@ -1,65 +1,61 @@
 {
-  "id": 6,
+  "id": 12,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 510,
-    "capability_match": "Submit Reward Vaults for whitelisting via governance (RFRV)"
+    "behavior_id": 9,
+    "capability_match": "Redeem $BGT for $BERA"
   },
   "threat_target": {
-    "component_id": 218,
+    "component_id": 2,
     "asset_ids": [
-      108
+      1,
+      2
     ]
   },
   "attack_surface": {
-    "behavior_id": 510,
-    "data_flow_id": 0,
-    "data_description": "Content of the RFRV submission, potentially containing malicious scripts or payloads."
+    "behavior_id": 9,
+    "data_flow_id": 5,
+    "data_description": "$BGT redemption logic and $BGT/$BERA balance accounting"
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Device to Web Application",
+    "boundary_id": 2,
+    "boundary_name": "Wallet-Blockchain Boundary",
     "between_component_ids": [
-      201,
-      204,
-      205,
-      211,
-      218,
-      223
+      1,
+      2
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The Governance Forum (218) may not properly sanitize RFRV submission content, making it vulnerable to injection attacks (e.g., XSS, HTML injection) that could lead to privilege escalation."
+    "availability_required": true,
+    "gap_description": "A flaw in the redemption logic could allow an attacker to redeem unowned $BGT or receive excess $BERA."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "Partner System",
+    "type": "External User",
     "overprivileged": false,
-    "description": "A malicious entity acting as a Protocol Operator could exploit forum vulnerabilities to gain unauthorized access or control."
+    "description": "An attacker exploits a vulnerability in Core L1 to illegitimately gain $BERA or affect $BGT supply."
   },
   "behavioral_risk": {
-    "behavior_id": 510,
+    "behavior_id": 9,
     "risk_level": "High",
-    "rationale": "Exploiting vulnerabilities in the forum via RFRV submissions can lead to compromised reviewer accounts, spread of malware, or unauthorized administrative actions on the forum, undermining the RFRV process integrity."
+    "rationale": "Exploiting redemption logic can lead to theft of $BGT, unauthorized minting of $BERA, or breaking tokenomic invariants."
   },
   "assumptions": [
-    "Component 218 (Governance Forum) is vulnerable to injection attacks (e.g., XSS, SSRF, SQLi) through the content submitted in RFRVs.",
-    "An attacker can craft a malicious RFRV payload.",
-    "A data_flow_id of 0 indicates that the specific data flow for RFRV submission from Actor 3 to Component 218 is implied by Behavior 510 but not explicitly listed with an ID in the provided chunk's data_flows array."
+    "The Core L1 smart contract responsible for $BGT redemption has a vulnerability (e.g., reentrancy, incorrect balance check, integer overflow/underflow in 1:1 conversion).",
+    "The attacker can craft a transaction to trigger this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Implement robust input sanitization and output encoding on component 218 for all RFRV content. Use a strict Content Security Policy (CSP). Regularly scan and patch forum software for vulnerabilities. Run the forum with least privilege.",
+    "strategy": "Rigorous security audits of Core L1 redemption logic and token contracts; adherence to secure token standards (e.g., ERC20 for $BERA, non-transferable aspects for $BGT); formal verification where possible.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker submits a maliciously crafted RFRV to the Governance Forum (218) containing a payload (e.g., XSS script). When reviewers or other users view this RFRV, the payload executes, potentially stealing session cookies, redirecting users, or performing actions on their behalf on the forum.",
+  "description": "An attacker exploits a flaw in the Core L1 redemption mechanism to redeem more $BGT than they own, or to receive more $BERA than the specified 1:1 ratio, thereby illegitimately acquiring assets or manipulating token supplies.",
   "trace_source": {
-    "doc_reference": "governance/rewardvault.md#request-for-reward-vault",
-    "matched_capability": "Submit Reward Vaults for whitelisting via governance (RFRV)"
+    "doc_reference": "doc_27",
+    "matched_capability": "Redeem $BGT for $BERA"
   }
 }
