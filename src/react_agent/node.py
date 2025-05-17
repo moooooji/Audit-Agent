@@ -13,8 +13,11 @@ from react_agent.llm_utils import (
 # import variables
 from react_agent.variables import (
     actors_map,
-    threats_list,
+    
 )
+
+threats_list = []
+checklist_items = []
 
 threat_count = 0
 checklist_count = 0
@@ -90,7 +93,7 @@ def analyze_threats(state: State) -> State:
     
     # prevent race condition
     with api_semaphore:
-        threat_count += 1
+        
         print("[+] threat_count : ", threat_count)
         print("[+] actors_map : ", len(actors_map))
         
@@ -112,7 +115,7 @@ def analyze_threats(state: State) -> State:
         threats_list.append(threat)
         
         save_json(threat, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
-
+    threat_count += 1
     print(f"Saved threats for actor {state.current_actor_id+1}")
     
     if threat_count == len(actors_map):
@@ -122,6 +125,8 @@ def analyze_threats(state: State) -> State:
         for threat in threats_list:
             threat["id"] = id_weight
             id_weight += 1
+        
+        print("threats_list : ", len(threats_list))
             
         save_json({ "threats": threats_list }, 'results/all_threats.json')
         print("Saved all threats in 'all_threats.json'")
@@ -130,22 +135,23 @@ def analyze_threats(state: State) -> State:
         print("gemini api initializing ...")
         sleep(60)
         print("gemini api initialized")
+        
+    state.threat_list_length = len(threats_list)
 
     return {"is_threat_analysis": False}
 
 def generate_checklist(state: State) -> State:
     
-    id_weight = 1
-    checklist_items = []
     
     global checklist_count
     global processed_checklist_batches
+    global checklist_items
     
     # prevent race condition
     with api_semaphore:
-        checklist_count += 1
+        
         print("[+] checklist_count : ", checklist_count)
-        print("[+] actors_map : ", len(actors_map))
+        print("[+] threats_list : ", len(threats_list))
         
         # for google gemini api RPM limit
         current_batch = (checklist_count - 1) // BATCH_SIZE
@@ -159,29 +165,48 @@ def generate_checklist(state: State) -> State:
         print("initial checklist analysis ...")
         state.is_initial_checklist_analysis = True
         response = generate_llm_response(state)
+        
+        response_dict = json_str_to_dict(response.choices[0].message.content)
+        for checklist_item in response_dict['checklist_items']:
+            # append each checklist item extracted from the current actor
+            checklist_items.append(checklist_item)
+            
+        print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+        
         print("completed initial checklist analysis")
     else:
         print("feedback loop checklist analysis ...")
         state.is_feedback_checklist_analysis = True
         response = generate_llm_response(state)
+        
+        response_dict = json_str_to_dict(response.choices[0].message.content)
+        for checklist_item in response_dict['checklist_items']:
+            # append each checklist item extracted from the current actor
+            checklist_items.append(checklist_item)
+            
+        print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+        
         print("completed feedback loop checklist analysis")
         
-        print("response : ", response)
-        
-    # parsing response and save to file
-    response_dict = json_str_to_dict(response.choices[0].message.content)
-    for checklist_item in response_dict['checklist_items']:
-        checklist_item['id'] = id_weight
-        id_weight = id_weight+1
-        # append each checklist item extracted from the current actor
-        checklist_items.append(checklist_item)
-    print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+    checklist_count += 1
     
-    if checklist_count == len(actors_map):
+    if checklist_count == len(threats_list):
+        
+        id_weight = 1
+        
+        for item in checklist_items:
+            item['id'] = id_weight
+            id_weight = id_weight+1
         
         checklist_count = 0
         with open("results/checklist.json", "w") as f:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
+        
+        print("checklist_items : ", len(checklist_items))
+        state.checklist_list_length = len(checklist_items)
+        checklist_items = []
+        
+        
         print("Saved checklist in 'results/checklist.json'")
         print("completed generating checklist")
         
@@ -271,7 +296,29 @@ def assess_code_binding(state: State) -> State:
     
     print("completed assessing code binding")
     
+    initialize_state(state)
+    
     return {
         "is_assessment_code_binding": False, 
         "code_binding_feedback_loop_count": state.code_binding_feedback_loop_count+1
         }
+
+def initialize_state(state: State) -> State:
+    state.architecture_feedback_loop_count = 0
+    state.checklist_feedback_loop_count = 0
+    state.code_binding_feedback_loop_count = 0
+    
+    state.is_initial_architecture_analysis = False
+    state.is_feedback_architecture_analysis = False
+    state.is_assessment_analysis = False
+    state.is_assessment_checklist = False
+    state.is_assessment_code_binding = False
+    state.is_init_db = False
+    state.is_initial_checklist_analysis = False
+    state.is_feedback_checklist_analysis = False
+    state.is_initial_code_binding = False
+    state.is_feedback_code_binding = False
+    state.is_threat_analysis = False
+    
+    
+    state.current_actor_id = 0
