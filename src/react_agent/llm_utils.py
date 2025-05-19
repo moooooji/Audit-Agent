@@ -1,7 +1,11 @@
 import json
 import re
+import time
+from typing import Optional, Any, Callable
 
 from google.genai import types
+from google.api_core import exceptions as google_exceptions
+from openai import OpenAIError
 
 from react_agent.state import State
 from react_agent.prompt import (
@@ -137,6 +141,50 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
 
     return chunk
 
+def retry_on_error(max_retries: int = 3, sleep_time: int = 60) -> Callable:
+    """API 호출 실패 시 재시도하는 데코레이터"""
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args, **kwargs) -> Any:
+            retries = 0
+            while retries < max_retries:
+                try:
+                    result = func(*args, **kwargs)
+                    # 응답이 None이거나 빈 문자열인 경우도 에러로 처리
+                    if result is None or (isinstance(result, str) and not result.strip()):
+                        raise ValueError("Empty response received")
+                    return result
+                except (google_exceptions.ServiceUnavailable, 
+                        google_exceptions.InternalServerError,
+                        google_exceptions.BadRequest,
+                        OpenAIError,
+                        ValueError) as e:
+                    retries += 1
+                    if retries == max_retries:
+                        raise e
+                    print(f"\n⚠️ API 호출 실패 (시도 {retries}/{max_retries}): {str(e)}")
+                    print(f"⏳ {sleep_time}초 후 재시도합니다...")
+                    time.sleep(sleep_time)
+            return None
+        return wrapper
+    return decorator
+
+@retry_on_error()
+def call_gemini_api(contents: list, config: dict) -> Any:
+    """Gemini API 호출"""
+    return gemini_client.models.generate_content(
+        model=gemini_model,
+        contents=contents,
+        config=config,
+    )
+
+@retry_on_error()
+def call_chatgpt_api(messages: list, response_format: dict) -> Any:
+    """ChatGPT API 호출"""
+    return chatgpt_client.beta.chat.completions.parse(
+        model=chatgpt_model,
+        messages=messages,
+        response_format=response_format
+    )
 
 def generate_llm_response(state: State) -> str:
     """generate llm response"""
@@ -155,11 +203,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = gemini_client.models.generate_content(
-            model=gemini_model,
-            contents=contents,
-            config=ARCHITECTURE_RESPONSE_CONFIG,
-        )
+        response = call_gemini_api(contents, ARCHITECTURE_RESPONSE_CONFIG)
         return response
     
     elif state.is_assessment_analysis and state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
@@ -182,11 +226,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = gemini_client.models.generate_content(
-            model=gemini_model,
-            contents=contents,
-            config=ARCHITECTURE_ASSESSMENT_CONFIG,
-        )
+        response = call_gemini_api(contents, ARCHITECTURE_ASSESSMENT_CONFIG)
         return response
     
     # feedback loop architecture analysis node
@@ -212,11 +252,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = gemini_client.models.generate_content(
-            model=gemini_model,
-            contents=contents,
-            config=ARCHITECTURE_CORRECTION_CONFIG,
-        )
+        response = call_gemini_api(contents, ARCHITECTURE_CORRECTION_CONFIG)
         
         return response
     
@@ -244,11 +280,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
 
-        response = gemini_client.models.generate_content(
-            model=gemini_model,
-            contents=contents,
-            config=THREAT_ANALYSIS_CONFIG,
-        )
+        response = call_gemini_api(contents, THREAT_ANALYSIS_CONFIG)
         return response
     
     elif state.is_initial_checklist_analysis:
@@ -295,11 +327,7 @@ def generate_llm_response(state: State) -> str:
             }
         ]
 
-        response = chatgpt_client.beta.chat.completions.parse(
-            model=chatgpt_model,
-            messages=contents,
-            response_format=ChecklistConfig
-        )
+        response = call_chatgpt_api(contents, ChecklistConfig)
         return response
     
     elif state.is_feedback_checklist_analysis:
@@ -348,11 +376,7 @@ def generate_llm_response(state: State) -> str:
             }
         ]
 
-        response = chatgpt_client.beta.chat.completions.parse(
-            model=chatgpt_model,
-            messages=contents,
-            response_format=ChecklistConfig
-        )
+        response = call_chatgpt_api(contents, ChecklistConfig)
         return response
     
     # verify checklist node
@@ -375,11 +399,7 @@ def generate_llm_response(state: State) -> str:
             }
         ]
 
-        response = chatgpt_client.beta.chat.completions.parse(
-            model=chatgpt_model,
-            messages=contents,
-            response_format=ChecklistAssessmentConfig
-        )
+        response = call_chatgpt_api(contents, ChecklistAssessmentConfig)
         
         return response
         
@@ -403,11 +423,7 @@ def generate_llm_response(state: State) -> str:
             }
         ]
         
-        response = chatgpt_client.beta.chat.completions.parse(
-            model=chatgpt_model,
-            messages=contents,
-            response_format=CodeBindingAssessmentConfig
-        )
+        response = call_chatgpt_api(contents, CodeBindingAssessmentConfig)
         
         return response
     
