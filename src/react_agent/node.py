@@ -31,8 +31,6 @@ from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 def analyze_architecture(state: State) -> State:
     """architecture analysis node"""
     
-    
-    
     # not feedback loop
     if state.architecture_feedback_loop_count == 0:
         print("first architecture analysis ...")
@@ -207,7 +205,6 @@ def generate_checklist(state: State) -> State:
         print("checklist_items : ", len(checklist_items))
         checklist_items = []
         
-        
         print("Saved checklist in 'results/checklist.json'")
         print("completed generating checklist")
         
@@ -215,7 +212,7 @@ def generate_checklist(state: State) -> State:
         sleep(60)
         print("gemini api initialized")
     
-    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False, "checklist_list_length": len(checklist_items)}
+    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
 
 def assess_checklist(state: State) -> State:
     print("verifying checklist ...")

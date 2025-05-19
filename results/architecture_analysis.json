@@ -9,7 +9,6 @@
         "Connect wallet to dApps",
         "Check and claim $BERA airdrop",
         "Bridge NFTs between Ethereum and Berachain",
-        "Bridge fungible tokens (e.g., $BERA, $HONEY) between Berachain and other chains",
         "Obtain $BERA via bridge or CEX",
         "Trade tokens on BEX",
         "Mint/Redeem $HONEY stablecoin",
@@ -50,11 +49,11 @@
       "id": 4,
       "name": "Liquidity Provider",
       "type": "External User",
-      "description": "Provides liquidity to dApps like BEX or other protocols.",
+      "description": "Provides liquidity to dApps like BEX.",
       "capabilities": [
-        "Deposit assets into liquidity pools or other protocols",
-        "Receive Receipt Tokens (e.g., LP tokens, interest-bearing tokens) representing their share/position",
-        "Stake Receipt Tokens in Reward Vaults",
+        "Deposit assets into liquidity pools",
+        "Receive LP tokens representing their share",
+        "Stake LP tokens in Reward Vaults",
         "Earn $BGT rewards from Reward Vaults"
       ]
     },
@@ -74,8 +73,8 @@
     {
       "id": 6,
       "name": "Guardian",
-      "type": "External User",
-      "description": "Elected group of signers responsible for safeguarding the governance process.",
+      "type": "Internal Service",
+      "description": "Elected group responsible for safeguarding the governance process.",
       "capabilities": [
         "Review governance proposals",
         "Cancel malicious proposals during the timelock period via multisig",
@@ -101,18 +100,7 @@
       "capabilities": [
         "Support ecosystem development and R&D",
         "Manage community initiatives and grants",
-        "Oversee node operator delegations",
-        "Manage a portion of $BERA token supply for ecosystem growth"
-      ]
-    },
-    {
-      "id": 9,
-      "name": "Big Bera Labs",
-      "type": "Partner System",
-      "description": "Core contributors to the Berachain blockchain, including advisors and members.",
-      "capabilities": [
-        "Develop Berachain core components",
-        "Receive token allocations"
+        "Oversee node operator delegations"
       ]
     }
   ],
@@ -148,7 +136,7 @@
     {
       "id": 5,
       "name": "LP Token",
-      "description": "Receipt token representing a share in a liquidity pool, a specific type of Receipt Token.",
+      "description": "Receipt token representing a share in a liquidity pool.",
       "type": "Token",
       "sensitivity": "Medium"
     },
@@ -179,20 +167,6 @@
       "description": "Approved assets (e.g., $USDC, $BYUSD) used to mint $HONEY.",
       "type": "Token",
       "sensitivity": "Medium"
-    },
-    {
-      "id": 10,
-      "name": "Receipt Token",
-      "description": "General token representing a user's contribution or position in a protocol, such as LP tokens or interest-bearing tokens, stakeable in Reward Vaults.",
-      "type": "Token",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 11,
-      "name": "Wallet Phrase",
-      "description": "Mnemonic phrase (recovery phrase) used to backup and restore a user's wallet and access to private keys.",
-      "type": "Key",
-      "sensitivity": "High"
     }
   ],
   "components": [
@@ -202,14 +176,13 @@
       "description": "Client-side software (e.g., MetaMask) for managing keys and interacting with Berachain.",
       "trust_level": "Low",
       "assets_managed": [
-        7,
-        11
+        7
       ]
     },
     {
       "id": 2,
       "name": "Berachain Core L1",
-      "description": "The Layer 1 blockchain platform, encompassing EVM, consensus (utilizing BeaconKit/CometBFT), and Proof-of-Liquidity logic.",
+      "description": "The Layer 1 blockchain platform, encompassing EVM, consensus (BeaconKit/CometBFT), and Proof-of-Liquidity logic.",
       "trust_level": "High",
       "assets_managed": [
         1,
@@ -246,12 +219,11 @@
     {
       "id": 6,
       "name": "Reward Vault Contract",
-      "description": "Smart contract where users stake PoL-eligible assets (Receipt Tokens like LP tokens) to earn $BGT rewards. Holds offered Incentive Tokens.",
+      "description": "Smart contract where users stake PoL-eligible assets (like LP tokens) to earn $BGT rewards.",
       "trust_level": "High",
       "assets_managed": [
         2,
-        6,
-        10
+        5
       ]
     },
     {
@@ -317,43 +289,6 @@
       "assets_managed": [
         1
       ]
-    },
-    {
-      "id": 14,
-      "name": "Berachain Token Bridge",
-      "description": "Service and smart contracts, powered by LayerZero, for transferring fungible tokens between Berachain and other blockchains.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        1,
-        3,
-        6,
-        9
-      ]
-    },
-    {
-      "id": 15,
-      "name": "Distributor Contract",
-      "description": "Smart contract responsible for emitting $BGT to whitelisted Reward Vaults on a per-block basis, based on validator allocations.",
-      "trust_level": "High",
-      "assets_managed": [
-        2
-      ]
-    },
-    {
-      "id": 16,
-      "name": "FeeCollector Contract",
-      "description": "Smart contract that collects fees from Berachain core dApps (e.g., BEX, HoneySwap) and distributes them (as $WBERA) to $BGT holders who have boosted validators.",
-      "trust_level": "High",
-      "assets_managed": [
-        1
-      ]
-    },
-    {
-      "id": 17,
-      "name": "BeaconKit",
-      "description": "Modular and customizable consensus layer framework leveraging CometBFT, used by Berachain for its consensus mechanism.",
-      "trust_level": "High",
-      "assets_managed": []
     }
   ],
   "data_flows": [
@@ -383,10 +318,10 @@
     },
     {
       "id": 3,
-      "source_id": 15,
+      "source_id": 2,
       "destination_id": 6,
       "data": "$BGT emissions data",
-      "description": "Validators configure their $BGT emission allocations, and the Distributor Contract emits $BGT to Reward Vaults accordingly.",
+      "description": "Validators direct $BGT emissions from Berachain Core L1 to specific Reward Vaults.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -443,10 +378,10 @@
     },
     {
       "id": 8,
-      "source_id": 6,
+      "source_id": 2,
       "destination_id": 8,
-      "data": "Captured Incentive Tokens",
-      "description": "Reward Vaults, holding protocol-provided incentives, send captured incentives (net of validator commission) to the BGTIncentiveDistributor for distribution to boosters.",
+      "data": "Incentive tokens from protocols (via Reward Vaults)",
+      "description": "Incentives captured by validators are sent to BGTIncentiveDistributor.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -480,6 +415,16 @@
   ],
   "trust_boundaries": [
     {
+      "id": 1,
+      "name": "User-Wallet Boundary",
+      "between_ids": [
+        1,
+        1
+      ],
+      "description": "Separates the end user from their client-side wallet software. Trust in wallet software is crucial.",
+      "validation_required": true
+    },
+    {
       "id": 2,
       "name": "Wallet-Blockchain Boundary",
       "between_ids": [
@@ -494,14 +439,9 @@
       "name": "dApp-SmartContract Boundary",
       "between_ids": [
         4,
-        5,
-        6,
-        7,
-        8,
-        15,
-        16
+        5
       ],
-      "description": "Separates the BeraHub frontend (or other dApp frontends) from the backend smart contracts (e.g., BEX, Reward Vaults, Honey System, Distributor, FeeCollector). Frontend could be a point of attack.",
+      "description": "Separates the BeraHub frontend (or other dApp frontends) from the backend smart contracts (e.g., BEX, Reward Vaults). Frontend could be a point of attack.",
       "validation_required": true
     },
     {
@@ -510,10 +450,9 @@
       "between_ids": [
         2,
         11,
-        10,
-        14
+        10
       ],
-      "description": "Separates the Berachain L1 and Ethereum L1, with the NFT Bridge and Token Bridge facilitating cross-chain transfers. Trust in bridge security is essential.",
+      "description": "Separates the Berachain L1 and Ethereum L1, with the NFT Bridge facilitating cross-chain transfers. Trust in bridge security is essential.",
       "validation_required": true
     },
     {
@@ -530,12 +469,12 @@
   "behaviors": [
     {
       "id": 1,
-      "name": "User Stakes Receipt Tokens",
+      "name": "User Stakes LP Tokens",
       "initiator_type": "Actor",
       "initiator_id": 4,
       "target_id": 6,
       "action": "stake",
-      "description": "Liquidity Provider stakes Receipt Tokens (e.g., LP tokens) into a Reward Vault to earn $BGT.",
+      "description": "Liquidity Provider stakes LP tokens into a Reward Vault to earn $BGT.",
       "risk_level": "Medium"
     },
     {
@@ -543,9 +482,9 @@
       "name": "Validator Directs Emissions",
       "initiator_type": "Actor",
       "initiator_id": 2,
-      "target_id": 15,
-      "action": "configure_emission_allocation",
-      "description": "Validator configures their $BGT emission allocation preferences, which the Distributor Contract uses to direct emissions to Reward Vaults.",
+      "target_id": 6,
+      "action": "direct_emissions",
+      "description": "Validator directs their $BGT emissions from block production to a chosen Reward Vault.",
       "risk_level": "Low"
     },
     {
@@ -582,10 +521,10 @@
       "id": 6,
       "name": "Protocol Offers Incentives",
       "initiator_type": "Actor",
-      "initiator_id": 7,
+      "initiator_id": 5,
       "target_id": 6,
       "action": "offer_incentives",
-      "description": "Incentive Token Manager adds Incentive Tokens to their managed Reward Vault.",
+      "description": "Protocol Representative (acting as Incentive Token Manager) adds Incentive Tokens to their Reward Vault.",
       "risk_level": "Medium"
     },
     {
@@ -627,26 +566,6 @@
       "action": "propose_block",
       "description": "A validator selected by the consensus mechanism proposes a new block to the Berachain Core L1.",
       "risk_level": "Low"
-    },
-    {
-      "id": 11,
-      "name": "User Delegates $BGT to Validator",
-      "initiator_type": "Actor",
-      "initiator_id": 3,
-      "target_id": 2,
-      "action": "delegate_stake",
-      "description": "$BGT Holder delegates their $BGT to a Validator to boost the validator's potential rewards and earn a share of incentives.",
-      "risk_level": "Low"
-    },
-    {
-      "id": 12,
-      "name": "Validator Stakes $BERA",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 2,
-      "action": "stake_native_token",
-      "description": "A prospective or active Validator stakes $BERA in the Berachain Core L1 to participate in consensus and secure the network.",
-      "risk_level": "Medium"
     }
   ]
 }
