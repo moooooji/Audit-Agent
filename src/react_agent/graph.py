@@ -94,29 +94,6 @@ def parallel_checklist_processing(state: State):
         print("state.current_threat_count : ", state.current_threat_count)
         return "__end__"
 
-# def parallel_feedback_checklist_processing(state: State):
-#     return [Send("generate_checklist", State(
-#         target_docs_path=state.target_docs_path,
-#         current_actor_id=i,
-#         is_threat_analysis=state.is_threat_analysis,
-#         architecture_feedback_loop_count=state.architecture_feedback_loop_count,
-#         checklist_feedback_loop_count=state.checklist_feedback_loop_count,
-#         code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
-#         is_initial_architecture_analysis=state.is_initial_architecture_analysis,
-#         is_assessment_analysis=state.is_assessment_analysis,
-#         is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
-#         is_initial_checklist_analysis=state.is_initial_checklist_analysis,
-#         is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
-#         is_initial_code_binding=state.is_initial_code_binding,
-#         is_feedback_code_binding=state.is_feedback_code_binding,
-#         is_init_db=state.is_init_db,
-#         is_assessment_checklist=state.is_assessment_checklist,
-#         is_assessment_code_binding=state.is_assessment_code_binding,
-#         threat_list_length=state.threat_list_length,
-#         current_threat_count=state.current_threat_count,
-#         checklist_list_length=state.checklist_list_length,
-#     )) for i in range(state.checklist_list_length)]
-
 # define a new graph
 builder = StateGraph(State, input=InputState)
 
