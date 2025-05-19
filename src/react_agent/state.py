@@ -36,7 +36,6 @@ class State(InputState):
     is_assessment_code_binding: bool = field(default=False)
     threat_list_length: Annotated[int, last_value_reducer] = field(default=0)
     current_threat_count: Annotated[int, last_value_reducer] = field(default=0)
-    checklist_list_length: Annotated[int, last_value_reducer] = field(default=0)
     
     # node info
     current_actor_id: int = field(default=0)
