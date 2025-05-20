@@ -1,186 +1,96 @@
 {
   "evaluation_summary": {
-    "actors": "Actors are generally well-traced to the documentation for active participants, with capabilities aligning with described functions. Schema is compliant. Completeness is good for primary roles.",
-    "assets": "Most key assets are correctly identified and traced. Some specific data assets or token sub-types (like $WBERA) are missing, impacting full completeness. Schema is compliant and sensitivity levels are reasonable.",
-    "components": "Core on-chain components and primary dApps are well-traced. The `assets_managed` field for BEX (Component 5) could be more comprehensive. Some external or utility components (e.g., block explorer, CEX) are missing. Schema is compliant.",
-    "data_flows": "Key high-level data flows are present. However, several more granular interaction flows between actors and components, explicitly mentioned or directly implied by capabilities, are missing, affecting completeness. Schema is compliant.",
-    "trust_boundaries": "The identified trust boundaries are logical and correctly defined between key components. Completeness could be improved by considering boundaries with external services or more granular frontend/backend interactions. Schema is compliant.",
-    "behaviors": "Core system behaviors are captured. The target for Behavior 11 is incorrectly referencing an actor instead of a component. Several other explicit user and validator actions described in the documentation are missing. Schema is compliant, risk levels are plausible."
+    "actors": "Actors are generally well-extracted, with their existence and capabilities traceable to the documentation. However, the assigned 'type' for many actors represents a reasonable interpretation or classification rather than a term explicitly stated in the source material.",
+    "assets": "The list of assets is comprehensive and traceable to the documentation in terms of their existence and description. The assigned 'sensitivity' levels are interpretations based on the asset's nature, as these are not explicitly defined in the document.",
+    "components": "Most key on-chain and off-chain components are extracted and traceable. The assigned 'trust_level' for components and the 'assets_managed' appear consistent with a general understanding but are not explicitly detailed for each in the document. Several minor or external components mentioned in the documentation are missing from the extraction.",
+    "data_flows": "Key interactions between actors and components are captured. The source, destination, and high-level data for these flows are generally traceable. However, the 'security_properties' (confidentiality, integrity, availability) for all data flows are not explicitly detailed per flow in the documentation and appear to be based on a default assumption. One data flow's target component could be more specific for better accuracy.",
+    "trust_boundaries": "Trust boundaries are well-defined, traceable to interactions described in the documentation, and correctly link the identified components. Their descriptions are appropriate.",
+    "behaviors": "Key system behaviors, linking actors to component interactions, are largely captured and traceable to the documentation. The assigned 'risk_level' for these behaviors is an interpretation, as explicit risk assessments are not provided in the source material."
   },
   "findings": [
     {
-      "category": "assets",
-      "type": "missing",
+      "category": "actors",
+      "type": "potential_concern",
       "id": null,
-      "description": "Asset '$WBERA' is mentioned in doc_26 and doc_27 (used by FeeCollector) but not extracted. It is a distinct ERC20 representation of $BERA."
+      "description": "The 'type' assigned to many actors (e.g., 'EOA (Externally Owned Account)', 'DAO Participant/Token Holder', 'Privileged Role') is an interpretation or a reasonable classification based on their description, rather than a term explicitly stated for them in the documentation. While often appropriate, this is not strictly explicit."
     },
     {
       "category": "assets",
-      "type": "missing",
+      "type": "potential_concern",
       "id": null,
-      "description": "Asset 'Social login credentials' used for airdrop checking (doc_2) is not extracted."
+      "description": "The 'sensitivity' level (e.g., 'High', 'Medium') for all assets is not explicitly defined or justified for each specific asset in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
     },
     {
-      "category": "assets",
-      "type": "missing",
+      "category": "components",
+      "type": "potential_concern",
       "id": null,
-      "description": "Asset 'RFRV form data' (Request for Reward Vault data submitted via forms - doc_14) is not extracted."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Proofs for incentive claims' (data retrieved by users to claim incentive tokens - doc_21) is not extracted."
+      "description": "The 'trust_level' (e.g., 'High', 'Medium', 'Low') for all components is not explicitly defined or justified for each specific component in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeraScan Block Explorer' is mentioned in doc_5 and doc_18 but not extracted."
+      "description": "Component 'Berachain Bepolia Testnet RPC' is mentioned in Doc 5 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Centralized Exchanges (CEX)' for acquiring $BERA (doc_6) is not extracted."
+      "description": "Component 'BeraScan Block Explorer' (berascan.com) is mentioned in Doc 18 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Execution Clients (Geth, Reth, etc.)' are explicitly mentioned as used by Berachain (doc_9, doc_19) but not extracted as separate components or clearly part of Component 2."
+      "description": "Component 'Boyco' (boyco.berachain.com) is mentioned in Doc 29 but not extracted."
     },
     {
       "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'RFRV Google Form (BEX Pool)' (tinyurl.com/bdebbjkb) is mentioned in Doc 14 but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'RFRV Google Form (General non-BEX)' (tinyurl.com/3kzv8de7) is mentioned in Doc 14 but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'OpenSea' is mentioned in Doc 4 (links to NFT collections) but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Berachain Discord' is mentioned in Doc 2 but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Berachain Blog' (blog.berachain.com) is mentioned in Doc 29 but not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "potential_concern",
+      "id": null,
+      "description": "The 'security_properties' (confidentiality_required, integrity_required, availability_required) for all data flows (301-320) are not explicitly detailed or justified for each specific flow in the provided documentation. The applied values appear to be a default rather than explicitly stated facts from the text."
+    },
+    {
+      "category": "data_flows",
       "type": "inconsistent",
-      "id": 5,
-      "description": "Component 5 (Berachain BEX) `assets_managed` only lists LP Token (Asset 5). BEX pools also directly manage the underlying tokens being traded (e.g., $BERA (1), $HONEY (3), other ERC20s which could be Incentive Tokens (6) or Whitelisted Collateral (9) if traded)."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for User (Actor 1) -> Airdrop Service (Component 13) for airdrop claim request, and Airdrop Service (13) -> User Wallet (Component 1) for $BERA token distribution (doc_2) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for User (Actor 1) -> Token Bridge (Component 14) for token bridging request, and Token Bridge (14) -> User Wallet (Component 1) for bridged token delivery (doc_6) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for Validator (Actor 2) -> Berachain Core L1 (Component 2) to stake $BERA (doc_7, doc_26) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for Validator (Actor 2) -> Berachain Core L1 (Component 2) to set their reward allocation preferences (doc_7, doc_11, doc_21) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for Protocol Representative (Actor 5) or $BGT Holder (Actor 3) -> Governance System (Component 3) to submit a Reward Vault whitelisting proposal (doc_14) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for Incentive Token Manager (Actor 7) -> Reward Vault (Component 6) to add/configure Incentive Tokens (doc_15, doc_21) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for User (Actor 1) -> BGTIncentiveDistributor (Component 8) to claim incentives (doc_17, doc_21) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for FeeCollector (Component 16) -> User Wallet (Component 1, representing $BGT Holder Actor 3) to distribute dApp fees as $WBERA (doc_27) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for BEX (Component 5) -> FeeCollector (Component 16) for BEX dApp fees (doc_27, doc_3) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for Honey Minting System (Component 7, specifically HoneySwap) -> FeeCollector (Component 16) for HoneySwap dApp fees (doc_27, doc_3, doc_18) is missing."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow for $BGT Holder (Actor 3) -> Berachain Core L1 (Component 2) to redeem $BGT for $BERA (doc_27) is missing."
+      "id": 306,
+      "description": "Data flow 306 'Validator stakes $BERA' targets component 201 'Berachain Network', which is too generic. It should ideally target a more specific component like 214 'Proof-of-Liquidity (PoL) Mechanism' or a dedicated staking contract component if one were defined in the model."
     },
     {
       "category": "behaviors",
-      "type": "invalid_reference",
-      "id": 11,
-      "description": "Behavior 11 'User Delegates $BGT to Validator' has `target_id: 2` which refers to Actor 2 (Validator). The target should be a component ID, likely Component 2 (Berachain Core L1 / PoL contract), where the delegation is recorded."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
+      "type": "potential_concern",
       "id": null,
-      "description": "Behavior for User (Actor 1) connecting wallet to a dApp like BeraHub (Component 4) (doc_5) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for User (Actor 1) bridging fungible tokens via Token Bridge (Component 14) (doc_6) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for Protocol Representative (Actor 5) submitting Reward Vault whitelisting proposal to Governance System (Component 3) (doc_14) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for User (Actor 1 or 3) claiming incentives from BGTIncentiveDistributor (Component 8) (doc_17, doc_21) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for $BGT Holder (Actor 3) creating a generic governance proposal in Governance System (Component 3) (doc_3) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for Validator (Actor 2) setting/updating their commission rate on Berachain Core L1 (Component 2 / PoL contract) (doc_21) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for User (Actor 1) trading tokens on BEX (Component 5) (doc_11) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for User (Actor 1) providing/removing liquidity on BEX (Component 5) (doc_11) is missing."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior for User (Actor 1) redeeming $HONEY via Honey Minting System (Component 7) (doc_28) is missing."
+      "description": "The 'risk_level' (e.g., 'High', 'Medium', 'Low') for all behaviors (501-516) is not explicitly defined or justified for each specific behavior in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
     }
   ]
 }

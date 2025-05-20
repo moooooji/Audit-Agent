@@ -1,61 +1,62 @@
 {
-  "id": 15,
-  "stride_category": "Elevation of Privilege",
+  "id": 10,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 8,
-    "capability_match": "Bridge NFTs between Ethereum and Berachain"
+    "actor_id": null,
+    "behavior_id": 515,
+    "capability_match": "Redeem $BGT for $BERA via BeraHub"
   },
   "threat_target": {
-    "component_id": 10,
+    "component_id": 206,
     "asset_ids": [
-      4
+      101,
+      102
     ]
   },
   "attack_surface": {
-    "behavior_id": 8,
-    "data_flow_id": 9,
-    "data_description": "Interaction with Berachain NFT Bridge smart contracts on either Ethereum or Berachain."
+    "behavior_id": 515,
+    "data_flow_id": null,
+    "data_description": "BeraHub (206) web application servers and network infrastructure, specifically the interface for $BGT to $BERA redemption."
   },
   "trust_boundary_risk": {
-    "boundary_id": 4,
-    "boundary_name": "Berachain-Ethereum Bridge Boundary",
+    "boundary_id": 401,
+    "boundary_name": "User Wallet to dApp Interface",
     "between_component_ids": [
-      10,
-      2,
-      11
+      210,
+      206
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "A vulnerability in the NFT bridge's smart contracts could allow unauthorized minting, burning, or transfer of NFTs."
+    "gap_description": "BeraHub (206) may lack sufficient DDoS protection or scalability, making its $BGT redemption functionality unavailable under attack or high load."
   },
   "actor_risk": {
     "actor_id": 1,
-    "type": "External User",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious End User could exploit a flaw in the bridge contracts to steal or duplicate NFTs."
+    "description": "User (1) is prevented from redeeming their $BGT (Asset 102) for $BERA (Asset 101) if the BeraHub (206) interface for this function is unavailable."
   },
   "behavioral_risk": {
-    "behavior_id": 8,
-    "risk_level": "High",
-    "rationale": "Bridge exploits can lead to large-scale theft of assets and loss of confidence in the ecosystem."
+    "behavior_id": 515,
+    "risk_level": "Low",
+    "rationale": "While inconvenient, if the underlying redemption contract is still accessible, this DoS is limited to the primary UI. If BeraHub is the sole gateway, risk is higher."
   },
   "assumptions": [
-    "A critical vulnerability (e.g., reentrancy, signature replay, incorrect validation) exists in the Berachain NFT Bridge's smart contracts.",
-    "Attacker can craft transactions to exploit this vulnerability."
+    "BeraHub (206) is a centralized web application vulnerable to common DoS attacks (e.g., traffic flooding, application-layer attacks).",
+    "The $BGT to $BERA redemption process is primarily or exclusively accessed via the BeraHub (206) interface.",
+    "Attackers might target BeraHub to disrupt user operations."
   ],
   "mitigation": {
-    "strategy": "Extensive security audits (multiple independent auditors), formal verification of bridge contracts, bug bounty programs, and robust monitoring of bridge activity.",
+    "strategy": "Implement robust DDoS mitigation (CDN, WAF), scalable infrastructure, and potentially rate limiting for BeraHub (206). Ensure core redemption contract functions can be accessed via alternative means (e.g., direct contract interaction via block explorer, CLI tools) if BeraHub is a critical gateway.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "An attacker exploits a smart contract vulnerability in the Berachain NFT Bridge to mint unauthorized NFTs on the destination chain, steal NFTs locked in the bridge, or otherwise manipulate bridge operations to their advantage.",
+  "description": "An external attacker launches a Denial of Service attack against BeraHub (Component 206), making its interface for redeeming $BGT (Asset 102) for $BERA (Asset 101) unavailable. This prevents User (1) from performing the 'User Redeems $BGT for $BERA' behavior (515).",
   "trace_source": {
-    "doc_reference": "berachain_nfts.md#doc_4",
-    "matched_capability": "Bridge NFTs between Ethereum and Berachain"
+    "doc_reference": "doc_13",
+    "matched_capability": "Redeem $BGT for $BERA via BeraHub"
   }
 }

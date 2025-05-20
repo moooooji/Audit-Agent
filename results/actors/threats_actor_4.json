@@ -1,62 +1,58 @@
 {
-  "id": 6,
+  "id": 8,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 1,
-    "capability_match": "Stake Receipt Tokens in Reward Vaults"
+    "behavior_id": 516,
+    "capability_match": "Propose blocks if in the Active Set (top 69 by $BERA stake)"
   },
   "threat_target": {
-    "component_id": 6,
+    "component_id": 201,
     "asset_ids": [
-      2,
-      6,
-      10
+      102
     ]
   },
   "attack_surface": {
-    "behavior_id": 1,
-    "data_flow_id": 3,
-    "data_description": "Exploitable parameters or logic in the staking function of the Reward Vault Contract."
+    "behavior_id": 516,
+    "data_flow_id": null,
+    "data_description": "Block proposal exploiting reward calculation logic or containing transactions that grant proposer undue benefits."
   },
   "trust_boundary_risk": {
-    "boundary_id": 3,
-    "boundary_name": "dApp-SmartContract Boundary",
-    "between_component_ids": [
-      4,
-      6
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The Reward Vault Contract might have flaws in its access control or state manipulation logic related to staking, allowing an attacker to gain unintended capabilities or control over assets."
+    "availability_required": false,
+    "gap_description": "Flaws in block validation or the reward distribution mechanism allow a block proposer to gain unauthorized benefits."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "External User",
-    "overprivileged": false,
-    "description": "External user whose staking action could unintentionally trigger a privilege escalation flaw."
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": true,
+    "description": "A validator could exploit their block proposal rights to extract more rewards than entitled."
   },
   "behavioral_risk": {
-    "behavior_id": 1,
-    "risk_level": "Medium",
-    "rationale": "If the staking interaction can be manipulated to exploit a contract vulnerability, an LP (or an attacker acting as one) could gain unauthorized privileges within the Reward Vault system."
+    "behavior_id": 516,
+    "risk_level": "High",
+    "rationale": "Exploiting block proposal for undue rewards distorts the incentive system and constitutes theft."
   },
   "assumptions": [
-    "The Reward Vault Contract contains a vulnerability in its staking or reward accounting logic that can be triggered by a specifically crafted staking transaction.",
-    "This vulnerability allows an attacker to modify contract parameters, access/drain other users' staked funds or rewards, or perform administrative actions without authorization."
+    "A vulnerability in the $BGT emission calculation (doc_20) related to block proposal allows a validator to claim inflated rewards.",
+    "A validator can include a transaction in their proposed block that illegitimately transfers network-level funds or assets to themselves by exploiting an EVM or precompile vulnerability.",
+    "The 'base emission' or 'reward vault emission' logic has a flaw exploitable by the block proposer."
   ],
   "mitigation": {
-    "strategy": "Conduct rigorous security audits of smart contract code, focusing on access control, reentrancy, and state management; implement the principle of least privilege for all contract functions; use formal verification methods if possible.",
+    "strategy": "Rigorous auditing of block validation logic, EVM implementation, and especially the $BGT reward calculation and distribution mechanisms (components 201, 226, 227). Ensure separation of duties in reward handling if possible.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Liquidity Provider, or an attacker exploiting the staking process, triggers a vulnerability in the Reward Vault Contract. This allows them to gain elevated privileges, such as unauthorized withdrawal of other users' staked Receipt Tokens or undue claiming of $BGT or Incentive Token rewards.",
+  "description": "A malicious Validator (Actor 4) crafts a block that exploits a flaw in the Berachain Network's (201) processing or reward mechanism (e.g., in components 226, 227 as described in doc_20) to grant themselves excessive $BGT rewards or other unauthorized benefits.",
   "trace_source": {
-    "doc_reference": "pol/Reward Vaults#doc_25",
-    "matched_capability": "Stake Receipt Tokens in Reward Vaults"
+    "doc_reference": "doc_20#bgt-emissions-structure",
+    "matched_capability": "Propose blocks if in the Active Set (top 69 by $BERA stake)"
   }
 }

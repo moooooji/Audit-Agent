@@ -1,60 +1,61 @@
 {
-  "id": 4,
-  "stride_category": "Information Disclosure",
+  "id": 5,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 11,
-    "behavior_id": 604,
-    "capability_match": "use EVM tooling"
+    "behavior_id": null,
+    "capability_match": "Tie social airdrop allocations to a wallet via social login"
   },
   "threat_target": {
-    "component_id": 225,
+    "component_id": 202,
     "asset_ids": [
-      0
+      117
     ]
   },
   "attack_surface": {
-    "behavior_id": 604,
-    "data_flow_id": 322,
-    "data_description": "Developer reads and analyzes contract bytecode and storage from the public Berachain blockchain."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "High volume of social login requests or linkage attempts."
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "Public Blockchain Data Access",
+    "boundary_id": 406,
+    "boundary_name": "Social Platform to Airdrop System",
     "between_component_ids": [
-      225
+      234,
+      202
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "Smart contracts, once deployed, are public and their bytecode can be reverse-engineered. Sensitive business logic, unverified parameters, or exploitable patterns might be unintentionally exposed if not carefully designed."
+    "availability_required": true,
+    "gap_description": "Lack of rate limiting, resource exhaustion vulnerabilities, or dependency on third-party social media APIs that can be overwhelmed or throttled."
   },
   "actor_risk": {
     "actor_id": 11,
-    "type": "External User",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Developer possesses skills and standard EVM tooling to analyze, decompile, and understand EVM bytecode and contract state."
+    "description": "The user's ability to participate in the airdrop via social linking is dependent on the availability of both the airdrop platform and the third-party social media authentication service."
   },
   "behavioral_risk": {
-    "behavior_id": 604,
+    "behavior_id": null,
     "risk_level": "Medium",
-    "rationale": "Disclosure of sensitive contract logic or embedded data could lead to targeted exploits by other malicious actors, loss of competitive advantage for dApp owners, or privacy violations for users if PII-like data is mishandled."
+    "rationale": "Prevents users from accessing their airdrop if social linking is the only method, causing frustration and potentially missed opportunity if time-limited."
   },
   "assumptions": [
-    "Some deployed smart contracts on Berachain may contain sensitive information (e.g., proprietary algorithms, critical parameters, keys for off-chain systems if poorly managed) or subtle exploitable logic not intended for easy public discovery.",
-    "Standard EVM tooling allows for effective decompilation and in-depth analysis of smart contract bytecode and storage.",
-    "Developers are motivated to find such information for various purposes including security research (white-hat), malicious exploitation (black-hat), or competitive analysis."
+    "The social login or wallet linkage endpoints on Component 202 or the Social Media Platform (Component 234) are vulnerable to request flooding or resource exhaustion.",
+    "Rate limiting or other anti-DoS measures are insufficient or not implemented.",
+    "The airdrop linkage is time-sensitive, making temporary DoS impactful."
   ],
   "mitigation": {
-    "strategy": "Promote secure coding practices for smart contract development, specifically avoiding the storage of highly sensitive data directly on-chain. Encourage thorough pre-deployment security reviews and audits. Use formal verification for critical contracts. While code obfuscation has limited effectiveness, it can be a minor deterrent.",
+    "strategy": "Implement robust rate limiting, IP blacklisting for abusive sources, and resilient infrastructure for social login integration points. Have contingency plans if a social media provider's auth service is down.",
     "type": "Technical Control",
     "priority": "Medium"
   },
-  "description": "A Developer (Actor 11) utilizes their 'use EVM tooling' capability to reverse-engineer and analyze smart contracts deployed on the Berachain L1 (Component 225). This activity could lead to the discovery of sensitive business logic, hidden vulnerabilities, or private data unintentionally embedded or exposed in contracts, resulting in an information disclosure that could be exploited.",
+  "description": "An attacker launches a Denial of Service attack against the social login integration endpoints of the Airdrop Checker website (Component 202) or the Social Media Platform (Component 234), preventing legitimate 'Social Media Platform Users' (Actor 11) from tying their social airdrop allocations (Asset 117) to their wallets.",
   "trace_source": {
-    "doc_reference": "learn.md",
-    "matched_capability": "use EVM tooling"
+    "doc_reference": "claim_bera_airdrop.md#check-bera-airdrop",
+    "matched_capability": "Tie social airdrop allocations to a wallet via social login"
   }
 }

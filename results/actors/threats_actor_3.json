@@ -1,60 +1,58 @@
 {
-  "id": 13,
+  "id": 4,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 11,
-    "capability_match": "Delegate $BGT to validators to boost their rewards"
+    "behavior_id": 504,
+    "capability_match": "Cancel malicious governance proposals during the timelock period"
   },
   "threat_target": {
-    "component_id": 2,
-    "asset_ids": [
-      2
-    ]
+    "component_id": 208,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 11,
-    "data_flow_id": 10,
-    "data_description": "$BGT delegation transaction exploiting an accounting flaw (Note: DF10 is for NFTs but represents a user-initiated flow to Component 2)"
+    "behavior_id": 504,
+    "data_flow_id": 304,
+    "data_description": "Maliciously crafted cancellation signal from compromised/colluding Guardians, or strategic failure to cancel a known malicious proposal."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Wallet-Blockchain Boundary",
+    "boundary_id": 403,
+    "boundary_name": "Governance Timelock Execution",
     "between_component_ids": [
-      1,
-      2
+      205,
+      208
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Flaw in delegation logic for $BGT balance checking or influence calculation."
+    "gap_description": "The Guardian role, if a quorum is compromised or colluding, can abuse its cancellation power to subvert governance."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "External User",
-    "overprivileged": false,
-    "description": "$BGT Holder/Delegator attempting to delegate more $BGT than owned."
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": true,
+    "description": "A compromised or colluding quorum of Guardians (5-of-9 multisig) abuses their intended privilege, effectively elevating their control over the governance outcome."
   },
   "behavioral_risk": {
-    "behavior_id": 11,
+    "behavior_id": 504,
     "risk_level": "High",
-    "rationale": "Exploiting delegation logic can unfairly influence validator rewards and PoL."
+    "rationale": "Compromise or collusion of a Guardian quorum directly subverts the intended governance safeguard and represents a significant centralization of power."
   },
   "assumptions": [
-    "The smart contract in Berachain Core L1 (Component 2) for $BGT delegation has errors in balance checking or how delegation weight is applied.",
-    "An attacker can manipulate these errors to delegate $BGT (Asset 2) they don't own or gain unearned influence over validator rewards."
+    "A quorum (5 out of 9) of Guardian private keys can be simultaneously compromised, or their holders can collude maliciously.",
+    "There are insufficient rapid detection mechanisms or alternative (emergency) governance pathways to counteract malicious actions by a compromised Guardian quorum."
   ],
   "mitigation": {
-    "strategy": "Rigorous auditing of the delegation smart contract, ensuring correct balance updates, ownership checks, and fair application of delegated $BGT weight.",
-    "type": "Technical Control",
+    "strategy": "Ensure robust operational security for Guardian keys, select diverse and reputable Guardian members, establish clear public criteria for cancellations, and consider community monitoring or alert systems for Guardian actions.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a flaw in Berachain Core L1's (Component 2) delegation system to delegate $BGT (Asset 2) they do not own or to amplify the effect of their delegation beyond their actual stake, unfairly influencing validator boost calculations.",
+  "description": "A compromised or colluding quorum of Guardians abuses their privileged role by cancelling legitimate governance proposals or by deliberately failing to cancel known malicious ones. This effectively elevates their power to manipulate governance outcomes, bypassing community consensus.",
   "trace_source": {
-    "doc_reference": "doc_27",
-    "matched_capability": "Delegate $BGT to validators to boost their rewards"
+    "doc_reference": "doc_3#guardian-oversight",
+    "matched_capability": "Cancel malicious governance proposals during the timelock period"
   }
 }

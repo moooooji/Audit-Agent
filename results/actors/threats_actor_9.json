@@ -1,60 +1,55 @@
 {
-  "id": 10,
-  "stride_category": "Elevation of Privilege",
+  "id": 6,
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
-    "behavior_id": 9002,
-    "capability_match": "Receive initial token allocation"
+    "behavior_id": null,
+    "capability_match": "Receive allocated $BERA tokens subject to vesting schedule"
   },
   "threat_target": {
-    "component_id": 2,
-    "asset_ids": [
-      1
-    ]
+    "component_id": null,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 9002,
-    "data_flow_id": 0,
-    "data_description": "Interaction with a custom token allocation smart contract potentially developed or influenced by Big Bera Labs. Not a specifically modeled data_flow_id."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Records and processes related to token distribution and claim fulfillment for Core Contributor (Actor ID 9)."
   },
   "trust_boundary_risk": {
-    "boundary_id": 0,
-    "boundary_name": "Conceptual: Partner Dev Environment to Core L1/Allocation Contract. Not a specifically modeled trust_boundary_id.",
-    "between_component_ids": [
-      2
-    ]
+    "boundary_id": null,
+    "boundary_name": "Vesting System Record Keeping and Distribution Process",
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Lack of independent review and security audit for custom allocation contracts created by or for core contributors, potentially hiding EoP logic."
+    "availability_required": true,
+    "gap_description": "Lack of verifiable, non-repudiable proof of token distribution or correct claim processing, allowing the distributing entity to falsely deny distribution or dispute legitimate claims from Core Contributor (Actor ID 9)."
   },
   "actor_risk": {
-    "actor_id": 9,
-    "type": "Partner System",
-    "overprivileged": true,
-    "description": "Actor, by influencing the allocation contract's code (via core dev role), may embed privileged functions callable during their token claim."
+    "actor_id": null,
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": false,
+    "description": "The entity or administrator responsible for token distribution (acting on behalf of the system) falsely denies or incorrectly records the fulfillment of Core Contributor's (Actor ID 9) token claim due to flawed processes or malicious intent."
   },
   "behavioral_risk": {
-    "behavior_id": 9002,
-    "risk_level": "High",
-    "rationale": "Exploiting a token claim process to trigger unauthorized privileged actions is a significant security breach."
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "If the system can repudiate its token distribution obligations or actions without verifiable proof, Core Contributors may unfairly lose access to their vested tokens, leading to disputes and loss of trust."
   },
   "assumptions": [
-    "The token allocation mechanism for Big Bera Labs involves a smart contract they helped design or implement.",
-    "This contract contains hidden functions or vulnerabilities that grant elevated privileges when Big Bera Labs claims their tokens.",
-    "Such EoP flaws were missed during audits or reviews."
+    "The process for distributing vested tokens or acknowledging claims lacks sufficient non-repudiable evidence (e.g., auditable on-chain transactions for all distributions, signed attestations for off-chain steps).",
+    "Disputes can arise if a Core Contributor (Actor ID 9) claims non-receipt and the system cannot definitively prove distribution."
   ],
   "mitigation": {
-    "strategy": "Mandate independent, rigorous security audits for all smart contracts involved in token allocation, especially those for core contributors. Ensure contracts adhere to the principle of least privilege. Use standardized, audited contract templates for allocations where possible.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Ensure all token distributions to Core Contributors are executed via transparent and auditable on-chain transactions. Maintain secure, immutable, and independently verifiable logs for any off-chain claim processing steps. Provide clear claim receipts or transaction IDs to contributors.",
+    "type": "Process Control",
+    "priority": "Medium"
   },
-  "description": "If the token allocation mechanism for Big Bera Labs is a custom smart contract they developed or influenced (as part of their 'Contribute to core blockchain development' capability), they might embed logic that grants them elevated privileges within that contract or connected systems upon claiming their $BERA allocation.",
+  "description": "The system or entity managing token vesting for 'Big Bera Labs Member / Initial Core Contributor' (Actor ID 9) fails to provide non-repudiable proof of token distribution, or falsely denies a legitimate claim, leading to a dispute over received tokens.",
   "trace_source": {
-    "doc_reference": "doc_29",
-    "matched_capability": "Receive initial token allocation"
+    "doc_reference": "pol/tokens/tokenomics.md#token-release-schedule",
+    "matched_capability": "Receive allocated $BERA tokens subject to vesting schedule"
   }
 }

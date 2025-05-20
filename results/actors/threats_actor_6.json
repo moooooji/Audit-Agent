@@ -4,57 +4,56 @@
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": 4,
-    "capability_match": "Cancel malicious proposals during the timelock period via multisig"
+    "behavior_id": 511,
+    "capability_match": "Deposit additional incentive tokens to the Reward Vault"
   },
   "threat_target": {
-    "component_id": 12,
+    "component_id": 215,
     "asset_ids": [
-      8
+      102,
+      108,
+      109
     ]
   },
   "attack_surface": {
-    "behavior_id": 4,
-    "data_flow_id": 9001,
-    "data_description": "Transaction exploiting a flaw in Guardian Multisig contract (12) to call restricted functions or alter its own permissions/configuration beyond proposal cancellation."
+    "behavior_id": 511,
+    "data_flow_id": 314,
+    "data_description": "Calls to incentive management functions in Reward Vault Contract by the authorized Token Manager."
   },
   "trust_boundary_risk": {
-    "boundary_id": 5,
-    "boundary_name": "Governance Oversight Boundary",
-    "between_component_ids": [
-      12,
-      3
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Guardian Multisig contract (12) has a flaw allowing a Guardian to execute actions beyond simple proposal cancellation, such as modifying multisig settings or arbitrarily impacting the Governance System (3)."
+    "gap_description": "A vulnerability in Reward Vault Contract (215) (e.g., reentrancy, insecure delegatecall, flawed access control) allows the authorized Incentive Token Manager to perform actions beyond their intended permissions."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "External User",
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
     "overprivileged": true,
-    "description": "A malicious or compromised Guardian exploits a vulnerability to gain powers beyond their intended scope, such as bypassing timelock or modifying governance parameters directly."
+    "description": "A compromised or malicious Incentive Token Manager could exploit a contract flaw to gain greater control over the Reward Vault than intended, potentially accessing user funds or other critical parameters."
   },
   "behavioral_risk": {
-    "behavior_id": 4,
+    "behavior_id": 511,
     "risk_level": "High",
-    "rationale": "Elevation of privilege could allow a rogue Guardian or an attacker with a Guardian's key to severely compromise the governance process or the multisig itself."
+    "rationale": "Elevation of privilege for a role managing a vault containing user funds (receipt tokens, BGT) and protocol funds (incentives) can lead to significant financial loss or system manipulation."
   },
   "assumptions": [
-    "The Guardian Multisig smart contract (12) contains a vulnerability that allows a user authenticated as a Guardian to perform actions not normally permitted (e.g., change multisig threshold, execute arbitrary calls via the Governance System component 3).",
-    "The Guardian (6) is malicious or their key is compromised and used by an attacker."
+    "The Reward Vault Contract (215) has an exploitable vulnerability related to access control or state manipulation that is accessible via its incentive management functions.",
+    "The Incentive Token Manager (or an attacker with their keys) can craft a transaction that triggers this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Adherence to the Principle of Least Privilege in smart contract design. Strict access controls and function modifiers. Thorough security audits focusing on privilege escalation vectors. Formal verification.",
+    "strategy": "Apply the principle of least privilege strictly in Reward Vault contract design. Conduct thorough security audits focusing on EoP vulnerabilities. Use well-established, secure contract patterns. Separate privileged roles where feasible.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious or compromised Guardian (6) exploits a vulnerability in the Guardian Multisig contract (12) to gain elevated privileges, such as modifying the multisig's own parameters (e.g., signers, threshold) or directly manipulating the Governance System (3), bypassing intended controls for proposal (8) lifecycle management.",
+  "description": "The Incentive Token Manager, due to a vulnerability in the Reward Vault Contract, elevates their privileges to perform unauthorized actions, such as altering non-incentive critical vault settings or illegitimately accessing staked user assets ($BGT, Receipt Tokens) or incentive tokens beyond deposition.",
   "trace_source": {
-    "doc_reference": "doc_3#guardian-oversight",
-    "matched_capability": "Cancel malicious proposals during the timelock period via multisig"
+    "doc_reference": "pol/incentives.md#incentive-token-managers",
+    "matched_capability": "Deposit additional incentive tokens to the Reward Vault"
   }
 }

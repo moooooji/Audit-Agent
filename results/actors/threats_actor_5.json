@@ -1,68 +1,55 @@
 {
-  "id": 7,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 5,
-    "behavior_id": 501,
-    "capability_match": "Deploy dApp smart contracts"
+    "behavior_id": 514,
+    "capability_match": "Submit Request for Reward Vault (RFRV) forms and post on Governance Forum for whitelisting"
   },
   "threat_target": {
-    "component_id": 1,
-    "asset_ids": [
-      1,
-      3,
-      5,
-      6,
-      7,
-      9,
-      10,
-      11
-    ]
+    "component_id": 223,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 501,
-    "data_flow_id": 1,
-    "data_description": "User granting token approvals or signing transactions for a malicious dApp (deployed by Actor 5)"
+    "behavior_id": 514,
+    "data_flow_id": null,
+    "data_description": "Maliciously crafted RFRV submission, including details of a Reward Vault contract with hidden functionalities."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Wallet-Blockchain Boundary",
-    "between_component_ids": [
-      1,
-      2
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "A dApp deployed by Actor 5 might trick users into granting excessive token approvals or permissions, allowing the dApp to act with elevated privilege over user assets."
+    "gap_description": "The RFRV review process, relying on information from the Governance Forum (Component 223) and submitted forms, may not detect cleverly hidden backdoors or unfair economic advantages in a proposed Reward Vault smart contract."
   },
   "actor_risk": {
     "actor_id": 5,
-    "type": "Partner System",
-    "overprivileged": false,
-    "description": "Actor 5 deploys a dApp that phishes for broad user permissions/approvals, effectively elevating its own privileges over user assets."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": true,
+    "description": "If the malicious RFRV is approved, Actor 5 gains unauthorized control or economic benefits beyond standard protocol participation."
   },
   "behavioral_risk": {
-    "behavior_id": 501,
+    "behavior_id": 514,
     "risk_level": "High",
-    "rationale": "Users unfamiliar with token approval risks can grant malicious dApps control over all their tokens of a certain type, leading to theft."
+    "rationale": "Successful exploitation allows the developer to steal user funds, unfairly gain PoL rewards, or disrupt the ecosystem, representing a significant elevation of their intended privileges."
   },
   "assumptions": [
-    "Actor 5 deploys a dApp with a deceptive UI or misleading prompts related to token approvals.",
-    "Users interact with this dApp and approve token allowances (e.g., 'infinite approve') without fully understanding the permissions granted.",
-    "Standard ERC20 approve mechanisms can be abused if users approve large or unlimited amounts to malicious contracts."
+    "A Protocol Developer (Actor 5) is capable of designing and submitting a Reward Vault smart contract with hidden malicious features or unfair economic mechanics.",
+    "The RFRV review and whitelisting process, including scrutiny on the Governance Forum (223), may not be sufficiently rigorous or technically deep to identify all such malicious designs before approval."
   ],
   "mitigation": {
-    "strategy": "User education on token approval security (e.g., approve specific amounts, use token approval management tools). Wallet UI improvements to highlight risks of broad approvals. Promote use of EIP-2612 (permit) where applicable.",
-    "type": "Technical Control",
+    "strategy": "Mandate thorough, independent security audits and economic reviews for all smart contracts proposed in RFRVs. Establish clear, strict criteria for secure and fair Reward Vault design. Encourage active community technical review of proposals on the Governance Forum.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A Protocol/Project Representative deploys a dApp that tricks users into granting it broad permissions (e.g., infinite token approvals), effectively elevating the dApp's privilege over the user's assets, leading to potential theft.",
+  "description": "A malicious Protocol Developer (Actor 5) submits an RFRV for a Reward Vault contract via the Governance Forum (Component 223) or associated forms. The contract contains hidden backdoors, exploits, or unfair mechanisms designed to grant the developer unauthorized control over staked assets, siphon funds, or unfairly manipulate Proof-of-Liquidity emissions if the vault gets whitelisted. This elevates their privileges within the Berachain ecosystem beyond those of a standard protocol developer.",
   "trace_source": {
-    "doc_reference": "pol/participants.md#doc_24",
-    "matched_capability": "Deploy dApp smart contracts"
+    "doc_reference": "governance/rewardvault.md",
+    "matched_capability": "Submit Request for Reward Vault (RFRV) forms and post on Governance Forum for whitelisting"
   }
 }

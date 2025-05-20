@@ -1,62 +1,57 @@
 {
-  "id": 1003,
-  "stride_category": "Information Disclosure",
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 10,
-    "behavior_id": 501,
-    "capability_match": "receive $BERA token allocation"
+    "actor_id": null,
+    "behavior_id": null,
+    "capability_match": "Receive allocated $BERA tokens subject to vesting schedule"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": null,
     "asset_ids": [
-      115,
-      123
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 501,
-    "data_flow_id": 301,
-    "data_description": "Investor's allocation data, potentially including specific amounts, vesting details, and associated wallet address, accessed via an allocation checking tool."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Vesting contract's claim function and its logic for amount and timing validation."
   },
   "trust_boundary_risk": {
-    "boundary_id": 9403,
-    "boundary_name": "Investor to Allocation Checker Interface",
-    "between_component_ids": [
-      207,
-      201
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": true,
-    "integrity_required": false,
+    "confidentiality_required": false,
+    "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Lack of strong access controls, encryption, or data segregation for sensitive investor allocation details on the allocation checker website or its backend systems."
+    "gap_description": "The vesting contract may have flaws in its logic, allowing an attacker to claim more tokens than allocated or claim them before the authorized vesting period."
   },
   "actor_risk": {
     "actor_id": 10,
-    "type": "Partner System",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Investor's financial details and association with the project could be exposed, leading to privacy violations or targeted social engineering attacks."
+    "description": "Investor (ID 10)'s allocation could be illegitimately claimed by an attacker, or the overall token supply integrity could be compromised if an attacker exploits a flaw to mint/claim unallocated tokens."
   },
   "behavioral_risk": {
-    "behavior_id": 501,
-    "risk_level": "Medium",
-    "rationale": "Disclosure of specific investor allocations can lead to reputational damage for the project, unwanted attention for the investor, or targeted phishing attempts."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Allows theft of unvested or unallocated tokens, directly impacting tokenomics and potentially causing significant financial loss to the project or other investors."
   },
   "assumptions": [
-    "Investors may use a web-based tool (such as component 201, the Airdrop Checker) to check their token allocation and vesting details.",
-    "This tool or its backend systems might store or process sensitive, non-public details about investor allocations that should not be broadly accessible.",
-    "The tool may have vulnerabilities (e.g., insecure direct object references, weak authentication, data leaks through APIs) allowing unauthorized access to this data."
+    "The vesting smart contract contains a vulnerability in its entitlement checks (e.g., incorrect calculation of claimable amount, bypassable time-lock).",
+    "An attacker can craft a transaction to exploit this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Implement strong authentication and authorization specifically for accessing investor-level allocation data. Encrypt sensitive data at rest and in transit. Ensure proper data segregation. Conduct regular security testing of any portal displaying such information.",
+    "strategy": "Conduct rigorous and comprehensive smart contract audits, including formal verification if feasible. Implement robust and thoroughly tested logic for vesting schedules and claimable amount calculations. Use established and audited contract patterns.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "Sensitive details of an Investor's $BERA token allocation (e.g., specific amount, vesting terms, linked wallet address) are improperly disclosed through the allocation checking website (e.g., component 201) or its backend systems due to a vulnerability or misconfiguration.",
+  "description": "An attacker exploits a flaw in the vesting contract logic to illegitimately claim $BERA tokens (Asset ID 101) intended for Investor (ID 10), or claims more tokens than entitled, or claims them before the vesting schedule permits.",
   "trace_source": {
-    "doc_reference": "claim_bera_airdrop.md#check-bera-airdrop-\ud83d\udd0d",
-    "matched_capability": "receive $BERA token allocation"
+    "doc_reference": "pol/tokens/tokenomics.md#token-release-schedule",
+    "matched_capability": "Receive allocated $BERA tokens subject to vesting schedule"
   }
 }
