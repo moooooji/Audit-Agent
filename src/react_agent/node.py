@@ -43,7 +43,7 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed first architecture analysis")
         
-        input("\n아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
         
         return {"is_initial_architecture_analysis": False}
     else:
@@ -59,7 +59,7 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed feedback loop architecture analysis")
         
-        input("\n피드백 루프 아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n피드백 루프 아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
         
         return {"is_feedback_architecture_analysis": False}
     
@@ -75,7 +75,7 @@ def assess_architecture(state: State) -> State:
     save_json(response_dict, "results/assessment_architecture.json")
     print("completed assessing architecture")
     
-    input("\n아키텍처 평가가 완료되었습니다. 계속하려면 Enter를 누르세요...")
+    # input("\n아키텍처 평가가 완료되었습니다. 계속하려면 Enter를 누르세요...")
     
     return {
         "is_assessment_analysis": False, 
@@ -141,7 +141,7 @@ def analyze_threats(state: State) -> State:
         sleep(60)
         print("gemini api initialized")
         
-        input("\n위협 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n위협 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
     return {
             "is_threat_analysis": False,
             "threat_list_length": len(threats_list),
@@ -182,7 +182,7 @@ def generate_checklist(state: State) -> State:
         
         print("completed initial checklist analysis")
         
-        input("\n체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
     else:
         print("feedback loop checklist analysis ...")
         state.is_feedback_checklist_analysis = True
@@ -197,7 +197,7 @@ def generate_checklist(state: State) -> State:
         
         print("completed feedback loop checklist analysis")
         
-        input("\n피드백 루프 체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n피드백 루프 체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
         
     checklist_count += 1
     
@@ -287,14 +287,14 @@ def code_binding(state: State) -> State:
         
         print("completed initial code binding")
         
-        input("\n코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
     else:
         # human-in-the-loop
         print("feedback loop code binding ...")
         state.is_feedback_code_binding = True
         print("completed feedback loop code binding")
         
-        input("\n피드백 루프 코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+        # input("\n피드백 루프 코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
     
     return {"is_initial_code_binding": False, "is_feedback_code_binding": False}
 
