@@ -1,62 +1,63 @@
 {
-  "id": 10,
-  "stride_category": "Elevation of Privilege",
+  "id": 18,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 3002,
-    "capability_match": "Receive block rewards ($BGT, transaction fees)"
+    "actor_id": null,
+    "behavior_id": 526,
+    "capability_match": "Interact with dApps"
   },
   "threat_target": {
-    "component_id": 101,
+    "component_id": null,
     "asset_ids": [
-      11,
-      12,
-      18
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 3002,
+    "behavior_id": 526,
     "data_flow_id": null,
-    "data_description": "Exploiting L1 (Component 101) logic for reward calculation or attribution"
+    "data_description": "User's wallet suggests an excessively high gas fee for a transaction."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2005,
-    "boundary_name": "Berachain L1 Consensus Boundary",
+    "boundary_id": 401,
+    "boundary_name": "User Wallet <-> dApp Interface",
     "between_component_ids": [
-      101,
-      1
+      1,
+      219,
+      206,
+      207,
+      208
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Flaws in L1's reward logic could allow a validator to claim more rewards than entitled."
+    "availability_required": false,
+    "gap_description": "User blindly accepts gas fee suggestions from a compromised or poorly designed wallet."
   },
   "actor_risk": {
     "actor_id": 1,
-    "type": "DAO Participant/Token Holder",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Validator (Actor 1) might attempt to exploit vulnerabilities in L1's reward mechanisms."
+    "description": "User (Actor 1) overpays in $BERA (Asset 101) for transaction fees due to a malicious or faulty wallet's gas estimation."
   },
   "behavioral_risk": {
-    "behavior_id": 3002,
-    "risk_level": "High",
-    "rationale": "Unjust enrichment of validators through exploited reward logic undermines the economic balance and fairness of the PoL system."
+    "behavior_id": 526,
+    "risk_level": "Low",
+    "rationale": "User loses a small amount of funds per transaction, but it can accumulate."
   },
   "assumptions": [
-    "The L1 (Component 101) correctly calculates and attributes all forms of validator rewards (fees, $BGT, incentives via integrated components).",
-    "Access controls prevent direct manipulation of reward balances or calculation parameters."
+    "User is using a wallet that intentionally inflates gas fee suggestions or has a bug in its estimation logic.",
+    "User does not manually check or adjust suggested gas fees."
   ],
   "mitigation": {
-    "strategy": "Thorough auditing and formal verification (if feasible) of all smart contracts and L1 modules involved in reward calculation and distribution. Implement strong access controls and invariant checks.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Use reputable and well-maintained wallets. Wallets should provide transparent gas estimation and allow users to easily adjust fees. User education on gas fees.",
+    "type": "Process Control",
+    "priority": "Low"
   },
-  "description": "A Validator (Actor 1) might attempt to exploit a vulnerability within L1 (Component 101) logic that governs reward entitlement or calculation for Behavior 3002. This could involve manipulating on-chain state or finding flaws in how transaction fees, $BGT emissions, or protocol incentives are attributed, allowing them to receive more rewards than they are legitimately due.",
+  "description": "When User (Actor 1) performs any transaction on Berachain (Component 201) that requires paying fees with $BERA (Asset 101), a malicious or faulty wallet suggests and tricks the user into paying excessively high gas fees.",
   "trace_source": {
-    "doc_reference": "doc_7, doc_20, doc_21",
-    "matched_capability": "Receive block rewards ($BGT, transaction fees)"
+    "doc_reference": "doc_26",
+    "matched_capability": "Interact with dApps"
   }
 }

@@ -3,59 +3,55 @@
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 7,
-    "behavior_id": null,
-    "capability_match": "Bridge NFTs between Ethereum and Berachain"
+    "actor_id": null,
+    "behavior_id": 523,
+    "capability_match": "Add Incentive Tokens to Reward Vault"
   },
   "threat_target": {
-    "component_id": 108,
+    "component_id": 209,
     "asset_ids": [
-      14,
-      19
+      107
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": 1020,
-    "data_description": "Asset Bridging Transaction (e.g., NFT from Ethereum)"
+    "behavior_id": 523,
+    "data_flow_id": 316,
+    "data_description": "Call to incentive management functions within the Reward Vault contract."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
     "boundary_name": null,
-    "between_component_ids": [
-      108
-    ]
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Berachain Bridge (Component 108) smart contracts may contain vulnerabilities (e.g., reentrancy, access control flaws, logic errors) in how it processes bridging transactions (Data Flow 1020)."
+    "gap_description": "The Reward Vault contract may have a flaw in its authorization logic, allowing unauthorized users to perform Token Manager actions."
   },
   "actor_risk": {
     "actor_id": 7,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "An attacker, acting like an NFT Holder (User 7) but submitting a specially crafted transaction, could exploit flaws in the Berachain Bridge (Component 108)."
+    "description": "The privileges of the Token Manager role are the target for elevation by an unauthorized entity."
   },
   "behavioral_risk": {
-    "behavior_id": null,
+    "behavior_id": 523,
     "risk_level": "High",
-    "rationale": "Smart contract vulnerabilities in bridges can lead to significant loss of funds or control over the bridge's operation."
+    "rationale": "Unauthorized control over a Reward Vault's incentives can lead to fund misappropriation or severe disruption of its PoL participation."
   },
   "assumptions": [
-    "The Berachain Bridge (Component 108) smart contracts have privileged functions or manage valuable assets.",
-    "A flaw exists in the contract logic that allows an unauthorized user to call these functions or manipulate state to gain control or steal assets.",
-    "The attacker can craft a specific 'Asset Bridging Transaction' to trigger such a flaw."
+    "The Reward Vault contract's access control for functions like adding incentives or setting rates is flawed or bypassable.",
+    "An attacker discovers and successfully exploits this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Conduct rigorous security audits of the Berachain Bridge (Component 108) smart contracts. Implement strict access controls and follow secure development practices. Establish an incident response plan and consider bug bounties.",
+    "strategy": "Implement and rigorously audit robust access control mechanisms (e.g., role-based access specific to the designated Token Manager) in the Reward Vault smart contract. Follow the principle of least privilege.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker, by submitting a specially crafted 'Asset Bridging Transaction' (Data Flow 1020) as if they were a regular NFT Holder (User 7), exploits a vulnerability in the Berachain Bridge (Component 108). This allows them to perform unauthorized actions such as stealing bridged NFTs (Assets 14, 19), altering bridge parameters, or halting its operation.",
+  "description": "An unauthorized entity successfully calls functions on a Reward Vault (Component ID 209) that are intended only for the designated Token Manager (Actor ID 7), thereby illegitimately managing Incentive Tokens or rates.",
   "trace_source": {
-    "doc_reference": "(doc_4, doc_113)",
-    "matched_capability": "Bridge NFTs between Ethereum and Berachain"
+    "doc_reference": "doc_15, doc_21",
+    "matched_capability": "Add Incentive Tokens to Reward Vault"
   }
 }

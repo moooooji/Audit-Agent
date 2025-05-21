@@ -1,57 +1,60 @@
 {
-  "id": 11,
+  "id": 12,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 3014,
-    "capability_match": "Redeem $BGT for $BERA"
+    "behavior_id": 521,
+    "capability_match": "Earn $BGT"
   },
   "threat_target": {
-    "component_id": 106,
+    "component_id": 208,
     "asset_ids": [
-      12
+      102
     ]
   },
   "attack_surface": {
-    "behavior_id": 3014,
+    "behavior_id": 521,
     "data_flow_id": null,
-    "data_description": "$BGT balance checking or 1:1 redemption logic in BeraHub smart contracts"
+    "data_description": "Exploitable vulnerability in $BGT reward claiming mechanism (via BeraHub 208 / Reward Vault 209)."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 402,
+    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
+    "between_component_ids": [
+      208,
+      201
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in BeraHub's smart contracts could allow a user to redeem more $BGT than they own, or to receive $BERA at a ratio more favorable than 1:1."
+    "gap_description": "Reward claiming contracts may have flaws allowing users to claim more than entitled."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious $BGT Holder (Actor 4) could exploit a contract flaw to unfairly acquire more $BERA than entitled during redemption."
+    "description": "A malicious Liquidity Provider (Actor 4) could exploit vulnerabilities in the reward claiming process."
   },
   "behavioral_risk": {
-    "behavior_id": 3014,
-    "risk_level": "Medium",
-    "rationale": "Exploiting redemption logic to gain excess $BERA can disrupt tokenomics and cause financial loss to the system."
+    "behavior_id": 521,
+    "risk_level": "High",
+    "rationale": "Vulnerabilities in reward distribution can lead to theft of $BGT."
   },
   "assumptions": [
-    "The BeraHub smart contracts for $BGT redemption contain a bug in balance checking or the 1:1 conversion logic.",
-    "This bug is exploitable by a $BGT Holder."
+    "The smart contracts governing $BGT claims (e.g., Reward Vault 209, BeraHub 208) have an exploitable vulnerability.",
+    "The Liquidity Provider (4) has the knowledge and intent to exploit this."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits of BeraHub's redemption smart contracts, focusing on balance management and the 1:1 conversion mechanism. Formal verification if feasible.",
+    "strategy": "Comprehensive smart contract audits, secure accounting of rewards, formal verification.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious $BGT Holder (Actor 4) exploits a vulnerability in the BeraHub (Component 106) smart contracts to redeem more $BGT than they legitimately own, or to receive $BERA at a rate greater than the intended 1:1 ratio.",
+  "description": "A malicious Liquidity Provider (4) exploits a vulnerability in the $BGT reward claiming mechanism (via BeraHub 208 / Reward Vault 209) (behavior 521) to claim more $BGT (102) than they are legitimately entitled to.",
   "trace_source": {
     "doc_reference": "doc_13, doc_27",
-    "matched_capability": "Redeem $BGT for $BERA"
+    "matched_capability": "Earn $BGT"
   }
 }

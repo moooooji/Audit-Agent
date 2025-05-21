@@ -1,11 +1,11 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": null,
     "behavior_id": null,
-    "capability_match": "Receive allocated $BERA tokens subject to vesting schedule"
+    "capability_match": "Receive $BERA token allocation subject to vesting"
   },
   "threat_target": {
     "component_id": null,
@@ -16,7 +16,7 @@
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "Vesting contract's claim function and its logic for amount and timing validation."
+    "data_description": "The smart contract function or mechanism responsible for allowing Initial Core Contributors to claim their vested $BERA tokens."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -25,33 +25,34 @@
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The vesting contract may have flaws in its logic, allowing an attacker to claim more tokens than allocated or claim them before the authorized vesting period."
+    "integrity_required": false,
+    "availability_required": true,
+    "gap_description": "A vulnerability in the vesting contract (e.g., reentrancy, gas griefing) or an administrative action (e.g., contract pause without clear unpause) could prevent contributors from claiming their tokens."
   },
   "actor_risk": {
     "actor_id": 10,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Investor (ID 10)'s allocation could be illegitimately claimed by an attacker, or the overall token supply integrity could be compromised if an attacker exploits a flaw to mint/claim unallocated tokens."
+    "description": "Initial Core Contributors (Actor ID 10) are prevented from accessing their vested $BERA tokens."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Allows theft of unvested or unallocated tokens, directly impacting tokenomics and potentially causing significant financial loss to the project or other investors."
+    "risk_level": "Medium",
+    "rationale": "Prevents core contributors from receiving their rightful compensation, potentially damaging trust and project stability."
   },
   "assumptions": [
-    "The vesting smart contract contains a vulnerability in its entitlement checks (e.g., incorrect calculation of claimable amount, bypassable time-lock).",
-    "An attacker can craft a transaction to exploit this vulnerability."
+    "Vested $BERA tokens are claimed by Initial Core Contributors through interaction with a smart contract.",
+    "The vesting smart contract could contain bugs or be subject to administrative controls that can be misused or exploited.",
+    "External factors like extreme network congestion leading to prohibitive gas costs could also temporarily deny access to claims."
   ],
   "mitigation": {
-    "strategy": "Conduct rigorous and comprehensive smart contract audits, including formal verification if feasible. Implement robust and thoroughly tested logic for vesting schedules and claimable amount calculations. Use established and audited contract patterns.",
+    "strategy": "Conduct thorough security audits of the vesting contract, focusing on DoS vectors. Implement gas-efficient claim functions. Ensure any pausable functionality has clear, fair unpause conditions and is controlled by a secure, time-locked, or multi-signature mechanism. Provide alternative claim methods if feasible for extreme network conditions.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a flaw in the vesting contract logic to illegitimately claim $BERA tokens (Asset ID 101) intended for Investor (ID 10), or claims more tokens than entitled, or claims them before the vesting schedule permits.",
+  "description": "An Initial Core Contributor is prevented from claiming their vested $BERA tokens due to a flaw in the vesting mechanism, malicious action, or system unavailability.",
   "trace_source": {
-    "doc_reference": "pol/tokens/tokenomics.md#token-release-schedule",
-    "matched_capability": "Receive allocated $BERA tokens subject to vesting schedule"
+    "doc_reference": "doc_29",
+    "matched_capability": "Receive $BERA token allocation subject to vesting"
   }
 }

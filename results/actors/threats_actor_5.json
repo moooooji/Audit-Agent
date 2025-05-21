@@ -1,59 +1,61 @@
 {
-  "id": 6,
+  "id": 10,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": null,
-    "behavior_id": 3011,
-    "capability_match": "Manage incentive rates for their Reward Vaults"
+    "behavior_id": 527,
+    "capability_match": null
   },
   "threat_target": {
-    "component_id": 105,
+    "component_id": 201,
     "asset_ids": [
-      18,
-      12
+      102,
+      106,
+      107
     ]
   },
   "attack_surface": {
-    "behavior_id": 3011,
-    "data_flow_id": 1013,
-    "data_description": "Access control mechanisms (e.g., onlyOwner modifier) for administrative functions within the Reward Vault (105) contract."
+    "behavior_id": 527,
+    "data_flow_id": null,
+    "data_description": "Compromise or misuse of administrative functions in the deployed Reward Vault contract"
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 402,
+    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
+    "between_component_ids": [
+      201
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in the Reward Vault's access control logic could allow an unauthorized actor to execute administrative functions, violating integrity and authorization."
+    "gap_description": "If administrative controls for the Reward Vault are compromised or overly permissive, an attacker could gain unauthorized control."
   },
   "actor_risk": {
-    "actor_id": null,
-    "type": null,
+    "actor_id": 5,
+    "type": "Smart Contract",
     "overprivileged": false,
-    "description": "The risk originates from a potential vulnerability in the Reward Vault (Component 105) smart contract's authorization logic."
+    "description": "The Protocol (Ecosystem Project) is responsible for securing the administrative access to their deployed Reward Vault. If these controls are weak or keys are lost, privilege escalation can occur."
   },
   "behavioral_risk": {
-    "behavior_id": 3011,
+    "behavior_id": 527,
     "risk_level": "High",
-    "rationale": "Bypassing access controls on admin functions allows unauthorized manipulation of critical system parameters and funds."
+    "rationale": "Unauthorized administrative access to a Reward Vault can lead to theft of all managed funds or manipulation of its core parameters."
   },
   "assumptions": [
-    "The Reward Vault (105) has administrative functions to manage incentives.",
-    "These functions are intended to be protected by an access control mechanism (e.g., only callable by the Protocol Admin/Token Manager).",
-    "A vulnerability exists in this access control mechanism."
+    "The Reward Vault contract deployed by Protocol (Actor 5) includes administrative functions (e.g., to set fees, upgrade contract, pause functionality).",
+    "The private key(s) controlling these administrative functions could be compromised, or the functions themselves might have vulnerabilities allowing unauthorized access."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits focusing on access control. Use well-tested libraries for ownership/role management (e.g., OpenZeppelin). Minimize the attack surface of admin functions.",
+    "strategy": "Secure administrative keys using hardware wallets, multisigs, and strict operational security. Implement timelocks for critical administrative actions. Minimize the scope of admin privileges to only what is essential. Conduct audits on admin control mechanisms.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker discovers and exploits a vulnerability in the Reward Vault (105) smart contract's access control mechanism, allowing them to call administrative functions (e.g., set incentive rates, withdraw deposited incentives) without being the legitimate Protocol Admin (Actor 5).",
+  "description": "If the administrative controls of a Reward Vault deployed by a Protocol (Ecosystem Project) are compromised (e.g., private key theft) or contain vulnerabilities, an attacker could gain elevated privileges. This might allow them to change critical parameters, steal deposited funds, or otherwise misuse the vault beyond its intended design.",
   "trace_source": {
-    "doc_reference": "doc_25",
-    "matched_capability": "Offer incentive tokens in their Reward Vaults"
+    "doc_reference": "doc_24, doc_25",
+    "matched_capability": "Deploy Reward Vaults"
   }
 }

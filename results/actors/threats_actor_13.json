@@ -1,0 +1,60 @@
+{
+  "id": 12,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 13,
+    "behavior_id": 512,
+    "capability_match": "Claim earned incentive token rewards through BGTIncentiveDistributor contract via BeraHub"
+  },
+  "threat_target": {
+    "component_id": 224,
+    "asset_ids": [
+      109
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 512,
+    "data_flow_id": 315,
+    "data_description": "Logic within BGTIncentiveDistributor Contract for processing claims and validating proofs."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 404,
+    "boundary_name": "Off-chain Service to On-chain Contract",
+    "between_component_ids": [
+      225,
+      224
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "A flaw in the contract could allow claiming more rewards than entitled, bypassing normal entitlement rules."
+  },
+  "actor_risk": {
+    "actor_id": 13,
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "A malicious or opportunistic Booster could exploit a contract vulnerability."
+  },
+  "behavioral_risk": {
+    "behavior_id": 512,
+    "risk_level": "High",
+    "rationale": "Exploiting such a flaw can lead to unfair draining of incentive token reserves or minting of unbacked tokens."
+  },
+  "assumptions": [
+    "There is a vulnerability (e.g., reentrancy, logic error, incorrect proof validation) in the BGTIncentiveDistributor Contract (component 224).",
+    "A Booster can craft a transaction to trigger this vulnerability."
+  ],
+  "mitigation": {
+    "strategy": "Rigorous and comprehensive smart contract audits by reputable firms. Formal verification of critical contract logic. Adherence to secure development practices. Bug bounty programs.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "A Booster might exploit a vulnerability in the BGTIncentiveDistributor Contract's claim logic or its handling of 'Proofs of Entitlement' to claim more incentive tokens than they are legitimately entitled to, leading to an unauthorized elevation of privilege over reward distribution.",
+  "trace_source": {
+    "doc_reference": "pol/incentives.md",
+    "matched_capability": "Claim earned incentive token rewards through BGTIncentiveDistributor contract via BeraHub"
+  }
+}

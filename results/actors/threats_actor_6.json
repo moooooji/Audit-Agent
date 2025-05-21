@@ -1,61 +1,59 @@
 {
-  "id": 5,
+  "id": 7,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": 3012,
-    "capability_match": "Cancel malicious proposals via multisig action"
+    "behavior_id": 514,
+    "capability_match": "Cancel malicious proposals during timelock"
   },
   "threat_target": {
-    "component_id": 109,
+    "component_id": 213,
     "asset_ids": [
-      17,
-      12
+      108
     ]
   },
   "attack_surface": {
-    "behavior_id": 3012,
-    "data_flow_id": 1026,
-    "data_description": "Proposal Cancellation Transaction exploiting a vulnerability in the Governance System."
+    "behavior_id": 514,
+    "data_flow_id": 309,
+    "data_description": "Proposal cancellation signal submitted to the Timelock Contract."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2008,
-    "boundary_name": "Guardian to Governance System Boundary",
+    "boundary_id": 407,
+    "boundary_name": "Guardians (Multisig) <-> Timelock Contract",
     "between_component_ids": [
-      6,
-      109
+      213
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in the Governance System might allow the Guardian's cancellation action to have unintended, broader effects."
+    "gap_description": "A flaw in the Timelock Contract's multisig verification logic for cancellations could allow fewer than 5 Guardians to cancel a proposal."
   },
   "actor_risk": {
     "actor_id": 6,
     "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": false,
-    "description": "A vulnerability in the Governance System, when triggered by the Guardian's legitimate cancellation capability, could inadvertently grant the Guardian (or the transaction itself) unintended powers over the system."
+    "overprivileged": true,
+    "description": "A Guardian (or a small group) could exploit a contract flaw to act with escalated privileges, bypassing the 5-of-9 consensus."
   },
   "behavioral_risk": {
-    "behavior_id": 3012,
+    "behavior_id": 514,
     "risk_level": "High",
-    "rationale": "Exploiting a vulnerability through the Guardian's action could lead to unauthorized control over governance or other system components."
+    "rationale": "Bypassing the 5-of-9 multisig requirement for cancellation undermines the core security model of Guardian oversight."
   },
   "assumptions": [
-    "A vulnerability (e.g., reentrancy, incorrect access control) exists in the Governance System's smart contracts related to proposal cancellation.",
-    "The Guardian submits a transaction that, while appearing normal or intended for cancellation, triggers this vulnerability."
+    "The Timelock Contract's code that verifies the 5-of-9 signatures for a cancellation call has a bug.",
+    "A malicious Guardian or an attacker who compromised a sub-threshold number of Guardian keys could exploit this bug."
   ],
   "mitigation": {
-    "strategy": "Conduct comprehensive security audits of all Governance System smart contracts, focusing on access control, state changes, and interactions related to privileged functions. Apply the principle of least privilege strictly in contract design.",
+    "strategy": "Rigorous smart contract audits, formal verification of the multisig logic within the Timelock Contract, and use of well-established, audited multisig library patterns.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A vulnerability in the Governance System allows a transaction signed by the Guardian (intended for cancelling a proposal) to perform actions beyond its defined scope, such as modifying other proposals, altering system parameters, or executing arbitrary code, effectively elevating the Guardian's privilege.",
+  "description": "A vulnerability in the Timelock Contract's multisig validation logic for proposal cancellations could allow a single Guardian, or a group smaller than the required 5-of-9, to elevate their privileges and successfully cancel a proposal without proper consensus.",
   "trace_source": {
     "doc_reference": "doc_3",
-    "matched_capability": "Cancel malicious proposals via multisig action"
+    "matched_capability": "Cancel malicious proposals during timelock"
   }
 }

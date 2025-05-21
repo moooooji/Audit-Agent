@@ -1,55 +1,62 @@
 {
   "id": 6,
-  "stride_category": "Repudiation",
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
-    "actor_id": 9,
-    "behavior_id": null,
-    "capability_match": "Receive allocated $BERA tokens subject to vesting schedule"
+    "actor_id": null,
+    "behavior_id": 517,
+    "capability_match": "Bridge NFTs"
   },
   "threat_target": {
-    "component_id": null,
-    "asset_ids": []
+    "component_id": 211,
+    "asset_ids": [
+      104
+    ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "Records and processes related to token distribution and claim fulfillment for Core Contributor (Actor ID 9)."
+    "behavior_id": 517,
+    "data_flow_id": 311,
+    "data_description": "Public blockchain data of NFT bridge transactions, including source/destination addresses, token IDs, and timestamps."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "Vesting System Record Keeping and Distribution Process",
-    "between_component_ids": []
+    "boundary_id": 403,
+    "boundary_name": "Berachain Network <-> External Chains (via Bridge)",
+    "between_component_ids": [
+      201,
+      210,
+      211
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Lack of verifiable, non-repudiable proof of token distribution or correct claim processing, allowing the distributing entity to falsely deny distribution or dispute legitimate claims from Core Contributor (Actor ID 9)."
+    "gap_description": "All bridge transactions are public on both chains, potentially revealing NFT holder strategies or linking identities if addresses are deanonymized. This is inherent to public blockchains but constitutes information disclosure."
   },
   "actor_risk": {
-    "actor_id": null,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "actor_id": 9,
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The entity or administrator responsible for token distribution (acting on behalf of the system) falsely denies or incorrectly records the fulfillment of Core Contributor's (Actor ID 9) token claim due to flawed processes or malicious intent."
+    "description": "The bridging activities of NFT Holder (ID 9) concerning their NFTs (Asset ID 104) are publicly visible and can be analyzed by anyone."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Medium",
-    "rationale": "If the system can repudiate its token distribution obligations or actions without verifiable proof, Core Contributors may unfairly lose access to their vested tokens, leading to disputes and loss of trust."
+    "behavior_id": 517,
+    "risk_level": "Low",
+    "rationale": "Public nature of blockchain transactions allows tracking of NFT movements across the bridge, which is an expected characteristic but can be used for analysis."
   },
   "assumptions": [
-    "The process for distributing vested tokens or acknowledging claims lacks sufficient non-repudiable evidence (e.g., auditable on-chain transactions for all distributions, signed attestations for off-chain steps).",
-    "Disputes can arise if a Core Contributor (Actor ID 9) claims non-receipt and the system cannot definitively prove distribution."
+    "All bridge transactions are recorded on public, immutable ledgers (Ethereum and Berachain).",
+    "External observers can access and analyze this blockchain data.",
+    "Sufficient transaction volume or specific NFT characteristics might allow for pattern recognition or targeted analysis."
   ],
   "mitigation": {
-    "strategy": "Ensure all token distributions to Core Contributors are executed via transparent and auditable on-chain transactions. Maintain secure, immutable, and independently verifiable logs for any off-chain claim processing steps. Provide clear claim receipts or transaction IDs to contributors.",
+    "strategy": "Users concerned about privacy can employ standard blockchain privacy techniques (e.g., using fresh addresses for receiving bridged assets, using mixers where applicable and legal before/after bridging non-NFT assets). The bridge itself cannot easily mitigate this for public NFTs on public chains.",
     "type": "Process Control",
-    "priority": "Medium"
+    "priority": "Low"
   },
-  "description": "The system or entity managing token vesting for 'Big Bera Labs Member / Initial Core Contributor' (Actor ID 9) fails to provide non-repudiable proof of token distribution, or falsely denies a legitimate claim, leading to a dispute over received tokens.",
+  "description": "External observers can analyze public blockchain data from Data Flow ID 311 associated with NFT Holder (ID 9) using the Berachain NFT Bridge (ID 211) for Behavior ID 517. This public data reveals the movement of NFTs (Asset ID 104), which, while expected, can disclose transaction patterns, link addresses across chains, or expose holder strategies.",
   "trace_source": {
-    "doc_reference": "pol/tokens/tokenomics.md#token-release-schedule",
-    "matched_capability": "Receive allocated $BERA tokens subject to vesting schedule"
+    "doc_reference": "doc_4",
+    "matched_capability": "Bridge NFTs"
   }
 }

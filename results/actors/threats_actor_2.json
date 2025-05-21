@@ -1,66 +1,57 @@
 {
-  "id": 9,
+  "id": 11,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 3013,
-    "capability_match": "Sign messages and transactions"
+    "behavior_id": 505,
+    "capability_match": "Earn incentives"
   },
   "threat_target": {
-    "component_id": null,
+    "component_id": 209,
     "asset_ids": [
-      11,
-      13,
-      14,
-      15,
-      18,
-      19,
-      21
+      107
     ]
   },
   "attack_surface": {
-    "behavior_id": 3013,
-    "data_flow_id": null,
-    "data_description": "User signing a transaction that grants excessive permissions (e.g., setApprovalForAll) to a malicious contract."
+    "behavior_id": 505,
+    "data_flow_id": 305,
+    "data_description": "Interaction logic between validator's directed $BGT emissions and the Reward Vault's incentive calculation/distribution mechanism"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2002,
-    "boundary_name": "Wallet to dApp/RPC Boundary",
-    "between_component_ids": [
-      107,
-      110
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "User unknowingly grants a malicious contract the privilege to manage their tokens."
+    "availability_required": true,
+    "gap_description": "Flaws in a Reward Vault's (Component 209) incentive logic could be exploited by a Validator to claim more Incentive Tokens (Asset 107) than due."
   },
   "actor_risk": {
     "actor_id": 2,
-    "type": "EOA (Externally Owned Account)",
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
     "overprivileged": false,
-    "description": "User (General Blockchain User) may not understand the full implications of permissions they grant."
+    "description": "Validator could exploit a specific Reward Vault's logic to gain unfair incentives, especially if Reward Vaults are developed by third parties."
   },
   "behavioral_risk": {
-    "behavior_id": 3013,
-    "risk_level": "High",
-    "rationale": "Unlimited token approvals are a common vector for asset theft in DeFi."
+    "behavior_id": 505,
+    "risk_level": "Medium",
+    "rationale": "Unfairly claiming incentives devalues the system for honest participants and protocols, and misallocates resources within the PoL ecosystem."
   },
   "assumptions": [
-    "User interacts with a malicious dApp or is tricked into signing a malicious approval transaction.",
-    "Wallet UI does not clearly and forcefully warn about the scope of permissions being granted."
+    "Reward Vault (209) contracts, which may be developed by third-party protocols, could contain vulnerabilities in their incentive calculation or distribution logic.",
+    "A validator can craft their $BGT emission strategy or interact in a specific way that triggers such vulnerabilities to their advantage."
   ],
   "mitigation": {
-    "strategy": "User education on token approvals, wallets providing clear warnings and approval management tools (e.g., revoke.cash integration), dApps requesting minimal necessary approvals.",
+    "strategy": "Rigorous security audits for all whitelisted Reward Vault contracts, particularly focusing on their incentive mechanisms. Standardized and audited interfaces for incentive distribution (e.g., via BGTIncentiveDistributor 215). Continuous monitoring of incentive payouts.",
     "type": "Process Control",
     "priority": "High"
   },
-  "description": "User (2) is tricked by a malicious dApp or phishing site into signing a transaction via their User Wallet Software (107) that grants broad permissions (e.g., `setApprovalForAll`) for their tokens to an attacker-controlled smart contract. This elevates the privilege of the malicious contract, allowing it to drain the user's approved tokens.",
+  "description": "A Validator (Actor 2) exploits a flaw in a Reward Vault's (Component 209) incentive mechanism when directing $BGT emissions, allowing them to claim excessive or unearned Incentive Tokens (Asset 107).",
   "trace_source": {
-    "doc_reference": "doc_5",
-    "matched_capability": "Sign messages and transactions"
+    "doc_reference": "doc_7, doc_21, doc_25",
+    "matched_capability": "Earn incentives"
   }
 }

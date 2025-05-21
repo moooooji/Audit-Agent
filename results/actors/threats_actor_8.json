@@ -1,61 +1,60 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 9,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": null,
-    "behavior_id": 3009,
-    "capability_match": "Claim $BERA tokens via the airdrop application"
+    "behavior_id": 516,
+    "capability_match": "Claim $BERA tokens"
   },
   "threat_target": {
-    "component_id": 111,
+    "component_id": 222,
     "asset_ids": [
-      11,
-      20
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 3009,
-    "data_flow_id": 1022,
-    "data_description": "Interaction with the Airdrop Claim Application's smart contract logic during a claim attempt."
+    "behavior_id": 516,
+    "data_flow_id": 310,
+    "data_description": "Forged claim request using compromised credentials of a legitimate Airdrop Recipient."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2009,
-    "boundary_name": "Airdrop Application Boundary",
+    "boundary_id": 405,
+    "boundary_name": "User <-> Airdrop Infrastructure",
     "between_component_ids": [
       8,
-      111
+      222
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Vulnerabilities in the Airdrop Claim Application's smart contract could allow an attacker to bypass eligibility checks or claim rules, effectively elevating their privileges to claim more tokens or unauthorized tokens."
+    "availability_required": false,
+    "gap_description": "Authentication of the Airdrop Recipient (Actor 8) to the Airdrop Claim Tool (Component 222) is compromised via stolen private keys."
   },
   "actor_risk": {
-    "actor_id": null,
-    "type": null,
+    "actor_id": 8,
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious user or external attacker exploiting a smart contract flaw."
+    "description": "Airdrop Recipient's private keys are compromised, allowing an attacker to impersonate them and steal their airdrop."
   },
   "behavioral_risk": {
-    "behavior_id": 3009,
+    "behavior_id": 516,
     "risk_level": "High",
-    "rationale": "Smart contract vulnerabilities can lead to direct loss of funds or unfair distribution."
+    "rationale": "Compromise of user's private keys allows an attacker to perform any action on their behalf, including claiming airdrops."
   },
   "assumptions": [
-    "The smart contract(s) governing the Airdrop Claim Application contain exploitable vulnerabilities (e.g., reentrancy, integer overflow/underflow, incorrect access control, flawed business logic for eligibility/amount calculation).",
-    "The attacker has identified such a vulnerability."
+    "The Airdrop Recipient (Actor 8) has had their private keys stolen or exposed through malware, phishing, or other means.",
+    "The Airdrop Claim Tool relies solely on cryptographic signatures for authentication, which the attacker can now produce."
   ],
   "mitigation": {
-    "strategy": "Conduct comprehensive security audits of the Airdrop Claim Application's smart contracts by reputable third-party firms. Implement formal verification where possible. Adhere to secure smart contract development best practices (e.g., Checks-Effects-Interactions pattern, use of OpenZeppelin libraries). Implement a bug bounty program.",
-    "type": "Technical Control",
+    "strategy": "Users must secure their private keys. Encourage use of hardware wallets and best security practices. The airdrop mechanism itself cannot prevent this if keys are compromised, but time-limited claim windows can reduce the window of opportunity.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A malicious user or external attacker exploits a vulnerability in the Airdrop Claim Application's smart contract to bypass eligibility rules or manipulate claim logic, allowing them to claim more $BERA tokens than they are entitled to, or to claim tokens on behalf of other users without authorization.",
+  "description": "An attacker, having compromised the private keys of a legitimate Airdrop Recipient (Actor 8), spoofs their identity to the Airdrop Claim Tool (Component 222) and successfully claims the $BERA airdrop on behalf of the victim, directing it to an attacker-controlled address.",
   "trace_source": {
     "doc_reference": "doc_2",
-    "matched_capability": "Claim $BERA tokens via the airdrop application"
+    "matched_capability": "Claim $BERA tokens"
   }
 }

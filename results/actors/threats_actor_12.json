@@ -1,0 +1,55 @@
+{
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": null,
+    "behavior_id": null,
+    "capability_match": "Review RFRV proposals"
+  },
+  "threat_target": {
+    "component_id": null,
+    "asset_ids": []
+  },
+  "attack_surface": {
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Authentication and authorization mechanisms controlling access to BGT Foundation roles, accounts, or systems used for RFRV reviews."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "Weak access controls, vulnerabilities in systems used by the BGT Foundation, or compromised credentials could allow an unauthorized individual to gain the privileges of a BGT Foundation reviewer."
+  },
+  "actor_risk": {
+    "actor_id": 12,
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": false,
+    "description": "Gaining the privileges associated with the BGT Foundation would grant an attacker significant, unauthorized influence over the RFRV whitelisting process."
+  },
+  "behavioral_risk": {
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "An attacker elevating privileges to that of a BGT Foundation member can unilaterally approve malicious Reward Vaults or reject legitimate ones, severely impacting the ecosystem."
+  },
+  "assumptions": [
+    "BGT Foundation members use specific accounts or systems to perform their review duties that are potentially vulnerable to compromise or unauthorized access.",
+    "A vulnerability or misconfiguration exists that allows an attacker to escalate their privileges to that of a BGT Foundation member."
+  ],
+  "mitigation": {
+    "strategy": "Enforce strong, multi-factor authentication (MFA) for all BGT Foundation members' accounts. Implement the principle of least privilege for any systems or tools they use. Regularly audit access controls, member accounts, and system security. Secure development and operational practices for any custom tools used by the Foundation.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "An attacker exploits a vulnerability or compromises a BGT Foundation member's account to gain the privileges associated with the BGT Foundation, allowing them to manipulate RFRV review outcomes.",
+  "trace_source": {
+    "doc_reference": "doc_14",
+    "matched_capability": "Review RFRV proposals"
+  }
+}

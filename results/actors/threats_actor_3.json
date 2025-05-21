@@ -1,62 +1,63 @@
 {
-  "id": 8,
+  "id": 18,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 3,
-    "behavior_id": 3004,
-    "capability_match": "Stake LP tokens in Reward Vaults"
+    "actor_id": null,
+    "behavior_id": 520,
+    "capability_match": "Redeem $BGT for $BERA"
   },
   "threat_target": {
-    "component_id": 105,
+    "component_id": 208,
     "asset_ids": [
-      15,
-      12,
-      18
+      102,
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 3004,
-    "data_flow_id": 1010,
-    "data_description": "Liquidity Provider (Actor 3) interacts with a Reward Vault (Component 105) by sending an LP Token Staking Transaction."
+    "behavior_id": 520,
+    "data_flow_id": 314,
+    "data_description": "Redemption transaction exploiting a flaw in amount calculation or $BGT balance check."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2004,
-    "boundary_name": "dApp Smart Contract Boundary (e.g., BEX, Reward Vaults)",
+    "boundary_id": 402,
+    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
     "between_component_ids": [
-      105,
-      101
+      206,
+      207,
+      208,
+      201
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A vulnerability in a Reward Vault could allow an interacting user (like Actor 3) to perform unauthorized actions, such as draining staked LP tokens or illegitimately claiming excessive rewards."
+    "gap_description": "A flaw in BeraHub or the underlying redemption contract might allow redeeming more $BGT than owned, or receiving more $BERA than the 1:1 ratio."
   },
   "actor_risk": {
-    "actor_id": 3,
+    "actor_id": null,
     "type": "EOA (Externally Owned Account)",
-    "overprivileged": true,
-    "description": "If a Reward Vault (Component 105) is vulnerable, any interacting user, including a Liquidity Provider (Actor 3), might exploit it to gain unauthorized access to staked assets or manipulate reward distributions."
+    "overprivileged": false,
+    "description": "An attacker could exploit a contract flaw to illegitimately gain $BERA or redeem $BGT they don't own."
   },
   "behavioral_risk": {
-    "behavior_id": 3004,
+    "behavior_id": 520,
     "risk_level": "High",
-    "rationale": "Exploits in staking contracts allowing unauthorized fund withdrawal or reward manipulation are severe."
+    "rationale": "Exploiting redemption logic can lead to unauthorized minting/acquisition of $BERA or burning of unowned $BGT, impacting tokenomics."
   },
   "assumptions": [
-    "The Reward Vault smart contract (Component 105) contains a critical vulnerability (e.g., reentrancy, incorrect validation, logic error in reward calculation) that can be exploited.",
-    "The exploiter (Actor 3 or another user) can craft a transaction that triggers this vulnerability."
+    "There is a vulnerability in BeraHub (Component 208) or the underlying redemption contract's logic for checking $BGT balances or calculating the $BERA amount.",
+    "Attacker can craft a transaction to exploit this flaw."
   ],
   "mitigation": {
-    "strategy": "Extensive security audits, formal verification for reward logic, bug bounty programs, adherence to secure development practices, and ongoing monitoring.",
+    "strategy": "Rigorous security audits of BeraHub's interaction with the redemption contract and the contract itself, formal verification of critical accounting logic.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Liquidity Provider (Actor 3), or any user interacting with a Reward Vault (Component 105), could exploit a vulnerability in its smart contract to gain unauthorized access to staked LP tokens (Asset 15), illegitimately claim $BGT rewards (Asset 12), or steal offered incentive tokens (Asset 18).",
+  "description": "An attacker exploits a flaw in the $BGT redemption mechanism (via BeraHub or its underlying contract) to redeem more $BGT than they own or to receive a disproportionately large amount of $BERA.",
   "trace_source": {
-    "doc_reference": "doc_25, doc_7, doc_18",
-    "matched_capability": "Stake LP tokens in Reward Vaults"
+    "doc_reference": "doc_13, doc_27",
+    "matched_capability": "Redeem $BGT for $BERA"
   }
 }
