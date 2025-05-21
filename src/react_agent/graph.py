@@ -20,6 +20,7 @@ from react_agent.variables import (
     )
 
 from langgraph.types import Send
+from langgraph.checkpoint.memory import MemorySaver
 
 def architecture_feedback_loop_edge(state: State):
     if state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
@@ -124,5 +125,8 @@ builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_
 builder.add_edge("assess_code_binding", "code_binding")
 builder.add_edge("init_db", "__end__")
 
+# set memory
+memory = MemorySaver()
+
 # Compile the builder into an executable graph
-graph = builder.compile(name="Audit Agent")
+graph = builder.compile(name="Audit Agent", checkpointer=memory)
