@@ -419,6 +419,7 @@ For each threat:
 * Generate **only the security checklist items that are meaningful, relevant, and actionable**.
 * You are **not required to produce a fixed number of items**.
 * **Do not generate checklist items that are trivial, vague, or redundant**.
+* If the checklist need to be smart contract code binding(review implementation of the smart contract), set `need_code_binding` to true.
 * Each checklist item should clearly trace back to:
 
   * A security assumption or mitigation strategy
@@ -448,6 +449,7 @@ For each threat:
       "evidence_required": "Screenshot or audit log showing linked on-chain identity at login.",
       "automatable": false,
       "status": "Not Started",
+      "need_code_binding": true,
       "last_checked": null,
       "owner": "Security Engineering Team"
     }
@@ -529,6 +531,7 @@ Generate a **final, corrected JSON checklist** that:
       "evidence_required": "...",
       "automatable": true,
       "status": "...",
+      "need_code_binding": true,
       "last_checked": null,
       "owner": "..."
     }

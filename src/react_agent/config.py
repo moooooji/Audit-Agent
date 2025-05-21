@@ -873,6 +873,7 @@ class StatusEnum(str, Enum):
     MITIGATED = "Mitigated"
     PENDING_VERIFICATION = "Pending Verification"
 
+
 # ───────────── Checklist Item 정의 (Pydantic 모델) ─────────────
 class ChecklistItem(BaseModel):
     id: int = Field(..., description="Unique ID for the check item")
@@ -895,6 +896,8 @@ class ChecklistItem(BaseModel):
 
     automatable: bool = Field(..., description="Whether this check can be automated")
     status: str = Field("Not Started", description="Current status of this check item")
+
+    need_code_binding: bool = Field(..., description="Whether this check needs smart contract code binding")
 
     last_checked: Optional[str] = Field(
         None,
