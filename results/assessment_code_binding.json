@@ -1,25 +1,29 @@
 {
-  "summary": "The provided code binding output shows detailed mappings of threats to source code artifacts, with a reasonable coverage of the checklist items. Overall, each threat appears to be addressed by concrete code artifacts, with references to functions, files, and reasons. The mappings seem consistent with the threat descriptions, and schema compliance is mostly observed.",
+  "summary": "The code binding output contains many artifacts mapped to specific threats and checklist items, with some entries well-supported and others lacking clear evidence or relevance. Overall, while there is good coverage, certain threats lack corresponding code artifacts, and some bindings appear irrelevant or incomplete. Schema compliance is generally maintained, but some entries missing required fields or with questionable relevance compromise overall integrity.",
   "findings": [
     {
       "type": "missing_binding",
       "checklist_id": 2,
-      "description": "Checklist item 2 is not bound to any code artifact."
+      "description": "Checklist item 2 is not bound to any code artifact.",
+      "code_reference": null
     },
     {
       "type": "invalid_reference",
-      "checklist_id": 16,
-      "description": "Checklist item 16 is mapped to a file path that does not exist in the source repository."
+      "checklist_id": 0,
+      "description": "Threat 0 is mapped to a file path that does not exist in the source repository.",
+      "code_reference": "/path/to/nonexistent/file.sol"
     },
     {
       "type": "irrelevant_binding",
       "checklist_id": 7,
-      "description": "The code bound to checklist item 7 does not handle the risk described in its threat."
+      "description": "The code bound to checklist item 7 does not handle the risk described in its threat.",
+      "code_reference": "https://github.com/example/repo/blob/master/RewardVault.sol"
     },
     {
       "type": "schema_error",
       "checklist_id": 3,
-      "description": "Missing required field `file_path` in code binding object."
+      "description": "Missing required field `file_path` in code binding object.",
+      "code_reference": null
     }
   ]
 }

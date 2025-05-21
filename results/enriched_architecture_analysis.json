@@ -8,635 +8,346 @@
       "dapps": ""
     },
     "components": {
-      "201": {
-        "id": 201,
-        "name": "Berachain Network",
-        "description": "The Layer 1 blockchain itself, including its consensus and execution layers.",
+      "101": {
+        "id": 101,
+        "name": "Berachain L1 Blockchain",
+        "description": "The core Layer 1 proof-of-liquidity blockchain network, encompassing consensus, execution (EVM), and state storage. (doc_9)",
         "trust_level": "High",
         "assets_managed": [
-          101,
-          102,
-          103
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18,
+          19,
+          21
         ]
       },
-      "202": {
-        "id": 202,
-        "name": "Airdrop Checker Website",
-        "description": "Website (checker.berachain.com) allowing users to check their $BERA airdrop allocation.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "203": {
-        "id": 203,
-        "name": "Airdrop Claim Website",
-        "description": "Website (airdrop.berachain.com) allowing users to claim their allocated $BERA tokens.",
-        "trust_level": "Medium",
-        "assets_managed": [
-          117
-        ]
-      },
-      "204": {
-        "id": 204,
-        "name": "Ethereum Mainnet",
-        "description": "External blockchain where official Berachain NFTs originate and can be bridged from.",
-        "trust_level": "Low",
-        "assets_managed": [
-          104
-        ]
-      },
-      "205": {
-        "id": 205,
-        "name": "Berachain Governance System",
-        "description": "Decentralized system (derived from OpenZeppelin Governance) for proposals, voting, and execution of changes. Manages the governance lifecycle.",
-        "trust_level": "High",
-        "assets_managed": [
-          107
-        ]
-      },
-      "206": {
-        "id": 206,
-        "name": "BeraHub",
-        "description": "Central dApp (hub.berachain.com) for managing $BGT, accessing BEX liquidity, participating in governance, claiming rewards, and other Berachain interactions.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "207": {
-        "id": 207,
-        "name": "Governance Contract",
-        "description": "Smart contract used to submit governance proposals on-chain.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "208": {
-        "id": 208,
-        "name": "Timelock Contract",
-        "description": "Smart contract that imposes a delay on the execution of passed governance proposals, allowing for Guardian oversight.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "209": {
-        "id": 209,
-        "name": "Berachain NFT Bridge",
-        "description": "Service (nftbridge.berachain.com) for bridging official Berachain NFTs between Ethereum and Berachain.",
-        "trust_level": "Medium",
-        "assets_managed": [
-          104
-        ]
-      },
-      "210": {
-        "id": 210,
-        "name": "Blockchain Wallet",
-        "description": "User-controlled software (e.g., MetaMask) for storing private keys and interacting with Berachain dApps.",
-        "trust_level": "Medium",
-        "assets_managed": [
-          106,
-          101,
-          102,
-          103,
-          104,
-          108,
-          109
-        ]
-      },
-      "211": {
-        "id": 211,
-        "name": "Berachain Mainnet RPC Endpoint",
-        "description": "Remote Procedure Call endpoint for wallets and applications to interact with the Berachain Mainnet.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "212": {
-        "id": 212,
-        "name": "Canonical Bridging Service (Berachain Bridge)",
-        "description": "Official bridge (bridge.berachain.com, powered by LayerZero) for transferring tokens to Berachain, with an option to get $BERA.",
-        "trust_level": "Medium",
-        "assets_managed": [
-          101
-        ]
-      },
-      "213": {
-        "id": 213,
-        "name": "Centralized Exchange (CEX)",
-        "description": "Off-chain trading platform where $BERA may be listed and traded.",
-        "trust_level": "Low",
-        "assets_managed": [
-          101
-        ]
-      },
-      "214": {
-        "id": 214,
-        "name": "Proof-of-Liquidity (PoL) Mechanism",
-        "description": "Core consensus and economic mechanism of Berachain, involving $BERA staking, $BGT emissions, Reward Vaults, and incentives.",
-        "trust_level": "High",
-        "assets_managed": [
-          101,
-          102,
-          109,
-          110
-        ]
-      },
-      "215": {
-        "id": 215,
-        "name": "Reward Vault Contract",
-        "description": "Smart contract where users stake PoL-eligible assets (receipt tokens) to earn $BGT rewards. Receives $BGT emissions from validators and can offer incentives.",
-        "trust_level": "High",
-        "assets_managed": [
-          108,
-          102,
-          109
-        ]
-      },
-      "216": {
-        "id": 216,
-        "name": "BEX (Berachain Exchange)",
-        "description": "Berachain's native decentralized exchange (DEX) for swapping crypto assets and providing liquidity.",
-        "trust_level": "High",
-        "assets_managed": [
-          110
-        ]
-      },
-      "217": {
-        "id": 217,
-        "name": "BEX Liquidity Pool",
-        "description": "Smart contract within BEX holding pairs of crypto assets, enabling swaps and liquidity provision.",
-        "trust_level": "High",
-        "assets_managed": [
-          110
-        ]
-      },
-      "218": {
-        "id": 218,
+      "102": {
+        "id": 102,
         "name": "BeaconKit",
-        "description": "Modular consensus layer framework used by Berachain, integrating CometBFT for EVM-compatible chains.",
+        "description": "The modular consensus layer framework used by Berachain, integrating CometBFT for consensus. Operates as part of the Berachain L1. (doc_8, doc_9)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "219": {
-        "id": 219,
-        "name": "CometBFT",
-        "description": "Consensus algorithm used by BeaconKit to achieve agreement on block order and validity.",
+      "103": {
+        "id": 103,
+        "name": "EVM (Ethereum Virtual Machine)",
+        "description": "The execution environment within Berachain L1 that runs smart contract code. (doc_9)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "220": {
-        "id": 220,
-        "name": "EVM Execution Client",
-        "description": "Software (e.g., Geth, Reth) responsible for executing smart contracts and processing transactions on Berachain.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "221": {
-        "id": 221,
-        "name": "Engine API",
-        "description": "Interface enabling communication between the consensus layer (BeaconKit) and the execution layer (EVM Execution Client).",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "222": {
-        "id": 222,
-        "name": "Honey Swap dApp",
-        "description": "Berachain dApp (honey.berachain.com) for trading approved stables/assets for $HONEY and minting $HONEY.",
+      "104": {
+        "id": 104,
+        "name": "BEX (Berachain Exchange)",
+        "description": "Berachain's native decentralized exchange (DEX) consisting of smart contracts for token swaps and liquidity provision. (doc_11, doc_13)",
         "trust_level": "Medium",
         "assets_managed": [
-          103,
-          111
+          11,
+          13,
+          15,
+          18,
+          21
         ]
       },
-      "223": {
-        "id": 223,
-        "name": "Governance Forum",
-        "description": "Online forum (hub.forum.berachain.com) for discussing governance proposals, including Reward Vault whitelisting.",
+      "105": {
+        "id": 105,
+        "name": "Reward Vaults",
+        "description": "Smart contracts where users stake PoL-eligible assets (e.g., LP tokens) to receive $BGT emissions directed by validators. Protocols can offer incentives through these vaults. (doc_3, doc_7, doc_25)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          12,
+          15,
+          18
+        ]
+      },
+      "106": {
+        "id": 106,
+        "name": "BeraHub",
+        "description": "A central dApp (frontend and smart contracts) for users to manage $BGT (boost, redeem, claim rewards), access BEX liquidity pools, and participate in Berachain governance. (doc_13, doc_15, doc_16, doc_17)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          12,
+          15,
+          17,
+          18
+        ]
+      },
+      "107": {
+        "id": 107,
+        "name": "User Wallet Software",
+        "description": "Client-side application (e.g., MetaMask, Rabby) used by users to manage private keys, sign transactions, and interact with dApps on Berachain. (doc_5)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          16
+        ]
+      },
+      "108": {
+        "id": 108,
+        "name": "Berachain Bridge",
+        "description": "System (smart contracts on Berachain and other chains, possibly with off-chain components) enabling the transfer of assets like tokens (e.g., $BERA from CEX) and NFTs between Berachain and other blockchains (e.g., Ethereum). (doc_6, doc_4 for NFT bridge)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          11,
+          14,
+          19
+        ]
+      },
+      "109": {
+        "id": 109,
+        "name": "Governance System",
+        "description": "A set of smart contracts on Berachain L1 that manage the lifecycle of governance proposals: creation, pending state, active voting, outcome determination, timelock, and execution. (doc_3)",
+        "trust_level": "High",
+        "assets_managed": [
+          12,
+          17
+        ]
+      },
+      "110": {
+        "id": 110,
+        "name": "RPC Node",
+        "description": "A server that provides an API for wallets and dApps to read data from the Berachain blockchain and submit transactions to the network. (doc_5 - implied for wallet connection)",
         "trust_level": "Medium",
         "assets_managed": []
       },
-      "224": {
-        "id": 224,
+      "111": {
+        "id": 111,
+        "name": "Airdrop Claim Application",
+        "description": "A web application and associated smart contracts allowing eligible users to check their $BERA airdrop allocation and claim their tokens. (doc_2)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          11,
+          20
+        ]
+      },
+      "112": {
+        "id": 112,
+        "name": "Honey Swap Application",
+        "description": "A dApp (frontend and smart contracts, including HoneyFactory and Honey Vaults) that allows users to mint $HONEY by depositing whitelisted collateral, or redeem $HONEY for collateral. (doc_12, doc_28)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          13,
+          21
+        ]
+      },
+      "113": {
+        "id": 113,
+        "name": "Berachain NFT Bridge Application",
+        "description": "A dedicated web application and smart contracts for bridging official Berachain NFT collections between Ethereum and Berachain. (doc_4)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          14,
+          19
+        ]
+      },
+      "114": {
+        "id": 114,
         "name": "BGTIncentiveDistributor Contract",
-        "description": "Smart contract responsible for managing the distribution and claiming of incentive tokens earned by users who boost validators.",
+        "description": "Smart contract responsible for managing the distribution and claiming of incentive tokens to users who have boosted validators with their $BGT. (doc_21)",
         "trust_level": "High",
         "assets_managed": [
-          109,
-          113
+          18
         ]
       },
-      "225": {
-        "id": 225,
-        "name": "Incentive Distribution Backend API",
-        "description": "Off-chain service that updates proofs of users' entitlement to incentive tokens every 24 hours for the BGTIncentiveDistributor.",
-        "trust_level": "Medium",
-        "assets_managed": [
-          113
-        ]
-      },
-      "226": {
-        "id": 226,
-        "name": "Distributor Contract (PoL)",
-        "description": "Smart contract that emits $BGT to Reward Vaults on a per-block basis as part of the PoL mechanism.",
-        "trust_level": "High",
-        "assets_managed": [
-          102
-        ]
-      },
-      "227": {
-        "id": 227,
-        "name": "BlockRewardController Contract",
-        "description": "On-chain contract holding constants for $BGT block reward emissions.",
-        "trust_level": "High",
-        "assets_managed": [
-          102
-        ]
-      },
-      "228": {
-        "id": 228,
-        "name": "Auto-Incentivizer",
-        "description": "System that uses fees from foundation vaults to automatically offer incentives to Reward Vaults.",
-        "trust_level": "High",
-        "assets_managed": [
-          109,
-          116
-        ]
-      },
-      "229": {
-        "id": 229,
-        "name": "Foundation Vaults (PoL)",
-        "description": "Specific vaults whose fees are used by the Auto-Incentivizer.",
-        "trust_level": "High",
-        "assets_managed": [
-          116
-        ]
-      },
-      "230": {
-        "id": 230,
-        "name": "Reward Vault Factory Contract",
-        "description": "Smart contract used by ecosystem projects to create new Reward Vaults.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "231": {
-        "id": 231,
+      "115": {
+        "id": 115,
         "name": "FeeCollector Contract",
-        "description": "Smart contract that auctions fees collected from core dApps (BEX, HoneySwap) for $WBERA and distributes them to $BGT holders who have boosted validators.",
+        "description": "Smart contract that collects fees from Berachain core dApps (BEX, Honey Swap), auctions them for $WBERA, and distributes the $WBERA to $BGT holders who have boosted validators. (doc_27)",
         "trust_level": "High",
         "assets_managed": [
-          116,
-          114
+          11,
+          12
         ]
       },
-      "232": {
-        "id": 232,
-        "name": "$HONEY Vault Contract",
-        "description": "Specialized smart contract for a specific type of whitelisted collateral, used in the $HONEY minting process. Manages deposits of that collateral.",
+      "116": {
+        "id": 116,
+        "name": "Distributor Contract (BGT Emissions)",
+        "description": "Smart contract that creates $BGT tokens per block (base and variable emissions) and distributes them to Reward Vaults based on validator allocations. (doc_20)",
         "trust_level": "High",
         "assets_managed": [
-          111
+          12
         ]
-      },
-      "233": {
-        "id": 233,
-        "name": "HoneyFactory Contract",
-        "description": "Central smart contract in the $HONEY minting process. Connects $HONEY Vaults, custodies vault shares, and mints $HONEY tokens to users.",
-        "trust_level": "High",
-        "assets_managed": [
-          103,
-          111,
-          112
-        ]
-      },
-      "234": {
-        "id": 234,
-        "name": "Social Media Platform",
-        "description": "External social media service (e.g. Discord, Twitter) used for community interaction and airdrop announcements/participation.",
-        "trust_level": "Low",
-        "assets_managed": []
-      },
-      "235": {
-        "id": 235,
-        "name": "Berachain Bepolia Testnet RPC",
-        "description": "Remote Procedure Call endpoint for wallets and applications to interact with the Berachain Bepolia Testnet.",
-        "trust_level": "High",
-        "assets_managed": []
-      },
-      "236": {
-        "id": 236,
-        "name": "BeraScan Block Explorer",
-        "description": "Block explorer for Berachain (berascan.com).",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "237": {
-        "id": 237,
-        "name": "Boyco",
-        "description": "Platform for developers and builders related to Berachain ecosystem support (boyco.berachain.com).",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "238": {
-        "id": 238,
-        "name": "RFRV Google Form (BEX Pool)",
-        "description": "Google Form (tinyurl.com/bdebbjkb) for submitting Request for Reward Vault for BEX Pools.",
-        "trust_level": "Low",
-        "assets_managed": []
-      },
-      "239": {
-        "id": 239,
-        "name": "RFRV Google Form (General non-BEX)",
-        "description": "Google Form (tinyurl.com/3kzv8de7) for submitting Request for Reward Vault for general non-BEX integrations.",
-        "trust_level": "Low",
-        "assets_managed": []
-      },
-      "240": {
-        "id": 240,
-        "name": "OpenSea",
-        "description": "NFT marketplace (opensea.io) where official Berachain NFT collections are listed on Ethereum.",
-        "trust_level": "Low",
-        "assets_managed": [
-          104
-        ]
-      },
-      "241": {
-        "id": 241,
-        "name": "Berachain Discord",
-        "description": "Official Berachain Discord server for community questions and discussion.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "242": {
-        "id": 242,
-        "name": "Berachain Blog",
-        "description": "Official Berachain Blog (blog.berachain.com) for announcements and information.",
-        "trust_level": "Medium",
-        "assets_managed": []
       }
     },
     "actors": {
       "1": {
         "id": 1,
-        "name": "User",
-        "type": "EOA (Externally Owned Account)",
-        "description": "General end user of the Berachain ecosystem. Interacts with dApps, manages tokens, and participates in network activities.",
+        "name": "Validator",
+        "type": "DAO Participant/Token Holder",
+        "description": "Operates a node to participate in consensus, proposes blocks, stakes $BERA, directs $BGT emissions to Reward Vaults, and earns rewards ($BGT, fees, incentives). (doc_7, doc_20, doc_24)",
         "capabilities": [
-          "Connect wallet to dApps",
-          "Check $BERA airdrop allocation",
-          "Claim $BERA airdrop tokens",
-          "Bridge NFTs between Ethereum and Berachain",
-          "Connect to Berachain Mainnet/Testnet RPC",
-          "Set up and configure wallet (e.g., MetaMask)",
-          "Obtain $BERA via bridging or exchanges",
-          "Provide liquidity to protocols (e.g., BEX)",
-          "Receive receipt tokens for provided liquidity",
-          "Stake PoL-eligible assets/receipt tokens in Reward Vaults",
-          "Earn $BGT from Reward Vaults",
-          "Claim earned $BGT rewards via BeraHub",
-          "Trade/swap crypto assets on BEX",
-          "Trade approved stables/assets for $HONEY on Honey Swap",
-          "Use BeraHub to review Reward Vaults and Validators",
-          "Redeem $BGT for $BERA via BeraHub",
-          "Mint $HONEY by depositing whitelisted collateral via HoneySwap/HoneyFactory",
-          "Use $HONEY for payments or as a hedge",
-          "Pay transaction fees using $BERA",
-          "If holding sufficient $BGT, create governance proposals",
-          "If holding $BGT, vote on governance proposals",
-          "If holding $BGT, delegate $BGT to validators (boost)",
-          "Claim incentives earned from boosting validators via BeraHub"
+          "Stake $BERA",
+          "Propose blocks",
+          "Participate in consensus",
+          "Direct $BGT emissions to Reward Vaults",
+          "Receive block rewards ($BGT, transaction fees)",
+          "Receive incentives from protocols",
+          "Set commission rate for incentives"
         ]
       },
       "2": {
         "id": 2,
-        "name": "$BGT Token Holder",
-        "type": "DAO Participant/Token Holder",
-        "description": "Holds $BGT tokens, enabling participation in governance and PoL economic incentives.",
+        "name": "User (General Blockchain User)",
+        "type": "EOA (Externally Owned Account)",
+        "description": "Individual interacting with the Berachain ecosystem using a wallet to manage assets, sign transactions, and interact with dApps. (doc_5, doc_6, doc_18)",
         "capabilities": [
-          "Hold $BGT tokens",
-          "Create governance proposals (if meeting 10,000 $BGT threshold)",
-          "Vote on governance proposals",
-          "Delegate $BGT voting power",
-          "Delegate $BGT to validators to boost their emissions and earn incentives",
-          "Redeem $BGT for $BERA (one-way)",
-          "Earn a share of Berachain core dApp fees (BEX, HoneySwap) if boosting validators"
+          "Manage private keys/seed phrase via wallet",
+          "Hold and transfer tokens ($BERA, $HONEY, NFTs, etc.)",
+          "Pay gas fees for transactions",
+          "Interact with dApps (e.g., BEX, BeraHub, Honey Swap)",
+          "Bridge assets to/from Berachain",
+          "Sign messages and transactions"
         ]
       },
       "3": {
         "id": 3,
-        "name": "Guardian",
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "Member of a 5-of-9 multisig responsible for oversight of the governance timelock period.",
+        "name": "Liquidity Provider (User)",
+        "type": "EOA (Externally Owned Account)",
+        "description": "A user who provides assets to liquidity pools (e.g., on BEX) to earn trading fees and $BGT by staking LP tokens in Reward Vaults. (doc_7, doc_11, doc_25)",
         "capabilities": [
-          "Cancel malicious governance proposals during the timelock period",
-          "Review Request for Reward Vault (RFRV) proposals (along with BGT Foundation)"
+          "Deposit assets into liquidity pools (e.g., BEX)",
+          "Receive LP tokens",
+          "Stake LP tokens in Reward Vaults",
+          "Earn $BGT emissions from Reward Vaults",
+          "Withdraw liquidity and rewards"
         ]
       },
       "4": {
         "id": 4,
-        "name": "Validator",
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "Network participant responsible for proposing blocks, participating in consensus, and securing Berachain. Operates a validator node.",
+        "name": "$BGT Holder (User)",
+        "type": "EOA (Externally Owned Account)",
+        "description": "A user who has acquired $BGT, enabling participation in governance and PoL reward mechanisms. (doc_3, doc_7, doc_16, doc_27)",
         "capabilities": [
-          "Stake $BERA (minimum 250,000, maximum 10,000,000 $BERA)",
-          "Propose blocks if in the Active Set (top 69 by $BERA stake)",
-          "Receive base $BGT emissions for block production",
-          "Receive variable $BGT reward vault emissions based on $BGT boost",
-          "Direct $BGT emissions to chosen whitelisted Reward Vaults",
-          "Receive protocol-provided Incentives from Reward Vaults for directed emissions",
-          "Collect transaction fees ($BERA) from proposed blocks",
-          "Set and update commission rate on earned incentives",
-          "Share incentives with $BGT delegators (boosters)"
+          "Earn $BGT (e.g., by staking LP tokens)",
+          "Delegate $BGT to Validators (Boost)",
+          "Earn a share of Validator incentives and dApp fees",
+          "Vote on governance proposals",
+          "Create governance proposals (if holding sufficient $BGT)",
+          "Redeem $BGT for $BERA"
         ]
       },
       "5": {
         "id": 5,
-        "name": "Protocol Developer / Ecosystem Project",
-        "type": "EOA (Externally Owned Account)",
-        "description": "Develops applications and protocols on Berachain, potentially integrating with Proof-of-Liquidity.",
+        "name": "Protocol / Ecosystem Project",
+        "type": "Smart Contract",
+        "description": "An entity or team that deploys dApps, including Reward Vaults, on Berachain and may offer incentive tokens to attract $BGT emissions and liquidity. (doc_14, doc_21, doc_24, doc_25)",
         "capabilities": [
-          "Deploy smart contracts on Berachain",
-          "Create Reward Vaults using the factory contract",
-          "Submit Request for Reward Vault (RFRV) forms and post on Governance Forum for whitelisting",
-          "Offer incentive tokens in their whitelisted Reward Vaults to attract $BGT emissions",
-          "Define how users acquire PoL-eligible assets for their protocol"
+          "Deploy smart contracts (dApps, Reward Vaults)",
+          "Request Reward Vault whitelisting via governance",
+          "Offer incentive tokens in their Reward Vaults",
+          "Manage incentive rates for their Reward Vaults"
         ]
       },
       "6": {
         "id": 6,
-        "name": "Incentive Token Manager",
+        "name": "Guardian",
         "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "A wallet address designated (via governance) to manage the offering of specific incentive tokens for a Reward Vault.",
+        "description": "A 5-of-9 multisig entity with the power to cancel malicious governance proposals during the timelock period to protect the ecosystem. (doc_3)",
         "capabilities": [
-          "Offer whitelisted incentive tokens to a specific Reward Vault",
-          "Define the incentive rate (distribution per $BGT)",
-          "Deposit additional incentive tokens to the Reward Vault",
-          "Increase incentive rate when depositing additional tokens",
-          "Set a lower incentive rate only when current incentive supply is exhausted"
+          "Monitor governance proposals during timelock",
+          "Cancel malicious proposals via multisig action"
         ]
       },
       "7": {
         "id": 7,
-        "name": "BGT Foundation",
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "An entity involved in the governance process, specifically reviewing Reward Vault whitelisting requests.",
+        "name": "NFT Holder (User)",
+        "type": "EOA (Externally Owned Account)",
+        "description": "A user who owns official Berachain NFTs (e.g., Bong Bears). These NFTs can be bridged and may confer benefits like airdrop eligibility. (doc_2, doc_4)",
         "capabilities": [
-          "Review Request for Reward Vault (RFRV) proposals weekly"
+          "Hold Berachain NFTs",
+          "Bridge NFTs between Ethereum and Berachain",
+          "Receive airdrops or other benefits associated with NFT ownership"
         ]
       },
       "8": {
         "id": 8,
-        "name": "Berachain Foundation",
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "Organization supporting the Berachain ecosystem's development, R&D, growth, and operations.",
-        "capabilities": [
-          "Support ecosystem development and R&D",
-          "Fund growth initiatives and operations",
-          "Manage node operator delegations",
-          "Drive evolutions of Proof-of-Liquidity and BeaconKit",
-          "Manage a portion of $BERA supply for ecosystem growth, developer tooling, liquidity provisioning"
-        ]
-      },
-      "9": {
-        "id": 9,
-        "name": "Big Bera Labs Member / Initial Core Contributor",
+        "name": "Airdrop Claimant (User)",
         "type": "EOA (Externally Owned Account)",
-        "description": "Individuals who are core contributors to the Berachain blockchain, including advisors.",
+        "description": "A user who checks their eligibility and claims $BERA tokens from an airdrop distribution. (doc_2)",
         "capabilities": [
-          "Receive allocated $BERA tokens subject to vesting schedule"
-        ]
-      },
-      "10": {
-        "id": 10,
-        "name": "Investor",
-        "type": "EOA (Externally Owned Account)",
-        "description": "Seed, Series A, or Series B investor in Berachain.",
-        "capabilities": [
-          "Receive allocated $BERA tokens subject to vesting schedule"
-        ]
-      },
-      "11": {
-        "id": 11,
-        "name": "Social Media Platform User",
-        "type": "EOA (Externally Owned Account)",
-        "description": "User interacting with Berachain through social media channels, particularly for airdrop participation.",
-        "capabilities": [
-          "Connect relevant social media accounts for airdrop allocation checking",
-          "Tie social airdrop allocations to a wallet via social login"
+          "Check airdrop allocation (wallet address or social login)",
+          "Claim $BERA tokens via the airdrop application"
         ]
       }
     },
     "assets": {
-      "101": {
-        "id": 101,
-        "name": "$BERA Token",
-        "description": "Native gas and staking token of Berachain. Used for transaction fees and validator staking.",
-        "type": "Token",
+      "11": {
+        "id": 11,
+        "name": "$BERA",
+        "description": "Native gas token for transactions and staking token for validators on Berachain. (doc_26, doc_29)",
+        "type": "Cryptocurrency (Native Token)",
         "sensitivity": "High"
       },
-      "102": {
-        "id": 102,
+      "12": {
+        "id": 12,
         "name": "$BGT (Bera Governance Token)",
-        "description": "Non-transferrable staking and governance token. Earned by participating in Proof-of-Liquidity. Used for governance voting, validator boosting, and can be redeemed for $BERA.",
-        "type": "Token",
+        "description": "Non-transferable (soulbound) token used for governance (voting, proposals) and PoL rewards (delegation to validators, earning incentives). Earned by participating in PoL. (doc_27, doc_29)",
+        "type": "Cryptocurrency (Governance Token)",
         "sensitivity": "High"
       },
-      "103": {
-        "id": 103,
-        "name": "$HONEY Token",
-        "description": "Native stablecoin of the Berachain ecosystem, soft-pegged to the US Dollar. Fully collateralized.",
-        "type": "Token",
+      "13": {
+        "id": 13,
+        "name": "$HONEY",
+        "description": "Native, fully collateralized, USD-pegged stablecoin of the Berachain ecosystem. (doc_12, doc_28)",
+        "type": "Cryptocurrency (Stablecoin)",
         "sensitivity": "High"
       },
-      "104": {
-        "id": 104,
-        "name": "Official Berachain NFTs",
-        "description": "Six official NFT collections (Bong Bears, Bond Bears, Boo Bears, Baby Bears, Band Bears, Bit Bears) that can be bridged from Ethereum to Berachain.",
+      "14": {
+        "id": 14,
+        "name": "Berachain NFTs",
+        "description": "Official Non-Fungible Tokens of the Berachain ecosystem (e.g., Bong Bears, Bond Bears, Boo Bears, Baby Bears, Band Bears, Bit Bears). Can be bridged from Ethereum. (doc_4)",
         "type": "NFT",
         "sensitivity": "Medium"
       },
-      "105": {
-        "id": 105,
-        "name": "Ecosystem NFTs",
-        "description": "NFTs from the Berachain ecosystem, holders of which may be eligible for airdrops.",
-        "type": "NFT",
-        "sensitivity": "Medium"
-      },
-      "106": {
-        "id": 106,
-        "name": "User Private Keys",
-        "description": "Cryptographic keys stored in user wallets, granting access to their assets on Berachain.",
-        "type": "Key",
+      "15": {
+        "id": 15,
+        "name": "LP Tokens / Receipt Tokens",
+        "description": "Tokens representing a user's share in a liquidity pool (e.g., from BEX) or other staked positions, used for staking in Reward Vaults to earn $BGT. (doc_7, doc_18, doc_25)",
+        "type": "Token (ERC-20 or similar)",
         "sensitivity": "High"
       },
-      "107": {
-        "id": 107,
-        "name": "Voting Power",
-        "description": "The ability to influence governance decisions, derived from holding or being delegated $BGT.",
-        "type": "Voting Power",
+      "16": {
+        "id": 16,
+        "name": "Wallet Private Keys / Seed Phrase",
+        "description": "Secret cryptographic keys or mnemonic phrase that give a user control over their on-chain assets and identity. Managed by User Wallet Software. (doc_5)",
+        "type": "Cryptographic Key",
+        "sensitivity": "High"
+      },
+      "17": {
+        "id": 17,
+        "name": "Governance Proposal Data",
+        "description": "Information constituting a governance proposal, including proposed changes, targets, and execution details. Managed by the Governance System. (doc_3)",
+        "type": "Data (On-chain)",
         "sensitivity": "Medium"
       },
-      "108": {
-        "id": 108,
-        "name": "Receipt Tokens (PoL-eligible assets)",
-        "description": "Tokens received by users as proof of contribution to a protocol (e.g., LP tokens from BEX). These can be staked in Reward Vaults to earn $BGT.",
-        "type": "Token",
-        "sensitivity": "Medium"
-      },
-      "109": {
-        "id": 109,
+      "18": {
+        "id": 18,
         "name": "Incentive Tokens",
-        "description": "Whitelisted ERC20 tokens offered by protocols in Reward Vaults to attract validator $BGT emissions. Earned by validators and their $BGT delegators.",
-        "type": "Token",
+        "description": "Whitelisted ERC20 tokens offered by Protocols within their Reward Vaults to Validators in exchange for directing $BGT emissions. (doc_15, doc_21)",
+        "type": "Cryptocurrency (ERC-20)",
         "sensitivity": "High"
       },
-      "110": {
-        "id": 110,
-        "name": "Liquidity",
-        "description": "Crypto assets provided by users to liquidity pools in DEXs (like BEX) or other DeFi protocols.",
-        "type": "Token",
+      "19": {
+        "id": 19,
+        "name": "Bridged Assets",
+        "description": "Tokens or NFTs that have been transferred from another blockchain (e.g., Ethereum) to Berachain, or vice-versa, via a bridge. (doc_4, doc_6)",
+        "type": "Token (Wrapped or Native)",
         "sensitivity": "High"
       },
-      "111": {
-        "id": 111,
-        "name": "Whitelisted Collateral Assets for $HONEY",
-        "description": "Approved tokens (e.g., $USDC, $BYUSD) that can be deposited to mint $HONEY.",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "112": {
-        "id": 112,
-        "name": "$HONEY Vault Shares",
-        "description": "Shares representing a user's deposited collateral in a specific $HONEY Vault, custodied by HoneyFactory.",
-        "type": "Token",
+      "20": {
+        "id": 20,
+        "name": "Airdrop Allocation Data",
+        "description": "Data determining a user's eligibility and amount for a $BERA airdrop, checked via the Airdrop Claim Application. (doc_2)",
+        "type": "Data (Off-chain or On-chain)",
         "sensitivity": "Medium"
       },
-      "113": {
-        "id": 113,
-        "name": "Proofs of Entitlement for Incentives",
-        "description": "Data used by users (boosters) to claim their earned incentive tokens, managed by a backend API and BGTIncentiveDistributor contract.",
-        "type": "Data",
-        "sensitivity": "Medium"
-      },
-      "114": {
-        "id": 114,
-        "name": "$WBERA Token",
-        "description": "Wrapped version of $BERA token.",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "115": {
-        "id": 115,
-        "name": "Transaction Fees",
-        "description": "Fees paid in $BERA for network transactions, partly burned and partly earned by validators.",
-        "type": "Fee",
-        "sensitivity": "High"
-      },
-      "116": {
-        "id": 116,
-        "name": "dApp Fees",
-        "description": "Fees collected from Berachain core dApps (BEX, HoneySwap) and distributed to $BGT holders who boost validators, via FeeCollector contract.",
-        "type": "Fee",
-        "sensitivity": "High"
-      },
-      "117": {
-        "id": 117,
-        "name": "$BERA Airdrop Allocation",
-        "description": "Amount of $BERA tokens allocated to a user during an airdrop event.",
-        "type": "Token",
+      "21": {
+        "id": 21,
+        "name": "$HONEY Collateral",
+        "description": "Whitelisted assets (e.g., $USDC, $BYUSD) deposited into Honey Vaults to mint $HONEY. (doc_28)",
+        "type": "Cryptocurrency (ERC-20 Stablecoin or other)",
         "sensitivity": "High"
       }
     }

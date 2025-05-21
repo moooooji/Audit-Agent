@@ -66,14 +66,12 @@ def parallel_threats_processing(state: State):
     
 def parallel_checklist_processing(state: State):
     
-    print("state.current_threat_count : ", state.current_threat_count)
-    print("threats_list : ", state.threat_list_length)
-    
     if state.current_threat_count == state.threat_list_length:
         
         return [Send("generate_checklist", State(
             target_docs_path=state.target_docs_path,
-            current_actor_id=i,
+            current_actor_id=state.current_actor_id,
+            current_threat_id=i,
             is_threat_analysis=state.is_threat_analysis,
             architecture_feedback_loop_count=state.architecture_feedback_loop_count,
             checklist_feedback_loop_count=state.checklist_feedback_loop_count,

@@ -1,58 +1,62 @@
 {
-  "id": 4,
+  "id": 8,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 504,
-    "capability_match": "Cancel malicious governance proposals during the timelock period"
+    "behavior_id": 3004,
+    "capability_match": "Stake LP tokens in Reward Vaults"
   },
   "threat_target": {
-    "component_id": 208,
-    "asset_ids": []
+    "component_id": 105,
+    "asset_ids": [
+      15,
+      12,
+      18
+    ]
   },
   "attack_surface": {
-    "behavior_id": 504,
-    "data_flow_id": 304,
-    "data_description": "Maliciously crafted cancellation signal from compromised/colluding Guardians, or strategic failure to cancel a known malicious proposal."
+    "behavior_id": 3004,
+    "data_flow_id": 1010,
+    "data_description": "Liquidity Provider (Actor 3) interacts with a Reward Vault (Component 105) by sending an LP Token Staking Transaction."
   },
   "trust_boundary_risk": {
-    "boundary_id": 403,
-    "boundary_name": "Governance Timelock Execution",
+    "boundary_id": 2004,
+    "boundary_name": "dApp Smart Contract Boundary (e.g., BEX, Reward Vaults)",
     "between_component_ids": [
-      205,
-      208
+      105,
+      101
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Guardian role, if a quorum is compromised or colluding, can abuse its cancellation power to subvert governance."
+    "gap_description": "A vulnerability in a Reward Vault could allow an interacting user (like Actor 3) to perform unauthorized actions, such as draining staked LP tokens or illegitimately claiming excessive rewards."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": true,
-    "description": "A compromised or colluding quorum of Guardians (5-of-9 multisig) abuses their intended privilege, effectively elevating their control over the governance outcome."
+    "description": "If a Reward Vault (Component 105) is vulnerable, any interacting user, including a Liquidity Provider (Actor 3), might exploit it to gain unauthorized access to staked assets or manipulate reward distributions."
   },
   "behavioral_risk": {
-    "behavior_id": 504,
+    "behavior_id": 3004,
     "risk_level": "High",
-    "rationale": "Compromise or collusion of a Guardian quorum directly subverts the intended governance safeguard and represents a significant centralization of power."
+    "rationale": "Exploits in staking contracts allowing unauthorized fund withdrawal or reward manipulation are severe."
   },
   "assumptions": [
-    "A quorum (5 out of 9) of Guardian private keys can be simultaneously compromised, or their holders can collude maliciously.",
-    "There are insufficient rapid detection mechanisms or alternative (emergency) governance pathways to counteract malicious actions by a compromised Guardian quorum."
+    "The Reward Vault smart contract (Component 105) contains a critical vulnerability (e.g., reentrancy, incorrect validation, logic error in reward calculation) that can be exploited.",
+    "The exploiter (Actor 3 or another user) can craft a transaction that triggers this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Ensure robust operational security for Guardian keys, select diverse and reputable Guardian members, establish clear public criteria for cancellations, and consider community monitoring or alert systems for Guardian actions.",
-    "type": "Process Control",
+    "strategy": "Extensive security audits, formal verification for reward logic, bug bounty programs, adherence to secure development practices, and ongoing monitoring.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A compromised or colluding quorum of Guardians abuses their privileged role by cancelling legitimate governance proposals or by deliberately failing to cancel known malicious ones. This effectively elevates their power to manipulate governance outcomes, bypassing community consensus.",
+  "description": "A Liquidity Provider (Actor 3), or any user interacting with a Reward Vault (Component 105), could exploit a vulnerability in its smart contract to gain unauthorized access to staked LP tokens (Asset 15), illegitimately claim $BGT rewards (Asset 12), or steal offered incentive tokens (Asset 18).",
   "trace_source": {
-    "doc_reference": "doc_3#guardian-oversight",
-    "matched_capability": "Cancel malicious governance proposals during the timelock period"
+    "doc_reference": "doc_25, doc_7, doc_18",
+    "matched_capability": "Stake LP tokens in Reward Vaults"
   }
 }

@@ -1,56 +1,61 @@
 {
-  "id": 6,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
     "behavior_id": null,
-    "capability_match": "Review Request for Reward Vault (RFRV) proposals weekly"
+    "capability_match": "Bridge NFTs between Ethereum and Berachain"
   },
   "threat_target": {
-    "component_id": null,
-    "asset_ids": []
+    "component_id": 108,
+    "asset_ids": [
+      14,
+      19
+    ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "Internal BGT Foundation (Actor 7) review process and the mechanism for submitting its official recommendation to external governance systems."
+    "data_flow_id": 1020,
+    "data_description": "Asset Bridging Transaction (e.g., NFT from Ethereum)"
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": "Internal BGT Foundation Operations to External Governance",
-    "between_component_ids": []
+    "boundary_name": null,
+    "between_component_ids": [
+      108
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "A single compromised or malicious BGT Foundation (Actor 7) member might be able to unduly influence the review outcome, or submit a false recommendation on behalf of the Foundation to external systems."
+    "availability_required": true,
+    "gap_description": "The Berachain Bridge (Component 108) smart contracts may contain vulnerabilities (e.g., reentrancy, access control flaws, logic errors) in how it processes bridging transactions (Data Flow 1020)."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Compromise of a BGT Foundation (Actor 7) member's account or a malicious insider could lead to biased or false RFRV reviews submitted to external governance processes."
+    "description": "An attacker, acting like an NFT Holder (User 7) but submitting a specially crafted transaction, could exploit flaws in the Berachain Bridge (Component 108)."
   },
   "behavioral_risk": {
     "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Abuse of review privilege by a BGT Foundation (Actor 7) member can lead to incorrect whitelisting decisions by external governance, posing financial and systemic risk."
+    "rationale": "Smart contract vulnerabilities in bridges can lead to significant loss of funds or control over the bridge's operation."
   },
   "assumptions": [
-    "Internal controls within BGT Foundation (Actor 7) might not prevent a single malicious/compromised member from submitting a tainted review recommendation.",
-    "External governance processes might not have sufficient checks to catch a deliberately misleading review from the BGT Foundation (Actor 7).",
-    "Access credentials or systems used by BGT Foundation (Actor 7) members for the review process can be compromised."
+    "The Berachain Bridge (Component 108) smart contracts have privileged functions or manage valuable assets.",
+    "A flaw exists in the contract logic that allows an unauthorized user to call these functions or manipulate state to gain control or steal assets.",
+    "The attacker can craft a specific 'Asset Bridging Transaction' to trigger such a flaw."
   ],
   "mitigation": {
-    "strategy": "Implement multi-person approval (e.g., M-of-N signatures) for official BGT Foundation (Actor 7) review recommendations. Conduct regular security audits of BGT Foundation's internal processes and member access. Ensure strong authentication for review systems.",
-    "type": "Process Control",
+    "strategy": "Conduct rigorous security audits of the Berachain Bridge (Component 108) smart contracts. Implement strict access controls and follow secure development practices. Establish an incident response plan and consider bug bounties.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A compromised member of BGT Foundation (Actor 7), or a malicious insider, uses their privileged access to submit a fraudulent RFRV review recommendation. This misleads external governance systems into making incorrect whitelisting decisions for Reward Vaults.",
+  "description": "An attacker, by submitting a specially crafted 'Asset Bridging Transaction' (Data Flow 1020) as if they were a regular NFT Holder (User 7), exploits a vulnerability in the Berachain Bridge (Component 108). This allows them to perform unauthorized actions such as stealing bridged NFTs (Assets 14, 19), altering bridge parameters, or halting its operation.",
   "trace_source": {
-    "doc_reference": "governance/Reward Vault Governance#request-for-reward-vault",
-    "matched_capability": "Review Request for Reward Vault (RFRV) proposals weekly"
+    "doc_reference": "(doc_4, doc_113)",
+    "matched_capability": "Bridge NFTs between Ethereum and Berachain"
   }
 }

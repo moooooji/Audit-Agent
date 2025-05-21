@@ -3,18 +3,21 @@
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 5,
-    "behavior_id": 514,
-    "capability_match": "Submit Request for Reward Vault (RFRV) forms and post on Governance Forum for whitelisting"
+    "actor_id": null,
+    "behavior_id": 3011,
+    "capability_match": "Manage incentive rates for their Reward Vaults"
   },
   "threat_target": {
-    "component_id": 223,
-    "asset_ids": []
+    "component_id": 105,
+    "asset_ids": [
+      18,
+      12
+    ]
   },
   "attack_surface": {
-    "behavior_id": 514,
-    "data_flow_id": null,
-    "data_description": "Maliciously crafted RFRV submission, including details of a Reward Vault contract with hidden functionalities."
+    "behavior_id": 3011,
+    "data_flow_id": 1013,
+    "data_description": "Access control mechanisms (e.g., onlyOwner modifier) for administrative functions within the Reward Vault (105) contract."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -24,32 +27,33 @@
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The RFRV review process, relying on information from the Governance Forum (Component 223) and submitted forms, may not detect cleverly hidden backdoors or unfair economic advantages in a proposed Reward Vault smart contract."
+    "availability_required": true,
+    "gap_description": "A flaw in the Reward Vault's access control logic could allow an unauthorized actor to execute administrative functions, violating integrity and authorization."
   },
   "actor_risk": {
-    "actor_id": 5,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": true,
-    "description": "If the malicious RFRV is approved, Actor 5 gains unauthorized control or economic benefits beyond standard protocol participation."
+    "actor_id": null,
+    "type": null,
+    "overprivileged": false,
+    "description": "The risk originates from a potential vulnerability in the Reward Vault (Component 105) smart contract's authorization logic."
   },
   "behavioral_risk": {
-    "behavior_id": 514,
+    "behavior_id": 3011,
     "risk_level": "High",
-    "rationale": "Successful exploitation allows the developer to steal user funds, unfairly gain PoL rewards, or disrupt the ecosystem, representing a significant elevation of their intended privileges."
+    "rationale": "Bypassing access controls on admin functions allows unauthorized manipulation of critical system parameters and funds."
   },
   "assumptions": [
-    "A Protocol Developer (Actor 5) is capable of designing and submitting a Reward Vault smart contract with hidden malicious features or unfair economic mechanics.",
-    "The RFRV review and whitelisting process, including scrutiny on the Governance Forum (223), may not be sufficiently rigorous or technically deep to identify all such malicious designs before approval."
+    "The Reward Vault (105) has administrative functions to manage incentives.",
+    "These functions are intended to be protected by an access control mechanism (e.g., only callable by the Protocol Admin/Token Manager).",
+    "A vulnerability exists in this access control mechanism."
   ],
   "mitigation": {
-    "strategy": "Mandate thorough, independent security audits and economic reviews for all smart contracts proposed in RFRVs. Establish clear, strict criteria for secure and fair Reward Vault design. Encourage active community technical review of proposals on the Governance Forum.",
-    "type": "Process Control",
+    "strategy": "Rigorous security audits focusing on access control. Use well-tested libraries for ownership/role management (e.g., OpenZeppelin). Minimize the attack surface of admin functions.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Protocol Developer (Actor 5) submits an RFRV for a Reward Vault contract via the Governance Forum (Component 223) or associated forms. The contract contains hidden backdoors, exploits, or unfair mechanisms designed to grant the developer unauthorized control over staked assets, siphon funds, or unfairly manipulate Proof-of-Liquidity emissions if the vault gets whitelisted. This elevates their privileges within the Berachain ecosystem beyond those of a standard protocol developer.",
+  "description": "An attacker discovers and exploits a vulnerability in the Reward Vault (105) smart contract's access control mechanism, allowing them to call administrative functions (e.g., set incentive rates, withdraw deposited incentives) without being the legitimate Protocol Admin (Actor 5).",
   "trace_source": {
-    "doc_reference": "governance/rewardvault.md",
-    "matched_capability": "Submit Request for Reward Vault (RFRV) forms and post on Governance Forum for whitelisting"
+    "doc_reference": "doc_25",
+    "matched_capability": "Offer incentive tokens in their Reward Vaults"
   }
 }

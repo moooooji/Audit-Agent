@@ -1,96 +1,654 @@
 {
   "evaluation_summary": {
-    "actors": "Actors are generally well-extracted, with their existence and capabilities traceable to the documentation. However, the assigned 'type' for many actors represents a reasonable interpretation or classification rather than a term explicitly stated in the source material.",
-    "assets": "The list of assets is comprehensive and traceable to the documentation in terms of their existence and description. The assigned 'sensitivity' levels are interpretations based on the asset's nature, as these are not explicitly defined in the document.",
-    "components": "Most key on-chain and off-chain components are extracted and traceable. The assigned 'trust_level' for components and the 'assets_managed' appear consistent with a general understanding but are not explicitly detailed for each in the document. Several minor or external components mentioned in the documentation are missing from the extraction.",
-    "data_flows": "Key interactions between actors and components are captured. The source, destination, and high-level data for these flows are generally traceable. However, the 'security_properties' (confidentiality, integrity, availability) for all data flows are not explicitly detailed per flow in the documentation and appear to be based on a default assumption. One data flow's target component could be more specific for better accuracy.",
-    "trust_boundaries": "Trust boundaries are well-defined, traceable to interactions described in the documentation, and correctly link the identified components. Their descriptions are appropriate.",
-    "behaviors": "Key system behaviors, linking actors to component interactions, are largely captured and traceable to the documentation. The assigned 'risk_level' for these behaviors is an interpretation, as explicit risk assessments are not provided in the source material."
+    "actors": "All actors listed in the JSON output are specific to a generic web application and are not traceable to the Berachain documentation. Consequently, all extracted actors are considered hallucinated. Key actors from the Berachain ecosystem (e.g., Validators, $BGT Holders, Protocols, Guardians) are missing.",
+    "assets": "All assets listed are typical for a generic system (e.g., User Data, Payment Information, Session Tokens) and are not found in or supported by the Berachain documentation. All extracted assets are considered hallucinated. Core Berachain assets (e.g., $BERA, $BGT, $HONEY, NFTs, Wallet Private Keys) are missing.",
+    "components": "All components described (e.g., Web UI, API Gateway, specific microservices, traditional databases) are from a generic web application architecture and are not present in or supported by the Berachain documentation. All extracted components are considered hallucinated. Fundamental Berachain components (e.g., Berachain L1, BeaconKit, BEX, Reward Vaults, Wallets) are missing.",
+    "data_flows": "All data flows depict interactions within a generic web application and do not reflect the processes described in the Berachain documentation. All extracted data flows, along with their referenced actors and components, are considered hallucinated. Key Berachain interactions (e.g., staking $BERA, proposing blocks, providing liquidity to BEX, $BGT delegation, governance voting) are missing.",
+    "trust_boundaries": "All trust boundaries are defined for a generic web application architecture and are not supported by the Berachain documentation. The components referenced in `between_ids` are themselves untraceable. All extracted trust boundaries are considered hallucinated. Trust boundaries relevant to the Berachain ecosystem (e.g., Wallet to dApp, dApp to Blockchain) are missing.",
+    "behaviors": "All behaviors describe actions within a generic system (e.g., user submits data via Web UI, admin manages configurations) and are not found in or supported by the Berachain documentation. The initiators and targets of these behaviors are also untraceable. All extracted behaviors are considered hallucinated. Core Berachain behaviors (e.g., securing the network via PoL, participating in on-chain governance, earning $BGT by staking LP tokens) are missing."
   },
   "findings": [
     {
       "category": "actors",
-      "type": "potential_concern",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Actor 'User' (description: 'Users interact with the Web UI to submit and view data.') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Actor 'Admin' (description: 'Admin interacts with Admin Panel to manage system configurations.') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Actor 'Third-party Payment Gateway' (description: 'External system for processing payments...') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Actor 'Auditor' (description: 'Auditors have read-only access to Audit Log Database.') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "actors",
+      "type": "missing",
       "id": null,
-      "description": "The 'type' assigned to many actors (e.g., 'EOA (Externally Owned Account)', 'DAO Participant/Token Holder', 'Privileged Role') is an interpretation or a reasonable classification based on their description, rather than a term explicitly stated for them in the documentation. While often appropriate, this is not strictly explicit."
+      "description": "Actor 'Validator' (responsible for block production, staking $BERA, directing $BGT emissions) is clearly described in the Berachain documentation (e.g., doc_7, doc_20, doc_24) but was not extracted."
+    },
+    {
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'User / $BGT Holder / Liquidity Provider' (interacts with dApps, provides liquidity, stakes LP tokens, delegates $BGT, participates in governance) is a central figure in the Berachain documentation (e.g., doc_7, doc_10, doc_24, doc_27) but was not extracted with these specific roles and capabilities."
+    },
+    {
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'Protocol / Ecosystem Project' (deploys Reward Vaults, offers incentives) is described in the Berachain documentation (e.g., doc_14, doc_21, doc_24) but was not extracted."
+    },
+    {
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'Guardian' (can cancel malicious proposals during timelock) is described in the Berachain documentation (doc_3) but was not extracted."
     },
     {
       "category": "assets",
-      "type": "potential_concern",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Asset 'User Data' (description: 'User profile information...') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Asset 'Payment Information' (description: 'Data related to payment processing...') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Asset 'System Configurations' (description: 'Configuration settings for the system...') is not explicitly supported by the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Asset 'Audit Logs' (description: 'Logs of significant actions and events...') is not explicitly supported by the Berachain documentation in this form. Berachain has on-chain transaction history."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Asset 'Session Tokens' (description: 'Tokens issued by the Auth Service...') is not explicitly supported by the Berachain documentation. Authentication is typically via cryptographic wallet signatures."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Asset 'API Keys' (description: 'Keys used for securing Internal Service-to-Service Communication.') is not explicitly supported by the Berachain documentation in this context. While RPCs might have authentication, this generic asset is not detailed."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Asset 'Transaction Records' (description: 'Records of financial transactions stored in the Payment Database.') is not explicitly supported by the Berachain documentation in this form. Berachain has on-chain transactions, not records in a 'Payment Database'."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
       "id": null,
-      "description": "The 'sensitivity' level (e.g., 'High', 'Medium') for all assets is not explicitly defined or justified for each specific asset in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
+      "description": "Asset '$BERA' (native gas and staking token) is a core asset in the Berachain documentation (e.g., doc_26, doc_29) but was not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset '$BGT' (governance and rewards token) is a core asset in the Berachain documentation (e.g., doc_27, doc_29) but was not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset '$HONEY' (native stablecoin) is a core asset in the Berachain documentation (e.g., doc_28) but was not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'Berachain NFTs' (e.g., Bong Bears, Bit Bears) are described in the Berachain documentation (doc_4) but were not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'LP Tokens / Receipt Tokens' (representing liquidity positions or staked assets) are crucial for PoL and described in the Berachain documentation (e.g., doc_7, doc_18, doc_25) but were not extracted."
+    },
+    {
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'Wallet Private Keys / Seed Phrase' (used to control user assets on-chain) are fundamental and mentioned in the Berachain documentation (doc_5) but were not extracted."
     },
     {
       "category": "components",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'trust_level' (e.g., 'High', 'Medium', 'Low') for all components is not explicitly defined or justified for each specific component in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Component 'Web UI' is not explicitly supported by the Berachain documentation as a core chain component. Users interact via dApps like BeraHub."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Component 'Admin Panel' is not explicitly supported by the Berachain documentation. Chain governance is via $BGT voting."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Component 'API Gateway' as a centralized entry point for all external requests is not how interaction with a decentralized blockchain like Berachain is primarily described. Users interact with RPC nodes or dApp frontends."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Component 'Auth Service' managing session tokens is not explicitly supported. Authentication is typically via wallet signatures."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Component 'User Service' managing user profiles in a 'User Database' is not explicitly supported. User data is generally on-chain or managed by dApps in a decentralized manner."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Component 'Payment Service' integrating with a 'Third-party Payment Gateway' and storing records in a 'Payment Database' is not explicitly supported. Payments are on-chain transactions."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Component 'Config Service' managing system configurations in a 'Config Database' is not explicitly supported. Chain parameters are managed by governance."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Component 'User Database' is not explicitly supported as a core Berachain component."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Component 'Payment Database' is not explicitly supported as a core Berachain component."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Component 'Config Database' is not explicitly supported as a core Berachain component."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 11,
+      "description": "Component 'Audit Log Service' and 'Internal Message Queue' for off-chain audit logging are not explicitly supported. Auditing is primarily via on-chain history."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 12,
+      "description": "Component 'Audit Log Database' is not explicitly supported as a core Berachain component."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 13,
+      "description": "Component 'Internal Message Queue' is not explicitly supported as a core Berachain component in this generic form."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain Bepolia Testnet RPC' is mentioned in Doc 5 but not extracted."
+      "description": "Component 'Berachain L1 Blockchain' (the core network itself) is fundamental in the Berachain documentation (e.g., doc_9) but was not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeraScan Block Explorer' (berascan.com) is mentioned in Doc 18 but not extracted."
+      "description": "Component 'BeaconKit' (modular consensus layer) is a key technology in the Berachain documentation (doc_8, doc_9) but was not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Boyco' (boyco.berachain.com) is mentioned in Doc 29 but not extracted."
+      "description": "Component 'EVM (Ethereum Virtual Machine)' (execution environment) is central to Berachain's functionality (doc_9) but was not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'RFRV Google Form (BEX Pool)' (tinyurl.com/bdebbjkb) is mentioned in Doc 14 but not extracted."
+      "description": "Component 'BEX (Berachain Exchange)' (native DEX) is a core dApp in the Berachain documentation (doc_11, doc_13) but was not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'RFRV Google Form (General non-BEX)' (tinyurl.com/3kzv8de7) is mentioned in Doc 14 but not extracted."
+      "description": "Component 'Reward Vaults' (smart contracts for staking and earning $BGT) are crucial to PoL and described in the Berachain documentation (doc_3, doc_7, doc_25) but were not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'OpenSea' is mentioned in Doc 4 (links to NFT collections) but not extracted."
+      "description": "Component 'BeraHub' (central dApp for managing $BGT, accessing BEX, governance) is described in the Berachain documentation (doc_13) but was not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain Discord' is mentioned in Doc 2 but not extracted."
+      "description": "Component 'Wallets' (e.g., MetaMask, for users to interact with the chain) are mentioned in the Berachain documentation (doc_5) but were not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain Blog' (blog.berachain.com) is mentioned in Doc 29 but not extracted."
+      "description": "Component 'Berachain Bridge' (for transferring assets to/from Berachain) is described in the Berachain documentation (doc_6) but was not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Governance Contracts' (for on-chain decision making) are described in the Berachain documentation (doc_3) but were not extracted."
     },
     {
       "category": "data_flows",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'security_properties' (confidentiality_required, integrity_required, availability_required) for all data flows (301-320) are not explicitly detailed or justified for each specific flow in the provided documentation. The applied values appear to be a default rather than explicitly stated facts from the text."
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Data flow 'User interacts with the Web UI...' (ID 1) is not explicitly supported by the Berachain documentation. Its source actor (ID 1) and destination component (ID 1) are also untraceable."
     },
     {
       "category": "data_flows",
-      "type": "inconsistent",
-      "id": 306,
-      "description": "Data flow 306 'Validator stakes $BERA' targets component 201 'Berachain Network', which is too generic. It should ideally target a more specific component like 214 'Proof-of-Liquidity (PoL) Mechanism' or a dedicated staking contract component if one were defined in the model."
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Data flow 'Admin interacts with the Admin Panel...' (ID 2) is not explicitly supported by the Berachain documentation. Its source actor (ID 2) and destination component (ID 2) are also untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Data flow 'User requests originating from Web UI sent to API Gateway.' (ID 3) is not explicitly supported. Source component (ID 1) and destination component (ID 3) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Data flow 'Admin requests originating from Admin Panel sent to API Gateway.' (ID 4) is not explicitly supported. Source component (ID 2) and destination component (ID 3) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Data flow 'API Gateway requests token validation from Auth Service.' (ID 5) is not explicitly supported. Source component (ID 3) and destination component (ID 4) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Data flow 'Auth Service responds to API Gateway with token validation status...' (ID 6) is not explicitly supported. Source component (ID 4) and destination component (ID 3) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Data flow 'API Gateway forwards a request to User Service.' (ID 7) is not explicitly supported. Source component (ID 3) and destination component (ID 5) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Data flow 'API Gateway forwards a request to Payment Service.' (ID 8) is not explicitly supported. Source component (ID 3) and destination component (ID 6) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Data flow 'API Gateway forwards a request to Config Service.' (ID 9) is not explicitly supported. Source component (ID 3) and destination component (ID 7) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Data flow 'User Service interacts with User Database...' (ID 10) is not explicitly supported. Source component (ID 5) and destination component (ID 8) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 11,
+      "description": "Data flow 'User Service retrieves user data from User Database.' (ID 11) is not explicitly supported. Source component (ID 8) and destination component (ID 5) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 12,
+      "description": "Data flow 'Payment Service stores transaction records in Payment Database.' (ID 12) is not explicitly supported. Source component (ID 6) and destination component (ID 9) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 13,
+      "description": "Data flow 'Config Service interacts with Config Database...' (ID 13) is not explicitly supported. Source component (ID 7) and destination component (ID 10) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 14,
+      "description": "Data flow 'Config Service retrieves system configurations from Config Database.' (ID 14) is not explicitly supported. Source component (ID 10) and destination component (ID 7) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 15,
+      "description": "Data flow 'Payment Service sends payment details to Third-party Payment Gateway...' (ID 15) is not explicitly supported. Source component (ID 6) and destination actor (ID 3) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 16,
+      "description": "Data flow 'Payment Service receives payment status... from Third-party Payment Gateway.' (ID 16) is not explicitly supported. Source actor (ID 3) and destination component (ID 6) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 17,
+      "description": "Data flow 'User Service publishes events to Internal Message Queue...' (ID 17) is not explicitly supported. Source component (ID 5) and destination component (ID 13) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 18,
+      "description": "Data flow 'Audit Log Service consumes events from Internal Message Queue.' (ID 18) is not explicitly supported. Source component (ID 13) and destination component (ID 11) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 19,
+      "description": "Data flow 'Audit Log Service stores audit logs in Audit Log Database.' (ID 19) is not explicitly supported. Source component (ID 11) and destination component (ID 12) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 20,
+      "description": "Data flow 'Auditor accesses audit logs from Audit Log Database.' (ID 20) is not explicitly supported. Source component (ID 12) and destination actor (ID 4) are untraceable."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'Validator stakes $BERA to participate in consensus' is a core process in Berachain (doc_7, doc_20, doc_26) but was not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User provides liquidity to a BEX pool and receives LP tokens' is a key interaction for PoL (doc_7, doc_11, doc_25) but was not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User stakes LP tokens in a Reward Vault to earn $BGT' is fundamental to Berachain's PoL (doc_7, doc_18, doc_25) but was not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'Validator directs $BGT emissions to Reward Vaults and receives Incentives' is a core PoL mechanism (doc_7, doc_21) but was not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User ($BGT Holder) delegates $BGT to a Validator to boost rewards and earn a share of Incentives' is a key PoL interaction (doc_7, doc_16, doc_21, doc_27) but was not extracted."
+    },
+    {
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User creates/votes on a governance proposal using $BGT via BeraHub/Governance Contracts' is a key Berachain process (doc_3, doc_13) but was not extracted."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Trust boundary 'WebUI to API Gateway Boundary' (ID 1) is not explicitly supported. Referenced components (ID 1, 3) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Trust boundary 'Admin Panel to API Gateway Boundary' (ID 2) is not explicitly supported. Referenced components (ID 2, 3) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Trust boundary 'API Gateway to Auth Service Boundary' (ID 3) is not explicitly supported. Referenced components (ID 3, 4) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Trust boundary 'API Gateway to User Service Boundary' (ID 4) is not explicitly supported. Referenced components (ID 3, 5) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Trust boundary 'API Gateway to Payment Service Boundary' (ID 5) is not explicitly supported. Referenced components (ID 3, 6) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Trust boundary 'API Gateway to Config Service Boundary' (ID 6) is not explicitly supported. Referenced components (ID 3, 7) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Trust boundary 'User Service to User DB Boundary' (ID 7) is not explicitly supported. Referenced components (ID 5, 8) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Trust boundary 'Payment Service to Payment DB Boundary' (ID 8) is not explicitly supported. Referenced components (ID 6, 9) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Trust boundary 'Config Service to Config DB Boundary' (ID 9) is not explicitly supported. Referenced components (ID 7, 10) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Trust boundary 'Audit Log Service to Audit Log DB Boundary' (ID 10) is not explicitly supported. Referenced components (ID 11, 12) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 11,
+      "description": "Trust boundary 'User Service to Message Queue Boundary' (ID 11) is not explicitly supported. Referenced components (ID 5, 13) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 12,
+      "description": "Trust boundary 'Message Queue to Audit Log Service Boundary' (ID 12) is not explicitly supported. Referenced components (ID 13, 11) are untraceable."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'User Wallet <-> Berachain dApp (e.g., BeraHub, BEX)' is a critical interaction point in Berachain but was not extracted."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Berachain dApp Frontend <-> Berachain Blockchain (Smart Contracts via RPC)' is fundamental but was not extracted."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Berachain Blockchain (Consensus Layer/BeaconKit) <-> Validators' is essential for network security but was not extracted."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Berachain <-> External Blockchains (e.g., Ethereum via Berachain Bridge)' is important for asset movement but was not extracted."
     },
     {
       "category": "behaviors",
-      "type": "potential_concern",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Behavior 'User Submits or Views Data' (ID 1) via Web UI is not explicitly supported. Initiator actor (ID 1) and target component (ID 1) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Behavior 'Admin Manages Configurations' (ID 2) via Admin Panel is not explicitly supported. Initiator actor (ID 2) and target component (ID 2) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Behavior 'Web UI Sends Request to API Gateway' (ID 3) is not explicitly supported. Initiator component (ID 1) and target component (ID 3) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Behavior 'Admin Panel Sends Request to API Gateway' (ID 4) is not explicitly supported. Initiator component (ID 2) and target component (ID 3) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Behavior 'API Gateway Validates Token' (ID 5) with Auth Service is not explicitly supported. Initiator component (ID 3) and target component (ID 4) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Behavior 'Auth Service Issues Token / Responds to Validation' (ID 6) is not explicitly supported. Initiator component (ID 4) and target component (ID 3) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Behavior 'API Gateway Forwards to User Service' (ID 7) is not explicitly supported. Initiator component (ID 3) and target component (ID 5) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Behavior 'API Gateway Forwards to Payment Service' (ID 8) is not explicitly supported. Initiator component (ID 3) and target component (ID 6) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Behavior 'API Gateway Forwards to Config Service' (ID 9) is not explicitly supported. Initiator component (ID 3) and target component (ID 7) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Behavior 'User Service Manages User Data' (ID 10) in User Database is not explicitly supported. Initiator component (ID 5) and target component (ID 8) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 11,
+      "description": "Behavior 'Payment Service Stores Transaction' (ID 11) in Payment Database is not explicitly supported. Initiator component (ID 6) and target component (ID 9) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 12,
+      "description": "Behavior 'Config Service Manages Configurations' (ID 12) in Config Database is not explicitly supported. Initiator component (ID 7) and target component (ID 10) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 13,
+      "description": "Behavior 'Payment Service Processes Payment Externally' (ID 13) with Third-party Payment Gateway is not explicitly supported. Initiator component (ID 6) and target actor (ID 3) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 14,
+      "description": "Behavior 'User Service Publishes Audit Event' (ID 14) to Internal Message Queue is not explicitly supported. Initiator component (ID 5) and target component (ID 13) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 15,
+      "description": "Behavior 'Audit Log Service Consumes Event' (ID 15) from Internal Message Queue is not explicitly supported. Initiator component (ID 11) and target component (ID 13) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 16,
+      "description": "Behavior 'Audit Log Service Stores Log' (ID 16) in Audit Log Database is not explicitly supported. Initiator component (ID 11) and target component (ID 12) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 17,
+      "description": "Behavior 'Auditor Reads Logs' (ID 17) from Audit Log Database is not explicitly supported. Initiator actor (ID 4) and target component (ID 12) are untraceable."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
       "id": null,
-      "description": "The 'risk_level' (e.g., 'High', 'Medium', 'Low') for all behaviors (501-516) is not explicitly defined or justified for each specific behavior in the provided documentation. The applied values appear to be subjective modeling choices rather than explicitly stated facts from the text."
+      "description": "Behavior 'Validator Secures Network and Earns Rewards' (by staking $BERA, proposing blocks, earning $BGT and fees) is a core Berachain behavior (doc_7, doc_10, doc_20) but was not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior 'User Provides Liquidity and Earns $BGT' (by depositing assets in BEX, staking LP tokens in Reward Vaults) is a fundamental PoL behavior (doc_7, doc_11, doc_25, doc_27) but was not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior 'User Participates in Governance' (by delegating $BGT or voting on proposals) is a key Berachain behavior (doc_3, doc_13, doc_27) but was not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior 'User Swaps Tokens on BEX' is a primary user activity on Berachain (doc_11, doc_13) but was not extracted."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Behavior 'User Bridges Assets to/from Berachain' is an important ecosystem interaction (doc_4, doc_6) but was not extracted."
     }
   ]
 }

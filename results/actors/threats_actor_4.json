@@ -1,22 +1,22 @@
 {
-  "id": 8,
+  "id": 11,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 516,
-    "capability_match": "Propose blocks if in the Active Set (top 69 by $BERA stake)"
+    "behavior_id": 3014,
+    "capability_match": "Redeem $BGT for $BERA"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": 106,
     "asset_ids": [
-      102
+      12
     ]
   },
   "attack_surface": {
-    "behavior_id": 516,
+    "behavior_id": 3014,
     "data_flow_id": null,
-    "data_description": "Block proposal exploiting reward calculation logic or containing transactions that grant proposer undue benefits."
+    "data_description": "$BGT balance checking or 1:1 redemption logic in BeraHub smart contracts"
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -26,33 +26,32 @@
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Flaws in block validation or the reward distribution mechanism allow a block proposer to gain unauthorized benefits."
+    "availability_required": true,
+    "gap_description": "A flaw in BeraHub's smart contracts could allow a user to redeem more $BGT than they own, or to receive $BERA at a ratio more favorable than 1:1."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": true,
-    "description": "A validator could exploit their block proposal rights to extract more rewards than entitled."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "A malicious $BGT Holder (Actor 4) could exploit a contract flaw to unfairly acquire more $BERA than entitled during redemption."
   },
   "behavioral_risk": {
-    "behavior_id": 516,
-    "risk_level": "High",
-    "rationale": "Exploiting block proposal for undue rewards distorts the incentive system and constitutes theft."
+    "behavior_id": 3014,
+    "risk_level": "Medium",
+    "rationale": "Exploiting redemption logic to gain excess $BERA can disrupt tokenomics and cause financial loss to the system."
   },
   "assumptions": [
-    "A vulnerability in the $BGT emission calculation (doc_20) related to block proposal allows a validator to claim inflated rewards.",
-    "A validator can include a transaction in their proposed block that illegitimately transfers network-level funds or assets to themselves by exploiting an EVM or precompile vulnerability.",
-    "The 'base emission' or 'reward vault emission' logic has a flaw exploitable by the block proposer."
+    "The BeraHub smart contracts for $BGT redemption contain a bug in balance checking or the 1:1 conversion logic.",
+    "This bug is exploitable by a $BGT Holder."
   ],
   "mitigation": {
-    "strategy": "Rigorous auditing of block validation logic, EVM implementation, and especially the $BGT reward calculation and distribution mechanisms (components 201, 226, 227). Ensure separation of duties in reward handling if possible.",
+    "strategy": "Rigorous security audits of BeraHub's redemption smart contracts, focusing on balance management and the 1:1 conversion mechanism. Formal verification if feasible.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Validator (Actor 4) crafts a block that exploits a flaw in the Berachain Network's (201) processing or reward mechanism (e.g., in components 226, 227 as described in doc_20) to grant themselves excessive $BGT rewards or other unauthorized benefits.",
+  "description": "A malicious $BGT Holder (Actor 4) exploits a vulnerability in the BeraHub (Component 106) smart contracts to redeem more $BGT than they legitimately own, or to receive $BERA at a rate greater than the intended 1:1 ratio.",
   "trace_source": {
-    "doc_reference": "doc_20#bgt-emissions-structure",
-    "matched_capability": "Propose blocks if in the Active Set (top 69 by $BERA stake)"
+    "doc_reference": "doc_13, doc_27",
+    "matched_capability": "Redeem $BGT for $BERA"
   }
 }

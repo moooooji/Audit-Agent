@@ -1,62 +1,62 @@
 {
   "id": 10,
-  "stride_category": "Denial of Service",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 515,
-    "capability_match": "Redeem $BGT for $BERA via BeraHub"
+    "actor_id": 1,
+    "behavior_id": 3002,
+    "capability_match": "Receive block rewards ($BGT, transaction fees)"
   },
   "threat_target": {
-    "component_id": 206,
+    "component_id": 101,
     "asset_ids": [
-      101,
-      102
+      11,
+      12,
+      18
     ]
   },
   "attack_surface": {
-    "behavior_id": 515,
+    "behavior_id": 3002,
     "data_flow_id": null,
-    "data_description": "BeraHub (206) web application servers and network infrastructure, specifically the interface for $BGT to $BERA redemption."
+    "data_description": "Exploiting L1 (Component 101) logic for reward calculation or attribution"
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet to dApp Interface",
+    "boundary_id": 2005,
+    "boundary_name": "Berachain L1 Consensus Boundary",
     "between_component_ids": [
-      210,
-      206
+      101,
+      1
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "BeraHub (206) may lack sufficient DDoS protection or scalability, making its $BGT redemption functionality unavailable under attack or high load."
+    "gap_description": "Flaws in L1's reward logic could allow a validator to claim more rewards than entitled."
   },
   "actor_risk": {
     "actor_id": 1,
-    "type": "EOA (Externally Owned Account)",
+    "type": "DAO Participant/Token Holder",
     "overprivileged": false,
-    "description": "User (1) is prevented from redeeming their $BGT (Asset 102) for $BERA (Asset 101) if the BeraHub (206) interface for this function is unavailable."
+    "description": "Validator (Actor 1) might attempt to exploit vulnerabilities in L1's reward mechanisms."
   },
   "behavioral_risk": {
-    "behavior_id": 515,
-    "risk_level": "Low",
-    "rationale": "While inconvenient, if the underlying redemption contract is still accessible, this DoS is limited to the primary UI. If BeraHub is the sole gateway, risk is higher."
+    "behavior_id": 3002,
+    "risk_level": "High",
+    "rationale": "Unjust enrichment of validators through exploited reward logic undermines the economic balance and fairness of the PoL system."
   },
   "assumptions": [
-    "BeraHub (206) is a centralized web application vulnerable to common DoS attacks (e.g., traffic flooding, application-layer attacks).",
-    "The $BGT to $BERA redemption process is primarily or exclusively accessed via the BeraHub (206) interface.",
-    "Attackers might target BeraHub to disrupt user operations."
+    "The L1 (Component 101) correctly calculates and attributes all forms of validator rewards (fees, $BGT, incentives via integrated components).",
+    "Access controls prevent direct manipulation of reward balances or calculation parameters."
   ],
   "mitigation": {
-    "strategy": "Implement robust DDoS mitigation (CDN, WAF), scalable infrastructure, and potentially rate limiting for BeraHub (206). Ensure core redemption contract functions can be accessed via alternative means (e.g., direct contract interaction via block explorer, CLI tools) if BeraHub is a critical gateway.",
+    "strategy": "Thorough auditing and formal verification (if feasible) of all smart contracts and L1 modules involved in reward calculation and distribution. Implement strong access controls and invariant checks.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "An external attacker launches a Denial of Service attack against BeraHub (Component 206), making its interface for redeeming $BGT (Asset 102) for $BERA (Asset 101) unavailable. This prevents User (1) from performing the 'User Redeems $BGT for $BERA' behavior (515).",
+  "description": "A Validator (Actor 1) might attempt to exploit a vulnerability within L1 (Component 101) logic that governs reward entitlement or calculation for Behavior 3002. This could involve manipulating on-chain state or finding flaws in how transaction fees, $BGT emissions, or protocol incentives are attributed, allowing them to receive more rewards than they are legitimately due.",
   "trace_source": {
-    "doc_reference": "doc_13",
-    "matched_capability": "Redeem $BGT for $BERA via BeraHub"
+    "doc_reference": "doc_7, doc_20, doc_21",
+    "matched_capability": "Receive block rewards ($BGT, transaction fees)"
   }
 }

@@ -19,10 +19,7 @@ from react_agent.prompt import (
     CODE_BINDING_ASSESSMENT_TEMPLATE,
 )
 from react_agent.config import (
-    ARCHITECTURE_RESPONSE_CONFIG, 
-    ARCHITECTURE_ASSESSMENT_CONFIG,
-    ARCHITECTURE_CORRECTION_CONFIG,
-    THREAT_ANALYSIS_CONFIG,
+    set_gemini_config,
     ChecklistConfig,
     ChecklistAssessmentConfig,
     CodeBindingAssessmentConfig
@@ -48,10 +45,8 @@ from react_agent.variables import (
     CODE_BINDING_FEEDBACK_LOOP_COUNT
 )
 
-# cache = gemini_client.caches.create(
-#     model=gemini_model,
-#       ttl="100000s",
-#   )
+# cache storage
+_cache_storage: dict = {}
 
 def init_state(state: State) -> State:
     """initialize state"""
@@ -185,6 +180,49 @@ def call_chatgpt_api(messages: list, response_format: dict) -> Any:
         messages=messages,
         response_format=response_format
     )
+    
+def create_cache(display_name: str, content: str, ttl: str = "3600s"):
+    """
+    캐시를 생성하고 반환합니다.
+    - 이미 존재하는 캐시가 있으면 해당 캐시를 재사용합니다.
+    - 캐시가 없으면 새로 생성합니다.
+    """
+    # 이름을 직접 키로 사용
+    cache_key = display_name
+    
+    # 이미 저장된 캐시가 있는지 확인
+    if cache_key in _cache_storage:
+        print(f"[*] 기존 캐시 사용: {cache_key}")
+        return _cache_storage[cache_key]
+    
+    # 새 캐시 생성 시도
+    try:
+        # 최소 토큰 수 요구사항으로 인한 에러 방지를 위해 콘텐츠 길이 확인
+        # 대략적으로 4 바이트 = 1 토큰으로 가정
+        estimated_tokens = len(content) / 4
+        
+        if estimated_tokens < 4000:
+            print(f"[!] 콘텐츠가 최소 토큰 요구사항(4096)을 충족하지 않을 수 있습니다. 예상 토큰: {estimated_tokens:.0f}")
+            # 토큰이 부족하면 None 반환하고 캐시 없이 진행
+            return None
+        
+        # 캐시 생성 시도
+        cache = gemini_client.caches.create(
+            model=gemini_model,
+            config=types.CreateCachedContentConfig(
+                display_name=display_name,
+                ttl=ttl,
+                system_instruction=content
+            )
+        )
+        
+        # 성공하면 저장소에 저장
+        _cache_storage[cache_key] = cache
+        print(f"[+] 캐시 생성 완료: {cache_key}")
+        return cache
+    except Exception as e:
+        print(f"⚠️ 캐시 생성 실패: {str(e)}")
+        return None
 
 def generate_llm_response(state: State) -> str:
     """generate llm response"""
@@ -194,16 +232,18 @@ def generate_llm_response(state: State) -> str:
         print("=============initial architecture analysis node=============")
         target_docs = load_file(state.target_docs_path)
         
-        prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace("{target_docs}", target_docs)
+        # 공통으로 사용되는 docs만 캐싱
+        cached_content = create_cache("target_docs", target_docs)
         
+        # 프롬프트 템플릿만 사용
         contents = [
             types.Content(
                 role="user",
-                parts=[types.Part.from_text(text=prompt)],
+                parts=[types.Part.from_text(text=ARCHITECTURE_ANALYSIS_TEMPLATE)],
             ),
         ]
         
-        response = call_gemini_api(contents, ARCHITECTURE_RESPONSE_CONFIG)
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_ANALYSIS_CONFIG", cached_content))
         return response
     
     elif state.is_assessment_analysis and state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
@@ -213,9 +253,10 @@ def generate_llm_response(state: State) -> str:
         # read architecture_analysis 
         analysis_json = load_file("results/architecture_analysis.json")
         
+        # 공통으로 사용되는 docs만 캐싱
+        cached_content = create_cache("target_docs", target_docs)
+        
         prompt = ARCHITECTURE_ASSESSMENT_TEMPLATE.replace(
-            "{target_docs}", target_docs
-            ).replace(
             "{initial_architecture_analysis}", analysis_json
         )
         
@@ -226,7 +267,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = call_gemini_api(contents, ARCHITECTURE_ASSESSMENT_CONFIG)
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_ASSESSMENT_CONFIG", cached_content))
         return response
     
     # feedback loop architecture analysis node
@@ -236,10 +277,11 @@ def generate_llm_response(state: State) -> str:
         analysis_json = load_file("results/architecture_analysis.json")
         # read assessment file
         assessment_architecture_json = load_file("results/assessment_architecture.json")
+        
+        # 공통으로 사용되는 docs만 캐싱
+        cached_content = create_cache("target_docs", target_docs)
             
         prompt = ARCHITECTURE_CORRECTION_TEMPLATE.replace(
-            "{target_docs}", target_docs
-        ).replace(
             "{initial_architecture_analysis}", analysis_json
         ).replace(
             "{assessment_architecture}", assessment_architecture_json
@@ -252,7 +294,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = call_gemini_api(contents, ARCHITECTURE_CORRECTION_CONFIG)
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_CORRECTION_CONFIG", cached_content))
         
         return response
     
@@ -265,9 +307,10 @@ def generate_llm_response(state: State) -> str:
         
         cur_actor = build_llm_chunk(architecture_analysis, state.current_actor_id + 1)
         
+        # 공통으로 사용되는 docs만 캐싱
+        cached_content = create_cache("target_docs", target_docs)
+        
         prompt = THREAT_ANALYSIS_TEMPLATE.replace(
-            "{target_docs}", target_docs
-            ).replace(
                 "{chunk}", json.dumps(cur_actor)
             ).replace(
                 "{architecture_analysis}", architecture_analysis
@@ -280,7 +323,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
 
-        response = call_gemini_api(contents, THREAT_ANALYSIS_CONFIG)
+        response = call_gemini_api(contents, set_gemini_config("THREAT_ANALYSIS_CONFIG", cached_content))
         return response
     
     elif state.is_initial_checklist_analysis:

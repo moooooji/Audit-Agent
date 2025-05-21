@@ -1,59 +1,61 @@
 {
-  "id": 6,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": 511,
-    "capability_match": "Deposit additional incentive tokens to the Reward Vault"
+    "behavior_id": 3012,
+    "capability_match": "Cancel malicious proposals via multisig action"
   },
   "threat_target": {
-    "component_id": 215,
+    "component_id": 109,
     "asset_ids": [
-      102,
-      108,
-      109
+      17,
+      12
     ]
   },
   "attack_surface": {
-    "behavior_id": 511,
-    "data_flow_id": 314,
-    "data_description": "Calls to incentive management functions in Reward Vault Contract by the authorized Token Manager."
+    "behavior_id": 3012,
+    "data_flow_id": 1026,
+    "data_description": "Proposal Cancellation Transaction exploiting a vulnerability in the Governance System."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 2008,
+    "boundary_name": "Guardian to Governance System Boundary",
+    "between_component_ids": [
+      6,
+      109
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A vulnerability in Reward Vault Contract (215) (e.g., reentrancy, insecure delegatecall, flawed access control) allows the authorized Incentive Token Manager to perform actions beyond their intended permissions."
+    "gap_description": "A flaw in the Governance System might allow the Guardian's cancellation action to have unintended, broader effects."
   },
   "actor_risk": {
     "actor_id": 6,
     "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": true,
-    "description": "A compromised or malicious Incentive Token Manager could exploit a contract flaw to gain greater control over the Reward Vault than intended, potentially accessing user funds or other critical parameters."
+    "overprivileged": false,
+    "description": "A vulnerability in the Governance System, when triggered by the Guardian's legitimate cancellation capability, could inadvertently grant the Guardian (or the transaction itself) unintended powers over the system."
   },
   "behavioral_risk": {
-    "behavior_id": 511,
+    "behavior_id": 3012,
     "risk_level": "High",
-    "rationale": "Elevation of privilege for a role managing a vault containing user funds (receipt tokens, BGT) and protocol funds (incentives) can lead to significant financial loss or system manipulation."
+    "rationale": "Exploiting a vulnerability through the Guardian's action could lead to unauthorized control over governance or other system components."
   },
   "assumptions": [
-    "The Reward Vault Contract (215) has an exploitable vulnerability related to access control or state manipulation that is accessible via its incentive management functions.",
-    "The Incentive Token Manager (or an attacker with their keys) can craft a transaction that triggers this vulnerability."
+    "A vulnerability (e.g., reentrancy, incorrect access control) exists in the Governance System's smart contracts related to proposal cancellation.",
+    "The Guardian submits a transaction that, while appearing normal or intended for cancellation, triggers this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Apply the principle of least privilege strictly in Reward Vault contract design. Conduct thorough security audits focusing on EoP vulnerabilities. Use well-established, secure contract patterns. Separate privileged roles where feasible.",
+    "strategy": "Conduct comprehensive security audits of all Governance System smart contracts, focusing on access control, state changes, and interactions related to privileged functions. Apply the principle of least privilege strictly in contract design.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "The Incentive Token Manager, due to a vulnerability in the Reward Vault Contract, elevates their privileges to perform unauthorized actions, such as altering non-incentive critical vault settings or illegitimately accessing staked user assets ($BGT, Receipt Tokens) or incentive tokens beyond deposition.",
+  "description": "A vulnerability in the Governance System allows a transaction signed by the Guardian (intended for cancelling a proposal) to perform actions beyond its defined scope, such as modifying other proposals, altering system parameters, or executing arbitrary code, effectively elevating the Guardian's privilege.",
   "trace_source": {
-    "doc_reference": "pol/incentives.md#incentive-token-managers",
-    "matched_capability": "Deposit additional incentive tokens to the Reward Vault"
+    "doc_reference": "doc_3",
+    "matched_capability": "Cancel malicious proposals via multisig action"
   }
 }

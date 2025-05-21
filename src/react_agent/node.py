@@ -98,10 +98,6 @@ def analyze_threats(state: State) -> State:
     
     # prevent race condition
     with api_semaphore:
-        
-        print("[+] threat_count : ", threat_count)
-        print("[+] actors_map : ", len(actors_map))
-        
         # for google gemini api RPM limit
         current_batch = (threat_count - 1) // BATCH_SIZE
         if current_batch > processed_threats_batches:
@@ -156,10 +152,6 @@ def generate_checklist(state: State) -> State:
     
     # prevent race condition
     with api_semaphore:
-        
-        print("[+] checklist_count : ", checklist_count)
-        print("[+] threats_list : ", len(threats_list))
-        
         # for google gemini api RPM limit
         current_batch = (checklist_count - 1) // BATCH_SIZE
         if current_batch > processed_checklist_batches:
@@ -178,7 +170,7 @@ def generate_checklist(state: State) -> State:
             # append each checklist item extracted from the current actor
             checklist_items.append(checklist_item)
             
-        print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+        print(state.current_threat_id, "번째 threat의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
         
         print("completed initial checklist analysis")
         
@@ -193,7 +185,7 @@ def generate_checklist(state: State) -> State:
             # append each checklist item extracted from the current actor
             checklist_items.append(checklist_item)
             
-        print(state.current_actor_id, "번째 actor의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+        print(state.current_threat_id, "번째 threat의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
         
         print("completed feedback loop checklist analysis")
         
