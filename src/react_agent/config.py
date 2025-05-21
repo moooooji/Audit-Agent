@@ -18,7 +18,9 @@ SMART_CONTRACT_ACTOR_TYPES_EN = [
     "Off-chain Service/Bot"
 ]
 
-ARCHITECTURE_RESPONSE_CONFIG= types.GenerateContentConfig(
+def set_gemini_config(config_name: str, cache: str):
+    if config_name == "ARCHITECTURE_RESPONSE_CONFIG":
+        ARCHITECTURE_RESPONSE_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
     temperature=0,
     response_schema=genai.types.Schema(
@@ -240,255 +242,13 @@ ARCHITECTURE_RESPONSE_CONFIG= types.GenerateContentConfig(
                 ),
             ),
         },
-    )      
+    ),
+    cached_content=cache.name         
 )
-
-
-# ---------------------------------------------------------------------------
-# ARCHITECTURE_RESPONSE_CONFIG (딕셔너리 형태로 변경)
-# ---------------------------------------------------------------------------
-ARCHITECTURE_RESPONSE_CONFIG= types.GenerateContentConfig(
-    response_mime_type="application/json",
-    temperature=0,
-    response_schema=genai.types.Schema( # genai.types.Schema는 그대로 사용
-        type=genai.types.Type.OBJECT,
-        description="Describes the overall architecture of the Web3 system or smart contract(s) under audit, based on the provided documentation (e.g., whitepaper).",
-        required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors"],
-        properties={
-            "actors": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Entities (users, contracts, or external systems) that interact with or within the smart contract system.",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "name", "type", "capabilities"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Unique identifier for the actor.",
-                        ),
-                        "name": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Name of the actor.",
-                        ),
-                        "type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=SMART_CONTRACT_ACTOR_TYPES_EN, # 스마트 컨트랙트용 Enum
-                            description="Type of the actor.",
-                        ),
-                        "description": genai.types.Schema( # 이 필드는 원래 있었음
-                            type=genai.types.Type.STRING,
-                            description="Brief explanation of the actor's role.",
-                        ),
-                        "capabilities": genai.types.Schema(
-                            type=genai.types.Type.ARRAY,
-                            description="List of actor's capabilities.",
-                            items=genai.types.Schema(
-                                type=genai.types.Type.STRING,
-                                description="A specific capability.",
-                            ),
-                        ),
-                    },
-                ),
-            ),
-            "assets": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Valuable resources managed by the system.",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "name", "type", "sensitivity"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Asset ID."
-                        ),
-                        "name": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Asset name."
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Asset description."
-                        ),
-                        "type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Asset type (e.g., Token, Data)."
-                        ),
-                        "sensitivity": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=["High", "Medium", "Low"],
-                            description="Sensitivity level of the asset.",
-                        ),
-                    },
-                ),
-            ),
-            "components": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Logical or functional units of the system (e.g., smart contracts).",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "name", "assets_managed"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Component ID."
-                        ),
-                        "name": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Component name."
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Component description."
-                        ),
-                        "trust_level": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=["High", "Medium", "Low"],
-                            description="Assumed trust level of the component.",
-                        ),
-                        "assets_managed": genai.types.Schema(
-                            type=genai.types.Type.ARRAY,
-                            description="List of asset IDs managed by this component.",
-                            items=genai.types.Schema(type=genai.types.Type.INTEGER, description="ID of a managed asset."),
-                        ),
-                    },
-                ),
-            ),
-            "data_flows": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Interactions or data exchanges between actors and/or components.",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "source_id", "destination_id", "data", "security_properties"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Data flow ID."
-                        ),
-                        "source_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="ID of the source actor or component."
-                        ),
-                        "destination_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="ID of the destination actor or component."
-                        ),
-                        "data": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Description of the data transferred."
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Purpose of the data flow."
-                        ),
-                        "security_properties": genai.types.Schema(
-                            type=genai.types.Type.OBJECT,
-                            description="Security requirements of the data flow.",
-                            required=["confidentiality_required", "integrity_required", "availability_required"],
-                            properties={
-                                "confidentiality_required": genai.types.Schema(
-                                    type=genai.types.Type.BOOLEAN,
-                                    description="Confidentiality required."
-                                ),
-                                "integrity_required": genai.types.Schema(
-                                    type=genai.types.Type.BOOLEAN,
-                                    description="Integrity required."
-                                ),
-                                "availability_required": genai.types.Schema(
-                                    type=genai.types.Type.BOOLEAN,
-                                    description="Availability required."
-                                ),
-                            },
-                        ),
-                    },
-                ),
-            ),
-            "trust_boundaries": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Interfaces where the level of trust changes.",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "name", "between_ids", "validation_required"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Trust boundary ID."
-                        ),
-                        "name": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Trust boundary name."
-                        ),
-                        "between_ids": genai.types.Schema(
-                            type=genai.types.Type.ARRAY,
-                            description="IDs of entities this boundary separates.",
-                            items=genai.types.Schema(
-                                type=genai.types.Type.INTEGER,
-                                description="ID of an entity."
-                            ),
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Trust boundary explanation."
-                        ),
-                        "validation_required": genai.types.Schema(
-                            type=genai.types.Type.BOOLEAN,
-                            description="Validation required when crossing."
-                        ),
-                    },
-                ),
-            ),
-            "behaviors": genai.types.Schema(
-                type=genai.types.Type.ARRAY,
-                description="Specific actions or operations within the system.",
-                items=genai.types.Schema(
-                    type=genai.types.Type.OBJECT,
-                    required=["id", "name", "initiator_type", "initiator_id", "target_id", "action"],
-                    properties={
-                        "id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Behavior ID."
-                        ),
-                        "name": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Behavior name."
-                        ),
-                        "initiator_type": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=["Actor", "Component"],
-                            description="Type of initiator.",
-                        ),
-                        "initiator_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Initiator ID."
-                        ),
-                        "target_id": genai.types.Schema(
-                            type=genai.types.Type.INTEGER,
-                            description="Target component ID."
-                        ),
-                        "action": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Action performed."
-                        ),
-                        "description": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            description="Behavior purpose."
-                        ),
-                        "risk_level": genai.types.Schema(
-                            type=genai.types.Type.STRING,
-                            enum=["High", "Medium", "Low"],
-                            description="Inherent risk level.",
-                        ),
-                    },
-                ),
-            ),
-        },
-    )
-)
-
-
-# ---------------------------------------------------------------------------
-# ARCHITECTURE_ASSESSMENT_CONFIG (딕셔너리 형태로 변경)
-# ---------------------------------------------------------------------------
-ARCHITECTURE_ASSESSMENT_CONFIG = types.GenerateContentConfig(
+        return ARCHITECTURE_RESPONSE_CONFIG
+        
+    elif config_name == "ARCHITECTURE_ASSESSMENT_CONFIG":
+        ARCHITECTURE_ASSESSMENT_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
     temperature=0,
     response_schema=genai.types.Schema(
@@ -557,13 +317,14 @@ ARCHITECTURE_ASSESSMENT_CONFIG = types.GenerateContentConfig(
                 ),
             ),
         },
-    )
+    ),
+    cached_content=cache.name          
 )
+        return ARCHITECTURE_ASSESSMENT_CONFIG
+        
 
-# ---------------------------------------------------------------------------
-# ARCHITECTURE_CORRECTION_CONFIG (딕셔너리 형태로 변경)
-# ---------------------------------------------------------------------------
-ARCHITECTURE_CORRECTION_CONFIG = types.GenerateContentConfig(
+    elif config_name == "ARCHITECTURE_CORRECTION_CONFIG":
+        ARCHITECTURE_CORRECTION_CONFIG = types.GenerateContentConfig(
     temperature=0,
     response_mime_type="application/json",
     response_schema=genai.types.Schema( # ARCHITECTURE_RESPONSE_SCHEMA와 구조 동일
@@ -786,13 +547,13 @@ ARCHITECTURE_CORRECTION_CONFIG = types.GenerateContentConfig(
                 ),
             ),
         }
-    )
+    ),
+    cached_content=cache.name          
 )
-
-# ---------------------------------------------------------------------------
-# THREAT_ANALYSIS_CONFIG (딕셔너리 형태로 변경)
-# ---------------------------------------------------------------------------
-THREAT_ANALYSIS_CONFIG = types.GenerateContentConfig(
+        return ARCHITECTURE_CORRECTION_CONFIG
+    
+    elif config_name == "THREAT_ANALYSIS_CONFIG":
+        THREAT_ANALYSIS_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
     temperature=0,
     response_schema=genai.types.Schema(
@@ -1032,10 +793,11 @@ THREAT_ANALYSIS_CONFIG = types.GenerateContentConfig(
                 ),
             ),
         }
-    )
+    ),
+    cached_content=cache.name          
 )
-
-
+        return THREAT_ANALYSIS_CONFIG
+        
 # ───────────── ENUM 정의 (스마트 컨트랙트 감사에 맞게 확장/조정된 버전 사용) ─────────────
 class CategoryEnum(str, Enum):
     AUTHENTICATION = "Authentication"
