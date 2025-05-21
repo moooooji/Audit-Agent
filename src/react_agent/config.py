@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field # Field는 ChecklistItem에서 사용될 �
 from enum import Enum # ChecklistItem의 Enum들을 위해 추가
 from typing import Optional, List, Dict, Any # Dict, Any 추가
 from datetime import datetime # ChecklistItem에서 사용
-from google.generativeai import types
+from google.genai import types
 # ---------------------------------------------------------------------------
 # ENUM Values (Smart Contract Audit Specific)
 # ---------------------------------------------------------------------------
@@ -22,7 +22,6 @@ ARCHITECTURE_RESPONSE_CONFIG= types.GenerateContentConfig(
     response_mime_type="application/json",
     temperature=0,
     response_schema=genai.types.Schema(
-        genai.types.Schema( # genai.types.Schema는 그대로 사용
         type=genai.types.Type.OBJECT,
         description="Describes the overall architecture of the Web3 system or smart contract(s) under audit, based on the provided documentation (e.g., whitepaper).",
         required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors"],
@@ -241,9 +240,9 @@ ARCHITECTURE_RESPONSE_CONFIG= types.GenerateContentConfig(
                 ),
             ),
         },
-        )      
-    )
+    )      
 )
+
 
 # ---------------------------------------------------------------------------
 # ARCHITECTURE_RESPONSE_CONFIG (딕셔너리 형태로 변경)
