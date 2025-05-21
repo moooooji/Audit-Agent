@@ -39,3 +39,4 @@ class State(InputState):
     
     # node info
     current_actor_id: int = field(default=0)
+    current_threat_id: int = field(default=0)

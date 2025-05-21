@@ -141,7 +141,7 @@ def analyze_threats(state: State) -> State:
     return {
             "is_threat_analysis": False,
             "threat_list_length": len(threats_list),
-            "current_threat_count": id_weight-1
+            "current_threat_count": id_weight-1,
             }
 
 def generate_checklist(state: State) -> State:
