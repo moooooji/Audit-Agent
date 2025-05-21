@@ -2,7 +2,7 @@ import asyncio
 import json
 from src.react_agent.graph import graph
 from src.react_agent.state import InputState
-from src.react_agent.variables import config
+from src.react_agent.variables import graph_config
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
         # stream_mode="events"로 설정하여 각 단계의 상세한 이벤트를 받습니다.
         for event in graph.stream(
             input=input_, 
-            config=config, 
+            config=graph_config, 
             stream_mode="events", 
             interrupt_after=interrupt_nodes
         ):
@@ -44,7 +44,7 @@ def main():
                 print(f"{key} : {value}")
                 
         try:
-            current_graph_state_snapshot = graph.get_state(config=config) 
+            current_graph_state_snapshot = graph.get_state(config=graph_config) 
         except Exception as e:
             print(f"Error getting graph state: {e}. Assuming graph has ended or critical error.")
             break

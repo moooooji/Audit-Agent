@@ -5,6 +5,13 @@ from openai import OpenAI
 
 load_dotenv()
 
+from langchain_core.runnables import RunnableConfig
+
+graph_config = RunnableConfig(
+    recursion_limit=10,  # 최대 10개의 노드까지 방문. 그 이상은 RecursionError 발생
+    configurable={"thread_id": "1"},  # 스레드 ID 설정
+)
+
 # empty map initialization
 actors_map = {}
 assets_map = {}
