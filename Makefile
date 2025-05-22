@@ -8,7 +8,7 @@ all: help
 
 install:
 	python3 -m venv venv
-	source venv/bin/activate && pip install -e .
+	source venv/bin/activate && pip install -e . && pip install -r src/react_agent/Utils/requirements.txt
 
 clean:
 	rm -rf venv

@@ -16,15 +16,14 @@ dependencies = [
     "langchain-fireworks>=0.1.7",
     "python-dotenv>=1.0.1",
     "langchain-tavily>=0.1",
-    "google-genai",
+    "google-genai>=0.8.5",
     "langgraph-cli[inmem]>=0.1.71",
     "langchain-core>=0.3.59",
     "redis==6.0.0",
     "langchain-chroma==0.2.3",
-    "langchain-google-genai==2.1.4",
+    "langchain-google-genai>=2.1.4",
     "openai",
     "openpyxl>=3.1.2",
-    "google.generativeai",
     "langchain_community"
 ]
 
