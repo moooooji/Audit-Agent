@@ -25,7 +25,8 @@ dependencies = [
     "openai",
     "openpyxl>=3.1.2",
     "langchain_community",
-    "google-ai-generativelanguage>=0.6.18,<0.7.0"
+    "google-ai-generativelanguage>=0.6.18,<0.7.0",
+    "google-generativeai"
 ]
 
 
