@@ -1,5 +1,5 @@
 {
-  "summary": "The code binding output contains many artifacts mapped to specific threats and checklist items, with some entries well-supported and others lacking clear evidence or relevance. Overall, while there is good coverage, certain threats lack corresponding code artifacts, and some bindings appear irrelevant or incomplete. Schema compliance is generally maintained, but some entries missing required fields or with questionable relevance compromise overall integrity.",
+  "summary": "The code bindings generally correspond well to the outlined threats and checklist items, indicating a comprehensive mapping process. Most bindings are relevant to the identified security concerns, such as access control, cryptographic verification, and operational procedures. However, some threats lack associated code artifacts, and a few binding entries exhibit schema inconsistencies or scope misalignments.",
   "findings": [
     {
       "type": "missing_binding",
@@ -9,15 +9,15 @@
     },
     {
       "type": "invalid_reference",
-      "checklist_id": 0,
-      "description": "Threat 0 is mapped to a file path that does not exist in the source repository.",
-      "code_reference": "/path/to/nonexistent/file.sol"
+      "checklist_id": 4,
+      "description": "Checklist item 4 is mapped to a file path that does not exist in the source repository.",
+      "code_reference": null
     },
     {
       "type": "irrelevant_binding",
       "checklist_id": 7,
       "description": "The code bound to checklist item 7 does not handle the risk described in its threat.",
-      "code_reference": "https://github.com/example/repo/blob/master/RewardVault.sol"
+      "code_reference": null
     },
     {
       "type": "schema_error",

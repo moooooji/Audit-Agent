@@ -1,636 +1,324 @@
 {
   "evaluation_summary": {
-    "actors": "The provided JSON for actors was empty. Numerous actors are described in the documentation (e.g., Users, Validators, Protocols, $BGT Holders, Guardians, Token Managers, Core Contributors, Investors, Community sub-groups) but were not extracted.",
-    "assets": "The provided JSON for assets was empty. Many assets are detailed in the documentation (e.g., $BERA, $BGT, $HONEY, various NFTs, LP Tokens, Governance Proposals, Incentive Tokens, Private Keys) but were not extracted.",
-    "components": "The provided JSON for components was empty. A wide range of system components are mentioned in the documentation (e.g., Berachain L1, BeaconKit, EVM, BEX, Honey Swap, BeraHub, Reward Vaults, Bridges, Governance Contracts, RPC Endpoints) but were not extracted.",
-    "data_flows": "The provided JSON for data_flows was empty. Numerous data flows are described, detailing interactions between actors and components (e.g., token swapping, liquidity provision, governance processes, airdrop claims, incentive distribution, $HONEY minting) but were not extracted.",
-    "trust_boundaries": "The provided JSON for trust_boundaries was empty. Several implicit and explicit trust boundaries exist (e.g., User Wallet to dApp, dApp to Berachain Network, Berachain to External Chains via Bridge) but were not extracted.",
-    "behaviors": "The provided JSON for behaviors was empty. A multitude of system and actor behaviors are documented (e.g., connecting a wallet, staking, delegating, voting, swapping, bridging, claiming rewards, minting $HONEY) but were not extracted."
+    "actors": "The provided JSON lists no actors. The documentation describes numerous actors including Users, Validators, BGT Holders, Liquidity Providers, Protocols/Developers, Guardians, Token Managers, and the Berachain Foundation. All are missing.",
+    "assets": "The provided JSON lists no assets. The documentation details various assets such as $BERA, $BGT, $HONEY tokens, NFTs, Receipt Tokens, Governance Proposals, and Incentives. All are missing.",
+    "components": "The provided JSON lists no components. The documentation describes a complex architecture with components like the Berachain L1, EVM, BeaconKit, PoL mechanism, various dApps (BeraHub, BEX, HoneySwap), smart contracts (Reward Vaults, Governance, HoneyFactory), bridges, and tools. All are missing.",
+    "data_flows": "The provided JSON lists no data flows. The documentation implies numerous data flows related to PoL, governance, dApp interactions, bridging, and token management. All are missing.",
+    "trust_boundaries": "The provided JSON lists no trust boundaries. The documentation suggests several trust boundaries, such as between users and dApps, dApps and smart contracts, and validators and the network. All are missing.",
+    "behaviors": "The provided JSON lists no behaviors. The documentation describes a wide range of behaviors including transacting, staking, providing liquidity, governing, trading, bridging, and developing on Berachain. All are missing."
   },
   "findings": [
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'User' (general, interacting with dApps, wallets, etc.) is mentioned throughout the documentation (e.g., doc_5, doc_6, doc_11, doc_12, doc_13) but was not extracted."
+      "description": "Actor 'User' (interacting with wallets, dApps, airdrops, governance, PoL) is described in multiple documents (doc_2, doc_3, doc_5, doc_6, doc_7, etc.) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Validator' (staking $BERA, proposing blocks, directing $BGT emissions, earning incentives) is a key participant in PoL (doc_7, doc_20, doc_21, doc_24) but was not extracted."
+      "description": "Actor 'Validator' (PoL participant, block producer) is described in doc_3, doc_7, doc_10, doc_20, doc_21, doc_24, etc. but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor '$BGT Holder' (delegating $BGT, voting on governance, earning incentives) is described in PoL and governance sections (doc_3, doc_7, doc_24, doc_27) but was not extracted."
+      "description": "Actor '$BGT Holder' (governance participant, delegator) is described in doc_3, doc_7, doc_10, doc_24, doc_27, doc_28 but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Liquidity Provider' (supplying liquidity to pools like BEX, earning $BGT) is mentioned in PoL and dApp descriptions (doc_7, doc_11, doc_24) but was not extracted."
+      "description": "Actor 'Liquidity Provider' (PoL participant) is described in doc_7, doc_11, doc_24, doc_27 but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Protocol' (or 'Ecosystem Project', deploying Reward Vaults, offering incentives) is a participant in PoL (doc_7, doc_14, doc_21, doc_24) but was not extracted."
+      "description": "Actor 'Protocol/Ecosystem Project/dApp Developer' is described in doc_7, doc_9, doc_14, doc_21, doc_24, doc_25 but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Guardian' (5-of-9 multisig with oversight on governance proposals) is mentioned in Berachain Governance (doc_3, doc_14) but was not extracted."
+      "description": "Actor 'Guardian' (governance oversight for malicious proposals) is described in doc_3, doc_14 but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Token Manager' (wallet managing incentive token offerings for a Reward Vault) is described in the Incentive Marketplace (doc_15, doc_21) but was not extracted."
+      "description": "Actor 'Token Manager' (manages incentives for Reward Vaults) is described in doc_15, doc_21 but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Airdrop Recipient' (user eligible for $BERA airdrop, including testnet users, NFT holders) is described in the $BERA Airdrop section (doc_2, doc_29) but was not extracted."
-    },
-    {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'NFT Holder' (owning official Berachain NFTs, eligible for airdrop, bridging NFTs) is mentioned in Berachain NFTs and Airdrop sections (doc_2, doc_4, doc_29) but was not extracted."
-    },
-    {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Initial Core Contributors' (Big Bera Labs members, receiving token allocation) is mentioned in Tokenomics (doc_29) but was not extracted."
-    },
-    {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Investors' (Seed, Series A, Series B, receiving token allocation) is mentioned in Tokenomics (doc_29) but was not extracted."
-    },
-    {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'BGT Foundation' (reviewing RFRV proposals) is mentioned in Reward Vault Governance (doc_14) but was not extracted."
+      "description": "Actor 'Berachain Foundation' (ecosystem support, RFRV review) is described in doc_14, doc_29 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$BERA' (native gas and staking token) is central to the ecosystem (doc_6, doc_26, doc_29) but was not extracted."
+      "description": "Asset '$BERA Token' (native gas and staking token) is described in doc_2, doc_6, doc_7, doc_10, doc_19, doc_26, doc_29 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$BGT' (Bera Governance Token, non-transferrable, for staking and governance) is a key PoL token (doc_3, doc_7, doc_27) but was not extracted."
+      "description": "Asset '$BGT Token' (Bera Governance Token, for staking and governance) is described in doc_3, doc_7, doc_10, doc_18, doc_19, doc_20, doc_27 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$HONEY' (native stablecoin) is described with its minting mechanism (doc_12, doc_18, doc_28) but was not extracted."
+      "description": "Asset '$HONEY Token' (native stablecoin) is described in doc_11, doc_12, doc_18, doc_19, doc_28 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Official Berachain NFTs' (Bong Bears, Bond Bears, etc.) are detailed in doc_4 but were not extracted."
+      "description": "Asset 'NFT Collections' (e.g., Bong Bears, Bit Bears) are described in doc_2, doc_4, doc_29 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'LP Tokens' (receipt tokens for providing liquidity in BEX pools) are mentioned in doc_11 and doc_18 but were not extracted."
+      "description": "Asset 'Receipt Tokens' (PoL eligible, e.g., LP tokens) are described in doc_7, doc_23, doc_24, doc_25, doc_27 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'PoL-eligible receipt tokens' (staked in Reward Vaults to earn $BGT) are a general class of assets in PoL (doc_7, doc_24, doc_25) but were not extracted."
+      "description": "Asset 'Governance Proposals' are described in doc_3, doc_13, doc_14, doc_18, doc_24 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Incentive Tokens' (offered by protocols in Reward Vaults to attract $BGT emissions) are part of the Incentive Marketplace (doc_15, doc_21) but were not extracted."
+      "description": "Asset 'Incentives' (protocol-provided tokens for PoL) are described in doc_7, doc_15, doc_16, doc_17, doc_21, doc_24 but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Governance Proposals' (on-chain proposals for decisions) are described in Berachain Governance (doc_3) but were not extracted."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Private Keys' (stored in user wallets to access assets) are mentioned in the context of wallets (doc_5) but were not extracted."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'User Address' (used for airdrop checking and transactions) is mentioned in doc_2 but was not extracted."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Social Connections' (used for airdrop checking) is mentioned in doc_2 but was not extracted."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Whitelisted Collateral for $HONEY' (e.g., $USDC, $BYUSD) is mentioned in doc_28 but was not extracted."
+      "description": "Asset 'Private Keys / Wallet Phrase' is described in doc_5 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain' (EVM-Identical Layer 1 blockchain) is the core system (doc_9) but was not extracted."
+      "description": "Component 'Berachain L1 Blockchain' is described in doc_9, doc_19 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeaconKit' (modular consensus layer framework) is a foundational technology (doc_8, doc_9) but was not extracted."
+      "description": "Component 'Proof-of-Liquidity (PoL) Mechanism' is described in doc_7, doc_9, doc_10, doc_19, doc_21, doc_22, doc_23, doc_24 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'EVM (Ethereum Virtual Machine)' (execution environment) is mentioned as Berachain is EVM-identical (doc_9) but was not extracted."
+      "description": "Component 'BeaconKit' (Consensus Layer Framework) is described in doc_8, doc_9, doc_19 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'CometBFT' (consensus algorithm used by BeaconKit) is mentioned in doc_8 and doc_19 but was not extracted."
+      "description": "Component 'Wallets' (e.g., MetaMask) are described in doc_2, doc_5 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Execution Clients' (e.g., Geth, Reth, Erigon, Nethermind) supported by Berachain (doc_9, doc_19) but were not extracted."
+      "description": "Component 'BeraHub' (dApp for PoL management, BEX, Governance) is described in doc_3, doc_11, doc_13, doc_15, doc_16, doc_17, doc_20, doc_21, doc_25, doc_27 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BEX (Berachain Exchange)' (native DEX) is a core dApp (doc_11, doc_13) but was not extracted."
+      "description": "Component 'Berachain BEX' (Native DEX) is described in doc_3, doc_7, doc_9, doc_11, doc_13, doc_18, doc_19, doc_25, doc_27, doc_28 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Honey Swap' (dApp for swapping into $HONEY) is a core dApp (doc_12, doc_28) but was not extracted."
+      "description": "Component 'Honey Swap' (dApp for $HONEY) is described in doc_12, doc_18, doc_27, doc_28 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeraHub' (central hub for $BGT management, BEX access, governance) is a core dApp (doc_13) but was not extracted."
+      "description": "Component 'Reward Vaults' (PoL smart contracts) are described in doc_3, doc_7, doc_10, doc_11, doc_13, doc_14, doc_15, doc_18, doc_20, doc_21, doc_23, doc_24, doc_25, doc_27 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Reward Vaults' (smart contracts for staking PoL-eligible assets to earn $BGT) are crucial to PoL (doc_7, doc_14, doc_25) but were not extracted."
+      "description": "Component 'Governance System' (OpenZeppelin contracts, Timelock) is described in doc_3, doc_13, doc_14, doc_19, doc_21, doc_25, doc_27, doc_28 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain Bridge' (canonical bridge for tokens, powered by LayerZero) is mentioned in doc_6 but was not extracted."
+      "description": "Component 'Berachain Bridge' (powered by LayerZero) is described in doc_6 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain NFT Bridge' (for bridging official NFTs from Ethereum) is mentioned in doc_4 but was not extracted."
+      "description": "Component 'Berachain NFT Bridge' is described in doc_4 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Governance Contracts' (based on OpenZeppelin, for managing proposals) are described in doc_3 but were not extracted."
+      "description": "Component 'BeraScan Block Explorer' is described in doc_18, doc_26, doc_27, doc_28 but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Timelock Contract' (part of the governance lifecycle) is mentioned in doc_3 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Distributor Contract' (distributes $BGT to reward vaults) is mentioned in doc_20 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'BGTIncentiveDistributor Contract' (manages distribution and claiming of incentive tokens for boosters) is mentioned in doc_21 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'FeeCollector Contract' (auctions dApp fees and distributes to $BGT boosters) is mentioned in doc_27 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'HoneyFactory Contract' (central hub for $HONEY minting/burning) is described in doc_28 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component '$HONEY Vaults' (specialized contracts for each collateral type used to mint $HONEY) are described in doc_28 but were not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Wallets' (e.g., MetaMask, Rabby, supporting RPC import) are necessary for users (doc_5) but were not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Berachain Mainnet RPC / Bepolia Testnet RPC' (endpoints for wallet connection) are listed in doc_5 but were not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Airdrop Checker' (website tool for checking airdrop allocation) is mentioned in doc_2 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Airdrop Claim Tool' (website tool for claiming $BERA airdrop) is mentioned in doc_2 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Governance Forum' (hub.forum.berachain.com, for RFRV posting) is mentioned in doc_14 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'BlockRewardController' (on-chain contract for block reward emission constants) is mentioned in doc_22 but was not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Auto-Incentivizer' (mechanism for foundation vault fees to offer incentives) is mentioned in doc_22 but was not extracted."
+      "description": "Component 'Airdrop Checker/Claim Tool' is described in doc_2 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User connects wallet to Berachain network via RPC' is described in doc_5 but was not extracted."
+      "description": "Data flow 'User provides liquidity to a protocol, receives receipt tokens, stakes them in a Reward Vault, and earns $BGT' is described in doc_7, doc_25, doc_27 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User obtains $BERA via bridging or CEX' is described in doc_6 but was not extracted."
+      "description": "Data flow 'User delegates $BGT to a Validator; Validator directs $BGT emissions to Reward Vaults and receives Incentives; User (delegator) receives a share of these Incentives' is described in doc_7, doc_10, doc_16, doc_21 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Validator stakes $BERA to participate in consensus' is part of PoL (doc_7, doc_26) but was not extracted."
+      "description": "Data flow 'User creates or votes on a governance proposal using $BGT' is described in doc_3, doc_13, doc_27 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Block production and $BGT emission (base + variable based on boost)' is detailed in doc_7 and doc_20 but was not extracted."
+      "description": "Data flow 'User mints $HONEY by depositing whitelisted collateral into HoneyFactory, or redeems $HONEY for collateral' is described in doc_12, doc_28 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Validator directs $BGT emissions to Reward Vaults and receives protocol-provided Incentives' is a core PoL loop (doc_7, doc_21) but was not extracted."
+      "description": "Data flow 'User swaps tokens on Berachain BEX' is described in doc_11, doc_13 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User provides liquidity (e.g., to BEX), receives LP tokens, stakes LP tokens in Reward Vault, earns $BGT' is a common user flow in PoL (doc_7, doc_11, doc_27) but was not extracted."
+      "description": "Data flow 'Validator stakes $BERA, proposes blocks, and receives $BERA fees and $BGT rewards (base and boosted)' is described in doc_7, doc_20, doc_26 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User delegates (boosts) $BGT to a validator, influencing validator's $BGT emissions and earning a share of incentives' is described in doc_7, doc_16, doc_21, doc_27 but was not extracted."
+      "description": "Data flow 'Protocol submits a Request for Reward Vault (RFRV) to get its Reward Vault whitelisted via governance' is described in doc_14 but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Governance proposal lifecycle (creation, pending, voting, outcome, timelock, execution)' is detailed in doc_3 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Guardian oversight and proposal cancellation during timelock' is part of governance (doc_3) but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User checks $BERA airdrop allocation and claims tokens' is described in doc_2 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User bridges NFTs from Ethereum to Berachain via NFT Bridge' is described in doc_4 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User swaps tokens on BEX' is a primary function of the DEX (doc_11) but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User trades assets for $HONEY on Honey Swap' is described in doc_12 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User redeems $BGT for $BERA via BeraHub' is described in doc_13 and doc_27 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Protocol submits Request for Reward Vault (RFRV) for whitelisting' is part of Reward Vault Governance (doc_14) but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Token Manager adds Incentive Tokens to a Reward Vault' is described in doc_15 and doc_21 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User claims earned Incentives from boosted validators via BeraHub' is described in doc_17 and doc_21 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User mints $HONEY by depositing whitelisted collateral into HoneyFactory' is detailed in doc_28 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow '$HONEY redemption, including Basket Mode during depegging' is detailed in doc_28 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Fees from $HONEY minting/redemption distributed to $BGT holders' is mentioned in doc_28 but was not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Fees from core dApps (BEX, HoneySwap) collected by FeeCollector and distributed to $BGT boosters' is mentioned in doc_27 but was not extracted."
+      "description": "Data flow 'User claims $BERA airdrop' is described in doc_2 but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'User Wallet <-> dApp (e.g., BEX, BeraHub, Honey Swap)' is implicit in user interactions (doc_5, doc_11, doc_12, doc_13) but was not extracted."
+      "description": "Trust boundary 'User and Wallet Software' is implied in doc_5 but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'dApp <-> Berachain Network (Smart Contracts)' is fundamental to on-chain operations (doc_11, doc_25) but was not extracted."
+      "description": "Trust boundary 'User and dApp (e.g., BeraHub, BEX)' is implied in doc_11, doc_12, doc_13 but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'Berachain Network <-> External Chains (e.g., Ethereum via Berachain Bridge/NFT Bridge)' is established by bridging components (doc_4, doc_6) but was not extracted."
+      "description": "Trust boundary 'dApp and Smart Contracts on Berachain' is implied throughout the documentation but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'User <-> Centralized Exchange (CEX)' for acquiring $BERA (doc_6) but was not extracted."
+      "description": "Trust boundary 'Validator and Berachain Network Consensus' is implied in doc_7, doc_20 but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'User <-> Airdrop Infrastructure (Checker/Claim Tool)' for airdrop process (doc_2) but was not extracted."
-    },
-    {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Governance Participants <-> Governance Smart Contracts' for proposal and voting (doc_3) but was not extracted."
-    },
-    {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Guardians (Multisig) <-> Timelock Contract' for emergency actions (doc_3) but was not extracted."
+      "description": "Trust boundary 'Berachain Network and External Networks (e.g., Ethereum via Bridges)' is implied in doc_4, doc_6 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Connect a wallet to Berachain' is described in doc_5."
+      "description": "Behavior 'User transacting on Berachain (paying gas fees with $BERA)' is described in doc_6, doc_18, doc_26 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Get $BERA (via bridging or CEX)' is described in doc_6."
+      "description": "Behavior 'User participating in Proof-of-Liquidity (providing liquidity, staking receipt tokens, earning $BGT)' is described in doc_7, doc_11, doc_24, doc_25, doc_27 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Stake $BERA (by Validators)' is described in doc_7, doc_26."
+      "description": "Behavior 'User/BGT Holder delegating $BGT to Validators (boosting) and earning incentives' is described in doc_7, doc_10, doc_16, doc_21, doc_27 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Propose block (by Validators)' is described in doc_7, doc_20."
+      "description": "Behavior 'User/BGT Holder participating in Governance (creating proposals, voting)' is described in doc_3, doc_13, doc_18, doc_27 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Direct $BGT emissions to Reward Vaults (by Validators)' is described in doc_7, doc_20, doc_21."
+      "description": "Behavior 'Validator participating in consensus, proposing blocks, and earning rewards' is described in doc_7, doc_20, doc_24 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Provide liquidity to a pool (e.g., BEX)' is described in doc_7, doc_11."
+      "description": "Behavior 'User trading tokens on BEX' is described in doc_11, doc_13 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Stake PoL-eligible receipt tokens in Reward Vaults' is described in doc_7, doc_25, doc_27."
+      "description": "Behavior 'User minting or redeeming $HONEY stablecoin' is described in doc_12, doc_28 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Earn $BGT from Reward Vaults' is described in doc_7, doc_25, doc_27."
+      "description": "Behavior 'User bridging assets (tokens, NFTs) to/from Berachain' is described in doc_4, doc_6 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Delegate $BGT to a Validator (Boost a Validator)' is described in doc_7, doc_13, doc_16, doc_27."
+      "description": "Behavior 'Protocol offering incentives to attract $BGT emissions to its Reward Vault' is described in doc_15, doc_21, doc_24 but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Claim Incentives (from boosted validators)' is described in doc_13, doc_17, doc_21."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Create a Governance Proposal' is described in doc_3, doc_13."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Vote on a Governance Proposal' is described in doc_3, doc_27."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Execute a Governance Proposal' is described in doc_3."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Cancel a malicious proposal (by Guardians)' is described in doc_3."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Check $BERA Airdrop allocation' is described in doc_2."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Claim $BERA Airdrop' is described in doc_2."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Bridge NFTs (from Ethereum to Berachain)' is described in doc_4."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Swap tokens (on BEX)' is described in doc_11, doc_13."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Trade for $HONEY (on Honey Swap)' is described in doc_12."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Redeem $BGT for $BERA' is described in doc_13, doc_27."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Claim $BGT rewards' is described in doc_13, doc_27."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Submit Request for Reward Vault (RFRV)' is described in doc_14."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Add Incentives to a Reward Vault (by Token Manager)' is described in doc_15, doc_21."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Mint $HONEY (by depositing collateral)' is described in doc_28."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Redeem $HONEY (for collateral)' is described in doc_28."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Pay transaction fees with $BERA' is described in doc_26."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Create Reward Vault (permissionless, then whitelist)' is described in doc_24, doc_25."
+      "description": "Behavior 'User claiming $BERA airdrop' is described in doc_2 but not extracted."
     }
   ]
 }

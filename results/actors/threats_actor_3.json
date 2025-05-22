@@ -1,63 +1,60 @@
 {
-  "id": 18,
-  "stride_category": "Elevation of Privilege",
+  "id": 9,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 520,
+    "actor_id": 3,
+    "behavior_id": 106,
     "capability_match": "Redeem $BGT for $BERA"
   },
   "threat_target": {
-    "component_id": 208,
+    "component_id": 25,
     "asset_ids": [
-      102,
-      101
+      11
     ]
   },
   "attack_surface": {
-    "behavior_id": 520,
-    "data_flow_id": 314,
-    "data_description": "Redemption transaction exploiting a flaw in amount calculation or $BGT balance check."
+    "behavior_id": 106,
+    "data_flow_id": 66,
+    "data_description": "Redemption of $BGT for $BERA via BeraHub"
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
+    "boundary_id": 83,
+    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
     "between_component_ids": [
-      206,
-      207,
-      208,
-      201
+      25,
+      21
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in BeraHub or the underlying redemption contract might allow redeeming more $BGT than owned, or receiving more $BERA than the 1:1 ratio."
+    "gap_description": "The $BGT redemption mechanism (1:1 burn for $BERA) might be impacted if there are unforeseen issues with the $BERA supply available to the burn/mint mechanism, or if the contract handling redemption is paused or malfunctioning."
   },
   "actor_risk": {
-    "actor_id": null,
-    "type": "EOA (Externally Owned Account)",
+    "actor_id": 3,
+    "type": "DAO Participant/Token Holder",
     "overprivileged": false,
-    "description": "An attacker could exploit a contract flaw to illegitimately gain $BERA or redeem $BGT they don't own."
+    "description": "Actor 3 may be unable to redeem $BGT for $BERA if the underlying mechanism is unavailable or lacks $BERA."
   },
   "behavioral_risk": {
-    "behavior_id": 520,
-    "risk_level": "High",
-    "rationale": "Exploiting redemption logic can lead to unauthorized minting/acquisition of $BERA or burning of unowned $BGT, impacting tokenomics."
+    "behavior_id": 106,
+    "risk_level": "Low",
+    "rationale": "The ability to redeem $BGT for $BERA is a key feature; its unavailability would impact $BGT holders."
   },
   "assumptions": [
-    "There is a vulnerability in BeraHub (Component 208) or the underlying redemption contract's logic for checking $BGT balances or calculating the $BERA amount.",
-    "Attacker can craft a transaction to exploit this flaw."
+    "The redemption is a direct 1:1 burn of $BGT and mint of $BERA, implying $BERA supply is adjusted.",
+    "A smart contract facilitates this burn-and-mint process and could have operational issues or be paused by governance."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits of BeraHub's interaction with the redemption contract and the contract itself, formal verification of critical accounting logic.",
+    "strategy": "Ensure robustness and audit of the $BGT redemption contract. Transparent monitoring of the redemption mechanism's operational status. Clear communication on $BERA supply mechanics related to redemption.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "An attacker exploits a flaw in the $BGT redemption mechanism (via BeraHub or its underlying contract) to redeem more $BGT than they own or to receive a disproportionately large amount of $BERA.",
+  "description": "A $BGT Holder (Actor 3) is unable to redeem $BGT (Asset 12) for $BERA (Asset 11) via BeraHub (Component 25) due to issues with the underlying redemption contract (e.g., paused, out of $BERA if it's not a direct mint, or general network congestion affecting transaction processing).",
   "trace_source": {
-    "doc_reference": "doc_13, doc_27",
+    "doc_reference": "doc_27",
     "matched_capability": "Redeem $BGT for $BERA"
   }
 }

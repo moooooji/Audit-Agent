@@ -1,61 +1,58 @@
 {
   "id": 10,
-  "stride_category": "Elevation of Privilege",
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 527,
-    "capability_match": null
+    "actor_id": 5,
+    "behavior_id": 110,
+    "capability_match": "Submit Request for Reward Vault (RFRV) for whitelisting"
   },
   "threat_target": {
-    "component_id": 201,
-    "asset_ids": [
-      102,
-      106,
-      107
-    ]
+    "component_id": 8,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 527,
-    "data_flow_id": null,
-    "data_description": "Compromise or misuse of administrative functions in the deployed Reward Vault contract"
+    "behavior_id": 110,
+    "data_flow_id": 57,
+    "data_description": "High volume of fake, low-quality, or spam RFRV submissions."
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
+    "boundary_id": null,
+    "boundary_name": "Developer RFRV Submission to Berachain Foundation Review",
     "between_component_ids": [
-      201
+      5,
+      8
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "If administrative controls for the Reward Vault are compromised or overly permissive, an attacker could gain unauthorized control."
+    "gap_description": "The RFRV review process (Component 8) can be overwhelmed by spam, affecting its availability for legitimate submissions (Data Flow 57 availability_required: true)."
   },
   "actor_risk": {
     "actor_id": 5,
-    "type": "Smart Contract",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The Protocol (Ecosystem Project) is responsible for securing the administrative access to their deployed Reward Vault. If these controls are weak or keys are lost, privilege escalation can occur."
+    "description": "Developer (or multiple attackers) abuses the RFRV submission process by submitting excessive spam."
   },
   "behavioral_risk": {
-    "behavior_id": 527,
-    "risk_level": "High",
-    "rationale": "Unauthorized administrative access to a Reward Vault can lead to theft of all managed funds or manipulation of its core parameters."
+    "behavior_id": 110,
+    "risk_level": "Low",
+    "rationale": "Overwhelming the review process can delay or prevent legitimate projects from being whitelisted."
   },
   "assumptions": [
-    "The Reward Vault contract deployed by Protocol (Actor 5) includes administrative functions (e.g., to set fees, upgrade contract, pause functionality).",
-    "The private key(s) controlling these administrative functions could be compromised, or the functions themselves might have vulnerabilities allowing unauthorized access."
+    "There are no effective rate-limiting, anti-spam measures, or submission costs for the RFRV channels.",
+    "The review capacity of the Berachain Foundation (Component 8) is finite and can be exhausted by a flood of submissions."
   ],
   "mitigation": {
-    "strategy": "Secure administrative keys using hardware wallets, multisigs, and strict operational security. Implement timelocks for critical administrative actions. Minimize the scope of admin privileges to only what is essential. Conduct audits on admin control mechanisms.",
+    "strategy": "Implement CAPTCHAs, submission fees (potentially nominal or refundable for valid proposals), rate limiting on submission channels, and clear filtering criteria to quickly discard spam or low-effort RFRVs.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Low"
   },
-  "description": "If the administrative controls of a Reward Vault deployed by a Protocol (Ecosystem Project) are compromised (e.g., private key theft) or contain vulnerabilities, an attacker could gain elevated privileges. This might allow them to change critical parameters, steal deposited funds, or otherwise misuse the vault beyond its intended design.",
+  "description": "A developer (Actor 5) or multiple malicious actors flood the RFRV submission system (Behavior 110, Data Flow 57) with a large volume of fake or low-quality submissions, overwhelming the review capacity of the Berachain Foundation (Component 8) and causing a denial of service for legitimate submissions.",
   "trace_source": {
-    "doc_reference": "doc_24, doc_25",
-    "matched_capability": "Deploy Reward Vaults"
+    "doc_reference": "doc_14",
+    "matched_capability": "Submit Request for Reward Vault (RFRV) for whitelisting"
   }
 }

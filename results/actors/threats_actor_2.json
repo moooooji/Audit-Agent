@@ -1,57 +1,59 @@
 {
-  "id": 11,
+  "id": 9,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 505,
-    "capability_match": "Earn incentives"
+    "behavior_id": 101,
+    "capability_match": "Set and manage reward allocation for $BGT emissions"
   },
   "threat_target": {
-    "component_id": 209,
+    "component_id": 22,
     "asset_ids": [
-      107
+      12
     ]
   },
   "attack_surface": {
-    "behavior_id": 505,
-    "data_flow_id": 305,
-    "data_description": "Interaction logic between validator's directed $BGT emissions and the Reward Vault's incentive calculation/distribution mechanism"
+    "behavior_id": 101,
+    "data_flow_id": null,
+    "data_description": "Validator submitting reward allocation percentages that attempt to bypass system constraints."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 84,
+    "boundary_name": "Validator Node and Berachain Network Consensus",
+    "between_component_ids": [
+      22
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Flaws in a Reward Vault's (Component 209) incentive logic could be exploited by a Validator to claim more Incentive Tokens (Asset 107) than due."
+    "availability_required": false,
+    "gap_description": "Vulnerabilities in the PoL mechanism's reward allocation logic could allow a validator to bypass constraints (e.g., sum of allocations exceeding 100%, or per-vault caps)."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Privileged Role (e.g., Owner, Admin, Minter)",
     "overprivileged": false,
-    "description": "Validator could exploit a specific Reward Vault's logic to gain unfair incentives, especially if Reward Vaults are developed by third parties."
+    "description": "Validator is intended to operate within defined allocation rules."
   },
   "behavioral_risk": {
-    "behavior_id": 505,
-    "risk_level": "Medium",
-    "rationale": "Unfairly claiming incentives devalues the system for honest participants and protocols, and misallocates resources within the PoL ecosystem."
+    "behavior_id": 101,
+    "risk_level": "Low",
+    "rationale": "Smart contract logic is expected to robustly enforce these constraints; risk depends on potential bugs in that logic."
   },
   "assumptions": [
-    "Reward Vault (209) contracts, which may be developed by third-party protocols, could contain vulnerabilities in their incentive calculation or distribution logic.",
-    "A validator can craft their $BGT emission strategy or interact in a specific way that triggers such vulnerabilities to their advantage."
+    "There are specific constraints on reward allocations (e.g., total must not exceed 100%, individual vaults may have caps like 30%).",
+    "An exploitable flaw exists in the smart contract code that validates or applies these allocation settings."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits for all whitelisted Reward Vault contracts, particularly focusing on their incentive mechanisms. Standardized and audited interfaces for incentive distribution (e.g., via BGTIncentiveDistributor 215). Continuous monitoring of incentive payouts.",
-    "type": "Process Control",
-    "priority": "High"
+    "strategy": "Ensure rigorous testing and auditing of the smart contracts managing reward allocations to verify that all constraints are correctly and robustly enforced. Implement on-chain checks that prevent invalid allocations from being committed.",
+    "type": "Technical Control",
+    "priority": "Medium"
   },
-  "description": "A Validator (Actor 2) exploits a flaw in a Reward Vault's (Component 209) incentive mechanism when directing $BGT emissions, allowing them to claim excessive or unearned Incentive Tokens (Asset 107).",
+  "description": "A Validator might attempt to exploit a flaw in the Proof-of-Liquidity mechanism to set an invalid reward allocation, such as allocating more than 100% of their total $BGT emissions or exceeding per-Reward Vault caps, to unfairly direct more $BGT than permitted by the system rules.",
   "trace_source": {
-    "doc_reference": "doc_7, doc_21, doc_25",
-    "matched_capability": "Earn incentives"
+    "doc_reference": "doc_7, doc_20, doc_22",
+    "matched_capability": "Set and manage reward allocation for $BGT emissions"
   }
 }

@@ -1,57 +1,67 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 4,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 523,
-    "capability_match": "Add Incentive Tokens to Reward Vault"
+    "actor_id": 7,
+    "behavior_id": 102,
+    "capability_match": "Set the incentive rate (Distribution Per BGT)"
   },
   "threat_target": {
-    "component_id": 209,
+    "component_id": 28,
     "asset_ids": [
-      107
+      17
     ]
   },
   "attack_surface": {
-    "behavior_id": 523,
-    "data_flow_id": 316,
-    "data_description": "Call to incentive management functions within the Reward Vault contract."
+    "behavior_id": 102,
+    "data_flow_id": 61,
+    "data_description": "Incentive Rate parameter set by the Token Manager."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 83,
+    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
+    "between_component_ids": [
+      25,
+      26,
+      27,
+      33,
+      28,
+      29,
+      34,
+      35,
+      36
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Reward Vault contract may have a flaw in its authorization logic, allowing unauthorized users to perform Token Manager actions."
+    "gap_description": "The Token Manager can set an excessively high incentive rate, leading to rapid, unintended depletion of deposited incentive tokens, compromising the integrity of the incentive program's intended economic outcome."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "EOA (Externally Owned Account)",
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
     "overprivileged": false,
-    "description": "The privileges of the Token Manager role are the target for elevation by an unauthorized entity."
+    "description": "A misconfiguration (accidental or malicious) by the Token Manager in setting the incentive rate can lead to significant financial loss or failure of the incentive strategy for the protocol they represent."
   },
   "behavioral_risk": {
-    "behavior_id": 523,
-    "risk_level": "High",
-    "rationale": "Unauthorized control over a Reward Vault's incentives can lead to fund misappropriation or severe disruption of its PoL participation."
+    "behavior_id": 102,
+    "risk_level": "Medium",
+    "rationale": "Setting an economically unsound incentive rate can quickly drain the protocol's incentive budget without achieving the desired long-term effects, impacting the protocol's financial health and PoL strategy."
   },
   "assumptions": [
-    "The Reward Vault contract's access control for functions like adding incentives or setting rates is flawed or bypassable.",
-    "An attacker discovers and successfully exploits this vulnerability."
+    "There are no effective hard-coded upper bounds or dynamic sanity checks in the smart contract for the incentive rate relative to the total amount of tokens deposited for that incentive.",
+    "A Token Manager might make a significant error in calculation, or their account could be compromised and used to set a malicious rate."
   ],
   "mitigation": {
-    "strategy": "Implement and rigorously audit robust access control mechanisms (e.g., role-based access specific to the designated Token Manager) in the Reward Vault smart contract. Follow the principle of least privilege.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Protocols should establish clear internal guidelines, review processes, and potentially multi-sig controls for setting/changing incentive rates. Consider implementing optional warnings or soft limits in any UI used by Token Managers. The existing rule that rates cannot be decreased while active (doc_21) is a partial mitigation against some forms of manipulation.",
+    "type": "Process Control",
+    "priority": "Medium"
   },
-  "description": "An unauthorized entity successfully calls functions on a Reward Vault (Component ID 209) that are intended only for the designated Token Manager (Actor ID 7), thereby illegitimately managing Incentive Tokens or rates.",
+  "description": "A Token Manager (either accidentally, or maliciously if their account is compromised) sets an economically unsustainable (e.g., excessively high) incentive rate for a Reward Vault. This leads to the rapid and unintended depletion of the protocol's deposited incentive tokens, undermining the incentive program's goals and potentially wasting funds.",
   "trace_source": {
     "doc_reference": "doc_15, doc_21",
-    "matched_capability": "Add Incentive Tokens to Reward Vault"
+    "matched_capability": "Set the incentive rate (Distribution Per BGT)"
   }
 }

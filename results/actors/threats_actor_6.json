@@ -3,57 +3,59 @@
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 6,
-    "behavior_id": 514,
-    "capability_match": "Cancel malicious proposals during timelock"
+    "actor_id": null,
+    "behavior_id": 103,
+    "capability_match": "Cancel malicious proposals via multisig during timelock"
   },
   "threat_target": {
-    "component_id": 213,
+    "component_id": 29,
     "asset_ids": [
-      108
+      16
     ]
   },
   "attack_surface": {
-    "behavior_id": 514,
-    "data_flow_id": 309,
-    "data_description": "Proposal cancellation signal submitted to the Timelock Contract."
+    "behavior_id": 103,
+    "data_flow_id": 62,
+    "data_description": "Submission of a cancellation signal by an entity that has illegitimately gained Guardian-level signing rights."
   },
   "trust_boundary_risk": {
-    "boundary_id": 407,
-    "boundary_name": "Guardians (Multisig) <-> Timelock Contract",
+    "boundary_id": 86,
+    "boundary_name": "Governance System and Guardian Oversight",
     "between_component_ids": [
-      213
+      29,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A flaw in the Timelock Contract's multisig verification logic for cancellations could allow fewer than 5 Guardians to cancel a proposal."
+    "availability_required": false,
+    "gap_description": "A flaw in the (implied) Guardian multisig contract's member management or signature validation logic, or in the off-chain Guardian election/management process, could allow an unauthorized address to gain signing rights."
   },
   "actor_risk": {
-    "actor_id": 6,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "actor_id": null,
+    "type": null,
     "overprivileged": true,
-    "description": "A Guardian (or a small group) could exploit a contract flaw to act with escalated privileges, bypassing the 5-of-9 consensus."
+    "description": "An attacker exploiting a vulnerability to effectively become a Guardian or control a Guardian's signing key without legitimate election."
   },
   "behavioral_risk": {
-    "behavior_id": 514,
+    "behavior_id": 103,
     "risk_level": "High",
-    "rationale": "Bypassing the 5-of-9 multisig requirement for cancellation undermines the core security model of Guardian oversight."
+    "rationale": "Unauthorized control over proposal cancellation by a non-Guardian entity represents a critical failure of the governance security model."
   },
   "assumptions": [
-    "The Timelock Contract's code that verifies the 5-of-9 signatures for a cancellation call has a bug.",
-    "A malicious Guardian or an attacker who compromised a sub-threshold number of Guardian keys could exploit this bug."
+    "The Guardian multisig contract (implied, as Guardians operate via multisig) has a vulnerability in its member management functions (add/remove signers) or its core signature validation logic.",
+    "The off-chain processes for electing or managing Guardian members are compromised, allowing an unauthorized entity to be recognized as a Guardian by the multisig.",
+    "An existing Guardian's private key is compromised and used by an attacker."
   ],
   "mitigation": {
-    "strategy": "Rigorous smart contract audits, formal verification of the multisig logic within the Timelock Contract, and use of well-established, audited multisig library patterns.",
+    "strategy": "Rigorous security audits of the Guardian multisig contract. Secure, transparent, and verifiable processes for Guardian election, rotation, and revocation. Strong key management and operational security for all legitimate Guardians. Multi-factor authentication for any administrative actions on the multisig if applicable.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A vulnerability in the Timelock Contract's multisig validation logic for proposal cancellations could allow a single Guardian, or a group smaller than the required 5-of-9, to elevate their privileges and successfully cancel a proposal without proper consensus.",
+  "description": "An attacker exploits a vulnerability in the Guardian multisig contract, its management processes, or compromises a Guardian's key, to illegitimately gain the ability to participate in signing cancellation signals. This allows them to influence the Governance System as if they were a legitimate Guardian, effectively elevating their privilege.",
   "trace_source": {
     "doc_reference": "doc_3",
-    "matched_capability": "Cancel malicious proposals during timelock"
+    "matched_capability": "Cancel malicious proposals via multisig during timelock"
   }
 }

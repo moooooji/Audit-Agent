@@ -1,63 +1,61 @@
 {
-  "id": 18,
-  "stride_category": "Tampering",
+  "id": 6,
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 526,
-    "capability_match": "Interact with dApps"
+    "actor_id": 1,
+    "behavior_id": 104,
+    "capability_match": "Manage private keys/wallet phrase"
   },
   "threat_target": {
-    "component_id": null,
+    "component_id": 21,
     "asset_ids": [
-      101
+      19
     ]
   },
   "attack_surface": {
-    "behavior_id": 526,
+    "behavior_id": 104,
     "data_flow_id": null,
-    "data_description": "User's wallet suggests an excessively high gas fee for a transaction."
+    "data_description": "Transactions (Asset 19) signed with the User's private key (Asset 18) after the key has been compromised."
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet <-> dApp Interface",
+    "boundary_id": 81,
+    "boundary_name": "User and Wallet Software Interface",
     "between_component_ids": [
       1,
-      219,
-      206,
-      207,
-      208
+      24
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "User blindly accepts gas fee suggestions from a compromised or poorly designed wallet."
+    "gap_description": "If a User's private keys are compromised, they may attempt to repudiate transactions made by an attacker using those keys, claiming they did not authorize them."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "User (Actor 1) overpays in $BERA (Asset 101) for transaction fees due to a malicious or faulty wallet's gas estimation."
+    "description": "The security of the User's private keys is paramount for non-repudiation of their actions on the blockchain."
   },
   "behavioral_risk": {
-    "behavior_id": 526,
-    "risk_level": "Low",
-    "rationale": "User loses a small amount of funds per transaction, but it can accumulate."
+    "behavior_id": 104,
+    "risk_level": "High",
+    "rationale": "Key compromise undermines the cryptographic proof of transaction origin, leading to disputes."
   },
   "assumptions": [
-    "User is using a wallet that intentionally inflates gas fee suggestions or has a bug in its estimation logic.",
-    "User does not manually check or adjust suggested gas fees."
+    "Private keys can be stolen or unwillingly disclosed.",
+    "The blockchain itself correctly attributes signed transactions to the key that signed them.",
+    "The legitimate user will want to deny actions taken by an attacker with their keys."
   ],
   "mitigation": {
-    "strategy": "Use reputable and well-maintained wallets. Wallets should provide transparent gas estimation and allow users to easily adjust fees. User education on gas fees.",
+    "strategy": "Strong user education on private key security. Use of hardware wallets to make key exfiltration harder. While true cryptographic repudiation is not possible if the signature is valid, mitigating key compromise reduces the likelihood of such disputes.",
     "type": "Process Control",
-    "priority": "Low"
+    "priority": "Medium"
   },
-  "description": "When User (Actor 1) performs any transaction on Berachain (Component 201) that requires paying fees with $BERA (Asset 101), a malicious or faulty wallet suggests and tricks the user into paying excessively high gas fees.",
+  "description": "If a User's private keys (Asset 18) are compromised (related to Behavior 104), the User might later attempt to repudiate malicious transactions (Asset 19) made by an attacker, even though the transactions are cryptographically signed by their key.",
   "trace_source": {
-    "doc_reference": "doc_26",
-    "matched_capability": "Interact with dApps"
+    "doc_reference": "doc_5",
+    "matched_capability": "Manage private keys/wallet phrase"
   }
 }

@@ -1,60 +1,61 @@
 {
-  "id": 12,
+  "id": 3,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 4,
-    "behavior_id": 521,
-    "capability_match": "Earn $BGT"
+    "actor_id": 1,
+    "behavior_id": 92,
+    "capability_match": "Stake receipt tokens in Reward Vaults to earn $BGT"
   },
   "threat_target": {
-    "component_id": 208,
+    "component_id": 28,
     "asset_ids": [
-      102
+      15
     ]
   },
   "attack_surface": {
-    "behavior_id": 521,
-    "data_flow_id": null,
-    "data_description": "Exploitable vulnerability in $BGT reward claiming mechanism (via BeraHub 208 / Reward Vault 209)."
+    "behavior_id": 92,
+    "data_flow_id": 5102,
+    "data_description": "Interaction with Reward Vault (Component ID 28) smart contract functions (e.g., stake, unstake, claim) by a malicious actor."
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "dApp Interface <-> Berachain Smart Contracts",
+    "boundary_id": 83,
+    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
     "between_component_ids": [
-      208,
-      201
+      25,
+      28
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Reward claiming contracts may have flaws allowing users to claim more than entitled."
+    "gap_description": "A vulnerability in the Reward Vault contract could allow an attacker to bypass ownership checks or manipulate internal state to illegitimately access other LPs' funds."
   },
   "actor_risk": {
-    "actor_id": 4,
+    "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious Liquidity Provider (Actor 4) could exploit vulnerabilities in the reward claiming process."
+    "description": "A malicious User (Actor ID 1) could exploit a flaw in a Reward Vault (Component ID 28) to gain unauthorized access to funds staked by other LPs, including LP (Actor ID 4)."
   },
   "behavioral_risk": {
-    "behavior_id": 521,
+    "behavior_id": 92,
     "risk_level": "High",
-    "rationale": "Vulnerabilities in reward distribution can lead to theft of $BGT."
+    "rationale": "If Reward Vault contracts are not secure, an attacker could elevate their privileges to drain staked assets, directly impacting LPs who have deposited funds."
   },
   "assumptions": [
-    "The smart contracts governing $BGT claims (e.g., Reward Vault 209, BeraHub 208) have an exploitable vulnerability.",
-    "The Liquidity Provider (4) has the knowledge and intent to exploit this."
+    "The Reward Vault (Component ID 28) smart contract contains a critical vulnerability (e.g., reentrancy, incorrect access control, arithmetic overflow/underflow, logic error in share accounting).",
+    "An attacker (e.g., User Actor ID 1) can discover and successfully craft an exploit transaction for this vulnerability.",
+    "LP (Actor ID 4) has staked their receipt tokens (Asset 15) in the vulnerable Reward Vault."
   ],
   "mitigation": {
-    "strategy": "Comprehensive smart contract audits, secure accounting of rewards, formal verification.",
+    "strategy": "Mandate multiple, independent, and rigorous security audits for all Reward Vault contracts before they are whitelisted. Implement formal verification for critical contract logic. Maintain active bug bounty programs. Follow secure development best practices.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Liquidity Provider (4) exploits a vulnerability in the $BGT reward claiming mechanism (via BeraHub 208 / Reward Vault 209) (behavior 521) to claim more $BGT (102) than they are legitimately entitled to.",
+  "description": "A malicious actor (e.g., User Actor ID 1) could exploit a vulnerability within a Reward Vault (Component ID 28) smart contract. This exploit might allow the attacker to illegitimately withdraw or transfer receipt tokens (Asset 15) staked by other users, such as LP (Actor ID 4), effectively stealing their assets or unfairly claiming rewards.",
   "trace_source": {
-    "doc_reference": "doc_13, doc_27",
-    "matched_capability": "Earn $BGT"
+    "doc_reference": "doc_25, doc_28",
+    "matched_capability": "Stake receipt tokens in Reward Vaults to earn $BGT"
   }
 }

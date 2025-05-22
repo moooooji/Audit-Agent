@@ -1,60 +1,61 @@
 {
-  "id": 9,
-  "stride_category": "Spoofing",
+  "id": 5,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 516,
-    "capability_match": "Claim $BERA tokens"
+    "actor_id": 8,
+    "behavior_id": null,
+    "capability_match": "Review Request for Reward Vault (RFRV) submissions"
   },
   "threat_target": {
-    "component_id": 222,
+    "component_id": 29,
     "asset_ids": [
-      101
+      16,
+      28
     ]
   },
   "attack_surface": {
-    "behavior_id": 516,
-    "data_flow_id": 310,
-    "data_description": "Forged claim request using compromised credentials of a legitimate Airdrop Recipient."
+    "behavior_id": null,
+    "data_flow_id": 5702,
+    "data_description": "Submission of a specially crafted whitelisting proposal by the Berachain Foundation (or an attacker spoofing it)."
   },
   "trust_boundary_risk": {
-    "boundary_id": 405,
-    "boundary_name": "User <-> Airdrop Infrastructure",
+    "boundary_id": null,
+    "boundary_name": "Berachain Foundation (Actor 8) to Governance System (Component 29) Interface",
     "between_component_ids": [
       8,
-      222
+      29
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Authentication of the Airdrop Recipient (Actor 8) to the Airdrop Claim Tool (Component 222) is compromised via stolen private keys."
+    "availability_required": true,
+    "gap_description": "A flaw in the Governance System (Component 29) might allow a whitelisting proposal submitted by the Berachain Foundation (Actor 8) to bypass standard governance procedures like voting or timelock."
   },
   "actor_risk": {
     "actor_id": 8,
-    "type": "EOA (Externally Owned Account)",
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
     "overprivileged": false,
-    "description": "Airdrop Recipient's private keys are compromised, allowing an attacker to impersonate them and steal their airdrop."
+    "description": "The Berachain Foundation, or an attacker impersonating it, could exploit a vulnerability in the Governance System to gain unauthorized control over the whitelisting process."
   },
   "behavioral_risk": {
-    "behavior_id": 516,
+    "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Compromise of user's private keys allows an attacker to perform any action on their behalf, including claiming airdrops."
+    "rationale": "Bypassing the established governance lifecycle for whitelisting proposals undermines decentralization and could allow the Foundation or an attacker to unilaterally approve Reward Vaults."
   },
   "assumptions": [
-    "The Airdrop Recipient (Actor 8) has had their private keys stolen or exposed through malware, phishing, or other means.",
-    "The Airdrop Claim Tool relies solely on cryptographic signatures for authentication, which the attacker can now produce."
+    "The Governance System (29) has a vulnerability that incorrectly processes proposals from certain privileged addresses (like the Foundation's), allowing such proposals to skip required governance steps (e.g., community vote, timelock).",
+    "The intended role of the Berachain Foundation in this context is to initiate a proposal for community consideration, not to enact it directly."
   ],
   "mitigation": {
-    "strategy": "Users must secure their private keys. Encourage use of hardware wallets and best security practices. The airdrop mechanism itself cannot prevent this if keys are compromised, but time-limited claim windows can reduce the window of opportunity.",
-    "type": "Process Control",
+    "strategy": "Conduct comprehensive security audits of the Governance System smart contracts, focusing on access controls, state transitions, and handling of proposals from privileged roles. Ensure strict adherence to the defined governance process for all proposals, irrespective of their origin.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker, having compromised the private keys of a legitimate Airdrop Recipient (Actor 8), spoofs their identity to the Airdrop Claim Tool (Component 222) and successfully claims the $BERA airdrop on behalf of the victim, directing it to an attacker-controlled address.",
+  "description": "A vulnerability in the Governance System (Component 29) allows a Reward Vault whitelisting proposal (Asset 16) submitted by the Berachain Foundation (Actor 8) (or an attacker spoofing it) to bypass the standard voting and timelock procedures, leading to an unauthorized, immediate whitelisting of a Reward Vault (Asset 28).",
   "trace_source": {
-    "doc_reference": "doc_2",
-    "matched_capability": "Claim $BERA tokens"
+    "doc_reference": "doc_3, doc_14",
+    "matched_capability": "Review Request for Reward Vault (RFRV) submissions"
   }
 }
