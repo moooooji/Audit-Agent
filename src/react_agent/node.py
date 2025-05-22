@@ -242,53 +242,50 @@ def init_db(state: State) -> State:
 def code_binding(state: State) -> State:
     if state.code_binding_feedback_loop_count == 0:
         print("initial code binding ...")
-        
+
         with open("results/checklist.json", "r") as f:
             checklist = json.load(f)
-        
+
         similar_functions_list = []
-        for item in checklist["checklist_items"]:
-            function_description = item["description"]
-            similar_functions = AnalyzeSolidity.search(function_description, 3)
-            similar_functions_list.append(similar_functions)
-        
+        filtered_items = [item for item in checklist["checklist_items"]
+                  if item.get("need_code_binding") is True]
+
         function_codes = {}
-        # parsing contract names and function names
-        for i, similar_functions in enumerate(similar_functions_list):
-            function_codes[i] = {
-                "checklist_item_id": i,
-                "similar_functions": []
+
+        for item in filtered_items:
+            item_id = item["id"]          # ← 1부터 시작하는 고유 ID 사용
+            desc = item["description"]
+            similar_funcs = AnalyzeSolidity.search(desc, k=3)
+
+            function_codes[item_id] = {   # 키도, 내부 표시도 모두 같은 ID
+                "checklist_item_id": item_id,
+                "similar_functions": [
+                    {
+                        "contract_name": d.metadata["contract"],
+                        "function_name": d.metadata["function"],
+                        "code": RedisUtil.get_function_code(
+                            f"{d.metadata['contract']}.{d.metadata['function']}"
+                        )
+                    }
+                    for d in similar_funcs
+                ],
             }
-            for doc in similar_functions:
-                # Parse metadata
-                contract_name = doc.metadata['contract']
-                function_name = doc.metadata['function']
-                function_code = RedisUtil.get_function_code(f"{contract_name}.{function_name}")
-                # Store the function code with its metadata
-                function_codes[i]["similar_functions"].append({
-                    "contract_name": contract_name,
-                    "function_name": function_name,
-                    "code": function_code
-                })
-                print(f"[+] Added function code for {contract_name}.{function_name}")
-        
+            #print(f"[+] Added function code for {contract_name}.{function_name}")
+
         print("[+] Saving function codes to code_binding.json...")
         with open("results/code_binding.json", "w") as f:
-            json.dump({ "function_codes": function_codes }, f, ensure_ascii=False, indent=2)
+            json.dump({"function_codes": function_codes}, f, ensure_ascii=False, indent=2)
+
         state.is_initial_code_binding = True
-        
         print("completed initial code binding")
-        
-        # input("\n코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
+
     else:
-        # human-in-the-loop
         print("feedback loop code binding ...")
         state.is_feedback_code_binding = True
         print("completed feedback loop code binding")
-        
-        # input("\n피드백 루프 코드 바인딩이 완료되었습니다. 계속하려면 Enter를 누르세요...")
-    
+
     return {"is_initial_code_binding": False, "is_feedback_code_binding": False}
+
 
 def assess_code_binding(state: State) -> State:
     print("assessing code binding ...")
