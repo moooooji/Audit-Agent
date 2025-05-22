@@ -637,15 +637,24 @@ You are given:
 
 Evaluate the **code binding output** in relation to the checklist items and documentation. You must verify:
 
-1. **Traceability** – For each threat, does the mapped code artifact clearly correspond to the **linked checklist item**? Is the evidence valid and well-supported?
+1. **Traceability** – For each checklist item, does the mapped code artifact clearly correspond to the **linked checklist item**? Is the evidence valid and well-supported?
 
-2. **Completeness** – Are there any threats or checklist items that are **not covered** by any code binding? Flag if a threat has no corresponding implementation or test.
+2. **Completeness** – Are there any checklist items that are **not covered** by any code binding? Flag if a checklist item has no corresponding implementation or test.
 
 3. **Relevance & Accuracy** – Is the bound code artifact actually relevant to the security concern? Are the file paths, functions, or logic well-scoped and justified?
 
-4. **Schema Compliance** – Does the code binding object include the required fields: `threat_id`, `checklist_id`, `file_path`, `function`, `reason`?
+4. **Schema Compliance** – Does the code binding object include the required fields: `checklist_id`, `file_path`, `function`, `reason`?
+
+5. If the code binding results need to retry code binding(e.g. the code binding results are not matched with the checklist item), set `need_code_binding` to true
 
 ---
+
+**Important:** If `need_retry_code_binding` is `true` for any finding, you **must** include a `retry_guidance` field. This field should provide specific instructions or suggestions for improving the code binding, such as:
+
+*   Which specific files, functions, or code sections to look for.
+*   Why the current binding is insufficient or incorrect.
+*   What kind of evidence or logic would be more relevant to the threat.
+*   Any alternative approaches or considerations for finding the correct code binding.
 
 **Instructions:**
 
@@ -659,25 +668,37 @@ Evaluate the **code binding output** in relation to the checklist items and docu
     {
       "type": "missing_binding",
       "checklist_id": 2,
-      "description": "Checklist item 2 is not bound to any code artifact."
+      "description": "Checklist item 2 is not bound to any code artifact.",
+      "code_reference": "src/react_agent/deposit.py",
+      "need_retry_code_binding": true,
+      "retry_guidance": "Search for code related to deposit functionality, especially functions handling user input validation or state changes."
     },
     {
       "type": "invalid_reference",
       "threat_id": 5,
-      "description": "Threat 5 is mapped to a file path that does not exist in the source repository."
+      "description": "Threat 5 is mapped to a file path that does not exist in the source repository.",
+      "code_reference": "src/react_agent/confirm.py",
+      "need_retry_code_binding": true,
+      "retry_guidance": "Verify the correct file path for confirmation logic. Consider checking for similar files or functions in the codebase."
     },
     {
       "type": "irrelevant_binding",
       "checklist_id": 7,
-      "description": "The code bound to checklist item 7 does not handle the risk described in its threat."
+      "description": "The code bound to checklist item 7 does not handle the risk described in its threat.",
+      "code_reference": "src/react_agent/test.py",
+      "need_retry_code_binding": true,
+      "retry_guidance": "Look for code that specifically addresses the security risk described in the threat. Consider checking error handling or validation logic."
     },
     {
       "type": "schema_error",
       "checklist_id": 3,
-      "description": "Missing required field `file_path` in code binding object."
+      "description": "Missing required field `file_path` in code binding object.",
+      "code_reference": "src/react_agent/withdraw.py",
+      "need_retry_code_binding": true,
+      "retry_guidance": "Ensure the code binding includes the correct file path where the relevant code is located."
     }
   ]
 }
 ```
-"""
 
+"""
