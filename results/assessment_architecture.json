@@ -1,324 +1,534 @@
 {
   "evaluation_summary": {
-    "actors": "The provided JSON lists no actors. The documentation describes numerous actors including Users, Validators, BGT Holders, Liquidity Providers, Protocols/Developers, Guardians, Token Managers, and the Berachain Foundation. All are missing.",
-    "assets": "The provided JSON lists no assets. The documentation details various assets such as $BERA, $BGT, $HONEY tokens, NFTs, Receipt Tokens, Governance Proposals, and Incentives. All are missing.",
-    "components": "The provided JSON lists no components. The documentation describes a complex architecture with components like the Berachain L1, EVM, BeaconKit, PoL mechanism, various dApps (BeraHub, BEX, HoneySwap), smart contracts (Reward Vaults, Governance, HoneyFactory), bridges, and tools. All are missing.",
-    "data_flows": "The provided JSON lists no data flows. The documentation implies numerous data flows related to PoL, governance, dApp interactions, bridging, and token management. All are missing.",
-    "trust_boundaries": "The provided JSON lists no trust boundaries. The documentation suggests several trust boundaries, such as between users and dApps, dApps and smart contracts, and validators and the network. All are missing.",
-    "behaviors": "The provided JSON lists no behaviors. The documentation describes a wide range of behaviors including transacting, staking, providing liquidity, governing, trading, bridging, and developing on Berachain. All are missing."
+    "actors": "All listed actors (Stakers, Operators, AVS, User (Rollup)) are specific to an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed actors are considered hallucinated. Key Berachain actors (e.g., Liquidity Providers, $BGT Holders, Berachain Validators, Protocols/Ecosystem Projects, Guardians, Token Managers) are missing.",
+    "assets": "All listed assets (e.g., Staked Tokens, Stake Delegation Data, AVS Slashing Conditions) pertain to an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed assets are considered hallucinated. Core Berachain assets (e.g., $BERA, $BGT, $HONEY, Receipt Tokens, Berachain NFTs) are missing.",
+    "components": "All listed components (e.g., EigenLayer Smart Contracts, AVS Software, L1 Blockchain as described) relate to an EigenLayer system and are not found in the Berachain documentation in this context. Consequently, all listed components are considered hallucinated. Key Berachain components (e.g., BeaconKit, BEX, BeraHub, Reward Vaults, Proof-of-Liquidity mechanism) are missing.",
+    "data_flows": "All listed data flows describe interactions within an EigenLayer system, which is not the subject of the Berachain documentation. Consequently, all listed data flows are considered hallucinated. Berachain-specific data flows (e.g., Proof-of-Liquidity lifecycle, governance processes, $HONEY minting/redemption, BEX interactions) are missing.",
+    "trust_boundaries": "All listed trust boundaries are defined for an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed trust boundaries are considered hallucinated. Berachain-specific trust boundaries (e.g., User-Wallet, Wallet-dApp, dApp-Smart Contract, Validator-Network) are missing. One listed boundary (ID 5) has a potentially problematic definition using identical component IDs for 'between_ids'.",
+    "behaviors": "All listed behaviors describe actions within an EigenLayer system, not the Berachain ecosystem as detailed in the provided documentation. Consequently, all listed behaviors are considered hallucinated. Key Berachain behaviors (e.g., providing liquidity to BEX, staking receipt tokens in Reward Vaults, delegating $BGT, claiming rewards, minting $HONEY, participating in Berachain governance) are missing."
   },
   "findings": [
     {
       "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'User' (interacting with wallets, dApps, airdrops, governance, PoL) is described in multiple documents (doc_2, doc_3, doc_5, doc_6, doc_7, etc.) but not extracted."
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Actor 'Stakers' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Actor 'Operators' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Actor 'AVS (Actively Validated Service)' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Actor 'User (Rollup)' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Validator' (PoL participant, block producer) is described in doc_3, doc_7, doc_10, doc_20, doc_21, doc_24, etc. but not extracted."
+      "description": "Missing actor: Berachain Users (e.g., Liquidity Providers, $BGT Holders/Delegators, dApp users like those interacting with BEX, HoneySwap, BeraHub)."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor '$BGT Holder' (governance participant, delegator) is described in doc_3, doc_7, doc_10, doc_24, doc_27, doc_28 but not extracted."
+      "description": "Missing actor: Berachain Validators (entities staking $BERA, proposing blocks, directing $BGT emissions, and earning incentives in the PoL system)."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Liquidity Provider' (PoL participant) is described in doc_7, doc_11, doc_24, doc_27 but not extracted."
+      "description": "Missing actor: Protocols / Ecosystem Projects (entities deploying dApps, creating Reward Vaults, and offering incentives on Berachain)."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Protocol/Ecosystem Project/dApp Developer' is described in doc_7, doc_9, doc_14, doc_21, doc_24, doc_25 but not extracted."
+      "description": "Missing actor: Guardians (5-of-9 multisig for overseeing governance proposals during timelock period)."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Guardian' (governance oversight for malicious proposals) is described in doc_3, doc_14 but not extracted."
+      "description": "Missing actor: Token Managers (wallets responsible for offering Incentive Tokens to Reward Vaults)."
     },
     {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Token Manager' (manages incentives for Reward Vaults) is described in doc_15, doc_21 but not extracted."
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Asset 'Staked Tokens' as described (locked in EigenLayer) is not found in the Berachain documentation."
     },
     {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Berachain Foundation' (ecosystem support, RFRV review) is described in doc_14, doc_29 but not extracted."
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Asset 'Stake Delegation Data' as described (managed by EigenLayer) is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Asset 'Operator Registration Data' as described (in EigenLayer) is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Asset 'AVS Slashing Conditions' is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Asset 'User Transactions (Decentralized Sequencer AVS)' is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Asset 'Ordered Transaction Batch (Decentralized Sequencer AVS)' is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Asset 'Node Operator Keys' in the context of AVS is not found in the Berachain documentation. Berachain validators have keys, but not as described here."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Asset 'AVS Specific Operational Data' is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Asset 'Finalized EigenLayer Contract State' is not found in the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Asset 'Finalized AVS Contract State' is not found in the Berachain documentation."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$BERA Token' (native gas and staking token) is described in doc_2, doc_6, doc_7, doc_10, doc_19, doc_26, doc_29 but not extracted."
+      "description": "Missing asset: $BERA (Berachain's native gas and validator staking token)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$BGT Token' (Bera Governance Token, for staking and governance) is described in doc_3, doc_7, doc_10, doc_18, doc_19, doc_20, doc_27 but not extracted."
+      "description": "Missing asset: $BGT (Berachain's non-transferrable governance and reward delegation token)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset '$HONEY Token' (native stablecoin) is described in doc_11, doc_12, doc_18, doc_19, doc_28 but not extracted."
+      "description": "Missing asset: $HONEY (Berachain's native stablecoin)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'NFT Collections' (e.g., Bong Bears, Bit Bears) are described in doc_2, doc_4, doc_29 but not extracted."
+      "description": "Missing asset: Receipt Tokens (e.g., LP tokens from BEX, staked in Reward Vaults to earn $BGT)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Receipt Tokens' (PoL eligible, e.g., LP tokens) are described in doc_7, doc_23, doc_24, doc_25, doc_27 but not extracted."
+      "description": "Missing asset: Incentive Tokens (Whitelisted ERC20 tokens offered by protocols in Reward Vaults)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Governance Proposals' are described in doc_3, doc_13, doc_14, doc_18, doc_24 but not extracted."
+      "description": "Missing asset: Berachain NFTs (e.g., Bong Bears, Bond Bears, used for airdrop eligibility)."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Incentives' (protocol-provided tokens for PoL) are described in doc_7, doc_15, doc_16, doc_17, doc_21, doc_24 but not extracted."
+      "description": "Missing asset: Governance Proposals (for Berachain's on-chain governance)."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Private Keys / Wallet Phrase' is described in doc_5 but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Component 'EigenLayer Smart Contracts' is not part of the Berachain architecture described in the documentation."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Component 'AVS Software' is not part of the Berachain architecture described in the documentation."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Component 'L1 Blockchain' as described (managing EigenLayer/AVS assets) is not Berachain. Berachain is an L1, but its managed assets are different."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Component 'Rollup Sequencer (Decentralized Sequencer AVS)' is not part of the Berachain architecture described in the documentation."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Component 'AVS Contract (on L1)' is not part of the Berachain architecture described in the documentation."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Component 'Node Operators' Infrastructure' in the context of AVS is not part of the Berachain architecture. Berachain has validators running nodes."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain L1 Blockchain' is described in doc_9, doc_19 but not extracted."
+      "description": "Missing component: Berachain (the L1 blockchain itself, EVM-Identical, built on BeaconKit)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Proof-of-Liquidity (PoL) Mechanism' is described in doc_7, doc_9, doc_10, doc_19, doc_21, doc_22, doc_23, doc_24 but not extracted."
+      "description": "Missing component: BeaconKit (modular consensus layer framework for Berachain)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeaconKit' (Consensus Layer Framework) is described in doc_8, doc_9, doc_19 but not extracted."
+      "description": "Missing component: Proof-of-Liquidity (PoL) Mechanism (core economic and consensus logic)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Wallets' (e.g., MetaMask) are described in doc_2, doc_5 but not extracted."
+      "description": "Missing component: BEX (Berachain's native Decentralized Exchange)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'BeraHub' (dApp for PoL management, BEX, Governance) is described in doc_3, doc_11, doc_13, doc_15, doc_16, doc_17, doc_20, doc_21, doc_25, doc_27 but not extracted."
+      "description": "Missing component: BeraHub (dApp for $BGT management, BEX access, governance, etc.)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Berachain BEX' (Native DEX) is described in doc_3, doc_7, doc_9, doc_11, doc_13, doc_18, doc_19, doc_25, doc_27, doc_28 but not extracted."
+      "description": "Missing component: Reward Vaults (smart contracts for staking PoL-eligible assets to earn $BGT)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Honey Swap' (dApp for $HONEY) is described in doc_12, doc_18, doc_27, doc_28 but not extracted."
+      "description": "Missing component: Honey Swap / HoneyFactory (dApps/contracts for minting/redeeming $HONEY)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Reward Vaults' (PoL smart contracts) are described in doc_3, doc_7, doc_10, doc_11, doc_13, doc_14, doc_15, doc_18, doc_20, doc_21, doc_23, doc_24, doc_25, doc_27 but not extracted."
+      "description": "Missing component: Berachain Governance Contracts (for on-chain proposal lifecycle)."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Governance System' (OpenZeppelin contracts, Timelock) is described in doc_3, doc_13, doc_14, doc_19, doc_21, doc_25, doc_27, doc_28 but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Data flow 'Stakers interact with EigenLayer Smart Contracts to lock tokens and delegate stake.' is not found in Berachain documentation."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Berachain Bridge' (powered by LayerZero) is described in doc_6 but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Data flow 'EigenLayer Smart Contracts return confirmations and process withdrawals for Stakers.' is not found in Berachain documentation."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Berachain NFT Bridge' is described in doc_4 but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Data flow 'Operators interact with EigenLayer Smart Contracts to register and opt-in to AVSs.' is not found in Berachain documentation."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'BeraScan Block Explorer' is described in doc_18, doc_26, doc_27, doc_28 but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Data flow 'EigenLayer Smart Contracts return confirmations and notifications to Operators.' is not found in Berachain documentation."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Airdrop Checker/Claim Tool' is described in doc_2 but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Data flow 'AVSs (entities) register their slashing conditions with EigenLayer Smart Contracts.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Data flow 'AVSs (entities) define their slashing conditions in their own AVS Contracts on L1.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Data flow 'Operators (via their infrastructure C6) interact with the AVS Software they run.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Data flow 'AVS Software provides data and tasks to Operators running it.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Data flow 'Node Operators' Infrastructure uses keys to sign messages for AVS Software.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Data flow 'Rollup Users submit transactions to the Rollup Sequencer.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 11,
+      "description": "Data flow 'Rollup Sequencer submits ordered batches of transactions to the L1 Blockchain.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 12,
+      "description": "Data flow 'EigenLayer Smart Contracts write their state updates to the L1 Blockchain.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 13,
+      "description": "Data flow 'AVS Contracts write their state updates to the L1 Blockchain.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 14,
+      "description": "Data flow 'AVS Software (or operators via it) can report misbehavior to EigenLayer Smart Contracts for slashing.' is not found in Berachain documentation."
+    },
+    {
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 15,
+      "description": "Data flow 'AVS Software can query EigenLayer Smart Contracts for security status and operator information.' is not found in Berachain documentation."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User provides liquidity to a protocol, receives receipt tokens, stakes them in a Reward Vault, and earns $BGT' is described in doc_7, doc_25, doc_27 but not extracted."
+      "description": "Missing data flows related to the Berachain Proof-of-Liquidity lifecycle (e.g., User providing liquidity to BEX, staking receipt tokens, $BGT delegation, Validator directing emissions, Protocol offering incentives, User claiming $BGT/incentives)."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User delegates $BGT to a Validator; Validator directs $BGT emissions to Reward Vaults and receives Incentives; User (delegator) receives a share of these Incentives' is described in doc_7, doc_10, doc_16, doc_21 but not extracted."
+      "description": "Missing data flows related to Berachain governance (e.g., proposal creation, voting, timelock, execution, Guardian oversight)."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User creates or votes on a governance proposal using $BGT' is described in doc_3, doc_13, doc_27 but not extracted."
+      "description": "Missing data flows related to $HONEY stablecoin (e.g., minting $HONEY with collateral via HoneyFactory, redeeming $HONEY)."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User mints $HONEY by depositing whitelisted collateral into HoneyFactory, or redeems $HONEY for collateral' is described in doc_12, doc_28 but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Trust boundary 'EigenLayer SC - AVS Software Interaction Boundary' is not found in Berachain documentation."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User swaps tokens on Berachain BEX' is described in doc_11, doc_13 but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Trust boundary 'AVS SC - AVS Software Interaction Boundary' is not found in Berachain documentation."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Validator stakes $BERA, proposes blocks, and receives $BERA fees and $BGT rewards (base and boosted)' is described in doc_7, doc_20, doc_26 but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Trust boundary 'Operator Infrastructure - AVS Software Boundary' is not found in Berachain documentation."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Protocol submits a Request for Reward Vault (RFRV) to get its Reward Vault whitelisted via governance' is described in doc_14 but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Trust boundary 'Rollup Sequencer - L1 Submission Boundary' is not found in Berachain documentation."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User claims $BERA airdrop' is described in doc_2 but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Trust boundary 'User-Facing Application Boundary (e.g. Rollup Sequencer)' as described for an EigenLayer component is not found in Berachain documentation."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "potential_concern",
+      "id": 5,
+      "description": "Trust boundary 'User-Facing Application Boundary (e.g. Rollup Sequencer)' uses identical component IDs [4, 4] for 'between_ids'. Trust boundaries are typically between distinct entities. The description attempts to justify this as an external interaction point, but it's an unusual representation."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'User and Wallet Software' is implied in doc_5 but not extracted."
+      "description": "Missing trust boundaries relevant to Berachain, such as User-Wallet, Wallet-dApp (e.g., BeraHub, BEX), dApp-Berachain Smart Contracts, Validator Node-Berachain Network, Protocol-Berachain (for Reward Vaults/incentives), Guardian Multisig-Governance Process."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'User and dApp (e.g., BeraHub, BEX)' is implied in doc_11, doc_12, doc_13 but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Behavior 'Staker Stakes Tokens' in EigenLayer smart contracts is not a Berachain behavior."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'dApp and Smart Contracts on Berachain' is implied throughout the documentation but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Behavior 'Staker Delegates Stake' in EigenLayer is not a Berachain behavior."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Validator and Berachain Network Consensus' is implied in doc_7, doc_20 but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Behavior 'Operator Registers' in EigenLayer is not a Berachain behavior."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Berachain Network and External Networks (e.g., Ethereum via Bridges)' is implied in doc_4, doc_6 but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Behavior 'Operator Opts-in to AVS' via EigenLayer is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Behavior 'AVS Registers Slashing Conditions' with EigenLayer is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Behavior 'Operator Attests to AVS State' is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 7,
+      "description": "Behavior 'Rollup User Sends Transaction' to a Decentralized Sequencer AVS is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 8,
+      "description": "Behavior 'Rollup Sequencer Submits Batch to L1' is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 9,
+      "description": "Behavior 'AVS Software Reports Slashing Event' to EigenLayer is not a Berachain behavior."
+    },
+    {
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 10,
+      "description": "Behavior 'Staker Undelegates/Withdraws Stake' from EigenLayer is not a Berachain behavior."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User transacting on Berachain (paying gas fees with $BERA)' is described in doc_6, doc_18, doc_26 but not extracted."
+      "description": "Missing behavior: User provides liquidity to a BEX pool."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User participating in Proof-of-Liquidity (providing liquidity, staking receipt tokens, earning $BGT)' is described in doc_7, doc_11, doc_24, doc_25, doc_27 but not extracted."
+      "description": "Missing behavior: User stakes PoL-eligible receipt tokens in a Reward Vault."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User/BGT Holder delegating $BGT to Validators (boosting) and earning incentives' is described in doc_7, doc_10, doc_16, doc_21, doc_27 but not extracted."
+      "description": "Missing behavior: User ($BGT Holder) delegates (boosts) $BGT to a Berachain Validator."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User/BGT Holder participating in Governance (creating proposals, voting)' is described in doc_3, doc_13, doc_18, doc_27 but not extracted."
+      "description": "Missing behavior: Berachain Validator proposes a block and receives $BGT rewards."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Validator participating in consensus, proposing blocks, and earning rewards' is described in doc_7, doc_20, doc_24 but not extracted."
+      "description": "Missing behavior: Berachain Validator directs $BGT emissions to selected Reward Vaults."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User trading tokens on BEX' is described in doc_11, doc_13 but not extracted."
+      "description": "Missing behavior: Protocol/Token Manager offers Incentive Tokens to a Reward Vault."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User minting or redeeming $HONEY stablecoin' is described in doc_12, doc_28 but not extracted."
+      "description": "Missing behavior: User claims earned $BGT from Reward Vaults."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User bridging assets (tokens, NFTs) to/from Berachain' is described in doc_4, doc_6 but not extracted."
+      "description": "Missing behavior: User claims earned Incentive Tokens from boosting a validator."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Protocol offering incentives to attract $BGT emissions to its Reward Vault' is described in doc_15, doc_21, doc_24 but not extracted."
+      "description": "Missing behavior: User mints $HONEY by depositing collateral."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'User claiming $BERA airdrop' is described in doc_2 but not extracted."
+      "description": "Missing behavior: User redeems $HONEY for collateral."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Missing behavior: User creates/votes on a Berachain governance proposal."
+    },
+    {
+      "category": "behaviors",
+      "type": "missing",
+      "id": null,
+      "description": "Missing behavior: User redeems $BGT for $BERA."
     }
   ]
 }

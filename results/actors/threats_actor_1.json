@@ -1,61 +1,62 @@
 {
-  "id": 6,
-  "stride_category": "Repudiation",
+  "id": 12,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 104,
-    "capability_match": "Manage private keys/wallet phrase"
+    "actor_id": null,
+    "behavior_id": 19,
+    "capability_match": "Bridge assets to/from Berachain"
   },
   "threat_target": {
-    "component_id": 21,
+    "component_id": 12,
     "asset_ids": [
-      19
+      6,
+      17
     ]
   },
   "attack_surface": {
-    "behavior_id": 104,
-    "data_flow_id": null,
-    "data_description": "Transactions (Asset 19) signed with the User's private key (Asset 18) after the key has been compromised."
+    "behavior_id": 19,
+    "data_flow_id": 21,
+    "data_description": "Parameters of an NFT bridge transaction (e.g., destination address, token ID) are altered by a compromised Berachain NFT Bridge (C12) frontend or User Wallet (C9)."
   },
   "trust_boundary_risk": {
-    "boundary_id": 81,
-    "boundary_name": "User and Wallet Software Interface",
+    "boundary_id": 2,
+    "boundary_name": "User Wallet Software - dApp Frontend",
     "between_component_ids": [
-      1,
-      24
+      9,
+      12
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "If a User's private keys are compromised, they may attempt to repudiate transactions made by an attacker using those keys, claiming they did not authorize them."
+    "availability_required": true,
+    "gap_description": "The integrity of the NFT bridging transaction is compromised before user signature."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The security of the User's private keys is paramount for non-repudiation of their actions on the blockchain."
+    "description": "Berachain User (A1) could have their NFT (A6) sent to an incorrect address or a different NFT bridged if the transaction parameters are tampered with by a compromised interface."
   },
   "behavioral_risk": {
-    "behavior_id": 104,
+    "behavior_id": 19,
     "risk_level": "High",
-    "rationale": "Key compromise undermines the cryptographic proof of transaction origin, leading to disputes."
+    "rationale": "Tampering with NFT bridge parameters can lead to permanent loss of the specific NFT."
   },
   "assumptions": [
-    "Private keys can be stolen or unwillingly disclosed.",
-    "The blockchain itself correctly attributes signed transactions to the key that signed them.",
-    "The legitimate user will want to deny actions taken by an attacker with their keys."
+    "The Berachain NFT Bridge (C12) frontend can be compromised.",
+    "User Wallet Software (C9) could be malicious or compromised.",
+    "User may not meticulously verify all details of an NFT transaction in their wallet."
   ],
   "mitigation": {
-    "strategy": "Strong user education on private key security. Use of hardware wallets to make key exfiltration harder. While true cryptographic repudiation is not possible if the signature is valid, mitigating key compromise reduces the likelihood of such disputes.",
-    "type": "Process Control",
-    "priority": "Medium"
+    "strategy": "Secure frontend hosting and development for C12, user diligence in verifying transaction details in wallet, wallets clearly displaying NFT transfer details.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "If a User's private keys (Asset 18) are compromised (related to Behavior 104), the User might later attempt to repudiate malicious transactions (Asset 19) made by an attacker, even though the transactions are cryptographically signed by their key.",
+  "description": "If the Berachain NFT Bridge (C12) frontend or the User Wallet Software (C9) is compromised, it could tamper with an NFT bridging transaction initiated by a Berachain User (A1) (Behavior 19). This could result in the user's Berachain NFT (A6) being sent to an attacker's address or an unintended NFT being transferred.",
   "trace_source": {
-    "doc_reference": "doc_5",
-    "matched_capability": "Manage private keys/wallet phrase"
+    "doc_reference": "doc_4",
+    "matched_capability": "Bridge assets to/from Berachain"
   }
 }

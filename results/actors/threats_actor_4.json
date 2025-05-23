@@ -1,61 +1,59 @@
 {
-  "id": 3,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 92,
-    "capability_match": "Stake receipt tokens in Reward Vaults to earn $BGT"
+    "actor_id": 4,
+    "behavior_id": 17,
+    "capability_match": "Cancel malicious proposals via multisig action"
   },
   "threat_target": {
-    "component_id": 28,
+    "component_id": 16,
     "asset_ids": [
-      15
+      7
     ]
   },
   "attack_surface": {
-    "behavior_id": 92,
-    "data_flow_id": 5102,
-    "data_description": "Interaction with Reward Vault (Component ID 28) smart contract functions (e.g., stake, unstake, claim) by a malicious actor."
+    "behavior_id": 17,
+    "data_flow_id": 18,
+    "data_description": "Exploiting a flaw in the Guardian Multisig contract (C16) to execute the cancellation function with fewer than the required 5 signatures."
   },
   "trust_boundary_risk": {
-    "boundary_id": 83,
-    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
+    "boundary_id": 8,
+    "boundary_name": "Guardian Signers - Guardian Multisig Contract",
     "between_component_ids": [
-      25,
-      28
+      16
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A vulnerability in the Reward Vault contract could allow an attacker to bypass ownership checks or manipulate internal state to illegitimately access other LPs' funds."
+    "availability_required": false,
+    "gap_description": "A flaw in the Guardian Multisig contract could allow a Guardian signer (or a small number of them) to cancel proposals without achieving the 5-of-9 consensus, thus illegitimately altering proposal state."
   },
   "actor_risk": {
-    "actor_id": 1,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "A malicious User (Actor ID 1) could exploit a flaw in a Reward Vault (Component ID 28) to gain unauthorized access to funds staked by other LPs, including LP (Actor ID 4)."
+    "actor_id": 4,
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": true,
+    "description": "A Guardian signer (or a colluding minority) exploits a vulnerability in the multisig contract to gain unauthorized power to cancel proposals, effectively bypassing the M-of-N rule."
   },
   "behavioral_risk": {
-    "behavior_id": 92,
+    "behavior_id": 17,
     "risk_level": "High",
-    "rationale": "If Reward Vault contracts are not secure, an attacker could elevate their privileges to drain staked assets, directly impacting LPs who have deposited funds."
+    "rationale": "Bypassing the core M-of-N security mechanism of the Guardian system would be a critical failure, allowing a minority to control a key safety function."
   },
   "assumptions": [
-    "The Reward Vault (Component ID 28) smart contract contains a critical vulnerability (e.g., reentrancy, incorrect access control, arithmetic overflow/underflow, logic error in share accounting).",
-    "An attacker (e.g., User Actor ID 1) can discover and successfully craft an exploit transaction for this vulnerability.",
-    "LP (Actor ID 4) has staked their receipt tokens (Asset 15) in the vulnerable Reward Vault."
+    "The Guardian Multisig contract (C16) has a critical vulnerability in its signature verification or execution logic that allows bypassing the M-of-N requirement for the cancellation function.",
+    "A Guardian signer (or a small group) is aware of and capable of exploiting this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Mandate multiple, independent, and rigorous security audits for all Reward Vault contracts before they are whitelisted. Implement formal verification for critical contract logic. Maintain active bug bounty programs. Follow secure development best practices.",
+    "strategy": "Rigorous security audits, including formal verification if possible, of the Guardian Multisig contract to ensure the M-of-N logic is correctly implemented and cannot be bypassed. Implement continuous monitoring for anomalous contract interactions and have an incident response plan.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious actor (e.g., User Actor ID 1) could exploit a vulnerability within a Reward Vault (Component ID 28) smart contract. This exploit might allow the attacker to illegitimately withdraw or transfer receipt tokens (Asset 15) staked by other users, such as LP (Actor ID 4), effectively stealing their assets or unfairly claiming rewards.",
+  "description": "A vulnerability in the Guardian Multisig contract (C16) could potentially allow a single Guardian signer, or a number of signers fewer than the required 5, to elevate their privileges and cancel a governance proposal unilaterally. This bypasses the intended 5-of-9 consensus mechanism, compromising the integrity of the governance oversight.",
   "trace_source": {
-    "doc_reference": "doc_25, doc_28",
-    "matched_capability": "Stake receipt tokens in Reward Vaults to earn $BGT"
+    "doc_reference": "doc_3",
+    "matched_capability": "Cancel malicious proposals via multisig action"
   }
 }

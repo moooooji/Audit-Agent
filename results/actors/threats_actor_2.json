@@ -1,59 +1,60 @@
 {
-  "id": 9,
+  "id": 11,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 101,
-    "capability_match": "Set and manage reward allocation for $BGT emissions"
+    "behavior_id": 16,
+    "capability_match": "Stake $BERA (min 250k, max 10M)"
   },
   "threat_target": {
-    "component_id": 22,
+    "component_id": 1,
     "asset_ids": [
-      12
+      10
     ]
   },
   "attack_surface": {
-    "behavior_id": 101,
-    "data_flow_id": null,
-    "data_description": "Validator submitting reward allocation percentages that attempt to bypass system constraints."
+    "behavior_id": 16,
+    "data_flow_id": 9,
+    "data_description": "Staking transaction attempting to exploit a flaw to exceed maximum stake limits or gain disproportionate power."
   },
   "trust_boundary_risk": {
-    "boundary_id": 84,
-    "boundary_name": "Validator Node and Berachain Network Consensus",
+    "boundary_id": 6,
+    "boundary_name": "Validator Node Infrastructure - Berachain Network",
     "between_component_ids": [
-      22
+      10,
+      1
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Vulnerabilities in the PoL mechanism's reward allocation logic could allow a validator to bypass constraints (e.g., sum of allocations exceeding 100%, or per-vault caps)."
+    "availability_required": true,
+    "gap_description": "A flaw allowing a validator to bypass stake limits could grant them undue influence over block production or governance."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": false,
-    "description": "Validator is intended to operate within defined allocation rules."
+    "overprivileged": true,
+    "description": "If a flaw allows exceeding stake limits for more power, the validator becomes overprivileged."
   },
   "behavioral_risk": {
-    "behavior_id": 101,
-    "risk_level": "Low",
-    "rationale": "Smart contract logic is expected to robustly enforce these constraints; risk depends on potential bugs in that logic."
+    "behavior_id": 16,
+    "risk_level": "Medium",
+    "rationale": "Exploiting a flaw to gain more power than intended from staking undermines the fairness and security of the consensus mechanism."
   },
   "assumptions": [
-    "There are specific constraints on reward allocations (e.g., total must not exceed 100%, individual vaults may have caps like 30%).",
-    "An exploitable flaw exists in the smart contract code that validates or applies these allocation settings."
+    "A vulnerability exists in the Berachain Network's (C1) staking module that allows bypassing the maximum stake limit (10M $BERA).",
+    "Exceeding this limit grants the validator (Actor 2) a proportionally higher block proposal probability or other network privileges not intended for that stake level."
   ],
   "mitigation": {
-    "strategy": "Ensure rigorous testing and auditing of the smart contracts managing reward allocations to verify that all constraints are correctly and robustly enforced. Implement on-chain checks that prevent invalid allocations from being committed.",
+    "strategy": "Rigorous auditing and testing of the staking smart contracts and consensus logic within Berachain Network (C1). Continuous monitoring for unusual staking patterns or power concentrations.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A Validator might attempt to exploit a flaw in the Proof-of-Liquidity mechanism to set an invalid reward allocation, such as allocating more than 100% of their total $BGT emissions or exceeding per-Reward Vault caps, to unfairly direct more $BGT than permitted by the system rules.",
+  "description": "A Berachain Validator (Actor 2) exploits a potential flaw in the Berachain Network's (C1) staking mechanism to stake more $BERA (A10) than the official maximum cap of 10,000,000 $BERA, thereby illegitimately elevating their privilege by gaining a higher block proposal probability or other undue influence within the network.",
   "trace_source": {
-    "doc_reference": "doc_7, doc_20, doc_22",
-    "matched_capability": "Set and manage reward allocation for $BGT emissions"
+    "doc_reference": "doc_20#validator-selection (Maximum stake cap)",
+    "matched_capability": "Stake $BERA (min 250k, max 10M)"
   }
 }

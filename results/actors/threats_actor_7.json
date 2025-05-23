@@ -1,67 +1,62 @@
 {
   "id": 4,
-  "stride_category": "Tampering",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": 102,
-    "capability_match": "Set the incentive rate (Distribution Per BGT)"
+    "behavior_id": null,
+    "capability_match": "Develop and maintain Berachain core infrastructure"
   },
   "threat_target": {
-    "component_id": 28,
+    "component_id": 201,
     "asset_ids": [
-      17
+      101,
+      102,
+      106
     ]
   },
   "attack_surface": {
-    "behavior_id": 102,
-    "data_flow_id": 61,
-    "data_description": "Incentive Rate parameter set by the Token Manager."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Access credentials, deployment keys, version control systems, or administrative interfaces for Berachain core infrastructure managed by Big Bera Labs."
   },
   "trust_boundary_risk": {
-    "boundary_id": 83,
-    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
+    "boundary_id": null,
+    "boundary_name": "Big Bera Labs Admin Systems <-> Berachain Core Control Plane",
     "between_component_ids": [
-      25,
-      26,
-      27,
-      33,
-      28,
-      29,
-      34,
-      35,
-      36
+      201
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Token Manager can set an excessively high incentive rate, leading to rapid, unintended depletion of deposited incentive tokens, compromising the integrity of the incentive program's intended economic outcome."
+    "gap_description": "If Big Bera Labs' privileged access for infrastructure maintenance is compromised, an attacker could gain unauthorized administrative control over core network functions."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": false,
-    "description": "A misconfiguration (accidental or malicious) by the Token Manager in setting the incentive rate can lead to significant financial loss or failure of the incentive strategy for the protocol they represent."
+    "type": "Off-chain Service/Bot",
+    "overprivileged": true,
+    "description": "Compromise of Big Bera Labs' systems or abuse by a malicious insider could grant attackers the same high-level privileges that Big Bera Labs possesses for maintaining and upgrading the infrastructure."
   },
   "behavioral_risk": {
-    "behavior_id": 102,
-    "risk_level": "Medium",
-    "rationale": "Setting an economically unsound incentive rate can quickly drain the protocol's incentive budget without achieving the desired long-term effects, impacting the protocol's financial health and PoL strategy."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Gaining administrative control over the L1 can lead to complete network compromise, including unauthorized changes to critical parameters or code."
   },
   "assumptions": [
-    "There are no effective hard-coded upper bounds or dynamic sanity checks in the smart contract for the incentive rate relative to the total amount of tokens deposited for that incentive.",
-    "A Token Manager might make a significant error in calculation, or their account could be compromised and used to set a malicious rate."
+    "Big Bera Labs possesses privileged credentials or access mechanisms for core infrastructure maintenance and upgrades.",
+    "These credentials or access mechanisms can be compromised by an external attacker or misused by an insider.",
+    "There are insufficient secondary controls (e.g., mandatory multi-party sign-off from distinct entities) to prevent a single compromised entity (Big Bera Labs) from unilaterally exerting privileged control over critical updates or configurations."
   ],
   "mitigation": {
-    "strategy": "Protocols should establish clear internal guidelines, review processes, and potentially multi-sig controls for setting/changing incentive rates. Consider implementing optional warnings or soft limits in any UI used by Token Managers. The existing rule that rates cannot be decreased while active (doc_21) is a partial mitigation against some forms of manipulation.",
-    "type": "Process Control",
-    "priority": "Medium"
+    "strategy": "Enforce the principle of least privilege for all accounts and systems. Utilize hardware security modules (HSMs) for critical keys. Mandate multi-factor authentication (MFA) for all administrative access. Implement time-based access controls and ensure critical operations require multiple approvals from distinct, independent entities (e.g., foundation, security council).",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "A Token Manager (either accidentally, or maliciously if their account is compromised) sets an economically unsustainable (e.g., excessively high) incentive rate for a Reward Vault. This leads to the rapid and unintended depletion of the protocol's deposited incentive tokens, undermining the incentive program's goals and potentially wasting funds.",
+  "description": "An attacker compromising Big Bera Labs' development or deployment systems, or a malicious insider, could elevate their privileges to gain administrative control over Berachain's core infrastructure. This could allow them to alter consensus rules, seize assets, manipulate governance mechanisms, or deploy malicious upgrades.",
   "trace_source": {
-    "doc_reference": "doc_15, doc_21",
-    "matched_capability": "Set the incentive rate (Distribution Per BGT)"
+    "doc_reference": "doc_29",
+    "matched_capability": "Develop and maintain Berachain core infrastructure"
   }
 }

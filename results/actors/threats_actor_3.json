@@ -4,57 +4,58 @@
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 106,
-    "capability_match": "Redeem $BGT for $BERA"
+    "behavior_id": null,
+    "capability_match": "Deploy smart contracts and dApps on Berachain"
   },
   "threat_target": {
-    "component_id": 25,
+    "component_id": 14,
     "asset_ids": [
-      11
+      16
     ]
   },
   "attack_surface": {
-    "behavior_id": 106,
-    "data_flow_id": 66,
-    "data_description": "Redemption of $BGT for $BERA via BeraHub"
+    "behavior_id": null,
+    "data_flow_id": 22,
+    "data_description": "Excessive or gas-intensive fee transactions (Asset 16) from BEX (Component 3) to FeeCollector (Component 14)."
   },
   "trust_boundary_risk": {
-    "boundary_id": 83,
-    "boundary_name": "dApp Frontend and Berachain Smart Contracts",
+    "boundary_id": null,
+    "boundary_name": "BEX Contract - FeeCollector Contract",
     "between_component_ids": [
-      25,
-      21
+      3,
+      14
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The $BGT redemption mechanism (1:1 burn for $BERA) might be impacted if there are unforeseen issues with the $BERA supply available to the burn/mint mechanism, or if the contract handling redemption is paused or malfunctioning."
+    "gap_description": "If the BEX contract (Component 3), managed by a Protocol (Actor 3), sends an unexpectedly high volume of fee transactions or transactions that cause excessive gas consumption in the FeeCollector (Component 14)."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "DAO Participant/Token Holder",
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "Actor 3 may be unable to redeem $BGT for $BERA if the underlying mechanism is unavailable or lacks $BERA."
+    "description": "If Actor 3 deployed BEX (Component 3), a bug in BEX or malicious intent from Actor 3 could trigger this DoS."
   },
   "behavioral_risk": {
-    "behavior_id": 106,
+    "behavior_id": null,
     "risk_level": "Low",
-    "rationale": "The ability to redeem $BGT for $BERA is a key feature; its unavailability would impact $BGT holders."
+    "rationale": "FeeCollector should be robust, but extreme transaction volumes or gas griefing could impact its performance or cost."
   },
   "assumptions": [
-    "The redemption is a direct 1:1 burn of $BGT and mint of $BERA, implying $BERA supply is adjusted.",
-    "A smart contract facilitates this burn-and-mint process and could have operational issues or be paused by governance."
+    "The BEX dApp (Component 3) is deployed or managed by Actor 3.",
+    "BEX (Component 3) might have a bug or be intentionally coded to send excessive/problematic fee transactions to Component 14.",
+    "The FeeCollector (Component 14) might be susceptible to gas griefing or performance degradation from high transaction load."
   ],
   "mitigation": {
-    "strategy": "Ensure robustness and audit of the $BGT redemption contract. Transparent monitoring of the redemption mechanism's operational status. Clear communication on $BERA supply mechanics related to redemption.",
+    "strategy": "Design the FeeCollector Smart Contract (Component 14) to be gas-efficient in handling fee receipts. Implement monitoring for transaction volumes from fee sources. Potentially add circuit breakers or throttling if a source becomes problematic.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "Low"
   },
-  "description": "A $BGT Holder (Actor 3) is unable to redeem $BGT (Asset 12) for $BERA (Asset 11) via BeraHub (Component 25) due to issues with the underlying redemption contract (e.g., paused, out of $BERA if it's not a direct mint, or general network congestion affecting transaction processing).",
+  "description": "If the BEX dApp (Component 3), assumed to be deployed/managed by 'Protocol / Ecosystem Project' (Actor 3), experiences a bug or is maliciously crafted, it could send an excessive volume of dApp Fee transactions (Asset 16 via Data Flow 22) to the FeeCollector Smart Contract (Component 14). This could potentially cause a denial of service or high operational costs for the FeeCollector.",
   "trace_source": {
     "doc_reference": "doc_27",
-    "matched_capability": "Redeem $BGT for $BERA"
+    "matched_capability": "Deploy smart contracts and dApps on Berachain"
   }
 }

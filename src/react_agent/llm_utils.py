@@ -29,21 +29,24 @@ from react_agent.Utils.RedisUtil import RedisUtil
 from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 from react_agent.variables import (
     architecture_analysis,
-    components_map,
-    actors_map,
-    assets_map,
-    data_flows_map,
-    trust_boundaries_map,
-    behaviors_map,
     gemini_model,
     gemini_client,
     chatgpt_model,
     chatgpt_client,
-    threats_list,
     ARCHITECTURE_FEEDBACK_LOOP_COUNT,
     CHECKLIST_FEEDBACK_LOOP_COUNT,
     CODE_BINDING_FEEDBACK_LOOP_COUNT
 )
+
+import react_agent.variables
+
+react_agent.variables.threats_list
+react_agent.variables.actors_map
+react_agent.variables.components_map
+react_agent.variables.assets_map
+react_agent.variables.data_flows_map
+react_agent.variables.trust_boundaries_map
+react_agent.variables.behaviors_map
 
 # cache storage
 _cache_storage: dict = {}
@@ -329,98 +332,194 @@ def generate_llm_response(state: State) -> str:
     elif state.is_initial_checklist_analysis:
         print("=============checklist analysis node=============")
         
-        threats_list_copy = threats_list.copy()
-        
-        context = []
-        
-        for i in range(len(threats_list)):
-            actor_id = threats_list_copy[i]["actor_risk"]["actor_id"]
-            threats_list_copy[i]["actor_risk"]["actor_details"] = actors_map.get(actor_id, {})
+        # all_threats.json 파일 파싱
+        with open("results/all_threats.json", "r") as f:
+            threats_data = json.load(f)
+
+        # threats 배열 가져오기
+        threats = threats_data["threats"]
+
+        # 모든 응답을 저장할 배열 초기화
+        all_responses = []
+
+        # 각 위협(threat)에 대해 반복
+        for threat in threats:
+            threat_id = threat["id"]
+            print(f"Processing threat ID: {threat_id}")
             
-            # Add threat target component and assets
-            threats_list_copy[i]["threat_target"]["component_details"] = components_map.get(threats_list_copy[i]["threat_target"]["component_id"], {})
-            threats_list_copy[i]["threat_target"]["asset_details"] = [assets_map.get(aid, {}) for aid in threats_list_copy[i]["threat_target"]["asset_ids"]]
-
-            # Add behavior context
-            behavior_id = threats_list_copy[i]["attack_surface"]["behavior_id"]
-            threats_list_copy[i]["attack_surface"]["behavior_details"] = behaviors_map.get(behavior_id, {})
-
-            # Add data flow context
-            df_id = threats_list_copy[i]["attack_surface"]["data_flow_id"]
-            threats_list_copy[i]["attack_surface"]["data_flow_details"] = data_flows_map.get(df_id, {})
-
-            # Add trust boundary context
-            tb_id = threats_list_copy[i]["trust_boundary_risk"]["boundary_id"]
-            threats_list_copy[i]["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
+            # 개별 위협에 대한 context 생성
+            context = []
             
-            context.append(threats_list_copy[i])
-        
-        target_docs = load_file(state.target_docs_path)
-        threat_analysis = load_file("results/all_threats.json")
-        prompt = CHECKLIST_TEMPLATE.replace(
-            "{context}", json.dumps(context)
-            ).replace(
-                "{threat_analysis}", threat_analysis
-            )
-        
-        contents = [
-            {
-                "role": "user",
-                "content": prompt
+            # actor_risk 정보 보강
+            actor_id = threat["actor_risk"]["actor_id"]
+            actor_details = None
+            if actor_id is not None:  # None이 아닌 경우에만 처리
+                actor_details = react_agent.variables.actors_map.get(actor_id, {})
+            
+            # threat_target 컴포넌트 및 자산 정보 보강
+            component_id = threat["threat_target"]["component_id"]
+            component_details = None
+            if component_id is not None:
+                component_details = react_agent.variables.components_map.get(component_id, {})
+            
+            # 자산 세부 정보 추가
+            asset_ids = threat["threat_target"]["asset_ids"]
+            asset_details = [
+                react_agent.variables.assets_map.get(asset_id, {}) 
+                for asset_id in asset_ids
+            ]
+            
+            # attack_surface 행동 정보 보강
+            behavior_id = threat["attack_surface"]["behavior_id"]
+            behavior_details = None
+            if behavior_id is not None:
+                behavior_details = react_agent.variables.behaviors_map.get(behavior_id, {})
+            
+            # data_flow 정보 보강
+            data_flow_id = threat["attack_surface"]["data_flow_id"]
+            data_flow_details = None
+            if data_flow_id is not None:
+                data_flow_details = react_agent.variables.data_flows_map.get(data_flow_id, {})
+            
+            # trust_boundary 정보 보강
+            boundary_id = threat["trust_boundary_risk"]["boundary_id"]
+            boundary_details = None
+            if boundary_id is not None:
+                boundary_details = react_agent.variables.trust_boundaries_map.get(boundary_id, {})
+            
+            # 보강된 세부 정보들만 context에 추가
+            threat_context = {
+                "threat_id": threat_id,
+                "actor_details": actor_details,
+                "component_details": component_details,
+                "asset_details": asset_details,
+                "behavior_details": behavior_details,
+                "data_flow_details": data_flow_details,
+                "boundary_details": boundary_details
             }
-        ]
+            context.append(threat_context)
+            
+            # 개별 위협에 대한 API 호출
+            target_docs = load_file(state.target_docs_path)
+            threat_analysis = load_file("results/all_threats.json")
+            prompt = CHECKLIST_TEMPLATE.replace(
+                "{context}", json.dumps(context)
+                ).replace(
+                    "{threat_analysis}", threat_analysis
+                )
+            
+            contents = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
 
-        response = call_chatgpt_api(contents, ChecklistConfig)
-        return response
+            # API 호출 및 응답 저장
+            response = call_chatgpt_api(contents, ChecklistConfig)
+            all_responses.append(json_str_to_dict(response.choices[0].message.content))
+            
+            print(f"Completed processing threat ID: {threat_id}")
+
+        # 모든 응답을 하나의 배열로 반환
+        return all_responses
     
     elif state.is_feedback_checklist_analysis:
         print("=============feedback checklist analysis node=============")
         
-        threats_list_copy = threats_list.copy()
+        # threats_list 파일 파싱
+        with open("results/all_threats.json", "r") as f:
+            threats_data = json.load(f)
         
-        context = []
+        # threats 배열 가져오기
+        threats = threats_data["threats"]
         
-        for i in range(len(threats_list)):
-            actor_id = threats_list_copy[i]["actor_risk"]["actor_id"]
-            threats_list_copy[i]["actor_risk"]["actor_details"] = actors_map.get(actor_id, {})
+        # 모든 응답을 저장할 배열 초기화
+        all_responses = []
+        
+        # 각 위협(threat)에 대해 반복
+        for threat in threats:
+            threat_id = threat["id"]
+            print(f"Processing feedback for threat ID: {threat_id}")
             
-            # Add threat target component and assets
-            threats_list_copy[i]["threat_target"]["component_details"] = components_map.get(threats_list_copy[i]["threat_target"]["component_id"], {})
-            threats_list_copy[i]["threat_target"]["asset_details"] = [assets_map.get(aid, {}) for aid in threats_list_copy[i]["threat_target"]["asset_ids"]]
-
-            # Add behavior context
-            behavior_id = threats_list_copy[i]["attack_surface"]["behavior_id"]
-            threats_list_copy[i]["attack_surface"]["behavior_details"] = behaviors_map.get(behavior_id, {})
-
-            # Add data flow context
-            df_id = threats_list_copy[i]["attack_surface"]["data_flow_id"]
-            threats_list_copy[i]["attack_surface"]["data_flow_details"] = data_flows_map.get(df_id, {})
-
-            # Add trust boundary context
-            tb_id = threats_list_copy[i]["trust_boundary_risk"]["boundary_id"]
-            threats_list_copy[i]["trust_boundary_risk"]["boundary_details"] = trust_boundaries_map.get(tb_id, {})
-                
-            context.append(threats_list_copy[i])
-        
-        initial_checklist = load_file("results/checklist.json")
-        assessment_checklist_json = load_file("results/assessment_checklist.json")
-        prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
-            "{context}", json.dumps(context)
-            ).replace(
-                "{initial_checklist}", initial_checklist
-            ).replace(
-                "{assessment_checklist}", assessment_checklist_json
-            )
-        
-        contents = [
-            {
-                "role": "user",
-                "content": prompt
+            # 개별 위협에 대한 context 생성
+            context = []
+            
+            # actor_risk 정보 보강
+            actor_id = threat["actor_risk"]["actor_id"]
+            actor_details = None
+            if actor_id is not None:  # None이 아닌 경우에만 처리
+                actor_details = react_agent.variables.actors_map.get(actor_id, {})
+            
+            # threat_target 컴포넌트 및 자산 정보 보강
+            component_id = threat["threat_target"]["component_id"]
+            component_details = None
+            if component_id is not None:
+                component_details = react_agent.variables.components_map.get(component_id, {})
+            
+            # 자산 세부 정보 추가
+            asset_ids = threat["threat_target"]["asset_ids"]
+            asset_details = [
+                react_agent.variables.assets_map.get(asset_id, {}) 
+                for asset_id in asset_ids
+            ]
+            
+            # attack_surface 행동 정보 보강
+            behavior_id = threat["attack_surface"]["behavior_id"]
+            behavior_details = None
+            if behavior_id is not None:
+                behavior_details = react_agent.variables.behaviors_map.get(behavior_id, {})
+            
+            # data_flow 정보 보강
+            data_flow_id = threat["attack_surface"]["data_flow_id"]
+            data_flow_details = None
+            if data_flow_id is not None:
+                data_flow_details = react_agent.variables.data_flows_map.get(data_flow_id, {})
+            
+            # trust_boundary 정보 보강
+            boundary_id = threat["trust_boundary_risk"]["boundary_id"]
+            boundary_details = None
+            if boundary_id is not None:
+                boundary_details = react_agent.variables.trust_boundaries_map.get(boundary_id, {})
+            
+            # 보강된 세부 정보들만 context에 추가
+            threat_context = {
+                "threat_id": threat_id,
+                "actor_details": actor_details,
+                "component_details": component_details,
+                "asset_details": asset_details,
+                "behavior_details": behavior_details,
+                "data_flow_details": data_flow_details,
+                "boundary_details": boundary_details
             }
-        ]
+            context.append(threat_context)
+            
+            # 개별 위협에 대한 API 호출
+            initial_checklist = load_file("results/checklist.json")
+            assessment_checklist_json = load_file("results/assessment_checklist.json")
+            prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
+                "{context}", json.dumps(context)
+                ).replace(
+                    "{initial_checklist}", initial_checklist
+                ).replace(
+                    "{assessment_checklist}", assessment_checklist_json
+                )
+            
+            contents = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
 
-        response = call_chatgpt_api(contents, ChecklistConfig)
-        return response
+            # API 호출 및 응답 저장
+            response = call_chatgpt_api(contents, ChecklistConfig)
+            all_responses.append(json_str_to_dict(response.choices[0].message.content))
+            
+            print(f"Completed feedback processing for threat ID: {threat_id}")
+
+        # 모든 응답을 하나의 배열로 반환
+        return all_responses
     
     # verify checklist node
     elif state.is_assessment_checklist and state.checklist_feedback_loop_count < CHECKLIST_FEEDBACK_LOOP_COUNT:
@@ -477,12 +576,12 @@ def map_update(response_dict: dict, state: State):
     try:
         target_docs = load_file(state.target_docs_path)
         # map update
-        components_map.update({comp["id"]: comp for comp in response_dict.get("components", [])})
-        actors_map.update({actor["id"]: actor for actor in response_dict.get("actors", [])})
-        assets_map.update({asset["id"]: asset for asset in response_dict.get("assets", [])})
-        data_flows_map.update({flow["id"]: flow for flow in response_dict.get("data_flows", [])})
-        trust_boundaries_map.update({tb["id"]: tb for tb in response_dict.get("trust_boundaries", [])})
-        behaviors_map.update({behavior["id"]: behavior for behavior in response_dict.get("behaviors", [])})
+        react_agent.variables.components_map.update({comp["id"]: comp for comp in response_dict.get("components", [])})
+        react_agent.variables.actors_map.update({actor["id"]: actor for actor in response_dict.get("actors", [])})
+        react_agent.variables.assets_map.update({asset["id"]: asset for asset in response_dict.get("assets", [])})
+        react_agent.variables.data_flows_map.update({flow["id"]: flow for flow in response_dict.get("data_flows", [])})
+        react_agent.variables.trust_boundaries_map.update({tb["id"]: tb for tb in response_dict.get("trust_boundaries", [])})
+        react_agent.variables.behaviors_map.update({behavior["id"]: behavior for behavior in response_dict.get("behaviors", [])})
 
         architecture_analysis["system_context"]["docs"]["overview"] = target_docs
         architecture_analysis["system_context"]["docs"]["pol"] = target_docs
@@ -492,12 +591,12 @@ def map_update(response_dict: dict, state: State):
             json.dump(architecture_analysis, f, indent=2)
 
         print("✅ 아키텍처 분석이 완료되었습니다.")
-        print(f"- 컴포넌트: {len(components_map)}개")
-        print(f"- 액터: {len(actors_map)}개") 
-        print(f"- 자산: {len(assets_map)}개")
-        print(f"- 데이터 흐름: {len(data_flows_map)}개")
-        print(f"- 신뢰 경계: {len(trust_boundaries_map)}개")
-        print(f"- 행동: {len(behaviors_map)}개")
+        print(f"- 컴포넌트: {len(react_agent.variables.components_map)}개")
+        print(f"- 액터: {len(react_agent.variables.actors_map)}개") 
+        print(f"- 자산: {len(react_agent.variables.assets_map)}개")
+        print(f"- 데이터 흐름: {len(react_agent.variables.data_flows_map)}개")
+        print(f"- 신뢰 경계: {len(react_agent.variables.trust_boundaries_map)}개")
+        print(f"- 행동: {len(react_agent.variables.behaviors_map)}개")
 
     except json.JSONDecodeError as e:
         print(f"❌ JSON 파싱 오류: {e}")

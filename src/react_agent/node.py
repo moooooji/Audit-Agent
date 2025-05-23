@@ -11,13 +11,11 @@ from react_agent.llm_utils import (
 )
 
 # import variables
-from react_agent.variables import (
-    actors_map,
-    
-)
+import react_agent.variables
 
-threats_list = []
-checklist_items = []
+react_agent.variables.threats_list
+react_agent.variables.actors_map
+
 
 threat_count = 0
 checklist_count = 0
@@ -113,100 +111,71 @@ def analyze_threats(state: State) -> State:
     print(f"[+] Processing actor {state.current_actor_id+1}...")
     print(f"[+] Threats count: {len(response_dict['threats'])}")
     for threat in response_dict["threats"]:
-        threats_list.append(threat)
+        react_agent.variables.threats_list.append(threat)
         
         save_json(threat, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
-    threat_count += 1
-    print(f"Saved threats for actor {state.current_actor_id+1}")
     
-    if threat_count == len(actors_map):
-        # for all threats, assign sequential id weights
-        threat_count = 0
-        
-        for threat in threats_list:
-            threat["id"] = id_weight
-            id_weight += 1
-        
-        print("threats_list : ", len(threats_list))
+    with api_semaphore:
+    
+        threat_count += 1
+        print(f"Saved threats for actor {state.current_actor_id+1}")
+    
+        if threat_count == len(react_agent.variables.actors_map):
+            # for all threats, assign sequential id weights
+            threat_count = 0
             
-        save_json({ "threats": threats_list }, 'results/all_threats.json')
-        print("Saved all threats in 'all_threats.json'")
-        print("completed analyzing threats")
-        
-        print("gemini api initializing ...")
-        sleep(60)
-        print("gemini api initialized")
-        
-        # input("\n위협 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
-    return {
-            "is_threat_analysis": False,
-            "threat_list_length": len(threats_list),
-            "current_threat_count": id_weight-1,
-            }
+            for threat in react_agent.variables.threats_list:
+                threat["id"] = id_weight
+                id_weight += 1
+            
+            print("threats_list : ", len(react_agent.variables.threats_list))
+                
+            save_json({ "threats": react_agent.variables.threats_list }, 'results/all_threats.json')
+            print("Saved all threats in 'all_threats.json'")
+            print("completed analyzing threats")
+            
+            print("gemini api initializing ...")
+            sleep(60)
+            print("gemini api initialized")
+            
+            return {
+                    "is_threat_analysis": False,
+                    "threat_list_length": len(react_agent.variables.threats_list),
+                    "current_threat_count": id_weight-1,
+                    }
 
 def generate_checklist(state: State) -> State:
     
     global checklist_count
     global processed_checklist_batches
-    global checklist_items
-    
-    # prevent race condition
-    with api_semaphore:
-        # for google gemini api RPM limit
-        current_batch = (checklist_count - 1) // BATCH_SIZE
-        if current_batch > processed_checklist_batches:
-            processed_checklist_batches = current_batch
-            print("gemini api initializing for checklist batch ", current_batch, " ...")
-            sleep(60)
-            print("gemini api initialized for checklist batch ", current_batch)
     
     if state.checklist_feedback_loop_count == 0:
         print("initial checklist analysis ...")
         state.is_initial_checklist_analysis = True
+        
         response = generate_llm_response(state)
         
-        response_dict = json_str_to_dict(response.choices[0].message.content)
-        for checklist_item in response_dict['checklist_items']:
-            # append each checklist item extracted from the current actor
-            checklist_items.append(checklist_item)
-            
-        print(state.current_threat_id, "번째 threat의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
+        # 모든 위협의 checklist_items를 합치기
+        checklist_items = []
+        for threat_response in response:
+            if 'checklist_items' in threat_response:
+                checklist_items.extend(threat_response['checklist_items'])
         
+        print("checklist_items : ", checklist_items)
+                    
         print("completed initial checklist analysis")
-        
-        # input("\n체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
-    else:
-        print("feedback loop checklist analysis ...")
-        state.is_feedback_checklist_analysis = True
-        response = generate_llm_response(state)
-        
-        response_dict = json_str_to_dict(response.choices[0].message.content)
-        for checklist_item in response_dict['checklist_items']:
-            # append each checklist item extracted from the current actor
-            checklist_items.append(checklist_item)
-            
-        print(state.current_threat_id, "번째 threat의 checklist prompt end. 햔재까지 checklist : ", len(checklist_items), "개")
-        
-        print("completed feedback loop checklist analysis")
-        
-        # input("\n피드백 루프 체크리스트 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
-        
-    checklist_count += 1
-    
-    if checklist_count == len(threats_list):
         
         id_weight = 1
         
         for item in checklist_items:
             item['id'] = id_weight
             id_weight = id_weight+1
-        
-        checklist_count = 0
+            
         with open("results/checklist.json", "w") as f:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
-        
+            
         print("checklist_items : ", len(checklist_items))
-        checklist_items = []
+        checklist_items.clear()  # 더 확실한 초기화 방법
         
         print("Saved checklist in 'results/checklist.json'")
         print("completed generating checklist")
@@ -214,8 +183,44 @@ def generate_checklist(state: State) -> State:
         print("gemini api initializing ...")
         sleep(60)
         print("gemini api initialized")
-    
-    return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
+        
+        return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
+        
+    else:
+        print("feedback loop checklist analysis ...")
+        state.is_feedback_checklist_analysis = True
+        
+        response = generate_llm_response(state)
+        
+        # 모든 위협의 checklist_items를 합치기
+        checklist_items = []
+        for threat_response in response:
+            if 'checklist_items' in threat_response:
+                checklist_items.extend(threat_response['checklist_items'])
+            
+        print("completed feedback loop checklist analysis")
+        
+        id_weight = 1
+        
+        for item in checklist_items:
+            item['id'] = id_weight
+            id_weight = id_weight+1
+            
+        with open("results/checklist.json", "w") as f:
+            json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
+            
+        print("checklist_items : ", len(checklist_items))
+        checklist_items.clear()  # 더 확실한 초기화 방법
+        
+        print("Saved checklist in 'results/checklist.json'")
+        print("completed generating checklist")
+        
+        print("gemini api initializing ...")
+        sleep(60)
+        print("gemini api initialized")
+        
+        return {"is_initial_checklist_analysis": False, "is_feedback_checklist_analysis": False}
+        
 
 def assess_checklist(state: State) -> State:
     print("verifying checklist ...")

@@ -1,61 +1,58 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 3,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": 8,
+    "actor_id": null,
     "behavior_id": null,
-    "capability_match": "Review Request for Reward Vault (RFRV) submissions"
+    "capability_match": "Hold allocated $BERA tokens subject to vesting"
   },
   "threat_target": {
-    "component_id": 29,
+    "component_id": null,
     "asset_ids": [
-      16,
-      28
+      101
     ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": 5702,
-    "data_description": "Submission of a specially crafted whitelisting proposal by the Berachain Foundation (or an attacker spoofing it)."
+    "data_flow_id": null,
+    "data_description": "Unauthorized modification of off-chain records or pre-deployment configurations that define Investor token allocations or vesting schedules."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": "Berachain Foundation (Actor 8) to Governance System (Component 29) Interface",
-    "between_component_ids": [
-      8,
-      29
-    ]
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A flaw in the Governance System (Component 29) might allow a whitelisting proposal submitted by the Berachain Foundation (Actor 8) to bypass standard governance procedures like voting or timelock."
+    "availability_required": false,
+    "gap_description": "If Investor allocation or vesting data is managed in mutable off-chain systems before being finalized on-chain, it could be maliciously altered, impacting the Investor's rightful share."
   },
   "actor_risk": {
     "actor_id": 8,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The Berachain Foundation, or an attacker impersonating it, could exploit a vulnerability in the Governance System to gain unauthorized control over the whitelisting process."
+    "description": "Investors (Actor 8) rely on the integrity of the processes that determine and implement their vesting schedules and token allocations."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Bypassing the established governance lifecycle for whitelisting proposals undermines decentralization and could allow the Foundation or an attacker to unilaterally approve Reward Vaults."
+    "risk_level": "Low",
+    "rationale": "This threat assumes a vulnerability in off-chain administrative processes. Strong on-chain vesting contracts would largely mitigate this for the execution phase."
   },
   "assumptions": [
-    "The Governance System (29) has a vulnerability that incorrectly processes proposals from certain privileged addresses (like the Foundation's), allowing such proposals to skip required governance steps (e.g., community vote, timelock).",
-    "The intended role of the Berachain Foundation in this context is to initiate a proposal for community consideration, not to enact it directly."
+    "Details of Investor allocations or vesting terms might be stored or processed in off-chain systems (e.g., spreadsheets, databases) before being implemented via smart contracts.",
+    "These off-chain systems could have vulnerabilities or insider threats allowing unauthorized data modification.",
+    "Investors may not have direct visibility into these off-chain processes to verify integrity before on-chain deployment."
   ],
   "mitigation": {
-    "strategy": "Conduct comprehensive security audits of the Governance System smart contracts, focusing on access controls, state transitions, and handling of proposals from privileged roles. Ensure strict adherence to the defined governance process for all proposals, irrespective of their origin.",
+    "strategy": "Minimize off-chain management of definitive vesting data. Utilize immutable on-chain vesting contracts. Implement strong access controls, audit trails, and regular reconciliation for any necessary off-chain data handling. Provide transparency to investors regarding their final on-chain vesting terms.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A vulnerability in the Governance System (Component 29) allows a Reward Vault whitelisting proposal (Asset 16) submitted by the Berachain Foundation (Actor 8) (or an attacker spoofing it) to bypass the standard voting and timelock procedures, leading to an unauthorized, immediate whitelisting of a Reward Vault (Asset 28).",
+  "description": "An attacker (e.g., a malicious insider or external party exploiting a vulnerability) tampers with off-chain records defining an Investor's (Actor 8) $BERA token allocation or vesting schedule, leading to an incorrect amount or altered release timeline when implemented on-chain.",
   "trace_source": {
-    "doc_reference": "doc_3, doc_14",
-    "matched_capability": "Review Request for Reward Vault (RFRV) submissions"
+    "doc_reference": "doc_29",
+    "matched_capability": "Hold allocated $BERA tokens subject to vesting"
   }
 }

@@ -1,62 +1,59 @@
 {
-  "id": 6,
-  "stride_category": "Information Disclosure",
+  "id": 4,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
     "actor_id": null,
-    "behavior_id": 517,
-    "capability_match": "Bridge NFTs"
+    "behavior_id": null,
+    "capability_match": null
   },
   "threat_target": {
-    "component_id": 211,
+    "component_id": null,
     "asset_ids": [
-      104
+      15,
+      1
     ]
   },
   "attack_surface": {
-    "behavior_id": 517,
-    "data_flow_id": 311,
-    "data_description": "Public blockchain data of NFT bridge transactions, including source/destination addresses, token IDs, and timestamps."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "User interaction with what they believe is the CEX's legitimate website or application."
   },
   "trust_boundary_risk": {
-    "boundary_id": 403,
-    "boundary_name": "Berachain Network <-> External Chains (via Bridge)",
-    "between_component_ids": [
-      201,
-      210,
-      211
-    ]
+    "boundary_id": null,
+    "boundary_name": "User-Internet Boundary",
+    "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "All bridge transactions are public on both chains, potentially revealing NFT holder strategies or linking identities if addresses are deanonymized. This is inherent to public blockchains but constitutes information disclosure."
+    "availability_required": false,
+    "gap_description": "Users may be tricked into entering credentials or connecting wallets to a fake CEX interface, leading to loss of credentials or assets."
   },
   "actor_risk": {
-    "actor_id": 9,
+    "actor_id": null,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The bridging activities of NFT Holder (ID 9) concerning their NFTs (Asset ID 104) are publicly visible and can be analyzed by anyone."
+    "description": "An external attacker creates a convincing fake CEX interface to steal user assets or credentials."
   },
   "behavioral_risk": {
-    "behavior_id": 517,
-    "risk_level": "Low",
-    "rationale": "Public nature of blockchain transactions allows tracking of NFT movements across the bridge, which is an expected characteristic but can be used for analysis."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Phishing is a common and effective attack vector targeting users of centralized services like CEXs."
   },
   "assumptions": [
-    "All bridge transactions are recorded on public, immutable ledgers (Ethereum and Berachain).",
-    "External observers can access and analyze this blockchain data.",
-    "Sufficient transaction volume or specific NFT characteristics might allow for pattern recognition or targeted analysis."
+    "Users access CEX services through web interfaces or applications.",
+    "Attackers can create convincing replicas of CEX interfaces.",
+    "Users can be tricked by social engineering or misleading links into interacting with the fake interface."
   ],
   "mitigation": {
-    "strategy": "Users concerned about privacy can employ standard blockchain privacy techniques (e.g., using fresh addresses for receiving bridged assets, using mixers where applicable and legal before/after bridging non-NFT assets). The bridge itself cannot easily mitigate this for public NFTs on public chains.",
-    "type": "Process Control",
-    "priority": "Low"
+    "strategy": "User education on phishing prevention (e.g., checking URLs, using bookmarks). CEXs implementing anti-phishing measures (e.g., official domain lists, 2FA, anti-phishing codes in emails).",
+    "type": "Policy",
+    "priority": "High"
   },
-  "description": "External observers can analyze public blockchain data from Data Flow ID 311 associated with NFT Holder (ID 9) using the Berachain NFT Bridge (ID 211) for Behavior ID 517. This public data reveals the movement of NFTs (Asset ID 104), which, while expected, can disclose transaction patterns, link addresses across chains, or expose holder strategies.",
+  "description": "An attacker could create a spoofed (fake) CEX website or application to trick users into revealing their credentials or depositing $BERA to attacker-controlled addresses, leading to fund loss. The CEX (ID 9) is the entity being spoofed.",
   "trace_source": {
-    "doc_reference": "doc_4",
-    "matched_capability": "Bridge NFTs"
+    "doc_reference": "doc_6",
+    "matched_capability": "Facilitate trading of $BERA"
   }
 }
