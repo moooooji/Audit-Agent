@@ -53,7 +53,17 @@ def main():
             else:
                 print(f"\nGraph execution paused. Next node(s) to execute: {current_graph_state_snapshot.next}")
                 
+                if current_graph_state_snapshot.next == "analyze_threats":
+                    user_response = input("output: architecture_analysis.json [*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                    
+                elif current_graph_state_snapshot.next == "generate_checklist":
+                    user_response = input("output: all_threats.json [*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                    
+                elif current_graph_state_snapshot.next == "code_binding":
+                    user_response = input("output: checklist.json [*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                    
                 user_response = input("[*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                    
                 if user_response == 'quit':
                     print("Exiting.")
                     break
