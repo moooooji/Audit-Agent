@@ -1,5 +1,6 @@
 """Utility & helper functions."""
 import json
+import threading
 
 from react_agent.state import State
 from react_agent.llm_utils import (
@@ -16,11 +17,14 @@ import react_agent.variables
 react_agent.variables.threats_list
 react_agent.variables.actors_map
 
-
 threat_count = 0
 checklist_count = 0
 BATCH_SIZE = 10
 
+# 병렬 처리를 위한 세마포어 변수 추가
+api_semaphore = threading.Semaphore(1)  # 한 번에 하나의 스레드만 API 대기 로직 실행
+processed_threats_batches = 0  # 처리된 위협 배치 수 추적
+processed_checklist_batches = 0  # 처리된 체크리스트 배치 수 추적
 
 from time import sleep
 from react_agent.Utils.RedisUtil import RedisUtil
@@ -41,8 +45,6 @@ def analyze_architecture(state: State) -> State:
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed first architecture analysis")
         
-        # input("\n아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
-        
         return {"is_initial_architecture_analysis": False}
     else:
         print("feedback loop architecture analysis ...")
@@ -56,8 +58,6 @@ def analyze_architecture(state: State) -> State:
         # parsing response and save to file
         save_json(response_dict, "results/architecture_analysis.json")
         print("completed feedback loop architecture analysis")
-        
-        # input("\n피드백 루프 아키텍처 분석이 완료되었습니다. 계속하려면 Enter를 누르세요...")
         
         return {"is_feedback_architecture_analysis": False}
     
@@ -73,18 +73,10 @@ def assess_architecture(state: State) -> State:
     save_json(response_dict, "results/assessment_architecture.json")
     print("completed assessing architecture")
     
-    # input("\n아키텍처 평가가 완료되었습니다. 계속하려면 Enter를 누르세요...")
-    
     return {
         "is_assessment_analysis": False, 
         "architecture_feedback_loop_count": state.architecture_feedback_loop_count+1
         }
-    
-# 병렬 처리를 위한 세마포어 변수 추가
-import threading
-api_semaphore = threading.Semaphore(1)  # 한 번에 하나의 스레드만 API 대기 로직 실행
-processed_threats_batches = 0  # 처리된 위협 배치 수 추적
-processed_checklist_batches = 0  # 처리된 체크리스트 배치 수 추적
 
 def analyze_threats(state: State) -> State:
     print("analyzing threats ...")
@@ -326,6 +318,5 @@ def initialize_state(state: State) -> State:
     state.is_initial_code_binding = False
     state.is_feedback_code_binding = False
     state.is_threat_analysis = False
-    
     
     state.current_actor_id = 0
