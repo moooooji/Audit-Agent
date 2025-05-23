@@ -15,9 +15,11 @@ from react_agent.node import (
 from react_agent.variables import (
     ARCHITECTURE_FEEDBACK_LOOP_COUNT, 
     CHECKLIST_FEEDBACK_LOOP_COUNT, 
-    CODE_BINDING_FEEDBACK_LOOP_COUNT,
-    actors_map,
+    CODE_BINDING_FEEDBACK_LOOP_COUNT
     )
+
+import react_agent.variables
+react_agent.variables.actors_map
 
 from langgraph.types import Send
 from langgraph.checkpoint.memory import MemorySaver
@@ -62,37 +64,8 @@ def parallel_threats_processing(state: State):
         is_assessment_code_binding=state.is_assessment_code_binding,
         threat_list_length=state.threat_list_length,
         current_threat_count=state.current_threat_count,
-    )) for i in range(len(actors_map))]
+    )) for i in range(len(react_agent.variables.actors_map))]
     
-def parallel_checklist_processing(state: State):
-    
-    if state.current_threat_count == state.threat_list_length:
-        
-        return [Send("generate_checklist", State(
-            target_docs_path=state.target_docs_path,
-            current_actor_id=state.current_actor_id,
-            current_threat_id=i,
-            is_threat_analysis=state.is_threat_analysis,
-            architecture_feedback_loop_count=state.architecture_feedback_loop_count,
-            checklist_feedback_loop_count=state.checklist_feedback_loop_count,
-            code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
-            is_initial_architecture_analysis=state.is_initial_architecture_analysis,
-            is_assessment_analysis=state.is_assessment_analysis,
-            is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
-            is_initial_checklist_analysis=state.is_initial_checklist_analysis,
-            is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
-            is_initial_code_binding=state.is_initial_code_binding,
-            is_feedback_code_binding=state.is_feedback_code_binding,
-            is_init_db=state.is_init_db,
-            is_assessment_checklist=state.is_assessment_checklist,
-            is_assessment_code_binding=state.is_assessment_code_binding,
-            threat_list_length=state.threat_list_length,
-            current_threat_count=state.current_threat_count,
-        )) for i in range(state.threat_list_length)]
-    else:
-        print("state.current_threat_count : ", state.current_threat_count)
-        return "__end__"
-
 # define a new graph
 builder = StateGraph(State, input=InputState)
 
@@ -116,7 +89,7 @@ builder.add_edge("assess_architecture", "analyze_architecture")
 # parallel edges
 builder.add_edge("analyze_threats", "init_db")
 
-builder.add_conditional_edges("analyze_threats", parallel_checklist_processing, ["generate_checklist", "__end__"])
+builder.add_edge("analyze_threats", "generate_checklist")
 builder.add_conditional_edges("generate_checklist", checklist_feedback_loop_edge, ["assess_checklist", "code_binding"])
 builder.add_edge("assess_checklist", "generate_checklist")
 builder.add_conditional_edges("code_binding", checklist_with_code_feedback_loop_edge, ["assess_code_binding", "__end__"])

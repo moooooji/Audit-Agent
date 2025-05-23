@@ -44,18 +44,18 @@ def main():
                 print("\nGraph has completed.")
                 break
             else:
-                print(f"\nGraph execution paused. Next node(s) to execute: {current_graph_state_snapshot.next}")
+                # print(f"\nGraph execution paused. Next node(s) to execute: {current_graph_state_snapshot.next}")
                 
-                user_response = input("Type 'resume' to continue, or 'quit' to exit: ").lower()
-                if user_response == 'quit':
-                    print("Exiting.")
-                    break
-                elif user_response == 'resume':
-                    print("Resuming graph execution...")
-                    input_ = None 
-                else:
-                    print("Invalid input. Defaulting to resume.")
-                    input_ = None
+                # user_response = input("Type 'resume' to continue, or 'quit' to exit: ").lower()
+                # if user_response == 'quit':
+                #     print("Exiting.")
+                #     break
+                # elif user_response == 'resume':
+                #     print("Resuming graph execution...")
+                #     input_ = None 
+                # else:
+                #     print("Invalid input. Defaulting to resume.")
+                input_ = None
 
         except Exception as e:
             print(f"\n--- ERROR DURING GRAPH EXECUTION ---")
