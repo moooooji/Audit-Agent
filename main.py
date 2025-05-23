@@ -1,20 +1,27 @@
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+
 import asyncio
 import json
 from src.react_agent.graph import graph
 from src.react_agent.state import InputState
 from src.react_agent.variables import graph_config
 
+DATASET_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset')
 
 def main():
     """
     Main function to run the Audit Agent graph.
     """
-    initial_input_path = "dataset/berachain_docs_merged.md"
+    initial_input_path = os.path.join(DATASET_DIR, 'docs_merged.md')
+    print(f"Current working directory: {os.getcwd()}")
     
     input_: dict | None = {"target_docs_path": initial_input_path}
 
     print(f"Starting Audit Agent graph with input: {input_}")
-
+    # input("[*input*](yes/no/quit) An error occurred. Try to resume from checkpoint? (yes/no/quit): ")
     while True:
         try:
             print(f"\nStarting/Resuming Audit Agent graph with input: {input_}")
@@ -44,18 +51,18 @@ def main():
                 print("\nGraph has completed.")
                 break
             else:
-                # print(f"\nGraph execution paused. Next node(s) to execute: {current_graph_state_snapshot.next}")
+                print(f"\nGraph execution paused. Next node(s) to execute: {current_graph_state_snapshot.next}")
                 
-                # user_response = input("Type 'resume' to continue, or 'quit' to exit: ").lower()
-                # if user_response == 'quit':
-                #     print("Exiting.")
-                #     break
-                # elif user_response == 'resume':
-                #     print("Resuming graph execution...")
-                #     input_ = None 
-                # else:
-                #     print("Invalid input. Defaulting to resume.")
-                input_ = None
+                user_response = input("[*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                if user_response == 'quit':
+                    print("Exiting.")
+                    break
+                elif user_response == 'resume':
+                    print("Resuming graph execution...")
+                    input_ = None 
+                else:
+                    print("Invalid input. Defaulting to resume.")
+                    input_ = None
 
         except Exception as e:
             print(f"\n--- ERROR DURING GRAPH EXECUTION ---")
@@ -64,7 +71,7 @@ def main():
             traceback.print_exc()
 
             while True:
-                user_response_on_error = input("An error occurred. Try to resume from checkpoint? (yes/no/quit): ").lower()
+                user_response_on_error = input("[*input*](yes/no/quit) An error occurred. Try to resume from checkpoint? (yes/no/quit): ").lower()
                 if user_response_on_error == 'yes':
                     print("Attempting to resume from the last checkpoint...")
                     input_ = None
