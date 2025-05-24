@@ -2,395 +2,293 @@
   "actors": [
     {
       "id": 1,
-      "name": "Berachain User",
+      "name": "User",
       "type": "EOA (Externally Owned Account)",
-      "description": "Individuals interacting with the Berachain ecosystem. This includes Liquidity Providers, $BGT Holders/Delegators, dApp users (BEX, Honey, BeraHub), NFT holders, and governance participants.",
+      "description": "End-user interacting with the Superfluid protocol, initiating transactions like wrapping tokens, creating/managing streams, deploying contracts, and interacting with dApps. Referenced in doc_2, doc_13, doc_44.",
       "capabilities": [
-        "Connect wallet to Berachain",
-        "Acquire and hold $BERA, $BGT, $HONEY, NFTs",
-        "Provide liquidity to BEX pools",
-        "Stake receipt tokens in Reward Vaults",
-        "Delegate (boost) $BGT to Validators",
-        "Claim $BGT rewards from Reward Vaults",
-        "Claim Incentive Tokens from boosting Validators",
-        "Mint and redeem $HONEY",
-        "Create and vote on governance proposals",
-        "Redeem $BGT for $BERA",
-        "Bridge assets to/from Berachain",
-        "Trade tokens on BEX"
+        "Initiate token wrapping/unwrapping",
+        "Create/Update/Delete money streams",
+        "Create/Manage distribution pools",
+        "Deploy Super Tokens",
+        "Deploy Super Apps",
+        "Interact with Superfluid Dashboard",
+        "Sign transactions with private keys"
       ]
     },
     {
       "id": 2,
-      "name": "Berachain Validator",
-      "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-      "description": "Entities operating nodes, staking $BERA to secure the network, proposing blocks, participating in consensus, directing $BGT emissions to Reward Vaults, and earning rewards ($BGT, transaction fees, incentives). Chosen based on $BERA stake (top 69).",
+      "name": "Super App",
+      "type": "Smart Contract",
+      "description": "Smart contracts registered with the Superfluid Protocol that react to Superfluid agreement events (e.g., stream creation/update/deletion) via callbacks. Referenced in doc_3, doc_21, doc_22, doc_24.",
       "capabilities": [
-        "Stake $BERA (min 250k, max 10M)",
-        "Operate a validator node",
-        "Propose blocks and participate in consensus",
-        "Receive base $BGT emissions for block production",
-        "Receive variable $BGT emissions based on boost",
-        "Direct $BGT emissions to whitelisted Reward Vaults",
-        "Receive protocol-provided Incentives from Reward Vaults",
-        "Set commission rate on earned Incentives",
-        "Distribute Incentives to $BGT delegators"
+        "Execute custom logic on stream events",
+        "Receive Superfluid streams",
+        "Initiate Superfluid streams",
+        "Interact with Superfluid Host for callbacks"
       ]
     },
     {
       "id": 3,
-      "name": "Protocol / Ecosystem Project",
+      "name": "Sentinel",
       "type": "Off-chain Service/Bot",
-      "description": "Entities or teams deploying decentralized applications (dApps) and smart contracts on Berachain. They can create Reward Vaults and offer Incentive Tokens to attract liquidity and $BGT emissions.",
+      "description": "Off-chain nodes that monitor the Superfluid network for critical or insolvent streams and initiate liquidation transactions. Referenced in doc_1, doc_6, doc_18, doc_19.",
       "capabilities": [
-        "Deploy smart contracts and dApps on Berachain",
-        "Create Reward Vaults (permissionlessly)",
-        "Submit governance proposals to whitelist Reward Vaults",
-        "Manage Incentive Tokens for their Reward Vaults (if designated as Token Manager)",
-        "Offer Incentive Tokens to attract $BGT emissions"
+        "Monitor stream solvency",
+        "Close critical/insolvent streams",
+        "Participate in TOGA (Transparent Ongoing Auction)",
+        "Earn rewards for liquidations"
       ]
     },
     {
       "id": 4,
-      "name": "Guardian",
-      "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-      "description": "A 5-of-9 multisig with elected signers responsible for overseeing governance proposals during the timelock period. They can cancel malicious proposals.",
+      "name": "Superfluid DAO",
+      "type": "DAO Participant/Token Holder",
+      "description": "The decentralized autonomous organization responsible for governing the Superfluid protocol, including upgrades and parameter changes. Referenced in doc_11, doc_41.",
       "capabilities": [
-        "Monitor governance proposals during timelock",
-        "Cancel malicious proposals via multisig action"
+        "Vote on governance proposals",
+        "Manage protocol upgrades",
+        "Set protocol parameters"
       ]
     },
     {
       "id": 5,
-      "name": "Token Manager",
+      "name": "Pool Admin",
       "type": "EOA (Externally Owned Account)",
-      "description": "A wallet address designated (via governance) to manage and offer specific Incentive Tokens for a particular Reward Vault. Can set incentive rates and deposit tokens.",
+      "description": "An actor responsible for creating and managing Superfluid Distribution Pools, including assigning units to pool members. Referenced in doc_5, doc_28, doc_30.",
       "capabilities": [
-        "Offer whitelisted Incentive Tokens to a specific Reward Vault",
-        "Set the distribution rate for Incentive Tokens per $BGT",
-        "Deposit Incentive Tokens into the Reward Vault's incentive pool",
-        "Increase incentive rate when depositing additional tokens"
+        "Create distribution pools",
+        "Assign/Update units for pool members",
+        "Manage pool configurations",
+        "Initiate distributions (if configured)"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Pool Member",
+      "type": "EOA (Externally Owned Account)",
+      "description": "An actor who is a recipient in a Superfluid Distribution Pool, receiving tokens based on their allocated units. Referenced in doc_5, doc_28, doc_30.",
+      "capabilities": [
+        "Receive token distributions (instant or streamed)",
+        "Claim distributed tokens",
+        "Connect/Disconnect from pools"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Developer",
+      "type": "EOA (Externally Owned Account)",
+      "description": "Individuals or teams building applications, Super Apps, or custom Super Tokens on top of the Superfluid protocol. Referenced in doc_13, doc_22, doc_26.",
+      "capabilities": [
+        "Deploy Super Tokens",
+        "Deploy Super Apps",
+        "Integrate Superfluid SDK/APIs",
+        "Develop smart contracts interacting with Superfluid"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "PIC (Patrician in Charge)",
+      "type": "EOA (Externally Owned Account)",
+      "description": "An actor who participates in the Transparent Ongoing Auction (TOGA) to become the designated liquidator for a specific token, earning rewards for closing critical streams during the patrician period. Referenced in doc_1, doc_18.",
+      "capabilities": [
+        "Stake tokens in TOGA",
+        "Receive rewards for liquidating streams during patrician period",
+        "Monitor streams for liquidation opportunities"
       ]
     }
   ],
   "assets": [
     {
-      "id": 1,
-      "name": "$BERA Token",
-      "description": "Berachain's native gas token, used for transaction fees and validator staking. Can be obtained by burning $BGT.",
-      "type": "Cryptocurrency (Native Gas Token)",
+      "id": 101,
+      "name": "Super Token",
+      "description": "Programmable tokens (e.g., USDCx, DAIx, ETHx) that are ERC20 compatible and enable Superfluid functionalities like money streaming and distributions. Can be wrapped from ERC20s/native assets or be pure. Referenced in doc_1, doc_2, doc_7, doc_39.",
+      "type": "Digital Currency (Programmable)",
       "sensitivity": "High"
     },
     {
-      "id": 2,
-      "name": "$BGT Token (Bera Governance Token)",
-      "description": "Berachain's non-transferrable governance and staking/reward delegation token. Earned by participating in Proof-of-Liquidity. Used for voting, boosting validators, and can be redeemed for $BERA.",
-      "type": "Cryptocurrency (Governance & Staking Token)",
+      "id": 102,
+      "name": "ERC20 Token",
+      "description": "Standard ERC20 tokens (e.g., USDC, DAI) that can be wrapped into Super Tokens to gain Superfluid functionalities. Referenced in doc_7, doc_14, doc_55.",
+      "type": "Digital Currency",
       "sensitivity": "High"
     },
     {
-      "id": 3,
-      "name": "$HONEY Token",
-      "description": "Berachain's native, fully collateralized stablecoin, soft-pegged to the US Dollar. Minted by depositing whitelisted collateral.",
-      "type": "Cryptocurrency (Stablecoin)",
+      "id": 103,
+      "name": "Native Asset",
+      "description": "Native blockchain assets (e.g., ETH, MATIC) that can be wrapped into Native Super Tokens. Referenced in doc_39, doc_55.",
+      "type": "Digital Currency (Blockchain Native)",
       "sensitivity": "High"
     },
     {
-      "id": 4,
-      "name": "Receipt Tokens",
-      "description": "Tokens representing a user's position in a liquidity pool (e.g., BEX LP tokens) or other PoL-eligible activities. Staked in Reward Vaults to earn $BGT.",
-      "type": "Token (LP, Staking Receipt)",
+      "id": 104,
+      "name": "Superfluid NFT",
+      "description": "Non-Fungible Tokens used within the Superfluid ecosystem, such as Tradeable Cashflow NFTs, ConstantOutflowNFTs, PoolAdminNFTs, representing ownership or rights related to streams or pools. Referenced in doc_3, doc_24, doc_32, doc_61.",
+      "type": "Digital Asset (Non-Fungible)",
       "sensitivity": "Medium"
     },
     {
-      "id": 5,
-      "name": "Incentive Tokens",
-      "description": "Whitelisted ERC20 tokens offered by Protocols/Token Managers in Reward Vaults to Validators (and their delegators) in exchange for directing $BGT emissions.",
-      "type": "Token (ERC20)",
+      "id": 105,
+      "name": "User Data",
+      "description": "Arbitrary byte data that can be attached to Superfluid operations (e.g., stream creation, updates) for custom logic or off-chain processing. Referenced in doc_1, doc_21, doc_37, doc_51.",
+      "type": "Arbitrary Data (bytes)",
       "sensitivity": "Medium"
     },
     {
-      "id": 6,
-      "name": "Berachain NFTs",
-      "description": "Official NFT collections (e.g., Bong Bears) on Ethereum, bridgeable to Berachain. Used for airdrop eligibility and community identity.",
-      "type": "Non-Fungible Token (NFT)",
-      "sensitivity": "Medium"
+      "id": 106,
+      "name": "Buffer Deposit",
+      "description": "Super Tokens locked by a stream sender in the protocol when a stream is created, serving as a security deposit to ensure stream solvency. Referenced in doc_1, doc_6, doc_18.",
+      "type": "Digital Currency (Locked)",
+      "sensitivity": "High"
     },
     {
-      "id": 7,
-      "name": "Governance Proposal Data",
-      "description": "Data defining a proposal for changes to Berachain's PoL, dApps, or parameters, including its state (pending, active, succeeded, defeated, executed).",
-      "type": "Data (Structured Proposal)",
-      "sensitivity": "Medium"
+      "id": 107,
+      "name": "TOGA Stake",
+      "description": "Super Tokens staked by a Patrician in Charge (PIC) in the Transparent Ongoing Auction (TOGA) contract as a commitment to perform liquidations. Referenced in doc_1, doc_18.",
+      "type": "Digital Currency (Locked)",
+      "sensitivity": "High"
     },
     {
-      "id": 8,
-      "name": "User Private Keys",
-      "description": "Cryptographic keys held by users in their wallets, used to authorize transactions and interactions on Berachain.",
+      "id": 108,
+      "name": "Private Keys",
+      "description": "Cryptographic keys used by actors (Users, Sentinels, Developers, etc.) to authorize transactions and interact with the blockchain. Referenced in doc_13, doc_19.",
       "type": "Cryptographic Key",
-      "sensitivity": "High"
-    },
-    {
-      "id": 9,
-      "name": "Transaction Data",
-      "description": "Information about transactions submitted to the Berachain network, including sender, receiver, value, and calldata.",
-      "type": "Data (On-chain Transaction)",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 10,
-      "name": "Validator $BERA Stake",
-      "description": "$BERA tokens staked by Validators to participate in consensus and secure the network.",
-      "type": "Value (Staked Cryptocurrency)",
-      "sensitivity": "High"
-    },
-    {
-      "id": 11,
-      "name": "Delegated $BGT (Boosts)",
-      "description": "$BGT tokens delegated by users to Validators to increase their $BGT reward emissions.",
-      "type": "Value (Delegated Governance Tokens)",
-      "sensitivity": "High"
-    },
-    {
-      "id": 12,
-      "name": "Reward Vault Deposits",
-      "description": "PoL-eligible receipt tokens staked by users in Reward Vaults to earn $BGT.",
-      "type": "Value (Staked Receipt Tokens)",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 13,
-      "name": "Collateral for $HONEY",
-      "description": "Whitelisted assets (e.g., $USDC, $BYUSD) deposited into HoneyFactory vaults to mint $HONEY.",
-      "type": "Value (Collateralized Assets)",
-      "sensitivity": "High"
-    },
-    {
-      "id": 14,
-      "name": "$BGT Emissions",
-      "description": "Newly minted $BGT tokens distributed as rewards for block production (base to validator, variable to Reward Vaults based on boost).",
-      "type": "Value (Newly Minted Tokens)",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 15,
-      "name": "Protocol-provided Incentives",
-      "description": "Incentive Tokens distributed by Reward Vaults to Validators (and their boosters) for $BGT emissions directed to them.",
-      "type": "Value (Distributed Incentive Tokens)",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 16,
-      "name": "dApp Fees",
-      "description": "Fees collected from Berachain core dApps (BEX, Honey) and distributed to $BGT boosters via the FeeCollector contract.",
-      "type": "Value (Collected Fees)",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 17,
-      "name": "Bridged Assets (Tokens/NFTs)",
-      "description": "Assets transferred to/from Berachain from/to other blockchains via the Berachain Bridges.",
-      "type": "Token (ERC20/NFT)",
       "sensitivity": "High"
     }
   ],
   "components": [
     {
-      "id": 1,
-      "name": "Berachain Network",
-      "description": "The EVM-Identical Layer 1 blockchain, utilizing Proof-of-Liquidity and built on BeaconKit. Hosts all smart contracts and processes transactions.",
+      "id": 201,
+      "name": "Superfluid Host Contract",
+      "description": "The central UUPS proxy contract of the Superfluid protocol. It manages Superfluid Agreements, Super App registrations and callbacks, and overall protocol logic. Referenced in doc_1, doc_4, doc_23, doc_45, doc_61.",
       "trust_level": "High",
       "assets_managed": [
-        1,
-        2,
-        3,
-        9,
-        10,
-        14
+        101,
+        105,
+        106
       ]
     },
     {
-      "id": 2,
-      "name": "BeaconKit",
-      "description": "The modular consensus layer framework used by Berachain, integrating CometBFT consensus for single slot finality.",
+      "id": 202,
+      "name": "Super Token Contract",
+      "description": "An instance of a UUPS proxy contract for each specific Super Token (e.g., fDAIx). It implements ERC20/ERC777 standards and Superfluid-specific logic like real-time balance calculation and interaction with agreements. Referenced in doc_7, doc_39, doc_59.",
+      "trust_level": "High",
+      "assets_managed": [
+        101,
+        102,
+        103
+      ]
+    },
+    {
+      "id": 203,
+      "name": "Constant Flow Agreement (CFAv1) Contract",
+      "description": "A UUPS proxy contract, a Superfluid Agreement that manages the logic for creating, updating, deleting, and accounting for money streams (continuous token flows). Referenced in doc_1, doc_21, doc_61, doc_63.",
+      "trust_level": "High",
+      "assets_managed": [
+        101,
+        106
+      ]
+    },
+    {
+      "id": 204,
+      "name": "General Distribution Agreement (GDAv1) Contract",
+      "description": "A UUPS proxy contract, a Superfluid Agreement that manages the logic for distribution pools, allowing one-to-many or many-to-many token distributions (instant or streamed). Referenced in doc_28, doc_29, doc_61, doc_63.",
+      "trust_level": "High",
+      "assets_managed": [
+        101
+      ]
+    },
+    {
+      "id": 205,
+      "name": "Super Token Factory Contract",
+      "description": "A UUPS proxy contract used to deploy new Super Token contracts (both wrapper and pure types). Referenced in doc_41, doc_42, doc_61.",
       "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 3,
-      "name": "BEX (Berachain Exchange)",
-      "description": "Berachain's native decentralized exchange (DEX) for swapping tokens and providing liquidity. Consists of smart contracts for pools and a user-facing dApp.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        4,
-        16
-      ]
+      "id": 206,
+      "name": "CFAv1Forwarder Contract",
+      "description": "An immutable contract providing a simplified and gas-efficient interface for client-side applications to interact with the Constant Flow Agreement (e.g., creating/updating/deleting streams). Referenced in doc_10, doc_44, doc_50, doc_56.",
+      "trust_level": "High",
+      "assets_managed": []
     },
     {
-      "id": 4,
-      "name": "BeraHub",
-      "description": "A central dApp for managing $BGT (boosting, redeeming, claiming), accessing BEX liquidity, participating in governance, and viewing Reward Vaults/Validators.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        11,
-        12
-      ]
+      "id": 207,
+      "name": "GDAv1Forwarder Contract",
+      "description": "An immutable contract providing a simplified interface for client-side applications to interact with the General Distribution Agreement (e.g., creating pools, managing members). Referenced in doc_10, doc_44, doc_46, doc_57.",
+      "trust_level": "High",
+      "assets_managed": []
     },
     {
-      "id": 5,
-      "name": "Reward Vault Smart Contracts",
-      "description": "Smart contracts where users stake PoL-eligible assets (Receipt Tokens) to earn $BGT emissions directed by Validators. Can also offer Incentive Tokens.",
+      "id": 208,
+      "name": "Sentinel Node Software",
+      "description": "Off-chain software run by Sentinels to monitor Superfluid streams, identify critical/insolvent ones, and trigger liquidation transactions. Referenced in doc_1, doc_18, doc_19.",
+      "trust_level": "Medium",
+      "assets_managed": []
+    },
+    {
+      "id": 209,
+      "name": "Superfluid Dashboard",
+      "description": "A web-based user interface that allows users to interact with the Superfluid protocol, manage streams, pools, wrap/unwrap tokens, and view account activity. Referenced in doc_2, doc_16, doc_26, doc_53, doc_64.",
+      "trust_level": "Medium",
+      "assets_managed": []
+    },
+    {
+      "id": 210,
+      "name": "Superfluid Subgraph",
+      "description": "A data indexing service (using The Graph protocol) that provides a queryable API for accessing historical and real-time data from the Superfluid protocol. Referenced in doc_15, doc_20, doc_48, doc_52, doc_54, doc_62.",
+      "trust_level": "Medium",
+      "assets_managed": []
+    },
+    {
+      "id": 211,
+      "name": "Vesting Scheduler Contract",
+      "description": "A smart contract designed for setting up token vesting schedules with optional cliffs, initiating Superfluid streams for linear vesting. Referenced in doc_17, doc_64.",
       "trust_level": "High",
       "assets_managed": [
-        12,
-        2,
-        5,
-        15
+        101
       ]
     },
     {
-      "id": 6,
-      "name": "Honey dApp",
-      "description": "User interface for interacting with the HoneyFactory to mint/redeem $HONEY and for swapping approved stables for $HONEY (Honey Swap).",
+      "id": 212,
+      "name": "MacroForwarder Contract",
+      "description": "A trusted forwarder contract that allows users to execute predefined batch operations (macros) on the Superfluid protocol in a single transaction. Referenced in doc_45, doc_49.",
+      "trust_level": "High",
+      "assets_managed": []
+    },
+    {
+      "id": 213,
+      "name": "UserDefinedMacro Contract",
+      "description": "A user-deployed smart contract that defines a specific sequence of Superfluid operations to be executed as a batch via the MacroForwarder. Referenced in doc_45.",
       "trust_level": "Medium",
-      "assets_managed": [
-        3,
-        13,
-        16
-      ]
+      "assets_managed": []
     },
     {
-      "id": 7,
-      "name": "HoneyFactory Smart Contract",
-      "description": "The core contract for minting and burning $HONEY. Manages collateral vaults and $HONEY supply.",
+      "id": 214,
+      "name": "SuperfluidPool Contract Instance",
+      "description": "An instance of a UUPS proxy contract representing a specific distribution pool, created via the GDAv1. It holds pool-specific data like members and units. Referenced in doc_60, doc_61.",
       "trust_level": "High",
       "assets_managed": [
-        3,
-        13
+        101
       ]
     },
     {
-      "id": 8,
-      "name": "Berachain Governance Contracts",
-      "description": "Smart contracts (e.g., Governor, Timelock) that manage the on-chain governance lifecycle, including proposal creation, voting, and execution.",
+      "id": 215,
+      "name": "TOGA (Transparent Ongoing Auction) Contract",
+      "description": "A smart contract that manages the auction for becoming the Patrician in Charge (PIC) for a given token, and handles staking and slashing for PICs. Referenced in doc_1, doc_18.",
       "trust_level": "High",
       "assets_managed": [
-        7,
-        2
-      ]
-    },
-    {
-      "id": 9,
-      "name": "User Wallet Software",
-      "description": "Client-side software (e.g., MetaMask, Rabby) used by users to manage private keys, sign transactions, and interact with Berachain dApps and contracts.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        8,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        17
-      ]
-    },
-    {
-      "id": 10,
-      "name": "Validator Node & Staking Infrastructure",
-      "description": "The hardware and software stack run by Berachain Validators to participate in consensus, propose blocks, and manage their $BERA stake.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        10
-      ]
-    },
-    {
-      "id": 11,
-      "name": "Berachain Bridge",
-      "description": "Canonical bridge (powered by LayerZero) for transferring tokens between Berachain and other supported blockchains. Includes smart contracts and a frontend.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        17
-      ]
-    },
-    {
-      "id": 12,
-      "name": "Berachain NFT Bridge",
-      "description": "Bridge for transferring official Berachain NFT collections between Ethereum and Berachain. Includes smart contracts and a frontend.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        6,
-        17
-      ]
-    },
-    {
-      "id": 13,
-      "name": "BGTIncentiveDistributor Smart Contract",
-      "description": "Contract responsible for managing the distribution and claiming of Incentive Tokens earned by users who boost Validators.",
-      "trust_level": "High",
-      "assets_managed": [
-        5,
-        15
-      ]
-    },
-    {
-      "id": 14,
-      "name": "FeeCollector Smart Contract",
-      "description": "Contract that collects fees from core Berachain dApps (BEX, Honey) and distributes them (as $WBERA) to $BGT boosters.",
-      "trust_level": "High",
-      "assets_managed": [
-        16,
-        1
-      ]
-    },
-    {
-      "id": 15,
-      "name": "Distributor Smart Contract",
-      "description": "Contract responsible for minting and distributing $BGT block rewards (variable portion) to whitelisted Reward Vaults based on Validator allocations.",
-      "trust_level": "High",
-      "assets_managed": [
-        2,
-        14
-      ]
-    },
-    {
-      "id": 16,
-      "name": "Guardian Multisig",
-      "description": "A 5-of-9 multisig mechanism (on-chain contract controlled by off-chain coordinated signers) used by Guardians to cancel malicious governance proposals during timelock.",
-      "trust_level": "High",
-      "assets_managed": [
-        7
-      ]
-    },
-    {
-      "id": 17,
-      "name": "RPC Endpoints",
-      "description": "Network interface allowing wallets and applications to read blockchain data and submit transactions to the Berachain network.",
-      "trust_level": "Medium",
-      "assets_managed": [
-        9
+        107,
+        101
       ]
     }
   ],
   "data_flows": [
     {
-      "id": 1,
+      "id": 301,
       "source_id": 1,
-      "destination_id": 9,
-      "data": "User intent (e.g., swap, stake, vote)",
-      "description": "User expresses intent to interact with Berachain via their Wallet Software.",
-      "security_properties": {
-        "confidentiality_required": true,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 2,
-      "source_id": 9,
-      "destination_id": 17,
-      "data": "Signed Transaction Data (Asset 9)",
-      "description": "User Wallet Software submits a signed transaction to Berachain Network via RPC Endpoints.",
+      "destination_id": 206,
+      "data": "Stream parameters (token, receiver, flowRate, userData), Transaction signature",
+      "description": "User initiates a transaction through their wallet to the CFAv1Forwarder to create a money stream. The Forwarder then calls the CFAv1 contract (ID: 203). Referenced in doc_44, doc_50.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -398,107 +296,11 @@
       }
     },
     {
-      "id": 3,
-      "source_id": 17,
-      "destination_id": 1,
-      "data": "Transaction Data for processing",
-      "description": "RPC Endpoints relay transaction to the Berachain Network for consensus and execution.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 4,
-      "source_id": 1,
-      "destination_id": 3,
-      "data": "Liquidity provision/removal, Swap execution",
-      "description": "Berachain Network executes user transactions interacting with BEX smart contracts.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 5,
-      "source_id": 1,
-      "destination_id": 5,
-      "data": "Staking/unstaking Receipt Tokens (Asset 4, 12), Claiming $BGT (Asset 2)",
-      "description": "Berachain Network executes user transactions interacting with Reward Vault Smart Contracts.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 6,
-      "source_id": 1,
-      "destination_id": 4,
-      "data": "$BGT delegation (Asset 11), $BGT redemption for $BERA (Asset 1, 2)",
-      "description": "Berachain Network executes user transactions for $BGT management via BeraHub interactions (which call relevant contracts).",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 7,
-      "source_id": 1,
-      "destination_id": 7,
-      "data": "Minting/Redeeming $HONEY (Asset 3) with Collateral (Asset 13)",
-      "description": "Berachain Network executes user transactions with HoneyFactory for $HONEY operations.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 8,
-      "source_id": 1,
-      "destination_id": 8,
-      "data": "Governance Proposal creation/voting (Asset 7)",
-      "description": "Berachain Network executes user transactions for governance participation.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 9,
-      "source_id": 2,
-      "destination_id": 10,
-      "data": "$BERA Staking (Asset 10) instructions",
-      "description": "Validator stakes $BERA via their Validator Node Infrastructure.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 10,
-      "source_id": 10,
-      "destination_id": 1,
-      "data": "Block proposals, Consensus messages",
-      "description": "Validator Node Infrastructure participates in Berachain consensus.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 11,
-      "source_id": 1,
+      "id": 302,
+      "source_id": 201,
       "destination_id": 2,
-      "data": "Base $BGT emissions (Asset 14), Transaction fees",
-      "description": "Berachain Network rewards block-proposing Validator with base $BGT and fees.",
+      "data": "Callback parameters (agreementId, agreementData, ctx, userData)",
+      "description": "When a stream is created/updated/deleted involving a Super App, the Superfluid Host contract calls the registered callback function on the Super App. Referenced in doc_3, doc_21, doc_24.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -506,59 +308,11 @@
       }
     },
     {
-      "id": 12,
-      "source_id": 2,
-      "destination_id": 15,
-      "data": "Reward allocation choice for $BGT emissions",
-      "description": "Validator (via their infra) configures Distributor contract for $BGT emission direction.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 13,
-      "source_id": 15,
-      "destination_id": 5,
-      "data": "Distributed $BGT emissions (Asset 14)",
-      "description": "Distributor contract sends $BGT emissions to chosen Reward Vaults.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 14,
-      "source_id": 5,
-      "destination_id": 13,
-      "data": "Protocol-provided Incentives (Asset 15) based on $BGT received",
-      "description": "Reward Vaults transfer earned Incentives to BGTIncentiveDistributor for boosters.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 15,
-      "source_id": 1,
-      "destination_id": 13,
-      "data": "Claiming Incentive Tokens (Asset 5, 15)",
-      "description": "User claims their share of incentives from BGTIncentiveDistributor.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 16,
+      "id": 303,
       "source_id": 3,
-      "destination_id": 8,
-      "data": "Request for Reward Vault whitelisting (Asset 7)",
-      "description": "Protocol submits a governance proposal to whitelist a Reward Vault.",
+      "destination_id": 203,
+      "data": "Liquidation transaction parameters (token, sender, receiver), Transaction signature",
+      "description": "A Sentinel node detects an insolvent stream and sends a transaction to the CFAv1 contract (and TOGA contract ID: 215) to liquidate it, claiming the buffer. Referenced in doc_18, doc_19.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -566,11 +320,23 @@
       }
     },
     {
-      "id": 17,
+      "id": 304,
+      "source_id": 1,
+      "destination_id": 202,
+      "data": "Wrap parameters (amount), ERC20 token approval, Transaction signature",
+      "description": "User approves the Super Token contract to spend their ERC20 tokens and then calls the upgrade/wrap function on the Super Token contract. Referenced in doc_7, doc_55.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 305,
       "source_id": 5,
-      "destination_id": 5,
-      "data": "Incentive Token (Asset 5) deposit and rate setting by Token Manager (Actor 5)",
-      "description": "Token Manager adds/configures incentives for a Reward Vault.",
+      "destination_id": 207,
+      "data": "Update units parameters (pool, memberAddress, newUnits, userData), Transaction signature",
+      "description": "Pool Admin calls the GDAv1Forwarder (which then calls GDAv1 Contract ID: 204 or SuperfluidPool Contract Instance ID: 214) to update the distribution units for a pool member. Referenced in doc_30, doc_47.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -578,35 +344,23 @@
       }
     },
     {
-      "id": 18,
-      "source_id": 4,
-      "destination_id": 16,
-      "data": "Multisig transaction to cancel proposal",
-      "description": "Guardians interact with their Multisig to cancel a governance proposal.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 19,
-      "source_id": 16,
-      "destination_id": 8,
-      "data": "Proposal cancellation execution",
-      "description": "Guardian Multisig executes cancellation on the Governance Contract.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 20,
+      "id": 306,
       "source_id": 1,
-      "destination_id": 11,
-      "data": "Bridging Tokens (Asset 17)",
-      "description": "User interacts with Berachain Bridge to transfer tokens.",
+      "destination_id": 210,
+      "data": "GraphQL query",
+      "description": "A user or a client application (like the Superfluid Dashboard ID: 209) sends a GraphQL query to the Superfluid Subgraph to retrieve indexed protocol data. Referenced in doc_48, doc_52, doc_54.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 307,
+      "source_id": 211,
+      "destination_id": 203,
+      "data": "Stream creation parameters (token, recipient, flowRate)",
+      "description": "The Vesting Scheduler contract, after a predefined cliff period, automatically initiates a Superfluid stream to the designated recipient by calling the CFAv1 contract. Referenced in doc_17, doc_64.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -614,47 +368,11 @@
       }
     },
     {
-      "id": 21,
+      "id": 308,
       "source_id": 1,
-      "destination_id": 12,
-      "data": "Bridging NFTs (Asset 6, 17)",
-      "description": "User interacts with Berachain NFT Bridge to transfer NFTs.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 22,
-      "source_id": 3,
-      "destination_id": 14,
-      "data": "dApp Fees (Asset 16) from BEX",
-      "description": "BEX contract sends collected fees to FeeCollector contract.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 23,
-      "source_id": 7,
-      "destination_id": 14,
-      "data": "dApp Fees (Asset 16) from Honey mint/burn",
-      "description": "HoneyFactory contract sends collected fees to FeeCollector contract.",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 24,
-      "source_id": 14,
-      "destination_id": 1,
-      "data": "Distribution of $WBERA (from fees) to $BGT boosters (Actor 1)",
-      "description": "FeeCollector distributes collected fees (as $WBERA) to users who boosted validators.",
+      "destination_id": 212,
+      "data": "Macro parameters, Transaction signature",
+      "description": "User calls `runMacro` on the MacroForwarder, which then calls `buildBatchOperations` on a UserDefinedMacro contract (ID: 213). The MacroForwarder then executes these operations via the Superfluid Host (ID: 201). Referenced in doc_45, doc_49.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -664,286 +382,186 @@
   ],
   "trust_boundaries": [
     {
-      "id": 1,
-      "name": "User - User Wallet Software",
+      "id": 401,
+      "name": "User Wallet to On-chain Protocol Interface",
       "between_ids": [
         1,
-        9
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        211,
+        212,
+        214,
+        215
       ],
-      "description": "Boundary between the human user and the wallet software they use. Trust in the wallet to correctly represent user intent and securely manage keys.",
+      "description": "Boundary between the user's EOA/wallet (holding private keys) and the Superfluid smart contracts they interact with. Transactions cross this boundary. Referenced in doc_44, doc_50.",
       "validation_required": true
     },
     {
-      "id": 2,
-      "name": "User Wallet Software - dApp Frontend",
-      "between_ids": [
-        9,
-        4
-      ],
-      "description": "Boundary when a user's wallet connects to and interacts with a dApp frontend (e.g., BeraHub, BEX UI). Trust in dApp frontend to correctly display information and formulate transactions.",
-      "validation_required": true
-    },
-    {
-      "id": 3,
-      "name": "dApp Frontend - Berachain Smart Contracts",
-      "between_ids": [
-        4,
-        3
-      ],
-      "description": "Boundary where a dApp frontend (e.g., BeraHub) initiates transactions with on-chain smart contracts (e.g., BEX pools, Reward Vaults). Relies on RPC for submission.",
-      "validation_required": true
-    },
-    {
-      "id": 4,
-      "name": "User Wallet Software - RPC Endpoint",
-      "between_ids": [
-        9,
-        17
-      ],
-      "description": "Boundary when wallet software submits transactions or queries state via an RPC endpoint.",
-      "validation_required": true
-    },
-    {
-      "id": 5,
-      "name": "RPC Endpoint - Berachain Network",
-      "between_ids": [
-        17,
-        1
-      ],
-      "description": "Boundary between the RPC service and the actual Berachain P2P network and consensus.",
-      "validation_required": true
-    },
-    {
-      "id": 6,
-      "name": "Validator Node Infrastructure - Berachain Network",
-      "between_ids": [
-        10,
-        1
-      ],
-      "description": "Boundary between a validator's privately managed infrastructure and the public Berachain network. Trust in validator to operate honestly and securely.",
-      "validation_required": true
-    },
-    {
-      "id": 7,
-      "name": "Protocol/Ecosystem Project - Berachain Network",
+      "id": 402,
+      "name": "On-chain Protocol to Off-chain Sentinel Interface",
       "between_ids": [
         3,
-        1
+        203,
+        208,
+        215
       ],
-      "description": "Boundary when a protocol deploys or interacts with its smart contracts (e.g., Reward Vaults, incentive mechanisms) on Berachain.",
+      "description": "Boundary between the on-chain Superfluid contracts (specifically CFAv1 and TOGA for liquidations) and the off-chain Sentinel nodes that monitor and trigger transactions. Referenced in doc_18, doc_19.",
       "validation_required": true
     },
     {
-      "id": 8,
-      "name": "Guardian Signers - Guardian Multisig Contract",
+      "id": 403,
+      "name": "Protocol to Governance Interface",
       "between_ids": [
         4,
-        16
+        201,
+        202,
+        203,
+        204,
+        205
       ],
-      "description": "Boundary between the off-chain coordination/decision of Guardian signers and the on-chain execution via the Guardian Multisig contract.",
+      "description": "Boundary between the operational Superfluid smart contracts and the DAO that governs them, making decisions on upgrades and parameters. Referenced in doc_11, doc_41.",
       "validation_required": true
     },
     {
-      "id": 9,
-      "name": "Berachain Network - External Blockchain (via Bridge)",
+      "id": 404,
+      "name": "On-chain Protocol to Off-chain Data Indexer Interface",
+      "between_ids": [
+        201,
+        202,
+        203,
+        204,
+        210,
+        214
+      ],
+      "description": "Boundary between the Superfluid smart contracts emitting events and the off-chain Subgraph nodes that index this data for querying. Referenced in doc_48, doc_52.",
+      "validation_required": false
+    },
+    {
+      "id": 405,
+      "name": "Super App to Host Callback Interface",
+      "between_ids": [
+        2,
+        201
+      ],
+      "description": "Boundary defining the callback interface where the Superfluid Host contract makes calls to registered Super App contracts upon specific agreement events. Referenced in doc_3, doc_21.",
+      "validation_required": true
+    },
+    {
+      "id": 406,
+      "name": "Client Application to User Wallet Interface",
       "between_ids": [
         1,
-        11
+        209
       ],
-      "description": "Boundary when assets are transferred between Berachain and another blockchain using the Berachain Bridge (e.g., LayerZero). Trust in bridge security.",
+      "description": "Boundary between a client-side application (like the Superfluid Dashboard or a third-party dApp) and the user's wallet (e.g., MetaMask) for requesting transaction signatures and RPC interactions. Referenced in doc_44, doc_50.",
       "validation_required": true
     }
   ],
   "behaviors": [
     {
-      "id": 1,
-      "name": "User Connects Wallet to Berachain dApp",
+      "id": 501,
+      "name": "Manage Money Stream",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 9,
-      "action": "connect",
-      "description": "User uses Wallet Software (C9) to connect to a Berachain dApp (e.g., BeraHub C4, BEX C3).",
-      "risk_level": "Low"
-    },
-    {
-      "id": 2,
-      "name": "User Provides Liquidity to BEX",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 3,
-      "action": "provide_liquidity",
-      "description": "User, via their Wallet (C9), submits a transaction to add liquidity to a BEX (C3) pool, receiving Receipt Tokens (A4).",
+      "target_id": 206,
+      "action": "User calls createFlow, updateFlow, or deleteFlow (or setFlowrate) on CFAv1Forwarder (which interacts with CFAv1 Contract ID: 203) to manage continuous token payments.",
+      "description": "Users can start, modify, or stop per-second token streams to any receiver. This involves interaction with the CFAv1 contract, typically via the CFAv1Forwarder. Referenced in doc_2, doc_6, doc_34, doc_36, doc_50.",
       "risk_level": "Medium"
     },
     {
-      "id": 3,
-      "name": "User Stakes Receipt Tokens in Reward Vault",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 5,
-      "action": "stake",
-      "description": "User, via BeraHub (C4) and Wallet (C9), stakes Receipt Tokens (A4) into a Reward Vault (C5) to earn $BGT (A2).",
-      "risk_level": "Medium"
-    },
-    {
-      "id": 4,
-      "name": "User Delegates (Boosts) $BGT to Validator",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 4,
-      "action": "delegate_bgt",
-      "description": "User, via BeraHub (C4) and Wallet (C9), delegates their $BGT (A2) to a Berachain Validator (A2) to boost their emissions and earn Incentives (A5). Target is BeraHub which facilitates interaction with staking contracts.",
-      "risk_level": "Medium"
-    },
-    {
-      "id": 5,
-      "name": "Validator Proposes Block",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "propose_block",
-      "description": "Berachain Validator (A2), using their Node Infrastructure (C10), proposes a new block to the Berachain Network (C1).",
-      "risk_level": "Low"
-    },
-    {
-      "id": 6,
-      "name": "Validator Receives $BGT Block Rewards",
-      "initiator_type": "Component",
-      "initiator_id": 1,
-      "target_id": 2,
-      "action": "distribute_rewards",
-      "description": "Berachain Network (C1) distributes base $BGT emissions (A14) to the block-proposing Validator (A2).",
-      "risk_level": "Low"
-    },
-    {
-      "id": 7,
-      "name": "Validator Directs $BGT Emissions to Reward Vaults",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 15,
-      "action": "set_emission_allocation",
-      "description": "Berachain Validator (A2) configures the Distributor contract (C15) to direct their variable $BGT emissions (A14) to selected Reward Vaults (C5).",
-      "risk_level": "Medium"
-    },
-    {
-      "id": 8,
-      "name": "Protocol/Token Manager Offers Incentives to Reward Vault",
+      "id": 502,
+      "name": "Manage Token Distribution Pool",
       "initiator_type": "Actor",
       "initiator_id": 5,
-      "target_id": 5,
-      "action": "add_incentives",
-      "description": "Token Manager (A5) for a Protocol (A3) adds Incentive Tokens (A5) to a Reward Vault (C5) to attract $BGT emissions.",
+      "target_id": 207,
+      "action": "Pool Admin/User creates a pool, updates member units, or initiates a distribution (instant or streamed) via GDAv1Forwarder (which interacts with GDAv1 Contract ID: 204 and SuperfluidPool Contract Instance ID: 214).",
+      "description": "Allows for one-to-many or many-to-many token distributions. Pool Admins manage pools and units; distributors send tokens to the pool for members. Referenced in doc_5, doc_28, doc_29, doc_47.",
       "risk_level": "Medium"
     },
     {
-      "id": 9,
-      "name": "User Claims $BGT from Reward Vault",
+      "id": 503,
+      "name": "Wrap/Unwrap Tokens",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 5,
-      "action": "claim_bgt",
-      "description": "User, via BeraHub (C4) and Wallet (C9), claims earned $BGT (A2) from a Reward Vault (C5).",
+      "target_id": 202,
+      "action": "User calls upgrade (wrap) or downgrade (unwrap) on a Super Token contract to convert between underlying ERC20/native assets and Super Tokens.",
+      "description": "Users convert standard ERC20 tokens or native assets into their Super Token equivalents to use Superfluid functionalities, and vice-versa. Referenced in doc_7, doc_14, doc_55.",
       "risk_level": "Low"
     },
     {
-      "id": 10,
-      "name": "User Claims Incentives from Boosting",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 13,
-      "action": "claim_incentives",
-      "description": "User, via BeraHub (C4) and Wallet (C9), claims earned Incentive Tokens (A5, A15) from the BGTIncentiveDistributor contract (C13).",
-      "risk_level": "Low"
-    },
-    {
-      "id": 11,
-      "name": "User Mints $HONEY",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 7,
-      "action": "mint_honey",
-      "description": "User, via Honey dApp (C6) and Wallet (C9), deposits Collateral (A13) into HoneyFactory (C7) to mint $HONEY (A3).",
+      "id": 504,
+      "name": "Super App Callback Execution",
+      "initiator_type": "Component",
+      "initiator_id": 201,
+      "target_id": 2,
+      "action": "Superfluid Host contract invokes registered callback functions on a Super App when a relevant agreement event (e.g., stream created to Super App) occurs.",
+      "description": "Super Apps automatically execute custom on-chain logic in response to Superfluid stream or distribution events involving them. Referenced in doc_3, doc_21, doc_24.",
       "risk_level": "Medium"
     },
     {
-      "id": 12,
-      "name": "User Redeems $HONEY",
+      "id": 505,
+      "name": "Stream Liquidation",
       "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 7,
-      "action": "redeem_honey",
-      "description": "User, via Honey dApp (C6) and Wallet (C9), burns $HONEY (A3) at HoneyFactory (C7) to receive Collateral (A13).",
+      "initiator_id": 3,
+      "target_id": 203,
+      "action": "Sentinel identifies an insolvent stream and calls a liquidation function on the CFAv1 contract (interacting with TOGA Contract ID: 215) to close the stream and claim the buffer.",
+      "description": "Off-chain Sentinels monitor streams and liquidate those where the sender's balance has depleted, ensuring protocol solvency and rewarding the Sentinel. Referenced in doc_1, doc_18, doc_19.",
       "risk_level": "Medium"
     },
     {
-      "id": 13,
-      "name": "User Creates Governance Proposal",
+      "id": 506,
+      "name": "Automated Token Vesting",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 8,
-      "action": "create_proposal",
-      "description": "User (with sufficient $BGT), via BeraHub (C4) and Wallet (C9), submits a Governance Proposal (A7) to Berachain Governance Contracts (C8).",
+      "target_id": 211,
+      "action": "User configures a vesting schedule (amount, duration, cliff) with the Vesting Scheduler, which then automatically creates a Superfluid stream to the recipient.",
+      "description": "Tokens are released to a recipient over time according to a predefined schedule, potentially with a cliff, using Superfluid streams for linear release. Referenced in doc_17, doc_64.",
       "risk_level": "Medium"
     },
     {
-      "id": 14,
-      "name": "User Votes on Governance Proposal",
+      "id": 507,
+      "name": "Execute Batch Transactions via Macro",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 8,
-      "action": "vote_on_proposal",
-      "description": "User (with $BGT), via BeraHub (C4) and Wallet (C9), casts a vote on an active Governance Proposal (A7) using Berachain Governance Contracts (C8).",
-      "risk_level": "Low"
+      "target_id": 212,
+      "action": "User calls `runMacro` on the MacroForwarder, providing parameters for a UserDefinedMacro (ID: 213), to execute multiple Superfluid operations in a single transaction via the Superfluid Host (ID: 201).",
+      "description": "Allows users to combine multiple Superfluid operations (e.g., creating multiple streams, updating pool units) into a single atomic transaction using a macro system. Referenced in doc_45, doc_49.",
+      "risk_level": "Medium"
     },
     {
-      "id": 15,
-      "name": "User Redeems $BGT for $BERA",
+      "id": 508,
+      "name": "Manage Flow Operator Permissions",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 4,
-      "action": "redeem_bgt",
-      "description": "User, via BeraHub (C4) and Wallet (C9), burns $BGT (A2) to receive $BERA (A1) 1:1. Target is BeraHub which facilitates interaction with relevant contract.",
-      "risk_level": "Low"
-    },
-    {
-      "id": 16,
-      "name": "Validator Stakes $BERA",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 1,
-      "action": "stake_bera",
-      "description": "Validator (A2) stakes $BERA (A1, A10) on the Berachain Network (C1) to become eligible for block production.",
+      "target_id": 203,
+      "action": "User calls functions (e.g., grantPermissions, revokePermissions) on CFAv1 (often via CFAv1Forwarder ID: 206) to manage which accounts (flow operators) can control their streams.",
+      "description": "Users can delegate the ability to create, update, or delete their money streams to other accounts (flow operators) with specified allowances. Referenced in doc_37, doc_51.",
       "risk_level": "High"
     },
     {
-      "id": 17,
-      "name": "Guardian Cancels Malicious Proposal",
+      "id": 509,
+      "name": "Deploy Super Token",
       "initiator_type": "Actor",
-      "initiator_id": 4,
-      "target_id": 16,
-      "action": "cancel_proposal",
-      "description": "Guardians (A4) use their Multisig (C16) to cancel a malicious Governance Proposal (A7) during its timelock period in the Governance Contracts (C8).",
+      "initiator_id": 7,
+      "target_id": 205,
+      "action": "Developer/User interacts with the Super Token Factory to create a new Wrapper or Pure Super Token, or deploys a custom Super Token contract.",
+      "description": "New Super Tokens (Pure, Wrapper, or Custom) can be deployed to the blockchain, enabling Superfluid functionalities for new or existing assets. Referenced in doc_41, doc_42, doc_43.",
       "risk_level": "Medium"
     },
     {
-      "id": 18,
-      "name": "User Bridges Assets via Berachain Bridge",
+      "id": 510,
+      "name": "Query Protocol Data",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 11,
-      "action": "bridge_tokens",
-      "description": "User interacts with the Berachain Bridge (C11) to transfer tokens (A17) to or from Berachain.",
-      "risk_level": "Medium"
-    },
-    {
-      "id": 19,
-      "name": "User Bridges NFTs via Berachain NFT Bridge",
-      "initiator_type": "Actor",
-      "initiator_id": 1,
-      "target_id": 12,
-      "action": "bridge_nfts",
-      "description": "User interacts with the Berachain NFT Bridge (C12) to transfer official Berachain NFTs (A6, A17) between Ethereum and Berachain.",
-      "risk_level": "Medium"
+      "target_id": 210,
+      "action": "User or application (e.g. Superfluid Dashboard ID: 209) sends GraphQL queries to the Superfluid Subgraph endpoint to retrieve indexed data about streams, pools, tokens, accounts, etc.",
+      "description": "Allows users and applications to read and analyze on-chain Superfluid protocol data efficiently through a GraphQL API. Referenced in doc_48, doc_52, doc_54.",
+      "risk_level": "Low"
     }
   ]
 }

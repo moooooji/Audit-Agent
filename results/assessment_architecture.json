@@ -1,534 +1,324 @@
 {
   "evaluation_summary": {
-    "actors": "All listed actors (Stakers, Operators, AVS, User (Rollup)) are specific to an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed actors are considered hallucinated. Key Berachain actors (e.g., Liquidity Providers, $BGT Holders, Berachain Validators, Protocols/Ecosystem Projects, Guardians, Token Managers) are missing.",
-    "assets": "All listed assets (e.g., Staked Tokens, Stake Delegation Data, AVS Slashing Conditions) pertain to an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed assets are considered hallucinated. Core Berachain assets (e.g., $BERA, $BGT, $HONEY, Receipt Tokens, Berachain NFTs) are missing.",
-    "components": "All listed components (e.g., EigenLayer Smart Contracts, AVS Software, L1 Blockchain as described) relate to an EigenLayer system and are not found in the Berachain documentation in this context. Consequently, all listed components are considered hallucinated. Key Berachain components (e.g., BeaconKit, BEX, BeraHub, Reward Vaults, Proof-of-Liquidity mechanism) are missing.",
-    "data_flows": "All listed data flows describe interactions within an EigenLayer system, which is not the subject of the Berachain documentation. Consequently, all listed data flows are considered hallucinated. Berachain-specific data flows (e.g., Proof-of-Liquidity lifecycle, governance processes, $HONEY minting/redemption, BEX interactions) are missing.",
-    "trust_boundaries": "All listed trust boundaries are defined for an EigenLayer system and are not found in the Berachain documentation. Consequently, all listed trust boundaries are considered hallucinated. Berachain-specific trust boundaries (e.g., User-Wallet, Wallet-dApp, dApp-Smart Contract, Validator-Network) are missing. One listed boundary (ID 5) has a potentially problematic definition using identical component IDs for 'between_ids'.",
-    "behaviors": "All listed behaviors describe actions within an EigenLayer system, not the Berachain ecosystem as detailed in the provided documentation. Consequently, all listed behaviors are considered hallucinated. Key Berachain behaviors (e.g., providing liquidity to BEX, staking receipt tokens in Reward Vaults, delegating $BGT, claiming rewards, minting $HONEY, participating in Berachain governance) are missing."
+    "actors": "The 'actors' list in the provided JSON is empty. The documentation describes numerous actors (e.g., Users, Super Apps, Sentinels, DAO, Pool Admins, Pool Members, Developers) that are not present, indicating a complete lack of extraction for this category. Therefore, it fails on completeness. Traceability, schema compliance, and consistency cannot be evaluated for an empty list.",
+    "assets": "The 'assets' list in the provided JSON is empty. The documentation details various assets (e.g., Super Tokens, ERC20 Tokens, NFTs, Smart Contract code, User Data, Buffer Deposits, Governance Tokens) that have not been extracted. This indicates a complete failure in completeness for this category. Traceability, schema compliance, and consistency are not evaluable for an empty list.",
+    "components": "The 'components' list in the provided JSON is empty. The documentation outlines many components (e.g., Superfluid Host, Super Token Contracts, Agreement Contracts like CFAv1/GDAv1, Forwarder Contracts, Sentinel Nodes, Superfluid Dashboard, Subgraph) that are missing. This shows a complete lack of extraction for components, failing the completeness criterion. Traceability, schema compliance, and consistency cannot be assessed for an empty list.",
+    "data_flows": "The 'data_flows' list in the provided JSON is empty. The documentation describes numerous interactions and data movements (e.g., stream creation, token wrapping, callback execution, governance voting, liquidation processes) that are not captured. This signifies a complete omission in extracting data flows, failing the completeness test. Traceability, schema compliance, and consistency are not assessable for an empty list.",
+    "trust_boundaries": "The 'trust_boundaries' list in the provided JSON is empty. The documentation implies several trust boundaries (e.g., between user wallets and smart contracts, between on-chain and off-chain components, between the protocol and its governance mechanism) that have not been identified. This indicates a complete failure to extract trust boundaries, thus failing on completeness. Traceability, schema compliance, and consistency cannot be evaluated for an empty list.",
+    "behaviors": "The 'behaviors' list in the provided JSON is empty. The documentation details a wide range of system behaviors and use cases (e.g., money streaming, token distribution, vesting, staking, batch transactions) that are entirely missing from the extraction. This represents a complete failure in terms of completeness for this category. Traceability, schema compliance, and consistency are not evaluable for an empty list."
   },
   "findings": [
     {
       "category": "actors",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Actor 'Stakers' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
-    },
-    {
-      "category": "actors",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Actor 'Operators' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
-    },
-    {
-      "category": "actors",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Actor 'AVS (Actively Validated Service)' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
-    },
-    {
-      "category": "actors",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Actor 'User (Rollup)' with its description and capabilities is not found in the Berachain documentation; it appears to be from an EigenLayer context."
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'User' (initiating transactions like wrapping, streaming, deploying contracts) is described throughout the documentation (e.g., doc_2, doc_13, doc_44) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Missing actor: Berachain Users (e.g., Liquidity Providers, $BGT Holders/Delegators, dApp users like those interacting with BEX, HoneySwap, BeraHub)."
+      "description": "Actor 'Super App' (smart contracts reacting to Superfluid events) is a core concept (doc_3, doc_21, doc_22, doc_24) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Missing actor: Berachain Validators (entities staking $BERA, proposing blocks, directing $BGT emissions, and earning incentives in the PoL system)."
+      "description": "Actor 'Sentinel' (nodes monitoring and liquidating streams) is described (doc_1, doc_6, doc_18, doc_19) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Missing actor: Protocols / Ecosystem Projects (entities deploying dApps, creating Reward Vaults, and offering incentives on Berachain)."
+      "description": "Actor 'DAO (Decentralized Autonomous Organization)' (governing the Superfluid protocol) is mentioned (doc_11, doc_41) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Missing actor: Guardians (5-of-9 multisig for overseeing governance proposals during timelock period)."
+      "description": "Actor 'Pool Admin' (managing distribution pools and units) is described (doc_5, doc_28, doc_30) but not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Missing actor: Token Managers (wallets responsible for offering Incentive Tokens to Reward Vaults)."
+      "description": "Actor 'Pool Member' (recipients in a distribution pool) is described (doc_5, doc_28, doc_30) but not extracted."
     },
     {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Asset 'Staked Tokens' as described (locked in EigenLayer) is not found in the Berachain documentation."
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'Developer' (building on Superfluid, deploying tokens/apps) is an implicit actor targeted by much of the documentation (e.g., doc_13, doc_22, doc_26) but not extracted."
     },
     {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Asset 'Stake Delegation Data' as described (managed by EigenLayer) is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Asset 'Operator Registration Data' as described (in EigenLayer) is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Asset 'AVS Slashing Conditions' is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 5,
-      "description": "Asset 'User Transactions (Decentralized Sequencer AVS)' is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 6,
-      "description": "Asset 'Ordered Transaction Batch (Decentralized Sequencer AVS)' is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 7,
-      "description": "Asset 'Node Operator Keys' in the context of AVS is not found in the Berachain documentation. Berachain validators have keys, but not as described here."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 8,
-      "description": "Asset 'AVS Specific Operational Data' is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 9,
-      "description": "Asset 'Finalized EigenLayer Contract State' is not found in the Berachain documentation."
-    },
-    {
-      "category": "assets",
-      "type": "hallucinated",
-      "id": 10,
-      "description": "Asset 'Finalized AVS Contract State' is not found in the Berachain documentation."
+      "category": "actors",
+      "type": "missing",
+      "id": null,
+      "description": "Actor 'PIC (Patrician in Charge)' (participant in TOGA for liquidations) is described (doc_1, doc_18) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: $BERA (Berachain's native gas and validator staking token)."
+      "description": "Asset 'Super Token' (e.g., USDCx, DAIx, ETHx - the core programmable tokens) is fundamental to the protocol (doc_1, doc_2, doc_7, doc_39) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: $BGT (Berachain's non-transferrable governance and reward delegation token)."
+      "description": "Asset 'ERC20 Token' (underlying tokens that can be wrapped, e.g., USDC, DAI) is mentioned (doc_7, doc_14, doc_55) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: $HONEY (Berachain's native stablecoin)."
+      "description": "Asset 'Native Asset' (e.g., ETH, MATIC - can be wrapped into Native Super Tokens) is mentioned (doc_39, doc_55) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: Receipt Tokens (e.g., LP tokens from BEX, staked in Reward Vaults to earn $BGT)."
+      "description": "Asset 'NFT (Non-Fungible Token)' (e.g., Tradeable Cashflow NFT, ConstantOutflowNFT, PoolAdminNFT) is mentioned (doc_3, doc_24, doc_32, doc_61) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: Incentive Tokens (Whitelisted ERC20 tokens offered by protocols in Reward Vaults)."
+      "description": "Asset 'User Data' (bytes attachable to Superfluid operations) is described (doc_1, doc_21, doc_37, doc_51) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: Berachain NFTs (e.g., Bong Bears, Bond Bears, used for airdrop eligibility)."
+      "description": "Asset 'Buffer Deposit' (funds locked when creating a stream) is described (doc_1, doc_6, doc_18) but not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Missing asset: Governance Proposals (for Berachain's on-chain governance)."
+      "description": "Asset 'TOGA Stake' (funds locked by PIC in the TOGA contract) is described (doc_1, doc_18) but not extracted."
     },
     {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Component 'EigenLayer Smart Contracts' is not part of the Berachain architecture described in the documentation."
-    },
-    {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Component 'AVS Software' is not part of the Berachain architecture described in the documentation."
-    },
-    {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Component 'L1 Blockchain' as described (managing EigenLayer/AVS assets) is not Berachain. Berachain is an L1, but its managed assets are different."
-    },
-    {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Component 'Rollup Sequencer (Decentralized Sequencer AVS)' is not part of the Berachain architecture described in the documentation."
-    },
-    {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 5,
-      "description": "Component 'AVS Contract (on L1)' is not part of the Berachain architecture described in the documentation."
-    },
-    {
-      "category": "components",
-      "type": "hallucinated",
-      "id": 6,
-      "description": "Component 'Node Operators' Infrastructure' in the context of AVS is not part of the Berachain architecture. Berachain has validators running nodes."
+      "category": "assets",
+      "type": "missing",
+      "id": null,
+      "description": "Asset 'Private Keys' (used by users/sentinels to sign transactions) are implicitly critical assets (doc_13, doc_19) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: Berachain (the L1 blockchain itself, EVM-Identical, built on BeaconKit)."
+      "description": "Component 'Superfluid Host Contract' (core protocol contract) is central to the architecture (doc_1, doc_4, doc_23, doc_45, doc_61) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: BeaconKit (modular consensus layer framework for Berachain)."
+      "description": "Component 'Super Token Contract' (instance for each Super Token) is described (doc_7, doc_39, doc_59) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: Proof-of-Liquidity (PoL) Mechanism (core economic and consensus logic)."
+      "description": "Component 'Constant Flow Agreement (CFAv1) Contract' (manages money streams) is described (doc_1, doc_21, doc_61, doc_63) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: BEX (Berachain's native Decentralized Exchange)."
+      "description": "Component 'General Distribution Agreement (GDAv1) Contract' (manages distribution pools) is described (doc_28, doc_29, doc_61, doc_63) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: BeraHub (dApp for $BGT management, BEX access, governance, etc.)."
+      "description": "Component 'Super Token Factory Contract' (deploys Super Tokens) is described (doc_41, doc_42, doc_61) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: Reward Vaults (smart contracts for staking PoL-eligible assets to earn $BGT)."
+      "description": "Component 'CFAv1Forwarder Contract' (interface for client-side stream operations) is described (doc_10, doc_44, doc_50, doc_56) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: Honey Swap / HoneyFactory (dApps/contracts for minting/redeeming $HONEY)."
+      "description": "Component 'GDAv1Forwarder Contract' (interface for client-side pool operations) is described (doc_10, doc_44, doc_46, doc_57) but not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Missing component: Berachain Governance Contracts (for on-chain proposal lifecycle)."
+      "description": "Component 'Sentinel Node Software' (run by Sentinels for liquidations) is described (doc_1, doc_18, doc_19) but not extracted."
     },
     {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Data flow 'Stakers interact with EigenLayer Smart Contracts to lock tokens and delegate stake.' is not found in Berachain documentation."
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Superfluid Dashboard' (web UI for interacting with the protocol) is mentioned (doc_2, doc_16, doc_26, doc_53, doc_64) but not extracted."
     },
     {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Data flow 'EigenLayer Smart Contracts return confirmations and process withdrawals for Stakers.' is not found in Berachain documentation."
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Superfluid Subgraph' (for querying protocol data) is described (doc_15, doc_20, doc_48, doc_52, doc_54, doc_62) but not extracted."
     },
     {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Data flow 'Operators interact with EigenLayer Smart Contracts to register and opt-in to AVSs.' is not found in Berachain documentation."
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Vesting Scheduler Contract' (for automated vesting) is described (doc_17, doc_64) but not extracted."
     },
     {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Data flow 'EigenLayer Smart Contracts return confirmations and notifications to Operators.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 5,
-      "description": "Data flow 'AVSs (entities) register their slashing conditions with EigenLayer Smart Contracts.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 6,
-      "description": "Data flow 'AVSs (entities) define their slashing conditions in their own AVS Contracts on L1.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 7,
-      "description": "Data flow 'Operators (via their infrastructure C6) interact with the AVS Software they run.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 8,
-      "description": "Data flow 'AVS Software provides data and tasks to Operators running it.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 9,
-      "description": "Data flow 'Node Operators' Infrastructure uses keys to sign messages for AVS Software.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 10,
-      "description": "Data flow 'Rollup Users submit transactions to the Rollup Sequencer.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 11,
-      "description": "Data flow 'Rollup Sequencer submits ordered batches of transactions to the L1 Blockchain.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 12,
-      "description": "Data flow 'EigenLayer Smart Contracts write their state updates to the L1 Blockchain.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 13,
-      "description": "Data flow 'AVS Contracts write their state updates to the L1 Blockchain.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 14,
-      "description": "Data flow 'AVS Software (or operators via it) can report misbehavior to EigenLayer Smart Contracts for slashing.' is not found in Berachain documentation."
-    },
-    {
-      "category": "data_flows",
-      "type": "hallucinated",
-      "id": 15,
-      "description": "Data flow 'AVS Software can query EigenLayer Smart Contracts for security status and operator information.' is not found in Berachain documentation."
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'MacroForwarder Contract' (for batching transactions) is described (doc_45, doc_49) but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Missing data flows related to the Berachain Proof-of-Liquidity lifecycle (e.g., User providing liquidity to BEX, staking receipt tokens, $BGT delegation, Validator directing emissions, Protocol offering incentives, User claiming $BGT/incentives)."
+      "description": "Data flow 'User creates a money stream to Receiver via CFAv1Forwarder' is a primary use case (doc_44, doc_50) but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Missing data flows related to Berachain governance (e.g., proposal creation, voting, timelock, execution, Guardian oversight)."
+      "description": "Data flow 'Super App contract executes callback logic upon receiving a stream' is a key feature (doc_3, doc_21, doc_24) but not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Missing data flows related to $HONEY stablecoin (e.g., minting $HONEY with collateral via HoneyFactory, redeeming $HONEY)."
+      "description": "Data flow 'Sentinel liquidates an insolvent stream by interacting with CFAv1 and TOGA contracts' is described (doc_18, doc_19) but not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Trust boundary 'EigenLayer SC - AVS Software Interaction Boundary' is not found in Berachain documentation."
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User wraps ERC20 token into Super Token via Super Token contract' is described (doc_7, doc_55) but not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Trust boundary 'AVS SC - AVS Software Interaction Boundary' is not found in Berachain documentation."
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'Pool Admin updates member units in a Distribution Pool via GDAv1Forwarder or directly' is described (doc_30, doc_47) but not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Trust boundary 'Operator Infrastructure - AVS Software Boundary' is not found in Berachain documentation."
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User queries Superfluid Subgraph for account stream data' is described (doc_48, doc_52, doc_54) but not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Trust boundary 'Rollup Sequencer - L1 Submission Boundary' is not found in Berachain documentation."
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'Vesting Scheduler creates a stream to a recipient after cliff period' is described (doc_17, doc_64) but not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "hallucinated",
-      "id": 5,
-      "description": "Trust boundary 'User-Facing Application Boundary (e.g. Rollup Sequencer)' as described for an EigenLayer component is not found in Berachain documentation."
-    },
-    {
-      "category": "trust_boundaries",
-      "type": "potential_concern",
-      "id": 5,
-      "description": "Trust boundary 'User-Facing Application Boundary (e.g. Rollup Sequencer)' uses identical component IDs [4, 4] for 'between_ids'. Trust boundaries are typically between distinct entities. The description attempts to justify this as an external interaction point, but it's an unusual representation."
+      "category": "data_flows",
+      "type": "missing",
+      "id": null,
+      "description": "Data flow 'User executes batch operations via MacroForwarder calling a UserDefinedMacro contract' is described (doc_45, doc_49) but not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Missing trust boundaries relevant to Berachain, such as User-Wallet, Wallet-dApp (e.g., BeraHub, BEX), dApp-Berachain Smart Contracts, Validator Node-Berachain Network, Protocol-Berachain (for Reward Vaults/incentives), Guardian Multisig-Governance Process."
+      "description": "Trust boundary 'User Wallet <-> Superfluid Smart Contracts (Host, Forwarders, Tokens)' is fundamental (doc_44, doc_50) but not extracted."
     },
     {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 1,
-      "description": "Behavior 'Staker Stakes Tokens' in EigenLayer smart contracts is not a Berachain behavior."
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Off-chain Sentinel Nodes' is described (doc_18, doc_19) but not extracted."
     },
     {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 2,
-      "description": "Behavior 'Staker Delegates Stake' in EigenLayer is not a Berachain behavior."
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Superfluid Governance (DAO)' is described (doc_11, doc_41) but not extracted."
     },
     {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 3,
-      "description": "Behavior 'Operator Registers' in EigenLayer is not a Berachain behavior."
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Off-chain Subgraph Indexers/Query Nodes' is described (doc_48, doc_52) but not extracted."
     },
     {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 4,
-      "description": "Behavior 'Operator Opts-in to AVS' via EigenLayer is not a Berachain behavior."
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Super App Contract <-> Superfluid Host Contract (Callbacks)' is described (doc_3, doc_21) but not extracted."
     },
     {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 5,
-      "description": "Behavior 'AVS Registers Slashing Conditions' with EigenLayer is not a Berachain behavior."
-    },
-    {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 6,
-      "description": "Behavior 'Operator Attests to AVS State' is not a Berachain behavior."
-    },
-    {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 7,
-      "description": "Behavior 'Rollup User Sends Transaction' to a Decentralized Sequencer AVS is not a Berachain behavior."
-    },
-    {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 8,
-      "description": "Behavior 'Rollup Sequencer Submits Batch to L1' is not a Berachain behavior."
-    },
-    {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 9,
-      "description": "Behavior 'AVS Software Reports Slashing Event' to EigenLayer is not a Berachain behavior."
-    },
-    {
-      "category": "behaviors",
-      "type": "hallucinated",
-      "id": 10,
-      "description": "Behavior 'Staker Undelegates/Withdraws Stake' from EigenLayer is not a Berachain behavior."
+      "category": "trust_boundaries",
+      "type": "missing",
+      "id": null,
+      "description": "Trust boundary 'Client Application (e.g., Superfluid Dashboard) <-> User Wallet (e.g., MetaMask)' is implicit in SDK guides (doc_44, doc_50) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User provides liquidity to a BEX pool."
+      "description": "Behavior 'Money Streaming (Create/Update/Delete Flow)' is a core functionality (doc_2, doc_6, doc_34, doc_36, doc_50) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User stakes PoL-eligible receipt tokens in a Reward Vault."
+      "description": "Behavior 'Token Distribution (Instant/Streaming via Pools)' is a core functionality (doc_5, doc_28, doc_29, doc_47) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User ($BGT Holder) delegates (boosts) $BGT to a Berachain Validator."
+      "description": "Behavior 'Token Wrapping/Unwrapping (ERC20 to SuperToken and vice-versa)' is described (doc_7, doc_14, doc_55) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: Berachain Validator proposes a block and receives $BGT rewards."
+      "description": "Behavior 'Super App Reactivity (Callbacks on stream events)' is described (doc_3, doc_21, doc_24) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: Berachain Validator directs $BGT emissions to selected Reward Vaults."
+      "description": "Behavior 'Stream Liquidation (by Sentinels for insolvent accounts)' is described (doc_1, doc_18, doc_19) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: Protocol/Token Manager offers Incentive Tokens to a Reward Vault."
+      "description": "Behavior 'Automated Vesting (Scheduled token release with cliffs)' is described (doc_17, doc_64) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User claims earned $BGT from Reward Vaults."
+      "description": "Behavior 'Batching Transactions (using Macros and MacroForwarder)' is described (doc_45, doc_49) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User claims earned Incentive Tokens from boosting a validator."
+      "description": "Behavior 'Access Control Management (granting/revoking flow operator permissions)' is described (doc_37, doc_51) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User mints $HONEY by depositing collateral."
+      "description": "Behavior 'Deploying Super Tokens (Pure, Wrapper, Custom)' is described (doc_41, doc_42, doc_43) but not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Missing behavior: User redeems $HONEY for collateral."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Missing behavior: User creates/votes on a Berachain governance proposal."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Missing behavior: User redeems $BGT for $BERA."
+      "description": "Behavior 'Querying Protocol Data (using Subgraph or Explorer)' is described (doc_48, doc_52, doc_54) but not extracted."
     }
   ]
 }

@@ -1,61 +1,61 @@
 {
-  "id": 9,
-  "stride_category": "Denial of Service",
+  "id": 4,
+  "stride_category": "Tampering",
   "origin": {
-    "from_chunk": true,
-    "actor_id": 3,
-    "behavior_id": null,
-    "capability_match": "Deploy smart contracts and dApps on Berachain"
+    "from_chunk": false,
+    "actor_id": null,
+    "behavior_id": 505,
+    "capability_match": null
   },
   "threat_target": {
-    "component_id": 14,
+    "component_id": 203,
     "asset_ids": [
-      16
+      106
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": 22,
-    "data_description": "Excessive or gas-intensive fee transactions (Asset 16) from BEX (Component 3) to FeeCollector (Component 14)."
+    "behavior_id": 505,
+    "data_flow_id": 303,
+    "data_description": "Sentinel's liquidation transaction (Data Flow ID 303) being observed in the mempool and superseded by an attacker's transaction."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "BEX Contract - FeeCollector Contract",
+    "boundary_id": 402,
+    "boundary_name": "On-chain Protocol to Off-chain Sentinel Interface",
     "between_component_ids": [
       3,
-      14
+      203
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If the BEX contract (Component 3), managed by a Protocol (Actor 3), sends an unexpectedly high volume of fee transactions or transactions that cause excessive gas consumption in the FeeCollector (Component 14)."
+    "gap_description": "Public mempools allow attackers to see Sentinel liquidation transactions and front-run them to capture the reward (Buffer Deposit ID 106)."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "If Actor 3 deployed BEX (Component 3), a bug in BEX or malicious intent from Actor 3 could trigger this DoS."
+    "description": "The Sentinel (ID 3) may be consistently front-run, losing its earned liquidation rewards, which disincentivizes its operation."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "FeeCollector should be robust, but extreme transaction volumes or gas griefing could impact its performance or cost."
+    "behavior_id": 505,
+    "risk_level": "Medium",
+    "rationale": "Systematic front-running can undermine the economic incentives for Sentinels, potentially reducing the number of active Sentinels and thereby weakening the protocol's solvency mechanisms."
   },
   "assumptions": [
-    "The BEX dApp (Component 3) is deployed or managed by Actor 3.",
-    "BEX (Component 3) might have a bug or be intentionally coded to send excessive/problematic fee transactions to Component 14.",
-    "The FeeCollector (Component 14) might be susceptible to gas griefing or performance degradation from high transaction load."
+    "Sentinel liquidation transactions are broadcast to public mempools.",
+    "Attackers (e.g., MEV bots) actively monitor mempools for such profitable opportunities.",
+    "Attackers can ensure their transactions are mined before the Sentinel's by manipulating gas prices."
   ],
   "mitigation": {
-    "strategy": "Design the FeeCollector Smart Contract (Component 14) to be gas-efficient in handling fee receipts. Implement monitoring for transaction volumes from fee sources. Potentially add circuit breakers or throttling if a source becomes problematic.",
+    "strategy": "Sentinels (ID 3) should be encouraged to use private transaction relays (e.g., Flashbots) to prevent their transactions from being seen in the public mempool. The protocol's TOGA mechanism (Component ID 215) with PICs aims to provide a dedicated period for specific actors to liquidate.",
     "type": "Technical Control",
-    "priority": "Low"
+    "priority": "Medium"
   },
-  "description": "If the BEX dApp (Component 3), assumed to be deployed/managed by 'Protocol / Ecosystem Project' (Actor 3), experiences a bug or is maliciously crafted, it could send an excessive volume of dApp Fee transactions (Asset 16 via Data Flow 22) to the FeeCollector Smart Contract (Component 14). This could potentially cause a denial of service or high operational costs for the FeeCollector.",
+  "description": "An attacker (e.g., MEV bot) observes a Sentinel's (ID 3) liquidation transaction in the public mempool. The attacker then submits an identical liquidation transaction with a higher gas price, getting their transaction mined first and thereby 'stealing' the liquidation reward (Buffer Deposit ID 106) from the original Sentinel. This tampers with the fair distribution of rewards.",
   "trace_source": {
-    "doc_reference": "doc_27",
-    "matched_capability": "Deploy smart contracts and dApps on Berachain"
+    "doc_reference": "doc_18, doc_19",
+    "matched_capability": "Earn rewards for liquidations"
   }
 }

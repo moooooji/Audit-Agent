@@ -1,60 +1,58 @@
 {
-  "id": 11,
-  "stride_category": "Elevation of Privilege",
+  "id": 5,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 16,
-    "capability_match": "Stake $BERA (min 250k, max 10M)"
+    "behavior_id": 501,
+    "capability_match": "Initiate Superfluid streams"
   },
   "threat_target": {
-    "component_id": 1,
+    "component_id": 2,
     "asset_ids": [
-      10
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 16,
-    "data_flow_id": 9,
-    "data_description": "Staking transaction attempting to exploit a flaw to exceed maximum stake limits or gain disproportionate power."
+    "behavior_id": 501,
+    "data_flow_id": null,
+    "data_description": "Internal logic within the Super App that triggers `createFlow` or `updateFlow` to external addresses using its own funds."
   },
   "trust_boundary_risk": {
-    "boundary_id": 6,
-    "boundary_name": "Validator Node Infrastructure - Berachain Network",
-    "between_component_ids": [
-      10,
-      1
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A flaw allowing a validator to bypass stake limits could grant them undue influence over block production or governance."
+    "availability_required": false,
+    "gap_description": "A bug or exploit in the Super App's logic for initiating outgoing streams could lead to it sending more funds than intended, sending to incorrect recipients, or failing to stop streams, thus tampering with its own token balances."
   },
   "actor_risk": {
     "actor_id": 2,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": true,
-    "description": "If a flaw allows exceeding stake limits for more power, the validator becomes overprivileged."
+    "type": "Smart Contract",
+    "overprivileged": false,
+    "description": "A buggy or poorly designed Super App might contain flaws in its stream creation or management logic, leading to unintentional draining or misdirection of its own Super Token reserves when it acts as a sender."
   },
   "behavioral_risk": {
-    "behavior_id": 16,
+    "behavior_id": 501,
     "risk_level": "Medium",
-    "rationale": "Exploiting a flaw to gain more power than intended from staking undermines the fairness and security of the consensus mechanism."
+    "rationale": "Bugs in financial logic within a smart contract can lead to direct and irreversible loss of its own funds."
   },
   "assumptions": [
-    "A vulnerability exists in the Berachain Network's (C1) staking module that allows bypassing the maximum stake limit (10M $BERA).",
-    "Exceeding this limit grants the validator (Actor 2) a proportionally higher block proposal probability or other network privileges not intended for that stake level."
+    "The Super App holds a balance of Super Tokens intended for streaming outwards.",
+    "The Super App's internal logic for determining stream parameters (recipient, flow rate, duration/termination conditions) for outgoing streams is flawed or can be manipulated through other interactions.",
+    "There are insufficient internal controls or limits on the Super App's streaming behavior."
   ],
   "mitigation": {
-    "strategy": "Rigorous auditing and testing of the staking smart contracts and consensus logic within Berachain Network (C1). Continuous monitoring for unusual staking patterns or power concentrations.",
+    "strategy": "Implement rigorous testing, formal verification (if applicable), and security audits for Super Apps, especially those that manage and stream significant token balances. Implement internal financial controls, rate limits, and emergency stop mechanisms within the Super App.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Berachain Validator (Actor 2) exploits a potential flaw in the Berachain Network's (C1) staking mechanism to stake more $BERA (A10) than the official maximum cap of 10,000,000 $BERA, thereby illegitimately elevating their privilege by gaining a higher block proposal probability or other undue influence within the network.",
+  "description": "A Super App with flawed internal logic for initiating or managing its outgoing Superfluid streams could inadvertently tamper with its own Super Token balance. This might occur by creating streams with excessive flow rates, sending streams to incorrect or unintended recipients, or failing to terminate streams when conditions require, leading to a drain of its funds.",
   "trace_source": {
-    "doc_reference": "doc_20#validator-selection (Maximum stake cap)",
-    "matched_capability": "Stake $BERA (min 250k, max 10M)"
+    "doc_reference": "doc_3",
+    "matched_capability": "Initiate Superfluid streams"
   }
 }

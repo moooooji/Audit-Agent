@@ -1,55 +1,60 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 4,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
+    "actor_id": 6,
     "behavior_id": null,
-    "capability_match": "Review RFRV submissions"
+    "capability_match": "Receive token distributions (instant or streamed)"
   },
   "threat_target": {
-    "component_id": null,
-    "asset_ids": []
+    "component_id": 6,
+    "asset_ids": [
+      101
+    ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "BGT Foundation's internal systems, user accounts with review/approval permissions, or official communication channels used to publish review outcomes."
+    "behavior_id": 502,
+    "data_flow_id": 305,
+    "data_description": "The process of token distribution from a SuperfluidPool (ID: 214) or GDAv1 (ID: 204) to the Pool Member (ID: 6), where the amount is determined by unit assignments or distribution logic."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "External to BGT Foundation's Secure Systems and Privileged Accounts",
-    "between_component_ids": []
+    "boundary_id": 401,
+    "boundary_name": "User Wallet to On-chain Protocol Interface",
+    "between_component_ids": [
+      214,
+      6
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Insufficient security measures (e.g., weak authentication, unpatched system vulnerabilities, lack of MFA) protecting BGT Foundation's systems and accounts that are integral to the RFRV review and decision-making process."
+    "gap_description": "The amount of tokens a Pool Member receives might be incorrect if a Pool Admin maliciously alters unit assignments or if there's a flaw in the pool's distribution or accounting logic."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "The BGT Foundation holds a privileged role in vetting RFRVs. If an attacker compromises this role, they gain significant, unearned influence over the whitelisting process."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "The integrity of a Pool Member's received distributions depends on the correct and fair operation of the pool by its admin and the soundness of the underlying smart contracts."
   },
   "behavioral_risk": {
     "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Compromise of the BGT Foundation's review authority could lead to the approval of malicious Reward Vaults designed to steal funds, or the systematic rejection/sabotage of legitimate ecosystem projects, severely damaging trust and security."
+    "rationale": "Receiving an incorrect (tampered) amount of tokens directly results in financial loss or unfair gain for the Pool Member."
   },
   "assumptions": [
-    "BGT Foundation's internal systems, privileged user accounts, or official communication platforms can be compromised through technical exploits, social engineering, or insider threats.",
-    "An attacker, having gained such access, can manipulate review data, falsify review outcomes, or issue unauthorized review statements under the guise of the BGT Foundation."
+    "A Pool Admin (ID: 5) has the technical capability to manipulate unit assignments or distribution parameters in a way that unfairly affects payouts to Pool Members.",
+    "Alternatively, the SuperfluidPool (ID: 214) or GDAv1 (ID: 204) contract contains a vulnerability in its share calculation, accounting, or token distribution mechanism."
   ],
   "mitigation": {
-    "strategy": "Enforce strong authentication (e.g., MFA) for all BGT Foundation personnel and systems. Implement the principle of least privilege for access to review systems. Conduct regular security assessments, vulnerability scanning, and penetration testing of Foundation's infrastructure. Develop and test an incident response plan.",
+    "strategy": "For malicious admin risk: Implement transparent and auditable pool management and unit assignment processes, possibly with DAO oversight or multi-sig controls for critical admin functions. For contract vulnerabilities: Conduct extensive smart contract audits, apply formal verification to critical calculation logic, maintain comprehensive test suites, and run bug bounty programs.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker compromises the systems, credentials, or internal processes of the BGT Foundation, thereby gaining unauthorized ability to influence, manipulate, or directly control the RFRV review outcomes. This elevated privilege would allow the attacker to submit fraudulent reviews, leading to the approval of harmful Reward Vaults or the unjust blocking of beneficial ones, subverting a critical governance checkpoint.",
+  "description": "A Pool Member (ID: 6) may receive a tampered (incorrect) amount of Super Tokens (ID: 101) from a distribution. This could occur if a malicious or compromised Pool Admin (ID: 5) manipulates the member's units or other distribution-affecting parameters (via Behavior ID: 502, Data Flow ID: 305), or if there is an exploitable vulnerability in the SuperfluidPool (ID: 214) or GDAv1 (ID: 204) contract's logic for calculating or disbursing shares.",
   "trace_source": {
-    "doc_reference": "doc_14",
-    "matched_capability": "Review RFRV submissions"
+    "doc_reference": "doc_5, doc_28, doc_30, doc_47",
+    "matched_capability": "Receive token distributions (instant or streamed)"
   }
 }

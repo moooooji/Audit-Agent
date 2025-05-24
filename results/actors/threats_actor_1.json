@@ -1,62 +1,61 @@
 {
-  "id": 12,
-  "stride_category": "Tampering",
+  "id": 8,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 19,
-    "capability_match": "Bridge assets to/from Berachain"
+    "actor_id": 1,
+    "behavior_id": 510,
+    "capability_match": "Interact with Superfluid Dashboard"
   },
   "threat_target": {
-    "component_id": 12,
-    "asset_ids": [
-      6,
-      17
-    ]
+    "component_id": 210,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 19,
-    "data_flow_id": 21,
-    "data_description": "Parameters of an NFT bridge transaction (e.g., destination address, token ID) are altered by a compromised Berachain NFT Bridge (C12) frontend or User Wallet (C9)."
+    "behavior_id": 510,
+    "data_flow_id": 306,
+    "data_description": "User's ability to send GraphQL queries to the Superfluid Subgraph."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "User Wallet Software - dApp Frontend",
+    "boundary_id": 404,
+    "boundary_name": "On-chain Protocol to Off-chain Data Indexer Interface",
     "between_component_ids": [
-      9,
-      12
+      201,
+      202,
+      203,
+      204,
+      210
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "The integrity of the NFT bridging transaction is compromised before user signature."
+    "gap_description": "The Superfluid Subgraph, being an off-chain service, may become unavailable due to technical issues, maintenance, or being overwhelmed by queries."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Berachain User (A1) could have their NFT (A6) sent to an incorrect address or a different NFT bridged if the transaction parameters are tampered with by a compromised interface."
+    "description": "User or applications (like the Superfluid Dashboard) rely on the Subgraph's availability for displaying data or making informed decisions."
   },
   "behavioral_risk": {
-    "behavior_id": 19,
-    "risk_level": "High",
-    "rationale": "Tampering with NFT bridge parameters can lead to permanent loss of the specific NFT."
+    "behavior_id": 510,
+    "risk_level": "Low",
+    "rationale": "Temporary unavailability of the Subgraph can hinder user experience and data analysis, though critical operations should have on-chain fallbacks."
   },
   "assumptions": [
-    "The Berachain NFT Bridge (C12) frontend can be compromised.",
-    "User Wallet Software (C9) could be malicious or compromised.",
-    "User may not meticulously verify all details of an NFT transaction in their wallet."
+    "The Superfluid Subgraph is hosted as a centralized or semi-centralized service with potential points of failure.",
+    "Users or applications heavily rely on the Subgraph for data retrieval and do not have robust fallbacks to direct on-chain queries for all necessary information."
   ],
   "mitigation": {
-    "strategy": "Secure frontend hosting and development for C12, user diligence in verifying transaction details in wallet, wallets clearly displaying NFT transfer details.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Applications should implement fallbacks to direct on-chain contract calls for essential data if the Subgraph is unavailable. Users should be informed about potential Subgraph downtime. Consider decentralized indexing solutions or multiple redundant indexers where feasible.",
+    "type": "Architectural Change",
+    "priority": "Low"
   },
-  "description": "If the Berachain NFT Bridge (C12) frontend or the User Wallet Software (C9) is compromised, it could tamper with an NFT bridging transaction initiated by a Berachain User (A1) (Behavior 19). This could result in the user's Berachain NFT (A6) being sent to an attacker's address or an unintended NFT being transferred.",
+  "description": "The User (Actor ID: 1) or applications like the Superfluid Dashboard (Component ID: 209) may be unable to query protocol data if the Superfluid Subgraph (Component ID: 210) becomes unavailable. This could be due to issues with the indexing service, maintenance, or excessive load, leading to a denial of service for data retrieval via Data Flow 306.",
   "trace_source": {
-    "doc_reference": "doc_4",
-    "matched_capability": "Bridge assets to/from Berachain"
+    "doc_reference": "doc_48, doc_52, doc_62",
+    "matched_capability": "Interact with Superfluid Dashboard"
   }
 }

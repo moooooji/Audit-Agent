@@ -1,60 +1,60 @@
 {
-  "id": 5,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 5,
-    "behavior_id": 8,
-    "capability_match": "Offer whitelisted Incentive Tokens to a specific Reward Vault"
+    "behavior_id": 502,
+    "capability_match": "Assign/Update units for pool members"
   },
   "threat_target": {
-    "component_id": 5,
+    "component_id": 207,
     "asset_ids": [
-      12,
-      2,
-      5,
-      15
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": 8,
-    "data_flow_id": 17,
-    "data_description": "Exploitable payload sent to `add_incentives` function, leveraging a contract vulnerability like reentrancy or improper access control."
+    "behavior_id": 502,
+    "data_flow_id": 305,
+    "data_description": "'pool' parameter in 'Update units parameters', if it can target unauthorized pools due to a flaw."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 401,
+    "boundary_name": "User Wallet to On-chain Protocol Interface",
+    "between_component_ids": [
+      5,
+      207
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A critical vulnerability (e.g., reentrancy, insecure delegatecall, storage manipulation, incorrect modifier logic) in the `add_incentives` function or related internal functions of Reward Vault (C5) could be exploited by a Token Manager."
+    "gap_description": "A vulnerability in the access control of underlying GDAv1/SuperfluidPool contracts might allow a Pool Admin to manage pools they don't own."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "A Token Manager (A5) exploits a contract vulnerability within their authorized function call to gain unintended and broader control over the Reward Vault."
+    "overprivileged": true,
+    "description": "A malicious Pool Admin could exploit a flaw in underlying contracts to gain unauthorized administrative control over other pools."
   },
   "behavioral_risk": {
-    "behavior_id": 8,
+    "behavior_id": 502,
     "risk_level": "High",
-    "rationale": "Successful elevation of privilege could lead to theft of all funds/assets within the Reward Vault (user deposits, other incentives) or complete manipulation of its state."
+    "rationale": "Unauthorized control over pools can lead to fund theft or major disruption."
   },
   "assumptions": [
-    "The `add_incentives` function or an internally called function in the Reward Vault contract (C5) contains a severe exploitable vulnerability.",
-    "The Token Manager (A5) is malicious and possesses the technical skill to discover and craft an exploit for this vulnerability."
+    "A critical access control vulnerability exists in the GDAv1 or SuperfluidPool smart contracts that are called by the GDAv1Forwarder.",
+    "This vulnerability allows an actor authenticated as an admin for one pool to perform administrative actions on another pool."
   ],
   "mitigation": {
-    "strategy": "Adhere to secure smart contract development practices (e.g., checks-effects-interactions pattern, reentrancy guards, principle of least privilege for internal functions), conduct multiple independent security audits, and implement formal verification if possible. Use well-vetted and standard libraries.",
+    "strategy": "Conduct thorough security audits of GDAv1 and SuperfluidPool contracts, specifically focusing on access control mechanisms (e.g., `onlyAdmin` modifiers). Ensure strict separation of administrative privileges between different pool instances. Implement defense-in-depth.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Token Manager (A5) exploits a vulnerability in the `add_incentives` function of a Reward Vault (C5) to gain unauthorized privileges. This could allow them to control other vault functions beyond incentive management, potentially leading to draining of user-deposited funds (A12), other incentive tokens (A5, A15), or manipulating $BGT (A2) distributions within the vault.",
+  "description": "If a vulnerability exists in the access control logic of the GDAv1 or SuperfluidPool contracts (which are invoked by the GDAv1Forwarder), a malicious Pool Admin might be able to craft an 'update member units' transaction that targets a pool they do not legitimately administer. This would allow them to illicitly modify another pool's settings or unit distributions, effectively elevating their privileges.",
   "trace_source": {
-    "doc_reference": "N/A",
-    "matched_capability": "Offer whitelisted Incentive Tokens to a specific Reward Vault"
+    "doc_reference": "doc_30, doc_47",
+    "matched_capability": "Assign/Update units for pool members"
   }
 }

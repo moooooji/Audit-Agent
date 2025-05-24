@@ -1,62 +1,61 @@
 {
-  "id": 4,
-  "stride_category": "Elevation of Privilege",
+  "id": 3,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": null,
-    "capability_match": "Develop and maintain Berachain core infrastructure"
+    "behavior_id": 509,
+    "capability_match": "Deploy Super Tokens"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": null,
     "asset_ids": [
-      101,
-      102,
-      106
+      101
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
+    "behavior_id": 509,
     "data_flow_id": null,
-    "data_description": "Access credentials, deployment keys, version control systems, or administrative interfaces for Berachain core infrastructure managed by Big Bera Labs."
+    "data_description": "Bytecode of the custom Super Token logic deployed via the factory."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "Big Bera Labs Admin Systems <-> Berachain Core Control Plane",
+    "boundary_id": 401,
+    "boundary_name": "User Wallet to On-chain Protocol Interface",
     "between_component_ids": [
-      201
+      7,
+      205
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If Big Bera Labs' privileged access for infrastructure maintenance is compromised, an attacker could gain unauthorized administrative control over core network functions."
+    "gap_description": "The Super Token Factory allows deployment of custom Super Token logic (supplied by Actor 7) which is not inherently vetted by the factory, potentially leading to vulnerabilities in the deployed token instance."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "Compromise of Big Bera Labs' systems or abuse by a malicious insider could grant attackers the same high-level privileges that Big Bera Labs possesses for maintaining and upgrading the infrastructure."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "Developer (Actor 7) deploying a Custom Super Token might introduce vulnerabilities in its logic, either intentionally or unintentionally."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Gaining administrative control over the L1 can lead to complete network compromise, including unauthorized changes to critical parameters or code."
+    "behavior_id": 509,
+    "risk_level": "Medium",
+    "rationale": "Deploying custom, unaudited code as a financial primitive (Super Token) carries significant risk for users of that specific token."
   },
   "assumptions": [
-    "Big Bera Labs possesses privileged credentials or access mechanisms for core infrastructure maintenance and upgrades.",
-    "These credentials or access mechanisms can be compromised by an external attacker or misused by an insider.",
-    "There are insufficient secondary controls (e.g., mandatory multi-party sign-off from distinct entities) to prevent a single compromised entity (Big Bera Labs) from unilaterally exerting privileged control over critical updates or configurations."
+    "The Super Token Factory (Component 205) facilitates the deployment of custom logic for Super Tokens.",
+    "This custom logic is not audited or verified by the Super Token Factory itself during deployment.",
+    "Users may interact with these custom Super Tokens, trusting them to behave like standard Super Tokens or as advertised."
   ],
   "mitigation": {
-    "strategy": "Enforce the principle of least privilege for all accounts and systems. Utilize hardware security modules (HSMs) for critical keys. Mandate multi-factor authentication (MFA) for all administrative access. Implement time-based access controls and ensure critical operations require multiple approvals from distinct, independent entities (e.g., foundation, security council).",
-    "type": "Technical Control",
+    "strategy": "Developers should ensure their custom Super Token logic is thoroughly audited. Users should perform due diligence before interacting with custom Super Tokens. Clear distinction in UIs for custom vs standard tokens.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "An attacker compromising Big Bera Labs' development or deployment systems, or a malicious insider, could elevate their privileges to gain administrative control over Berachain's core infrastructure. This could allow them to alter consensus rules, seize assets, manipulate governance mechanisms, or deploy malicious upgrades.",
+  "description": "A Developer (Actor 7) deploys a Custom Super Token (Asset 101) via the Super Token Factory (Component 205). This custom token contains a vulnerability (e.g., reentrancy, incorrect access control) in its developer-written logic. An attacker later exploits this vulnerability to tamper with the token's state, steal funds from its users, or gain elevated privileges within that specific token instance.",
   "trace_source": {
-    "doc_reference": "doc_29",
-    "matched_capability": "Develop and maintain Berachain core infrastructure"
+    "doc_reference": "doc_43, doc_26",
+    "matched_capability": "Deploy Super Tokens"
   }
 }

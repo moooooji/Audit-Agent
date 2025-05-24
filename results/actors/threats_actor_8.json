@@ -1,58 +1,59 @@
 {
-  "id": 3,
-  "stride_category": "Tampering",
+  "id": 5,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
+    "actor_id": 8,
     "behavior_id": null,
-    "capability_match": "Hold allocated $BERA tokens subject to vesting"
+    "capability_match": "Stake tokens in TOGA"
   },
   "threat_target": {
-    "component_id": null,
+    "component_id": 215,
     "asset_ids": [
+      107,
       101
     ]
   },
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "Unauthorized modification of off-chain records or pre-deployment configurations that define Investor token allocations or vesting schedules."
+    "data_description": "Any transaction to TOGA contract requiring PIC's signature (staking, unstaking, changing parameters, claiming rewards)."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 401,
+    "boundary_name": "User Wallet to On-chain Protocol Interface",
+    "between_component_ids": [
+      215
+    ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "If Investor allocation or vesting data is managed in mutable off-chain systems before being finalized on-chain, it could be maliciously altered, impacting the Investor's rightful share."
+    "availability_required": true,
+    "gap_description": "The PIC's private key (Asset ID: 108) must remain confidential to prevent unauthorized actions on their behalf."
   },
   "actor_risk": {
     "actor_id": 8,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Investors (Actor 8) rely on the integrity of the processes that determine and implement their vesting schedules and token allocations."
+    "description": "PIC (ID: 8) controls valuable assets (stake, rewards) via their private key. Key compromise allows an attacker to act as the PIC."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "This threat assumes a vulnerability in off-chain administrative processes. Strong on-chain vesting contracts would largely mitigate this for the execution phase."
+    "risk_level": "High",
+    "rationale": "Compromise of PIC's EOA key gives attacker full control over PIC's stake and rewards."
   },
   "assumptions": [
-    "Details of Investor allocations or vesting terms might be stored or processed in off-chain systems (e.g., spreadsheets, databases) before being implemented via smart contracts.",
-    "These off-chain systems could have vulnerabilities or insider threats allowing unauthorized data modification.",
-    "Investors may not have direct visibility into these off-chain processes to verify integrity before on-chain deployment."
+    "PIC's private key can be compromised through phishing, malware, or poor key management practices."
   ],
   "mitigation": {
-    "strategy": "Minimize off-chain management of definitive vesting data. Utilize immutable on-chain vesting contracts. Implement strong access controls, audit trails, and regular reconciliation for any necessary off-chain data handling. Provide transparency to investors regarding their final on-chain vesting terms.",
-    "type": "Technical Control",
-    "priority": "Medium"
+    "strategy": "PIC must adhere to strong private key security practices (hardware wallet, offline storage, phishing awareness). TOGA contract should not have functions that amplify damage beyond what a key compromise already allows.",
+    "type": "Process Control",
+    "priority": "High"
   },
-  "description": "An attacker (e.g., a malicious insider or external party exploiting a vulnerability) tampers with off-chain records defining an Investor's (Actor 8) $BERA token allocation or vesting schedule, leading to an incorrect amount or altered release timeline when implemented on-chain.",
+  "description": "An attacker gains access to the PIC's private key. The attacker then spoofs the PIC's identity to interact with the TOGA contract, potentially withdrawing the PIC's stake, redirecting rewards, or otherwise mismanaging the PIC's participation.",
   "trace_source": {
-    "doc_reference": "doc_29",
-    "matched_capability": "Hold allocated $BERA tokens subject to vesting"
+    "doc_reference": "doc_1, doc_18",
+    "matched_capability": "Stake tokens in TOGA"
   }
 }
