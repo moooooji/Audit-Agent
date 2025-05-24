@@ -1,61 +1,55 @@
 {
   "id": 4,
-  "stride_category": "Denial of Service",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 108,
+    "actor_id": 8,
     "behavior_id": null,
-    "capability_match": "Access secrets from GCP Secret Manager (roles/secretmanager.secretAccessor) (Doc 43)"
+    "capability_match": "Make authenticated Github API requests (doc_37)"
   },
   "threat_target": {
-    "component_id": 316,
-    "asset_ids": [
-      213,
-      214
-    ]
+    "component_id": null,
+    "asset_ids": []
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "GCP Service Account Key (Asset 213) is deleted, disabled, revoked, or its usage leads to rate-limiting/lockout."
+    "data_flow_id": 212,
+    "data_description": "Authenticated Github API requests made using the Github Proxy's API key, where the key might have excessive permissions."
   },
   "trust_boundary_risk": {
-    "boundary_id": 505,
-    "boundary_name": "GCP Secret Manager Integration Boundary",
-    "between_component_ids": [
-      316
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": false,
-    "availability_required": true,
-    "gap_description": "Legitimate services relying on Actor 108 lose access to secrets if its key (Asset 213) becomes unavailable or unusable."
+    "confidentiality_required": true,
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "The API key used by the Github Proxy might grant more permissions than are strictly necessary for its intended functions, creating an EOP risk if the proxy is compromised or misused."
   },
   "actor_risk": {
-    "actor_id": 108,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": false,
-    "description": "Actor 108 becomes unable to perform its function of accessing secrets, impacting dependent systems."
+    "actor_id": 8,
+    "type": "Off-chain Service/Bot",
+    "overprivileged": true,
+    "description": "If the API key configured for the Github Proxy (actor 8) has excessive permissions (e.g., write access when only read is needed), its compromise or misuse leads to elevated privileges against Github resources."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "Medium",
-    "rationale": "Loss of access to critical secrets can disrupt system operations."
+    "risk_level": "High",
+    "rationale": "An overprivileged API key, if the proxy is compromised or tricked into misusing it, allows attackers to perform unauthorized actions on Github beyond the proxy's intended scope."
   },
   "assumptions": [
-    "An attacker gains unauthorized access to manage the GCP Service Account Key (Asset 213) or the account itself.",
-    "The attacker deletes, disables, or revokes the key, or misuses it to trigger rate limits or lockouts.",
-    "Legitimate systems depend on Actor 108 for accessing secrets from Component 316."
+    "The Github API key used by the Github Proxy has permissions beyond what is strictly necessary for its documented operations (e.g., fetching contract artifacts).",
+    "An attacker gains control of the Github Proxy, its API key, or can make it issue arbitrary, authenticated requests to the Github API."
   ],
   "mitigation": {
-    "strategy": "Implement robust key management practices, including backup and recovery procedures for service account keys. Monitor key usage and status. Use separate keys for separate critical functions if possible.",
-    "type": "Process Control",
-    "priority": "Medium"
+    "strategy": "Strictly apply the principle of least privilege to the Github API key used by the proxy. The key should only have the minimum necessary permissions (e.g., read-only access to specific public repositories if fetching artifacts). Regularly review and audit key permissions.",
+    "type": "Policy",
+    "priority": "High"
   },
-  "description": "An attacker causes the GCP Service Account Key (Asset 213) to become unusable (e.g., deletion, revocation), preventing legitimate services that rely on Actor 108 from accessing secrets in GCP Secret Manager (Component 316).",
+  "description": "If the Github API key used by the Github Proxy (actor 8) is overprivileged, an attacker who compromises the proxy or its key, or finds a way to make it issue arbitrary requests, could perform unauthorized actions on Github (e.g., modify repository contents, access private data) via data flow 212. This constitutes an elevation of privilege.",
   "trace_source": {
-    "doc_reference": "Doc 43",
-    "matched_capability": "Access secrets from GCP Secret Manager (roles/secretmanager.secretAccessor) (Doc 43)"
+    "doc_reference": "doc_37",
+    "matched_capability": "Make authenticated Github API requests (doc_37)"
   }
 }

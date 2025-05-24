@@ -1,0 +1,61 @@
+{
+  "id": 5,
+  "stride_category": "Denial of Service",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 12,
+    "behavior_id": null,
+    "capability_match": "Control Interchain Accounts on remote chains (doc_20)"
+  },
+  "threat_target": {
+    "component_id": 112,
+    "asset_ids": [
+      4
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Interchain messages for ICA control, traversing from Deployer (Actor 12) through Mailboxes (Component 102, 103) via Relayers (Actor 3)."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 304,
+    "boundary_name": "Inter-Chain Communication",
+    "between_component_ids": [
+      102,
+      103
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "Relayers might censor messages, or Mailbox contracts could be congested, preventing Deployer's commands from reaching the ICA."
+  },
+  "actor_risk": {
+    "actor_id": 12,
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": false,
+    "description": "The Deployer (Actor 12) relies on the availability of the interchain messaging system to control its ICAs."
+  },
+  "behavioral_risk": {
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "Inability to control an ICA can disrupt its intended operations or lock funds/functionality."
+  },
+  "assumptions": [
+    "Relayers (Actor 3) can selectively choose not to relay messages for Deployer (Actor 12).",
+    "Mailbox contracts (Component 102, 103) can become unavailable due to network congestion or attacks.",
+    "The Interchain Account (Component 112) itself does not have internal DoS vulnerabilities preventing command processing."
+  ],
+  "mitigation": {
+    "strategy": "Promote a decentralized and permissionless relayer network. Design robust Mailbox contracts. Implement ISMs that allow for alternative message delivery paths or challenge periods for censorship.",
+    "type": "Architectural Change",
+    "priority": "Medium"
+  },
+  "description": "An attacker or failing infrastructure prevents the Deployer (Actor 12) from sending or having commands executed by its Interchain Account (Component 112), by censoring messages or DDoSing critical messaging components.",
+  "trace_source": {
+    "doc_reference": "doc_20, doc_10",
+    "matched_capability": "Control Interchain Accounts on remote chains (doc_20)"
+  }
+}

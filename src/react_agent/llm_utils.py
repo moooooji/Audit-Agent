@@ -280,8 +280,6 @@ def generate_llm_response(state: State) -> str:
         analysis_json = load_file("results/architecture_analysis.json")
         # read assessment file
         assessment_architecture_json = load_file("results/assessment_architecture.json")
-        
-        
             
         prompt = ARCHITECTURE_CORRECTION_TEMPLATE.replace(
             "{target_docs}", target_docs

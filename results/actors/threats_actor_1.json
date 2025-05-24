@@ -1,58 +1,58 @@
 {
-  "id": 12,
-  "stride_category": "Denial of Service",
+  "id": 15,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 101,
-    "behavior_id": 622,
-    "capability_match": "Use Hyperlane SDK (Doc 45)"
+    "actor_id": 1,
+    "behavior_id": 416,
+    "capability_match": "Use Hyperlane SDK (doc_45)"
   },
   "threat_target": {
-    "component_id": 323,
+    "component_id": 8,
     "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 622,
-    "data_flow_id": 425,
-    "data_description": "High volume of configuration requests to the registry"
+    "behavior_id": 416,
+    "data_flow_id": null,
+    "data_description": "Crafted API request to Github Proxy specifying a malicious source for artifacts."
   },
   "trust_boundary_risk": {
-    "boundary_id": 503,
-    "boundary_name": "Application-Protocol Boundary",
+    "boundary_id": 302,
+    "boundary_name": "Developer-to-Tooling",
     "between_component_ids": [
-      101,
-      323
+      116,
+      117
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The Hyperlane Registry might lack sufficient rate limiting for read requests, making it vulnerable to overload."
+    "availability_required": false,
+    "gap_description": "If the Github Proxy can be made to fetch artifacts from untrusted Github locations, and these artifacts are then trusted by downstream tools, it could lead to execution of malicious code."
   },
   "actor_risk": {
-    "actor_id": 101,
+    "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious Developer or buggy tooling can cause excessive read requests."
+    "description": "Developer's tool is compromised or intentionally malicious, crafting requests to fetch harmful content."
   },
   "behavioral_risk": {
-    "behavior_id": 622,
-    "risk_level": "Medium",
-    "rationale": "Excessive read requests can overload the registry, denying service to others."
+    "behavior_id": 416,
+    "risk_level": "High",
+    "rationale": "Fetching and trusting malicious artifacts can lead to compromise of developer environments or CI/CD systems."
   },
   "assumptions": [
-    "The Hyperlane Registry (especially if centralized) is susceptible to overload from a high volume of read requests.",
-    "No effective client-side caching or server-side rate-limiting is in place for registry access."
+    "The Github Proxy allows fetching artifacts from arbitrary Github repositories or paths specified in the incoming request.",
+    "Downstream Hyperlane tools (e.g., build systems, SDK components) consume artifacts fetched via the proxy without sufficient validation or sandboxing."
   ],
   "mitigation": {
-    "strategy": "Implement robust rate limiting on the Hyperlane Registry. Encourage client-side caching of registry data within SDKs and CLIs. Distribute registry data via CDNs if applicable.",
+    "strategy": "Restrict the Github Proxy to fetch artifacts only from whitelisted, trusted Github repositories/organizations/paths. Implement integrity checks (e.g., checksums, digital signatures) for all fetched artifacts before use by downstream tools.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A Developer or a misconfigured tool makes an excessive number of read requests to the Hyperlane Registry, potentially overwhelming it and causing a denial of service for other users trying to access configuration data.",
+  "description": "A Developer's tool could craft a request to the Github Proxy to fetch malicious code or artifacts from a compromised or attacker-controlled Github repository. If these artifacts are then trusted and used by other Hyperlane tools or build processes, it could lead to code execution or system compromise.",
   "trace_source": {
-    "doc_reference": "Doc 30, Doc 45",
-    "matched_capability": "Use Hyperlane SDK (Doc 45)"
+    "doc_reference": "doc_37",
+    "matched_capability": "Use Hyperlane SDK (doc_45)"
   }
 }

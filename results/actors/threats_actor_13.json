@@ -1,0 +1,62 @@
+{
+  "id": 1306,
+  "stride_category": "Repudiation",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 13,
+    "behavior_id": 407,
+    "capability_match": "Deploy warp routes (doc_31)"
+  },
+  "threat_target": {
+    "component_id": 106,
+    "asset_ids": [
+      8,
+      9
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 407,
+    "data_flow_id": 215,
+    "data_description": "CLI deployment commands and associated logs."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 302,
+    "boundary_name": "Developer-to-Tooling",
+    "between_component_ids": [
+      1,
+      116,
+      117
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "The CLI tool may not provide adequate, secure, and tamper-proof logging of deployment actions tied to the user's identity."
+  },
+  "actor_risk": {
+    "actor_id": 13,
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "The CLI user performs deployment actions that should be attributable."
+  },
+  "behavioral_risk": {
+    "behavior_id": 407,
+    "risk_level": "Low",
+    "rationale": "Lack of proper audit trails for CLI actions could make it difficult to trace malicious deployments."
+  },
+  "assumptions": [
+    "The CLI's local logging can be tampered with or is insufficient.",
+    "No centralized or blockchain-based logging mechanism attributes CLI-initiated deployments directly to the specific CLI user beyond the transaction signer."
+  ],
+  "mitigation": {
+    "strategy": "Implement robust and tamper-evident logging for all CLI deployment operations, potentially including signed attestations or integration with version control systems for configurations. Ensure blockchain transactions are clearly linked to CLI operations.",
+    "type": "Process Control",
+    "priority": "Low"
+  },
+  "description": "If the Hyperlane CLI does not provide adequate, tamper-proof logging of deployment activities tied to the user's identity (beyond the on-chain transaction signer), a user could deploy a malicious warp route and later deny responsibility if the actions cannot be definitively traced back to their specific CLI usage.",
+  "trace_source": {
+    "doc_reference": "doc_31",
+    "matched_capability": "Deploy warp routes (doc_31)"
+  }
+}

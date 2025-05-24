@@ -8,513 +8,650 @@
       "dapps": ""
     },
     "components": {
-      "301": {
-        "id": 301,
-        "name": "Mailbox Contract",
-        "description": "Core Hyperlane smart contract on each chain responsible for dispatching outgoing messages and processing incoming messages. (Doc 17, 18, 19, 21)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206,
-          207
-        ]
-      },
-      "302": {
-        "id": 302,
-        "name": "RequiredHook Contract",
-        "description": "A type of Post-Dispatch Hook that is mandatorily executed by the Mailbox for certain messages. (Doc 18)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206,
-          207
-        ]
-      },
-      "303": {
-        "id": 303,
-        "name": "DefaultHook Contract",
-        "description": "A type of Post-Dispatch Hook that is executed by the Mailbox if no specific hook is provided or after a required hook. (Doc 18)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206,
-          207
-        ]
-      },
-      "304": {
-        "id": 304,
-        "name": "Custom PostDispatchHook Contract",
-        "description": "A developer-defined smart contract that implements IPostDispatchHook for custom logic on the origin chain after message dispatch. (Doc 18)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          201,
-          206,
-          207
-        ]
-      },
-      "305": {
-        "id": 305,
-        "name": "Custom ISM Contract",
-        "description": "A developer-defined smart contract that implements IInterchainSecurityModule for custom message verification logic on the destination chain. (Doc 19)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          201,
-          206,
-          216
-        ]
-      },
-      "306": {
-        "id": 306,
-        "name": "TokenRouter Contract",
-        "description": "Smart contract (Native, Collateral, or Synthetic variants) that facilitates cross-chain token transfers (Warp Routes). (Doc 21)",
-        "trust_level": "High",
-        "assets_managed": [
-          202,
-          203,
-          204,
-          207,
-          217
-        ]
-      },
-      "307": {
-        "id": 307,
-        "name": "HypERC4626Collateral Contract",
-        "description": "A TokenRouter extension for warping ERC4626-compatible yield-bearing assets from their canonical chain. (Doc 22)",
-        "trust_level": "High",
-        "assets_managed": [
-          205,
-          207,
-          217,
-          218
-        ]
-      },
-      "308": {
-        "id": 308,
-        "name": "HypERC4626 Contract (Synthetic Yield)",
-        "description": "A TokenRouter extension representing warped ERC4626 assets on a non-canonical chain, handling rebasing. (Doc 22)",
-        "trust_level": "High",
-        "assets_managed": [
-          204,
-          205,
-          207,
-          217,
-          218
-        ]
-      },
-      "309": {
-        "id": 309,
-        "name": "ERC4626 Vault Contract",
-        "description": "A standard ERC4626 smart contract vault holding yield-bearing assets. (Doc 22)",
-        "trust_level": "High",
-        "assets_managed": [
-          205,
-          218
-        ]
-      },
-      "310": {
-        "id": 310,
-        "name": "Relayer Off-chain Service",
-        "description": "Off-chain bot that monitors Mailbox contracts for dispatched messages and submits them to the destination chain's Mailbox. (Doc 10, 21)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          201,
-          207,
-          209,
-          219
-        ]
-      },
-      "311": {
-        "id": 311,
-        "name": "Validator Off-chain Service",
-        "description": "Off-chain bot that monitors Mailbox contracts and provides attestations for messages to ISMs. (Doc 10, 13)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          201,
-          216,
-          209,
-          220
-        ]
-      },
-      "312": {
-        "id": 312,
-        "name": "Scraper Off-chain Service",
-        "description": "Off-chain bot that reads Hyperlane contract data from blockchains and stores it in a database. (Doc 10, 11)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          215,
-          209
-        ]
-      },
-      "313": {
-        "id": 313,
-        "name": "Postgres Database",
-        "description": "SQL database used by the Scraper service to store indexed blockchain data. (Doc 11)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          215
-        ]
-      },
-      "314": {
-        "id": 314,
-        "name": "CCIP-read Server",
-        "description": "Off-chain service that handles CCIP-read requests, often for providing proofs or off-chain data to smart contracts. (Doc 29)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          211
-        ]
-      },
-      "315": {
-        "id": 315,
-        "name": "Github Proxy Service",
-        "description": "A Cloudflare Worker that proxies requests to the Github API using an authenticated API key. (Doc 37)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          210,
-          212
-        ]
-      },
-      "316": {
-        "id": 316,
-        "name": "GCP Secret Manager",
-        "description": "External Google Cloud Platform service for storing and managing secrets. (Doc 43)",
-        "trust_level": "High",
-        "assets_managed": [
-          213,
-          214
-        ]
-      },
-      "317": {
-        "id": 317,
-        "name": "HelloWorld Router Contract",
-        "description": "An example application smart contract that can dispatch and receive Hyperlane messages. (Doc 39)",
-        "trust_level": "Medium",
-        "assets_managed": [
-          201
-        ]
-      },
-      "318": {
-        "id": 318,
-        "name": "InterchainAccount (ICA) Contract",
-        "description": "A smart contract on a remote chain controlled by an account on an origin chain, enabling cross-chain interactions. (Doc 20)",
-        "trust_level": "High",
-        "assets_managed": [
-          201
-        ]
-      },
-      "319": {
-        "id": 319,
-        "name": "Generic ERC20 Contract",
-        "description": "A standard ERC20 token contract, external to Hyperlane core but interacted with by Warp Routes. (Doc 21)",
-        "trust_level": "High",
-        "assets_managed": [
-          202
-        ]
-      },
-      "320": {
-        "id": 320,
-        "name": "Multisig ISM Contract",
-        "description": "An Interchain Security Module that requires a threshold of validator signatures to verify a message. (Doc 16, 44, 45)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206,
-          216
-        ]
-      },
-      "321": {
-        "id": 321,
-        "name": "Pausable ISM Contract",
-        "description": "An Interchain Security Module that allows an owner to pause message verification. (Doc 44)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206
-        ]
-      },
-      "322": {
-        "id": 322,
-        "name": "DefaultFallbackRouting ISM Contract",
-        "description": "An Interchain Security Module that routes messages to different ISMs based on configured rules, with a default fallback. (Doc 30, 44)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          206,
-          208
-        ]
-      },
-      "323": {
-        "id": 323,
-        "name": "Hyperlane Registry",
-        "description": "Centralized or distributed source of Hyperlane configuration, contract addresses, and chain metadata. (Doc 24, 30, 31, 42, 45)",
-        "trust_level": "High",
-        "assets_managed": [
-          208,
-          210
-        ]
-      },
-      "324": {
-        "id": 324,
-        "name": "Interchain Query System (IQS)",
-        "description": "System for generalizing view calls to contracts on remote chains, using a transparent multicall API. (Doc 20)",
-        "trust_level": "High",
-        "assets_managed": [
-          201,
-          208
-        ]
-      }
-    },
-    "actors": {
       "101": {
         "id": 101,
-        "name": "Developer",
-        "type": "EOA (Externally Owned Account)",
-        "description": "Builds and configures applications on Hyperlane, uses SDK and CLI, configures hooks and ISMs, and deploys applications. (Docs 4, 17, 18, 19, 20, 21, 30, 31, 39, 45)",
-        "capabilities": [
-          "Use Hyperlane to share state between blockchains (Doc 4)",
-          "Build interchain applications (Doc 4)",
-          "Configure Post-Dispatch Hooks (Doc 18)",
-          "Configure Interchain Security Modules (Doc 19)",
-          "Use Hyperlane SDK (Doc 45)",
-          "Use Hyperlane CLI (Doc 31)",
-          "Deploy Hyperlane core contracts (Doc 31)",
-          "Deploy Warp Routes (Doc 21, 31)",
-          "Create custom hooks and ISMs (Doc 18, 19)"
+        "name": "Hyperlane Protocol",
+        "description": "An open generalized interchain messaging protocol. (doc_3)",
+        "assets_managed": [
+          1,
+          2,
+          3,
+          4
         ]
       },
       "102": {
         "id": 102,
-        "name": "User",
-        "type": "EOA (Externally Owned Account)",
-        "description": "Interacts with the Hyperlane Protocol and applications built on it, such as initiating token transfers. (Docs 3, 21)",
-        "capabilities": [
-          "Use the Hyperlane Protocol (Doc 3)",
-          "Initiate remote token transfers via TokenRouter (Doc 21)",
-          "Interact with dApps using Hyperlane (Doc 4)",
-          "Use Hyperlane CLI to send messages or deploy routes (Doc 31)"
+        "name": "Mailbox (Solidity EVM)",
+        "description": "Core smart contract on EVM chains for dispatching and receiving interchain messages. Manages interactions with Hooks and ISMs. (doc_17, doc_18, doc_19)",
+        "assets_managed": [
+          4,
+          24
         ]
       },
       "103": {
         "id": 103,
-        "name": "Relayer",
-        "type": "Off-chain Service/Bot",
-        "description": "Off-chain agent responsible for relaying messages from an origin blockchain to a destination blockchain. (Docs 10, 21, 29)",
-        "capabilities": [
-          "Read messages from origin chain Mailbox (Doc 10, 21)",
-          "Submit 'process' transactions to destination chain Mailbox (Doc 10, 21)",
-          "Index Mailbox events (Doc 21)",
-          "Make POST requests to CCIP-read server (Doc 29)"
+        "name": "Mailbox (Sealevel SVM)",
+        "description": "Core smart contract on Sealevel (Solana Virtual Machine) chains for interchain messaging. (doc_10, doc_14)",
+        "assets_managed": [
+          4,
+          24
         ]
       },
       "104": {
         "id": 104,
-        "name": "Validator",
-        "type": "Off-chain Service/Bot",
-        "description": "Off-chain agent responsible for observing messages on an origin chain and submitting attestations to the destination chain's Interchain Security Module. (Docs 10, 13, 19)",
-        "capabilities": [
-          "Monitor origin chains for messages (Doc 10)",
-          "Submit attestations/signatures for messages (Doc 10, 19)",
-          "Run as a node on AWS or similar infrastructure (Doc 13)"
-        ]
+        "name": "Post-Dispatch Hook (IPostDispatchHook)",
+        "description": "Interface for smart contracts that define additional origin chain behavior for dispatched messages. Can charge fees. (doc_18)",
+        "assets_managed": []
       },
       "105": {
         "id": 105,
-        "name": "Scraper Agent",
-        "type": "Off-chain Service/Bot",
-        "description": "Off-chain agent that collects and stores on-chain data from Hyperlane contracts into a database. (Docs 10, 11)",
-        "capabilities": [
-          "Read data from Hyperlane contracts on multiple chains (Doc 11)",
-          "Write data to a Postgres database (Doc 11)",
-          "Manage database migrations (Doc 12)"
-        ]
+        "name": "Interchain Security Module (ISM)",
+        "description": "Smart contracts that define additional security checks for incoming messages on the destination chain. (doc_19)",
+        "assets_managed": []
       },
       "106": {
         "id": 106,
-        "name": "Deployer",
-        "type": "EOA (Externally Owned Account)",
-        "description": "An account responsible for deploying Hyperlane smart contracts, Interchain Accounts, or related infrastructure. (Docs 10, 20, 21, 31, 43)",
-        "capabilities": [
-          "Deploy core Hyperlane contracts (Doc 31)",
-          "Deploy Warp Routes (Doc 21, 31)",
-          "Deploy and control Interchain Accounts (Doc 20)",
-          "Deploy infrastructure components (e.g., using Terraform, Helm) (Doc 13, 43)"
+        "name": "TokenRouter (Solidity)",
+        "description": "A collection of contracts for Hyperlane Warp Routes, enabling interchain token transfers (ERC20, ERC721, Native). (doc_21)",
+        "assets_managed": [
+          2,
+          15,
+          16,
+          17,
+          24
         ]
       },
       "107": {
         "id": 107,
-        "name": "Github API",
-        "type": "Oracle",
-        "description": "External service providing access to Hyperlane source code, contract artifacts, and registry information. (Docs 24, 37, 45)",
-        "capabilities": [
-          "Provide contract artifacts (e.g., Cairo ABIs) (Doc 24)",
-          "Provide data for Hyperlane Registry (Doc 24, 45)"
+        "name": "HypNative",
+        "description": "TokenRouter flavor for warping native assets from their canonical chain. (doc_21)",
+        "assets_managed": [
+          17,
+          24
         ]
       },
       "108": {
         "id": 108,
-        "name": "GCP Service Account",
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "description": "A Google Cloud Platform service account with permissions to access secrets in GCP Secret Manager. (Doc 43)",
-        "capabilities": [
-          "Access secrets from GCP Secret Manager (roles/secretmanager.secretAccessor) (Doc 43)"
+        "name": "HypERC20Collateral",
+        "description": "TokenRouter flavor for warping ERC20 or ERC721 tokens from their canonical chain. (doc_21)",
+        "assets_managed": [
+          15,
+          16,
+          24
         ]
       },
       "109": {
         "id": 109,
+        "name": "HypERC20 (Synthetic)",
+        "description": "TokenRouter flavor for representing warped tokens (Native, ERC20, ERC721) on a non-canonical chain. (doc_21)",
+        "assets_managed": [
+          15,
+          16,
+          17,
+          24
+        ]
+      },
+      "110": {
+        "id": 110,
+        "name": "HypERC4626Collateral",
+        "description": "Contract for Yield Routes; implements ERC4626 deposits upon transfer and withdrawal upon transfer back. (doc_22)",
+        "assets_managed": [
+          18,
+          19,
+          20,
+          21,
+          24
+        ]
+      },
+      "111": {
+        "id": 111,
+        "name": "HypERC4626 (Synthetic)",
+        "description": "Contract for Yield Routes; implements a rebasing ERC20 representing shares in an ERC4626 vault on the collateral chain. (doc_22)",
+        "assets_managed": [
+          18,
+          19,
+          20,
+          21,
+          24
+        ]
+      },
+      "112": {
+        "id": 112,
+        "name": "Interchain Account (ICA)",
+        "description": "Smart contract deployed on a remote chain, controlled by an origin chain deployer account, offering a transparent multicall API. (doc_20)",
+        "assets_managed": []
+      },
+      "113": {
+        "id": 113,
+        "name": "Interchain Query System (IQS)",
+        "description": "System generalizing view calls to contracts on remote chains via a transparent multicall API. (doc_20)",
+        "assets_managed": []
+      },
+      "114": {
+        "id": 114,
+        "name": "Hyperlane Core (Solidity Package)",
+        "description": "Package containing contracts and typechain artifacts for Hyperlane EVM implementation. (doc_17)",
+        "assets_managed": [
+          5,
+          14
+        ]
+      },
+      "115": {
+        "id": 115,
+        "name": "Hyperlane Starknet Core (Cairo/TS Package)",
+        "description": "Package providing TypeScript tooling and Cairo contract artifacts for Hyperlane on Starknet. (doc_24)",
+        "assets_managed": [
+          5,
+          14
+        ]
+      },
+      "116": {
+        "id": 116,
+        "name": "Hyperlane CLI (Command Line Interface)",
+        "description": "Typescript tool for deploying Hyperlane core contracts and warp routes, sending messages, etc. (doc_31)",
+        "assets_managed": [
+          8,
+          9
+        ]
+      },
+      "117": {
+        "id": 117,
+        "name": "Hyperlane SDK (Software Development Kit)",
+        "description": "Typescript library for developers to create and manage interchain applications. (doc_45)",
+        "assets_managed": [
+          8,
+          9
+        ]
+      },
+      "118": {
+        "id": 118,
+        "name": "CCIP-read Service Framework",
+        "description": "Service framework for CCIP-read, allowing execution logic based on Hyperlane Relayer calls. (doc_29)",
+        "assets_managed": []
+      },
+      "119": {
+        "id": 119,
+        "name": "CCIP Server",
+        "description": "Main entry point for the CCIP-read service framework, handles requests from CCIP Relayers. (doc_29)",
+        "assets_managed": []
+      },
+      "120": {
+        "id": 120,
+        "name": "Hyperlane Cosmos Module SDK",
+        "description": "TypeScript SDK for the Cosmos Hyperlane Module Implementation. (doc_33)",
+        "assets_managed": [
+          5,
+          14
+        ]
+      },
+      "121": {
+        "id": 121,
+        "name": "Hyperlane Infra Scripts",
+        "description": "Scripts and utilities for managing and deploying Hyperlane infrastructure. (doc_42)",
+        "assets_managed": [
+          9
+        ]
+      },
+      "122": {
+        "id": 122,
+        "name": "External Secrets Helm Chart (GCP)",
+        "description": "Helm chart to allow Kubernetes workloads to access secrets from GCP Secret Manager. (doc_43)",
+        "assets_managed": [
+          11,
+          12
+        ]
+      },
+      "123": {
+        "id": 123,
+        "name": "Hyperlane Widgets",
+        "description": "Common React components for projects using Hyperlane, e.g., ChainLogo, MessageTimeline. (doc_50)",
+        "assets_managed": []
+      },
+      "124": {
+        "id": 124,
+        "name": "Rust Agents (Relayer, Validator, Scraper)",
+        "description": "Off-chain programs written in Rust that manage Hyperlane operations. (doc_10)",
+        "assets_managed": [
+          9,
+          10,
+          13
+        ]
+      },
+      "125": {
+        "id": 125,
+        "name": "ERC20 Contract (Generic)",
+        "description": "A standard ERC20 token contract. (doc_21, doc_22)",
+        "assets_managed": [
+          15
+        ]
+      },
+      "126": {
+        "id": 126,
+        "name": "ERC4626 Vault Contract (Generic)",
+        "description": "A standard ERC4626 tokenized vault contract. (doc_22)",
+        "assets_managed": [
+          18,
+          19
+        ]
+      },
+      "127": {
+        "id": 127,
+        "name": "GCP Secret Manager",
+        "description": "Google Cloud Platform service for storing secrets. (doc_43)",
+        "assets_managed": [
+          11,
+          12
+        ]
+      },
+      "128": {
+        "id": 128,
+        "name": "Postgres Database (Scraper)",
+        "description": "PostgreSQL database used by the Scraper agent. (doc_11)",
+        "assets_managed": [
+          13
+        ]
+      },
+      "129": {
+        "id": 129,
+        "name": "Github API",
+        "description": "External API for Github services. (doc_37, doc_24)",
+        "assets_managed": [
+          5,
+          23
+        ]
+      },
+      "130": {
+        "id": 130,
+        "name": "Hyperlane Registry",
+        "description": "A source for Hyperlane chain metadata, contract addresses, and configurations. (doc_10 `hyperlane-registry` repo, doc_30 CLI interaction with registry)",
+        "assets_managed": [
+          8,
+          9
+        ]
+      },
+      "131": {
+        "id": 131,
+        "name": "Terraform Module for Hyperlane Validator",
+        "description": "Terraform module to set up the necessary infrastructure for a Hyperlane validator on AWS. It automates the creation of resources such as ECS clusters, VPCs, subnets, and security groups required for running a validator node. (doc_13)",
+        "assets_managed": [
+          9
+        ]
+      },
+      "132": {
+        "id": 132,
+        "name": "Grafana Dashboards",
+        "description": "JSON model templates for Grafana dashboards, used for monitoring Hyperlane. These are imported/exported manually. (doc_25)",
+        "assets_managed": [
+          25
+        ]
+      },
+      "133": {
+        "id": 133,
+        "name": "Scraper Migrator CLI",
+        "description": "Command Line Interface (cargo run --package migration) for managing scraper PostgreSQL database schema migrations, including initializing the DB, recreating it, and generating SeaORM entities. (doc_11, doc_12)",
+        "assets_managed": [
+          13
+        ]
+      }
+    },
+    "actors": {
+      "1": {
+        "id": 1,
+        "name": "Developer",
+        "type": "EOA (Externally Owned Account)",
+        "description": "Individuals who build, deploy, and maintain applications or contribute to the Hyperlane protocol. (doc_1, doc_2, doc_4, doc_17, doc_21, doc_31, doc_45)",
+        "capabilities": [
+          "Develop applications using Hyperlane (doc_4, doc_45)",
+          "Deploy Hyperlane core contracts (doc_31)",
+          "Deploy Warp Routes (doc_21, doc_31)",
+          "Contribute to Hyperlane source code (doc_2)",
+          "Submit pull requests (doc_2, doc_8)",
+          "Submit issues (doc_2, doc_9)",
+          "Configure Post-Dispatch Hooks (doc_18)",
+          "Configure Interchain Security Modules (doc_19)",
+          "Use Hyperlane CLI (doc_31)",
+          "Use Hyperlane SDK (doc_45)",
+          "Trigger Docker builds in CI (doc_4)",
+          "Manage agent releases (doc_4)"
+        ]
+      },
+      "2": {
+        "id": 2,
+        "name": "User",
+        "type": "EOA (Externally Owned Account)",
+        "description": "End-users interacting with applications built on Hyperlane, for example, transferring tokens. (doc_3, doc_21)",
+        "capabilities": [
+          "Initiate interchain messages (doc_4)",
+          "Transfer tokens via Warp Routes (doc_21)",
+          "Interact with dApps using Hyperlane (doc_4)",
+          "Use public digital wallet address for interactions (doc_3)"
+        ]
+      },
+      "3": {
+        "id": 3,
+        "name": "Relayer",
+        "type": "Off-chain Service/Bot",
+        "description": "Off-chain agent responsible for relaying messages between blockchains by indexing messages on an origin chain Mailbox and submitting them to the destination chain's Mailbox. (doc_10, doc_21)",
+        "capabilities": [
+          "Index messages from Mailbox on origin chain (doc_21, doc_10)",
+          "Process messages on destination chain Mailbox (doc_21, doc_10)",
+          "Submit transactions to blockchains (doc_10)",
+          "Compensated for services (doc_21)"
+        ]
+      },
+      "4": {
+        "id": 4,
+        "name": "Validator",
+        "type": "Off-chain Service/Bot",
+        "description": "Off-chain agent responsible for observing messages and providing security attestations for Interchain Security Modules. (doc_10, doc_13)",
+        "capabilities": [
+          "Observe interchain messages (doc_10)",
+          "Provide security attestations (doc_10, doc_19 for ISMs)",
+          "Connect to home chain and replicas (doc_10)",
+          "Run as a node on AWS (example setup) (doc_13)"
+        ]
+      },
+      "5": {
+        "id": 5,
+        "name": "Scraper Agent",
+        "type": "Off-chain Service/Bot",
+        "description": "Off-chain agent that collects and stores data from blockchains, typically into a database like Postgres. (doc_10, doc_11)",
+        "capabilities": [
+          "Read data from blockchains (doc_10)",
+          "Store data in a database (doc_11)",
+          "Connect to Postgres database (doc_11)"
+        ]
+      },
+      "6": {
+        "id": 6,
+        "name": "Maintainer/Core Dev",
+        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+        "description": "Individuals with privileged access to review and merge contributions to the Hyperlane codebase. (doc_2)",
+        "capabilities": [
+          "Review pull requests (doc_2)",
+          "Merge code into main codebase (doc_2)",
+          "Guide project philosophy (doc_2)"
+        ]
+      },
+      "7": {
+        "id": 7,
+        "name": "GCP Service Account",
+        "type": "Off-chain Service/Bot",
+        "description": "A Google Cloud Platform service account used by systems like 'external-secrets' to access GCP resources, such as Secret Manager. (doc_43)",
+        "capabilities": [
+          "Access GCP Secret Manager secrets (doc_43)",
+          "Authenticate with GCP (doc_43)"
+        ]
+      },
+      "8": {
+        "id": 8,
+        "name": "Github Proxy",
+        "type": "Off-chain Service/Bot",
+        "description": "A CloudFlare Worker that proxies Github API requests using an API key to allow higher rate limits. (doc_37)",
+        "capabilities": [
+          "Make authenticated Github API requests (doc_37)",
+          "Fetch contract artifacts from Github (doc_24)"
+        ]
+      },
+      "9": {
+        "id": 9,
         "name": "CI System",
         "type": "Off-chain Service/Bot",
-        "description": "Continuous Integration system used for building and testing Hyperlane components, including Docker images for agents. (Doc 4, 10)",
+        "description": "Continuous Integration system (e.g., GitHub Actions) that automates building, testing, and deployment processes. (doc_4)",
         "capabilities": [
-          "Build agent Docker images (Doc 4, 10)",
-          "Run automated E2E tests (Doc 10)",
-          "Trigger Docker builds (Doc 4)"
+          "Build Docker images for agents (doc_4, doc_10)",
+          "Run automated tests (doc_4, doc_10 for E2E tests)",
+          "Deploy code changes (doc_4, doc_10 for agent deployment procedures)"
+        ]
+      },
+      "10": {
+        "id": 10,
+        "name": "Message Sender",
+        "type": "EOA (Externally Owned Account)",
+        "description": "An entity (EOA or smart contract) that initiates a message dispatch through the Mailbox. (doc_18, solidity/contracts/hooks/README.md)",
+        "capabilities": [
+          "Dispatch messages via Mailbox (doc_18)",
+          "Specify destination, recipient, and message body (doc_18, general Mailbox functionality)",
+          "Optionally specify hooks and metadata (doc_18)",
+          "Pay for message dispatch (doc_18)"
+        ]
+      },
+      "11": {
+        "id": 11,
+        "name": "Message Recipient",
+        "type": "Smart Contract",
+        "description": "A smart contract on a destination chain that is designated to receive and handle an interchain message. (doc_19, solidity/contracts/isms/README.md)",
+        "capabilities": [
+          "Handle incoming messages from Mailbox (doc_19)",
+          "Define an InterchainSecurityModule for message verification (doc_19)"
+        ]
+      },
+      "12": {
+        "id": 12,
+        "name": "Deployer (Interchain Account)",
+        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+        "description": "The account on an origin chain that deploys and exclusively controls an Interchain Account on a remote chain. (doc_20, solidity/contracts/middleware/README.md)",
+        "capabilities": [
+          "Deploy Interchain Accounts (doc_20)",
+          "Control Interchain Accounts on remote chains (doc_20)"
+        ]
+      },
+      "13": {
+        "id": 13,
+        "name": "Hyperlane CLI User",
+        "type": "EOA (Externally Owned Account)",
+        "description": "A developer or operator using the Hyperlane Command Line Interface. (doc_31)",
+        "capabilities": [
+          "Deploy core contracts (doc_31)",
+          "Deploy warp routes (doc_31)",
+          "Send test messages (doc_31)",
+          "Manage configurations (doc_31, e.g. `hyperlane config create`)"
+        ]
+      },
+      "14": {
+        "id": 14,
+        "name": "Hyperlane SDK User",
+        "type": "EOA (Externally Owned Account)",
+        "description": "A developer using the Hyperlane Software Development Kit to build applications. (doc_45)",
+        "capabilities": [
+          "Build multi-chain applications (doc_45)",
+          "Deploy contracts (doc_45)",
+          "Interact with Hyperlane core deployments (doc_45)",
+          "Manage chain metadata and RPC providers (doc_45)"
+        ]
+      },
+      "15": {
+        "id": 15,
+        "name": "CCIP Relayer",
+        "type": "Off-chain Service/Bot",
+        "description": "A relayer specific to the CCIP (Cross-Chain Interoperability Protocol) context, interacting with the CCIP-read service framework. (doc_29)",
+        "capabilities": [
+          "Make POST requests to CCIP Server with ABI-encoded data (doc_29)"
+        ]
+      },
+      "16": {
+        "id": 16,
+        "name": "Kubernetes Workload",
+        "type": "Off-chain Service/Bot",
+        "description": "Applications or services running on a Kubernetes cluster that may need to access secrets. (doc_43)",
+        "capabilities": [
+          "Access secrets from GCP Secret Manager via ExternalSecret and ClusterSecretStore (doc_43)"
         ]
       }
     },
     "assets": {
-      "201": {
-        "id": 201,
-        "name": "Interchain Message",
-        "description": "Arbitrary data packet sent from one blockchain to another via Hyperlane. (Doc 4, 21)",
+      "1": {
+        "id": 1,
+        "name": "Arbitrary Interchain Data",
+        "description": "General data sent between blockchains via the Hyperlane Protocol. (doc_3)",
         "type": "Data",
         "sensitivity": "Medium"
       },
-      "202": {
-        "id": 202,
-        "name": "Fungible Token (Native/ERC20)",
-        "description": "Standard fungible tokens (e.g., ETH, ERC20) transferred across chains. (Doc 21)",
+      "2": {
+        "id": 2,
+        "name": "Digital Assets / Tokens",
+        "description": "Cryptocurrency tokens or other digital assets transferred or managed by the Hyperlane Protocol. (doc_3, doc_21)",
         "type": "Token",
         "sensitivity": "High"
       },
-      "203": {
-        "id": 203,
-        "name": "Non-Fungible Token (ERC721)",
-        "description": "Standard non-fungible tokens transferred across chains. (Doc 21)",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "204": {
-        "id": 204,
-        "name": "Synthetic Token",
-        "description": "A representation of a token on a non-canonical chain, minted by a TokenRouter. (Doc 21)",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "205": {
-        "id": 205,
-        "name": "Yield-Bearing Asset",
-        "description": "An underlying asset that accrues yield, often managed by an ERC4626 vault. (Doc 22)",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "206": {
-        "id": 206,
-        "name": "Message Metadata",
-        "description": "Data accompanying an interchain message, used by Hooks and ISMs for custom logic and security. (Doc 18, 19)",
+      "3": {
+        "id": 3,
+        "name": "Shared State",
+        "description": "Application state shared between blockchains using Hyperlane. (doc_4)",
         "type": "Data",
         "sensitivity": "Medium"
       },
-      "207": {
-        "id": 207,
-        "name": "Transaction Fees",
-        "description": "Value paid to cover costs of on-chain operations, including message dispatch and relaying. (Doc 18, 21)",
+      "4": {
+        "id": 4,
+        "name": "Interchain Messages",
+        "description": "The payload and metadata of messages dispatched through the Mailbox. (doc_4, doc_18, doc_19)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "5": {
+        "id": 5,
+        "name": "Source Code",
+        "description": "The codebase of the Hyperlane protocol and related tools. (doc_2, doc_4, doc_17, etc.)",
+        "type": "Data",
+        "sensitivity": "High"
+      },
+      "6": {
+        "id": 6,
+        "name": "Docker Images",
+        "description": "Container images for Hyperlane agents. (doc_4, doc_10)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "7": {
+        "id": 7,
+        "name": "NPM Packages",
+        "description": "Published software packages for Hyperlane SDK, CLI, core, etc. (doc_4, doc_17, doc_30, doc_44)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "8": {
+        "id": 8,
+        "name": "Contract Addresses",
+        "description": "Deployed addresses of Hyperlane smart contracts. (doc_10, doc_31 `hyperlane chains addresses`)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "9": {
+        "id": 9,
+        "name": "Configuration Files",
+        "description": "Files containing settings for agents, deployments, and other components. (doc_4, doc_10, doc_31)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "10": {
+        "id": 10,
+        "name": "Environment Variables",
+        "description": "Configuration variables, potentially including secrets, used by Hyperlane components. (doc_4 `LOG_LEVEL`, doc_10 `HYP_DB`)",
+        "type": "Data",
+        "sensitivity": "High"
+      },
+      "11": {
+        "id": 11,
+        "name": "Secrets (GCP Secret Manager)",
+        "description": "Sensitive data like API keys or credentials stored in GCP Secret Manager. (doc_43)",
+        "type": "Key",
+        "sensitivity": "High"
+      },
+      "12": {
+        "id": 12,
+        "name": "Service Account Keys",
+        "description": "Credentials for service accounts, e.g., for GCP. (doc_10 `GCS_SERVICE_ACCOUNT_KEY`, doc_43 `gcp-sa-secret.yaml`)",
+        "type": "Key",
+        "sensitivity": "High"
+      },
+      "13": {
+        "id": 13,
+        "name": "Database Data (Scraper)",
+        "description": "Data collected by the Scraper agent and stored in its database. (doc_11)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "14": {
+        "id": 14,
+        "name": "Contract Artifacts",
+        "description": "Compiled bytecode and ABI of smart contracts. (doc_16, doc_17, doc_23, doc_24)",
+        "type": "Data",
+        "sensitivity": "Medium"
+      },
+      "15": {
+        "id": 15,
+        "name": "ERC20 Tokens",
+        "description": "Fungible tokens adhering to the ERC20 standard, managed by Warp Routes. (doc_21)",
         "type": "Token",
-        "sensitivity": "Medium"
+        "sensitivity": "High"
       },
-      "208": {
-        "id": 208,
-        "name": "Contract Configuration Data",
-        "description": "Parameters for smart contracts, such as ISM addresses for recipients or hook configurations for dispatchers. (Doc 18, 19, 45)",
+      "16": {
+        "id": 16,
+        "name": "ERC721 Tokens",
+        "description": "Non-fungible tokens adhering to the ERC721 standard, managed by Warp Routes. (doc_21)",
+        "type": "NFT",
+        "sensitivity": "High"
+      },
+      "17": {
+        "id": 17,
+        "name": "Native Assets",
+        "description": "Native blockchain assets (e.g., ETH) warped via Hyperlane. (doc_21)",
+        "type": "Token",
+        "sensitivity": "High"
+      },
+      "18": {
+        "id": 18,
+        "name": "Yield-bearing Assets (ERC4626)",
+        "description": "Assets that generate yield, transferred across chains using ERC4626 standard via Yield Routes. (doc_22)",
+        "type": "Token",
+        "sensitivity": "High"
+      },
+      "19": {
+        "id": 19,
+        "name": "Vault Shares (ERC4626)",
+        "description": "Shares representing a user's deposit in an ERC4626 vault. (doc_22)",
+        "type": "Token",
+        "sensitivity": "High"
+      },
+      "20": {
+        "id": 20,
+        "name": "Exchange Rate Data",
+        "description": "Exchange rate information used in Yield Routes for ERC4626 assets. (doc_22)",
         "type": "Data",
         "sensitivity": "Medium"
       },
-      "209": {
-        "id": 209,
-        "name": "Agent Configuration File",
-        "description": "Configuration files used by off-chain agents (Relayer, Validator, Scraper) defining their operational parameters. (Doc 10)",
-        "type": "Data",
-        "sensitivity": "Medium"
-      },
-      "210": {
-        "id": 210,
-        "name": "Smart Contract Artifacts",
-        "description": "Compiled bytecode and ABI for smart contracts (e.g., EVM Typechain, Cairo ABI). (Doc 17, 24)",
+      "21": {
+        "id": 21,
+        "name": "Message Nonce",
+        "description": "A number used once, often for replay protection or ordering in messaging systems. (doc_22 `nonce += 1`)",
         "type": "Data",
         "sensitivity": "Low"
       },
-      "211": {
-        "id": 211,
-        "name": "CCIP-read Request Data",
-        "description": "ABI-encoded data sent to the CCIP-read server by a Relayer for off-chain data retrieval. (Doc 29)",
+      "22": {
+        "id": 22,
+        "name": "Public Digital Wallet Address",
+        "description": "User's public blockchain address used for interactions. (doc_3)",
         "type": "Data",
-        "sensitivity": "Medium"
+        "sensitivity": "Low"
       },
-      "212": {
-        "id": 212,
+      "23": {
+        "id": 23,
         "name": "Github API Key",
-        "description": "Authentication key for accessing the Github API with higher rate limits, used by Github Proxy. (Doc 37)",
+        "description": "API key for authenticating with the Github API, used by Github Proxy. (doc_37)",
         "type": "Key",
         "sensitivity": "High"
       },
-      "213": {
-        "id": 213,
-        "name": "GCP Service Account Key",
-        "description": "Credentials for a GCP service account, used to access GCP resources like Secret Manager. (Doc 10, 43)",
-        "type": "Key",
-        "sensitivity": "High"
-      },
-      "214": {
-        "id": 214,
-        "name": "GCP Secret",
-        "description": "Sensitive data (e.g., API keys, credentials) stored in GCP Secret Manager. (Doc 43)",
-        "type": "Data",
-        "sensitivity": "High"
-      },
-      "215": {
-        "id": 215,
-        "name": "Scraper Database Content",
-        "description": "Data collected by the Scraper agent from Hyperlane contracts, stored in a Postgres database. (Doc 11)",
+      "24": {
+        "id": 24,
+        "name": "TokenMessage",
+        "description": "Encoded payload for token transfers containing amount and recipient. (doc_21)",
         "type": "Data",
         "sensitivity": "Medium"
       },
-      "216": {
-        "id": 216,
-        "name": "Validator Attestation",
-        "description": "A signed statement from a Validator confirming the validity of an interchain message. (Doc 10, 19)",
-        "type": "Data",
-        "sensitivity": "High"
-      },
-      "217": {
-        "id": 217,
-        "name": "TokenMessage Payload",
-        "description": "Encoded data within an interchain message specific to token transfers, containing amount and recipient. (Doc 21)",
-        "type": "Data",
-        "sensitivity": "Medium"
-      },
-      "218": {
-        "id": 218,
-        "name": "ERC4626 Shares",
-        "description": "Tokens representing a user's share in an ERC4626 yield-bearing vault. (Doc 22)",
-        "type": "Token",
-        "sensitivity": "High"
-      },
-      "219": {
-        "id": 219,
-        "name": "Relayer Private Key",
-        "description": "Private key used by the Relayer agent for signing transactions on destination chains.",
-        "type": "Key",
-        "sensitivity": "High"
-      },
-      "220": {
-        "id": 220,
-        "name": "Validator Private Key",
-        "description": "Private key used by the Validator agent for signing attestations.",
-        "type": "Key",
-        "sensitivity": "High"
-      },
-      "221": {
-        "id": 221,
-        "name": "Hyperlane Source Code",
-        "description": "The source code of the Hyperlane protocol and associated tooling, typically hosted on Github. (Doc 4)",
+      "25": {
+        "id": 25,
+        "name": "Monitoring Dashboard Templates",
+        "description": "JSON templates for Grafana dashboards used for monitoring Hyperlane. (doc_25)",
         "type": "Data",
         "sensitivity": "Low"
       }

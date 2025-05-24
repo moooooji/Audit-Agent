@@ -1,60 +1,57 @@
 {
-  "id": 6,
+  "id": 8,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 105,
-    "behavior_id": 613,
-    "capability_match": "Manage database migrations (Doc 12)"
+    "actor_id": 5,
+    "behavior_id": 415,
+    "capability_match": "Connect to Postgres database (doc_11)"
   },
   "threat_target": {
-    "component_id": 313,
+    "component_id": 128,
     "asset_ids": [
-      215
+      13
     ]
   },
   "attack_surface": {
-    "behavior_id": 613,
-    "data_flow_id": 419,
-    "data_description": "Database connection credentials used by Scraper Agent (105)"
+    "behavior_id": 415,
+    "data_flow_id": 211,
+    "data_description": "Database connection credentials and session of Scraper Agent"
   },
   "trust_boundary_risk": {
     "boundary_id": null,
     "boundary_name": null,
-    "between_component_ids": [
-      312,
-      313
-    ]
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If the Scraper Agent's (105) database credentials used for Data Flow 419 also grant permissions for migrations (Doc 12), compromising the agent could lead to broader database compromise than just data writing."
+    "gap_description": "The Scraper Agent's (Actor 5) database account for Component 128 may be overprivileged, or the database may have vulnerabilities exploitable via the agent's connection (Data Flow 211)."
   },
   "actor_risk": {
-    "actor_id": 105,
+    "actor_id": 5,
     "type": "Off-chain Service/Bot",
     "overprivileged": true,
-    "description": "The Scraper Agent (105) might possess database credentials with more privileges (e.g., for migrations as per Doc 12) than strictly necessary for routine data writing (Behavior 613)."
+    "description": "A compromised Scraper Agent (ID 5) could abuse its database privileges or exploit database vulnerabilities to gain further control over the database (Component 128)."
   },
   "behavioral_risk": {
-    "behavior_id": 613,
+    "behavior_id": 415,
     "risk_level": "High",
-    "rationale": "Compromise of the Scraper Agent (105) could allow an attacker to leverage its potentially overprivileged database credentials to modify database schema, delete data (Asset 215 and others), or access other databases if credentials are not scoped properly."
+    "rationale": "Elevated privileges allow an attacker controlling the Scraper Agent to perform unauthorized actions like deleting data (Asset 13), modifying schema, or accessing other data within Component 128."
   },
   "assumptions": [
-    "The database account used by the Scraper Agent (105) for writing data (Behavior 613, Data Flow 419) also has privileges to 'Manage database migrations (Doc 12)'.",
-    "The Scraper Agent (105) itself could be compromised, allowing an attacker to leverage its database credentials."
+    "The database account used by the Scraper Agent (Actor 5) on Component 128 has more permissions than the principle of least privilege dictates (e.g., DDL rights instead of just INSERT/SELECT on specific tables).",
+    "The Postgres database (Component 128) version has known vulnerabilities that can be exploited for privilege escalation via an existing connection."
   ],
   "mitigation": {
-    "strategy": "Apply the principle of least privilege. Use separate, restricted database accounts for routine data writing versus schema migrations. Secure the Scraper Agent (105) and its credentials robustly.",
+    "strategy": "Adhere to the principle of least privilege for the Scraper Agent's database account (grant only necessary DML on specific tables). Keep the Postgres database patched and securely configured.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "If the Scraper Agent (105) is compromised or its database credentials grant excessive permissions (e.g., for managing migrations as per Doc 12, beyond just writing data for Behavior 613), an attacker could gain elevated privileges on the Postgres Database (313), allowing unauthorized data modification, deletion, or schema changes.",
+  "description": "A compromised Scraper Agent (Actor 5) leverages its database connection (Data Flow 211 for Behavior 415) to elevate its privileges within the Postgres database (Component 128), potentially leading to broader unauthorized access or manipulation of Asset 13.",
   "trace_source": {
-    "doc_reference": "Doc 11, Doc 12",
-    "matched_capability": "Manage database migrations (Doc 12)"
+    "doc_reference": "doc_11",
+    "matched_capability": "Connect to Postgres database (doc_11)"
   }
 }

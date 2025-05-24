@@ -1,0 +1,60 @@
+{
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 10,
+    "behavior_id": 401,
+    "capability_match": "Specify destination, recipient, and message body"
+  },
+  "threat_target": {
+    "component_id": 102,
+    "asset_ids": [
+      4
+    ]
+  },
+  "attack_surface": {
+    "behavior_id": 401,
+    "data_flow_id": 201,
+    "data_description": "Malicious message `body` intended to exploit the ultimate recipient contract."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": 301,
+    "boundary_name": "User-to-SmartContract",
+    "between_component_ids": [
+      102
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "Recipient contracts (downstream) might have vulnerabilities exploitable via message body if they don't validate input."
+  },
+  "actor_risk": {
+    "actor_id": 10,
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "Actor 10 has full control over the message `body`."
+  },
+  "behavioral_risk": {
+    "behavior_id": 401,
+    "risk_level": "High",
+    "rationale": "Mailbox acts as a dispatcher; the security of the `body`'s processing relies on the recipient contract's robustness."
+  },
+  "assumptions": [
+    "Actor 10 can craft an arbitrary message `body`.",
+    "A Message Recipient contract (implied downstream target of the message) has a vulnerability (e.g., reentrancy, unsafe external calls, parameter manipulation) in its `handle` function or functions called by `handle`.",
+    "The Mailbox (102) and any ISMs do not sanitize or prevent the delivery of such a malicious `body` in a way that would prevent the exploit on the recipient."
+  ],
+  "mitigation": {
+    "strategy": "Recipient contracts must rigorously validate and sanitize the message `body`. Follow secure smart contract development practices (e.g., checks-effects-interactions, reentrancy guards) for all recipient contracts.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "Actor 10 (Message Sender) crafts a malicious message `body` and dispatches it via Mailbox (102). While Mailbox (102) itself may not be directly compromised, this `body`, when delivered to the target Message Recipient contract (implied downstream), could exploit a vulnerability in that recipient to allow Actor 10 to perform actions with elevated privileges on the recipient contract.",
+  "trace_source": {
+    "doc_reference": "doc_18",
+    "matched_capability": "Specify destination, recipient, and message body"
+  }
+}

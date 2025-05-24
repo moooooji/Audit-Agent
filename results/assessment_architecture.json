@@ -1,48 +1,66 @@
 {
   "evaluation_summary": {
-    "actors": "Actors are generally well-defined and traceable to the documentation. Types and capabilities align with their described roles. The categorization of Github API (107) as 'Oracle' is a broad fit for an external data service. No major omissions identified.",
-    "assets": "Assets are comprehensive and directly traceable to functionalities and components described in the documentation. Types and sensitivity levels are appropriate. Two potential omissions for agent private keys and raw source code were noted.",
-    "components": "Components, both on-chain and off-chain, are largely traceable and their managed assets are consistent. Trust levels are plausible. Some core functionalities like specific default ISM types and the Hyperlane Registry could be more explicitly modeled as distinct components. The Interchain Query System is a notable omission.",
-    "data_flows": "Data flows accurately represent interactions between actors and components as described in the documentation, particularly for core messaging and token transfer scenarios. Referenced actor/component IDs and assets within data descriptions are consistent. Security properties are plausible.",
-    "trust_boundaries": "Trust boundaries effectively delineate key security domains. Most are well-defined with appropriate component/actor mappings. The 'Inter-Blockchain Boundary' (502) has an ambiguous `between_ids` representation that deviates from typical usage.",
-    "behaviors": "Behaviors align well with documented actions and data flows, covering key user stories and system operations. Initiators, targets, and actions are traceable. Risk levels appear consistent with the nature of the operations."
+    "actors": "Actors are largely traceable to roles and entities described in the documentation. Capabilities are generally supported. Some actor types are standard classifications.",
+    "assets": "Assets are generally identifiable from the documentation. However, their assigned 'sensitivity' levels are not explicitly stated in the documents and appear to be inferred.",
+    "components": "Core and infrastructural components are well-documented. 'Trust_level' assignments appear inferred. Some tools mentioned in documentation (e.g., Terraform Module, Grafana, Migrator CLI) are not listed as distinct components, indicating potential omissions.",
+    "data_flows": "Key interactions are represented. The specific boolean values for 'security_properties' (confidentiality, integrity, availability) for each flow are not explicitly detailed in the documentation and seem to be inferred based on common security assumptions.",
+    "trust_boundaries": "Boundaries depict logical separations. The 'validation_required' attribute appears to be an inferred security best practice rather than explicitly stated for each boundary. One boundary (ID 303) includes an interaction for the Scraper agent that might need further clarification for directness.",
+    "behaviors": "Listed behaviors correspond to key system actions. Assigned 'risk_level' for each behavior is not explicitly found in the documentation and appears to be an inferred assessment."
   },
   "findings": [
     {
-      "category": "trust_boundaries",
-      "type": "ambiguous_description",
-      "id": 502,
-      "description": "Trust Boundary 'Inter-Blockchain Boundary' (502) has an empty `between_ids` list. While the description clarifies it's a logical boundary between networks where components are instanced, an empty `between_ids` is unusual for representing elements on either side of a boundary as per typical DFD modeling and schema expectation for this field."
-    },
-    {
       "category": "assets",
-      "type": "missing",
+      "type": "potential_concern",
       "id": null,
-      "description": "Private keys for Relayer (103/310) and Validator (104/311) agents, used for on-chain transaction signing and attestations, are not explicitly listed as assets. Asset 213 (GCP Service Account Key) is distinct and does not cover these."
-    },
-    {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Hyperlane source code itself (beyond compiled artifacts like Asset 210) is not explicitly listed as an asset, though its availability is implied by Actor 107 (Github API) and general open-source nature. This is a minor omission as artifacts are covered."
+      "description": "The 'sensitivity' levels assigned to assets (e.g., Asset ID 1 'Arbitrary Interchain Data' as 'Medium', Asset ID 2 'Digital Assets / Tokens' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values based on general assessment rather than direct textual support."
     },
     {
       "category": "components",
       "type": "potential_concern",
-      "id": 305,
-      "description": "Specific, commonly referenced types of Interchain Security Modules (e.g., Multisig ISM, Aggregation ISM, Pausable ISM, DefaultFallbackRoutingIsm - mentioned in Docs 16, 30, 44, 45) are generalized under 'Custom ISM' (305). While this is a valid abstraction, explicit modeling of common default/core ISMs could enhance clarity if they have distinct trust levels or managed assets not covered by 'custom'."
+      "id": null,
+      "description": "The 'trust_level' assigned to components (e.g., Component ID 101 'Hyperlane Protocol' as 'Medium', Component ID 102 'Mailbox (Solidity EVM)' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values."
+    },
+    {
+      "category": "data_flows",
+      "type": "potential_concern",
+      "id": null,
+      "description": "The 'security_properties' (confidentiality_required, integrity_required, availability_required) for data flows (e.g., Data Flow ID 201) are not explicitly defined with their specific boolean values in the provided documentation. These appear to be inferred based on general security best practices for such interactions."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "potential_concern",
+      "id": null,
+      "description": "The 'validation_required' field for trust boundaries (e.g., Trust Boundary ID 301) is not explicitly defined with a boolean value in the provided documentation. This appears to be an inferred security principle for interactions crossing these boundaries."
+    },
+    {
+      "category": "behaviors",
+      "type": "potential_concern",
+      "id": null,
+      "description": "The 'risk_level' assigned to behaviors (e.g., Behavior ID 401 'Dispatch Interchain Message' as 'Medium', Behavior ID 405 'Transfer Remote Tokens' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values based on risk assessment."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "The Hyperlane Registry, a critical source of configuration, contract addresses, and chain metadata (mentioned in Docs 24, 30, 31, 42, 45), is not explicitly modeled as a component. Actor 107 (Github API) is listed as providing data for it."
+      "description": "The documentation explicitly mentions a 'Terraform Module for Hyperlane Validator' (doc_13), which could be considered a distinct component for infrastructure deployment. While 'Hyperlane Infra Scripts' (ID 121) exists, this specific Terraform module is not listed as a separate component."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "The Interchain Query System, described in Doc 20 for generalizing remote view calls to contracts on remote chains, is not explicitly modeled as a component or a distinct behavior/capability."
+      "description": "'Grafana Dashboards' (doc_25) are mentioned for monitoring. Grafana itself or 'Grafana Dashboards' as a component is not listed in the extracted components."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "A 'Migrator CLI' (doc_12) for scraper database migrations is documented (e.g., `cargo run --package migration --bin init-db`) but not listed as a distinct component. It is unclear if this tool is considered part of the Scraper Agent (Actor ID 5) or a separate developer tool."
+    },
+    {
+      "category": "trust_boundaries",
+      "type": "potential_concern",
+      "id": 303,
+      "description": "Trust boundary 303 'OffChainAgent-to-SmartContract' includes Scraper (Actor ID 5) interacting with Mailbox (Component IDs 102, 103). While Scrapers read blockchain data (which may include Mailbox events), a direct interactive boundary with Mailbox contracts, similar to how Relayers or Validators interact, is not clearly detailed for the Scraper. The primary documented data flow for the Scraper is to a database (DF 211)."
     }
   ]
 }

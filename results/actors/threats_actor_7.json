@@ -1,60 +1,60 @@
 {
   "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "stride_category": "Repudiation",
   "origin": {
-    "from_chunk": false,
-    "actor_id": null,
+    "from_chunk": true,
+    "actor_id": 7,
     "behavior_id": null,
-    "capability_match": null
+    "capability_match": "Access GCP Secret Manager secrets (doc_43)"
   },
   "threat_target": {
-    "component_id": 323,
+    "component_id": 127,
     "asset_ids": [
-      210,
-      208
+      11
     ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": 427,
-    "data_description": "Malicious contract artifacts or registry configuration provided to Hyperlane Registry"
+    "data_flow_id": null,
+    "data_description": "Audit logging mechanisms for actions (e.g., read, write) performed by the GCP Service Account within GCP Secret Manager."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "External Github API to Hyperlane Registry",
+    "boundary_id": 305,
+    "boundary_name": "Hyperlane-to-ExternalServices",
     "between_component_ids": [
-      323
+      101,
+      127
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If malicious contract artifacts or configurations are accepted from a compromised/spoofed Github API and subsequently used, they could execute with unintended privileges within the Hyperlane ecosystem."
+    "gap_description": "Insufficient or unreliable audit logging for actions performed by the GCP Service Account makes it difficult to definitively prove which actions were taken by this account."
   },
   "actor_risk": {
-    "actor_id": 107,
-    "type": "Oracle",
+    "actor_id": 7,
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "A compromised or spoofed Github API (Actor 107) could serve malicious artifacts or configurations that, when used by Hyperlane, lead to privilege escalation."
+    "description": "Lack of non-repudiable audit trails for the service account's actions on secrets hinders forensic investigation and accountability."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Execution of malicious code from untrusted artifacts or use of malicious configurations can lead to full system compromise or unauthorized control."
+    "risk_level": "Low",
+    "rationale": "GCP typically has strong auditing, but misconfiguration is possible."
   },
   "assumptions": [
-    "Contract artifacts or registry configurations fetched from the Github API are trusted and used in deployment or operational processes without sufficient independent verification, code review, or sandboxing.",
-    "Malicious code embedded in an artifact, or a malicious configuration, can grant attackers elevated privileges or unauthorized capabilities when the artifact is deployed/executed or the configuration is applied."
+    "GCP audit logs for Secret Manager are not enabled, are tampered with, or lack sufficient detail to attribute actions specifically to this service account.",
+    "The service account might be used by multiple distinct processes without clear differentiation in logs."
   ],
   "mitigation": {
-    "strategy": "Implement strict validation, integrity checks (e.g., checksums, signature verification), and mandatory code review for all critical artifacts and configurations fetched from external sources like Github API before they are used in deployment or operations. Use sandboxing for execution where feasible.",
-    "type": "Process Control",
-    "priority": "High"
+    "strategy": "Ensure comprehensive audit logging is enabled and protected in GCP for Secret Manager access and modifications. Regularly review logs. Use distinct service accounts for distinct major functions if feasible to improve attribution.",
+    "type": "Monitoring Control",
+    "priority": "Medium"
   },
-  "description": "An attacker, by providing malicious contract artifacts (Asset 210) or registry configurations (Asset 208) through a compromised or spoofed Github API feed (Actor 107) via Data Flow 427 to Hyperlane Registry (Component 323), causes these items to be used by Hyperlane, leading to unauthorized privilege escalation within the system.",
+  "description": "Actions performed by the GCP Service Account (or an attacker using its credentials) within GCP Secret Manager (e.g., accessing secrets) cannot be reliably attributed or proven if audit logs are insufficient or compromised.",
   "trace_source": {
-    "doc_reference": "Doc 24, 45",
-    "matched_capability": "Provide contract artifacts (e.g., Cairo ABIs)"
+    "doc_reference": "doc_43",
+    "matched_capability": "Access GCP Secret Manager secrets (doc_43)"
   }
 }

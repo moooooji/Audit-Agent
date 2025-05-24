@@ -1,60 +1,58 @@
 {
-  "id": 7,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": 614,
-    "capability_match": "Submit attestations/signatures for messages (Doc 10, 19)"
+    "actor_id": 4,
+    "behavior_id": 414,
+    "capability_match": "Provide security attestations"
   },
   "threat_target": {
-    "component_id": 320,
-    "asset_ids": [
-      216,
-      201
-    ]
+    "component_id": 105,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 614,
+    "behavior_id": 414,
     "data_flow_id": null,
-    "data_description": "Validator's private signing key or the software/hardware responsible for signing attestations."
+    "data_description": "Validator attestation data influencing ISM's message validation decision"
   },
   "trust_boundary_risk": {
-    "boundary_id": 501,
-    "boundary_name": "On-chain/Off-chain Boundary",
+    "boundary_id": null,
+    "boundary_name": null,
     "between_component_ids": [
-      320
+      105
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Compromise of a Validator's signing key or its operational security allows an attacker to act with the Validator's authority."
+    "availability_required": false,
+    "gap_description": "The ISM's security model might grant undue influence or decision-making power to a single Validator or a small, colluding group of Validators based on their attestations. This allows a compromised Validator to effectively control message validation."
   },
   "actor_risk": {
-    "actor_id": 104,
+    "actor_id": 4,
     "type": "Off-chain Service/Bot",
-    "overprivileged": false,
-    "description": "If a Validator's (Actor ID 104) signing mechanism is compromised, an attacker gains its privileges to sign attestations."
+    "overprivileged": true,
+    "description": "If the ISM design is flawed, a Validator's attestation (or lack thereof) could be given excessive weight, allowing it to dictate the validity of messages beyond its intended scope of influence."
   },
   "behavioral_risk": {
-    "behavior_id": 614,
+    "behavior_id": 414,
     "risk_level": "High",
-    "rationale": "Compromise of a Validator's key allows an attacker to submit arbitrary valid attestations as that Validator, fundamentally undermining ISM security."
+    "rationale": "If a compromised Validator can control message validation through its attestations, it effectively gains unauthorized control over cross-chain interactions and assets secured by that ISM."
   },
   "assumptions": [
-    "A Validator's private signing key can be exfiltrated due to poor key management or software vulnerability.",
-    "An attacker can gain control over the Validator's infrastructure used for signing attestations."
+    "The ISM's security logic does not require a sufficiently high threshold or diversity of attestations from multiple independent Validators to validate a message.",
+    "A single compromised Validator (or a small colluding group) can provide enough attestations to meet the ISM's validation criteria for any message.",
+    "There are inadequate mechanisms to detect, penalize, or remove malicious Validators whose attestations lead to incorrect outcomes."
   ],
   "mitigation": {
-    "strategy": "Implement robust key management practices for Validators (e.g., Hardware Security Modules, secure enclaves, multi-party computation for signing). Regularly audit validator security and infrastructure. Implement defense-in-depth for validator operations.",
-    "type": "Technical Control",
+    "strategy": "Design Interchain Security Modules to require a robust quorum of attestations from a diverse and economically significant set of Validators. Implement slashing mechanisms or other penalties for Validators submitting verifiably false or malicious attestations.",
+    "type": "Architectural Change",
     "priority": "High"
   },
-  "description": "An attacker compromises a Validator's (Actor ID 104) signing key or its operational infrastructure, effectively elevating their privilege to that of a legitimate Validator. This allows the attacker to submit malicious attestations that will be accepted by the Multisig ISM.",
+  "description": "A compromised Validator, by submitting malicious or false attestations, could effectively elevate its privilege to control the validation outcome of interchain messages. If the Interchain Security Module's (ISM) design gives too much weight to individual attestations or lacks sufficient fault tolerance, the Validator can dictate message validity, bypassing the intended security model.",
   "trace_source": {
-    "doc_reference": "Doc 10, 13, 19",
-    "matched_capability": "Submit attestations/signatures for messages (Doc 10, 19)"
+    "doc_reference": "doc_10, doc_19",
+    "matched_capability": "Provide security attestations"
   }
 }

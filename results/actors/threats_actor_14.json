@@ -1,0 +1,56 @@
+{
+  "id": 5,
+  "stride_category": "Elevation of Privilege",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 14,
+    "behavior_id": null,
+    "capability_match": "Interact with Hyperlane core deployments (doc_45)"
+  },
+  "threat_target": {
+    "component_id": 117,
+    "asset_ids": []
+  },
+  "attack_surface": {
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Exploitable input, API call sequence, or interaction pattern with the Hyperlane SDK."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": false,
+    "gap_description": "Potential undiscovered vulnerabilities within the Hyperlane SDK software could allow an SDK user to perform actions or access functionalities beyond their intended permissions."
+  },
+  "actor_risk": {
+    "actor_id": 14,
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "SDK User interacts with the Hyperlane SDK, which is a complex piece of software and may have inherent vulnerabilities."
+  },
+  "behavioral_risk": {
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "Undiscovered vulnerabilities in the SDK could be exploited by a knowledgeable user to gain unintended privileges, potentially impacting systems the SDK interacts with."
+  },
+  "assumptions": [
+    "The Hyperlane SDK, like any sufficiently complex software, may contain unknown security vulnerabilities (e.g., input validation flaws, logic errors).",
+    "An SDK user (either intentionally or accidentally) might trigger such a vulnerability through specific inputs or usage patterns.",
+    "The vulnerability allows the SDK user to bypass normal authorization checks or execute code/actions not permitted by the SDK's intended API for their role."
+  ],
+  "mitigation": {
+    "strategy": "Conduct regular, thorough security audits and penetration testing of the SDK. Implement secure coding practices, comprehensive input validation, and principle of least privilege within the SDK's design. Maintain a vulnerability disclosure program.",
+    "type": "Technical Control",
+    "priority": "High"
+  },
+  "description": "A Hyperlane SDK User discovers and exploits an unknown vulnerability within the Hyperlane SDK (e.g., improper input sanitization, logic flaw in permission handling). This allows them to elevate their privileges to perform actions or access data/functions within the SDK or connected systems (like Hyperlane core deployments) that they are not normally authorized for.",
+  "trace_source": {
+    "doc_reference": "doc_45",
+    "matched_capability": "Interact with Hyperlane core deployments (doc_45)"
+  }
+}

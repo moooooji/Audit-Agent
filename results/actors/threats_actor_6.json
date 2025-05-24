@@ -3,55 +3,55 @@
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 106,
-    "behavior_id": 615,
-    "capability_match": "Deploy and control Interchain Accounts (Doc 20)"
+    "actor_id": 6,
+    "behavior_id": null,
+    "capability_match": "Merge code into main codebase"
   },
   "threat_target": {
-    "component_id": 318,
-    "asset_ids": []
+    "component_id": null,
+    "asset_ids": [
+      5
+    ]
   },
   "attack_surface": {
-    "behavior_id": 615,
+    "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "The arbitrary nature of 'remote calls' executed via InterchainAccount Contract (318), potentially exploiting vulnerabilities in target contracts on the remote chain."
+    "data_description": "Authentication and authorization system for Maintainer/Core Dev accounts."
   },
   "trust_boundary_risk": {
-    "boundary_id": 502,
-    "boundary_name": "Inter-Blockchain Boundary",
-    "between_component_ids": [
-      318
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The ICA (318) might be able to call vulnerable functions on remote contracts, or the ICA itself might have a flaw allowing broader privileges than intended."
+    "gap_description": "Compromise of a Maintainer/Core Dev account grants an attacker all associated privileges."
   },
   "actor_risk": {
-    "actor_id": 106,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": true,
-    "description": "Deployer (106) can craft specific remote calls to exploit vulnerabilities if they exist in target contracts or the ICA mechanism."
+    "actor_id": 6,
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": false,
+    "description": "The role itself is highly privileged, making account compromise a significant elevation for an attacker."
   },
   "behavioral_risk": {
-    "behavior_id": 615,
+    "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Successful privilege escalation via ICA could grant unauthorized control over assets or functions on the remote chain."
+    "rationale": "Gaining maintainer privileges allows an attacker to control the codebase and potentially influence the project."
   },
   "assumptions": [
-    "Contracts on the remote chain that the ICA (318) is authorized to interact with may contain exploitable vulnerabilities (e.g., reentrancy, unprotected admin functions).",
-    "The ICA contract (318) itself could have an undiscovered vulnerability allowing its controller (Deployer 106) to gain more privileges than designed."
+    "An attacker can successfully compromise a Maintainer/Core Dev's account (e.g., through phishing, malware, credential stuffing).",
+    "The compromised account has direct merge rights or significant influence over the merge process."
   ],
   "mitigation": {
-    "strategy": "Thoroughly audit the InterchainAccount (ICA) Contract (318) and all contracts it is intended to interact with on remote chains. Apply the principle of least privilege when defining the ICA's capabilities on remote chains. Implement strict input validation for any parameters passed in remote calls if possible within the target contracts.",
+    "strategy": "Enforce strong MFA, conduct regular access reviews, implement principle of least privilege where feasible (e.g., separating review and merge permissions), and provide security training for maintainers.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Deployer (106) crafts malicious 'remote calls' executed via the InterchainAccount (ICA) Contract (318) to exploit a vulnerability in a target contract on the remote chain, or in the ICA mechanism itself, thereby gaining unintended elevated privileges on that remote chain.",
+  "description": "An attacker compromises a Maintainer/Core Dev's account, thereby elevating their privileges to that of a maintainer, allowing them to review, merge code, and guide project philosophy.",
   "trace_source": {
-    "doc_reference": "Doc 20",
-    "matched_capability": "Deploy and control Interchain Accounts (Doc 20)"
+    "doc_reference": "doc_2",
+    "matched_capability": "Merge code into main codebase"
   }
 }
