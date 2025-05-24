@@ -1,58 +1,63 @@
 {
-  "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "id": 11,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 414,
-    "capability_match": "Provide security attestations"
+    "behavior_id": null,
+    "capability_match": "Can be the distributor of funds to the pool"
   },
   "threat_target": {
-    "component_id": 105,
-    "asset_ids": []
+    "component_id": 206,
+    "asset_ids": [
+      108,
+      101
+    ]
   },
   "attack_surface": {
-    "behavior_id": 414,
+    "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "Validator attestation data influencing ISM's message validation decision"
+    "data_description": "UserData parameter in a distribution function call (e.g., 'distribute' or 'distributeFlow') made by the Pool Admin."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
+    "boundary_id": 401,
+    "boundary_name": "User Wallet - Protocol Interface",
     "between_component_ids": [
-      105
+      4,
+      201
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The ISM's security model might grant undue influence or decision-making power to a single Validator or a small, colluding group of Validators based on their attestations. This allows a compromised Validator to effectively control message validation."
+    "availability_required": true,
+    "gap_description": "Malicious UserData sent during distribution could exploit vulnerabilities in the pool or recipient contracts/systems if not handled carefully."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "If the ISM design is flawed, a Validator's attestation (or lack thereof) could be given excessive weight, allowing it to dictate the validity of messages beyond its intended scope of influence."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "Pool Admin, acting as a distributor, might intentionally send malicious UserData."
   },
   "behavioral_risk": {
-    "behavior_id": 414,
-    "risk_level": "High",
-    "rationale": "If a compromised Validator can control message validation through its attestations, it effectively gains unauthorized control over cross-chain interactions and assets secured by that ISM."
+    "behavior_id": null,
+    "risk_level": "Low",
+    "rationale": "Impact depends on how UserData is processed. Standard distributions might ignore it, but custom Super Apps or off-chain systems might be vulnerable."
   },
   "assumptions": [
-    "The ISM's security logic does not require a sufficiently high threshold or diversity of attestations from multiple independent Validators to validate a message.",
-    "A single compromised Validator (or a small colluding group) can provide enough attestations to meet the ISM's validation criteria for any message.",
-    "There are inadequate mechanisms to detect, penalize, or remove malicious Validators whose attestations lead to incorrect outcomes."
+    "The Pool Admin also acts as a distributor of funds into the pool they manage.",
+    "Distribution functions (like `distribute` or `distributeFlow`) allow a `userData` parameter.",
+    "This `userData` might be logged, passed to pool members, or processed by the pool contract or associated Super Apps/off-chain systems.",
+    "There is a vulnerability in how this `userData` is processed by some component."
   ],
   "mitigation": {
-    "strategy": "Design Interchain Security Modules to require a robust quorum of attestations from a diverse and economically significant set of Validators. Implement slashing mechanisms or other penalties for Validators submitting verifiably false or malicious attestations.",
-    "type": "Architectural Change",
-    "priority": "High"
+    "strategy": "If `userData` is processed, it must be sanitized and handled carefully. Recipients should be aware that `userData` can be arbitrary. Avoid executing arbitrary logic based on `userData` without validation.",
+    "type": "Technical Control",
+    "priority": "Low"
   },
-  "description": "A compromised Validator, by submitting malicious or false attestations, could effectively elevate its privilege to control the validation outcome of interchain messages. If the Interchain Security Module's (ISM) design gives too much weight to individual attestations or lacks sufficient fault tolerance, the Validator can dictate message validity, bypassing the intended security model.",
+  "description": "A Pool Admin, when distributing funds to a pool they manage, includes specially crafted malicious `userData` in the transaction. If the pool contract, any connected Super App, or recipients' off-chain systems process this `userData` unsafely, it could lead to issues like XSS in frontends displaying it, or exploitation of logic that parses the `userData`.",
   "trace_source": {
-    "doc_reference": "doc_10, doc_19",
-    "matched_capability": "Provide security attestations"
+    "doc_reference": "doc_29",
+    "matched_capability": "Can be the distributor of funds to the pool"
   }
 }

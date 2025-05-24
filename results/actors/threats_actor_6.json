@@ -1,22 +1,20 @@
 {
-  "id": 6,
+  "id": 4,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
     "behavior_id": null,
-    "capability_match": "Merge code into main codebase"
+    "capability_match": "Receive rewards for closing streams during the patrician period"
   },
   "threat_target": {
     "component_id": null,
-    "asset_ids": [
-      5
-    ]
+    "asset_ids": []
   },
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "Authentication and authorization system for Maintainer/Core Dev accounts."
+    "data_description": "PIC's sentinel or direct interaction attempts to trigger reward payment for a liquidation not performed by them, outside the patrician period, or for an inflated amount."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -27,31 +25,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Compromise of a Maintainer/Core Dev account grants an attacker all associated privileges."
+    "gap_description": "The reward mechanism must accurately attribute liquidations and calculate rewards based on protocol rules."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The role itself is highly privileged, making account compromise a significant elevation for an attacker."
+    "description": "A malicious PIC might try to exploit the reward system to obtain funds they are not entitled to."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Gaining maintainer privileges allows an attacker to control the codebase and potentially influence the project."
+    "risk_level": "Medium",
+    "rationale": "Successfully claiming unearned rewards constitutes theft and undermines the fairness of the incentive system."
   },
   "assumptions": [
-    "An attacker can successfully compromise a Maintainer/Core Dev's account (e.g., through phishing, malware, credential stuffing).",
-    "The compromised account has direct merge rights or significant influence over the merge process."
+    "The reward claim or distribution logic might have a flaw allowing a PIC to claim rewards under false pretenses.",
+    "PIC can manipulate data sent to the reward function."
   ],
   "mitigation": {
-    "strategy": "Enforce strong MFA, conduct regular access reviews, implement principle of least privilege where feasible (e.g., separating review and merge permissions), and provide security training for maintainers.",
+    "strategy": "Protocol logic must strictly verify the conditions for PIC reward eligibility (liquidator identity, timing within patrician period, correct stream state) before disbursing rewards. Rewards should be calculated based on immutable on-chain data.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker compromises a Maintainer/Core Dev's account, thereby elevating their privileges to that of a maintainer, allowing them to review, merge code, and guide project philosophy.",
+  "description": "A PIC attempts to elevate their privileges by claiming rewards for liquidations they did not perform, or for liquidations outside their designated patrician period, or attempts to tamper with the reward calculation to receive more than entitled.",
   "trace_source": {
-    "doc_reference": "doc_2",
-    "matched_capability": "Merge code into main codebase"
+    "doc_reference": "protocol/advanced-topics/solvency/Liquidations & TOGA#patricians-plebs-and-pirates-3ps",
+    "matched_capability": "Receive rewards for closing streams during the patrician period"
   }
 }

@@ -1,55 +1,61 @@
 {
-  "id": 4,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 8,
-    "behavior_id": null,
-    "capability_match": "Make authenticated Github API requests (doc_37)"
+    "behavior_id": 512,
+    "capability_match": "Monitor Super Token balances and auto-wrap underlying tokens"
   },
   "threat_target": {
-    "component_id": null,
-    "asset_ids": []
+    "component_id": 202,
+    "asset_ids": [
+      101,
+      102
+    ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": 212,
-    "data_description": "Authenticated Github API requests made using the Github Proxy's API key, where the key might have excessive permissions."
+    "behavior_id": 512,
+    "data_flow_id": 301,
+    "data_description": "The Automation Service's code, its operational environment (key management), or the user authorization mechanism it relies on."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 402,
+    "boundary_name": "On-Chain (Protocol) - Off-Chain (Sentinel/Automation/API)",
+    "between_component_ids": [
+      202
+    ]
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "The API key used by the Github Proxy might grant more permissions than are strictly necessary for its intended functions, creating an EOP risk if the proxy is compromised or misused."
+    "availability_required": true,
+    "gap_description": "A vulnerability in the Automation Service or its authorization process could allow an attacker to perform unauthorized wrapping actions or control user funds."
   },
   "actor_risk": {
     "actor_id": 8,
     "type": "Off-chain Service/Bot",
     "overprivileged": true,
-    "description": "If the API key configured for the Github Proxy (actor 8) has excessive permissions (e.g., write access when only read is needed), its compromise or misuse leads to elevated privileges against Github resources."
+    "description": "If compromised, the Automation Service, which acts on behalf of users, could misuse its granted privileges to manipulate token wrapping beyond authorized limits or for unauthorized accounts."
   },
   "behavioral_risk": {
-    "behavior_id": null,
+    "behavior_id": 512,
     "risk_level": "High",
-    "rationale": "An overprivileged API key, if the proxy is compromised or tricked into misusing it, allows attackers to perform unauthorized actions on Github beyond the proxy's intended scope."
+    "rationale": "Exploitation could lead to theft of underlying tokens by wrapping them to an attacker-controlled Super Token account or wrapping incorrect amounts."
   },
   "assumptions": [
-    "The Github API key used by the Github Proxy has permissions beyond what is strictly necessary for its documented operations (e.g., fetching contract artifacts).",
-    "An attacker gains control of the Github Proxy, its API key, or can make it issue arbitrary, authenticated requests to the Github API."
+    "The Automation Service has access to private keys or permissions to initiate 'upgrade' transactions on behalf of users/DAOs.",
+    "A flaw exists in the service's software, its key management, or the user authorization mechanism (e.g., signed messages) that can be exploited.",
+    "The service might not have sufficient checks to prevent wrapping more than a user's available underlying balance or beyond agreed limits."
   ],
   "mitigation": {
-    "strategy": "Strictly apply the principle of least privilege to the Github API key used by the proxy. The key should only have the minimum necessary permissions (e.g., read-only access to specific public repositories if fetching artifacts). Regularly review and audit key permissions.",
-    "type": "Policy",
+    "strategy": "Conduct thorough security audits of the Automation Service code. Implement secure key management practices (e.g., HSMs, multi-sig for service operations). Enforce strict validation of user authorizations and implement rate limits/caps for wrapping operations.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "If the Github API key used by the Github Proxy (actor 8) is overprivileged, an attacker who compromises the proxy or its key, or finds a way to make it issue arbitrary requests, could perform unauthorized actions on Github (e.g., modify repository contents, access private data) via data flow 212. This constitutes an elevation of privilege.",
+  "description": "An attacker compromises the Automation Service (Actor 8) or exploits a vulnerability in its authorization logic, allowing them to perform 'upgrade' operations on the Super Token Contract (Component 202) with elevated privileges, such as wrapping tokens from users without consent, wrapping excessive amounts, or redirecting wrapped tokens.",
   "trace_source": {
-    "doc_reference": "doc_37",
-    "matched_capability": "Make authenticated Github API requests (doc_37)"
+    "doc_reference": "doc_14",
+    "matched_capability": "Monitor Super Token balances and auto-wrap underlying tokens"
   }
 }

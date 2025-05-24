@@ -1,62 +1,64 @@
 {
-  "id": 7,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 405,
-    "capability_match": "Transfer tokens via Warp Routes (doc_21)"
+    "behavior_id": null,
+    "capability_match": "Execute custom logic in callbacks"
   },
   "threat_target": {
-    "component_id": 106,
+    "component_id": 201,
     "asset_ids": [
-      2,
-      15,
-      16,
-      17
+      101,
+      103,
+      104,
+      105,
+      108
     ]
   },
   "attack_surface": {
-    "behavior_id": 405,
-    "data_flow_id": 205,
-    "data_description": "Specially crafted `transferRemote` call parameters (destination, recipient, amount) or associated data exploiting a potential vulnerability."
+    "behavior_id": null,
+    "data_flow_id": 307,
+    "data_description": "new operation details and context in callAgreementWithContext"
   },
   "trust_boundary_risk": {
-    "boundary_id": 301,
-    "boundary_name": "User-to-SmartContract",
+    "boundary_id": 403,
+    "boundary_name": "Superfluid Host - Super App",
     "between_component_ids": [
-      106
+      201,
+      2
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A potential unknown vulnerability in the TokenRouter's `transferRemote` logic, access control, or its interaction with other Hyperlane components."
+    "gap_description": "Host's authorization logic based on 'ctx' might be insufficient to prevent unauthorized operations requested by the Super App."
   },
   "actor_risk": {
     "actor_id": 2,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "A malicious user attempting to find and exploit vulnerabilities in the smart contract."
+    "type": "Smart Contract",
+    "overprivileged": true,
+    "description": "A malicious Super App attempts to gain unauthorized capabilities by manipulating its calls to the Host."
   },
   "behavioral_risk": {
-    "behavior_id": 405,
+    "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Successful elevation of privilege could lead to unauthorized control over router functions, draining of funds, or compromising the integrity of the Warp Route."
+    "rationale": "Could allow Super App to control protocol aspects or assets it shouldn't, leading to fund loss or state corruption."
   },
   "assumptions": [
-    "A flaw (e.g., reentrancy, logic error, incorrect input validation, integer overflow/underflow) exists in the TokenRouter smart contract's `transferRemote` function or related message processing logic.",
-    "The attacker can craft specific inputs to trigger this flaw."
+    "The Superfluid Host's permission checks based on the 'ctx' (e.g., ensuring operations are relevant to the triggering event) can be bypassed or are incomplete.",
+    "The Super App can craft specific 'new operation details' that exploit such a flaw in authorization logic."
   ],
   "mitigation": {
-    "strategy": "Rigorous code audits by multiple independent parties, formal verification where applicable, adherence to secure development lifecycle practices, comprehensive unit and integration testing, and active bug bounty programs.",
+    "strategy": "Host must implement strict and comprehensive permission checks based on 'ctx' for all operations initiated by Super Apps. Ensure 'ctx' cannot be forged or replayed for unintended purposes. Apply the principle of least privilege for Super App actions within callbacks.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious User crafts a `transferRemote` call to exploit an unknown vulnerability in the TokenRouter contract, potentially gaining unauthorized control over router functions, other users' assets, or system parameters.",
+  "description": "A Super App exploits `callAgreementWithContext` to perform Superfluid operations (e.g., modifying flows, distributing funds) for which it is not authorized by its current callback context (`ctx`) or its general registration permissions.",
   "trace_source": {
-    "doc_reference": "doc_21",
-    "matched_capability": "Transfer tokens via Warp Routes (doc_21)"
+    "doc_reference": "protocol/advanced-topics/super-apps/callbacks.mdx",
+    "matched_capability": "Execute custom logic in callbacks"
   }
 }

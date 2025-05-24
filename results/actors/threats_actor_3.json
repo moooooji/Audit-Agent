@@ -1,62 +1,60 @@
 {
-  "id": 7,
+  "id": 8,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 402,
-    "capability_match": "Process messages on destination chain Mailbox (doc_21, doc_10)"
+    "behavior_id": 505,
+    "capability_match": "Earn rewards (buffer deposits or PIC rewards) for closing streams"
   },
   "threat_target": {
-    "component_id": 102,
+    "component_id": 201,
     "asset_ids": [
-      4,
-      24
+      105
     ]
   },
   "attack_surface": {
-    "behavior_id": 402,
-    "data_flow_id": 207,
-    "data_description": "Crafted 'message from origin' data in the process() call designed to exploit a vulnerability."
+    "behavior_id": 505,
+    "data_flow_id": 308,
+    "data_description": "Liquidation transaction crafted to make the Sentinel appear as the Patrician in Charge (PIC) or to exploit a flaw in PIC reward distribution."
   },
   "trust_boundary_risk": {
-    "boundary_id": 303,
-    "boundary_name": "OffChainAgent-to-SmartContract",
+    "boundary_id": 402,
+    "boundary_name": "On-Chain (Protocol) - Off-Chain (Sentinel/Automation/API)",
     "between_component_ids": [
-      3,
-      102
+      201,
+      3
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A vulnerability in the Mailbox's process() function or its interaction with ISMs/recipients, when processing relayed data, could be exploited by a Relayer."
+    "gap_description": "A weakness exists in how the Superfluid Host contract or the TOGA mechanism identifies the rightful PIC for reward distribution during a liquidation, or this process can be manipulated."
   },
   "actor_risk": {
     "actor_id": 3,
     "type": "Off-chain Service/Bot",
     "overprivileged": true,
-    "description": "A malicious Relayer (Actor 3) crafts a message to exploit a flaw in the Mailbox, aiming to gain unauthorized privileges."
+    "description": "Sentinel illegitimately claims PIC-specific rewards by exploiting a flaw, even if it is not the rightful PIC."
   },
   "behavioral_risk": {
-    "behavior_id": 402,
-    "risk_level": "High",
-    "rationale": "Successful Elevation of Privilege could lead to unauthorized state changes, theft of funds, or broader control over the Mailbox or connected protocol components."
+    "behavior_id": 505,
+    "risk_level": "Medium",
+    "rationale": "Misappropriation of PIC rewards undermines the TOGA incentive system and the fairness of the liquidation process."
   },
   "assumptions": [
-    "The Mailbox (Component 102) smart contract's process() function or its subsequent message handling logic (e.g., calls to ISMs or recipient contracts) contains a software vulnerability (e.g., reentrancy, uncontrolled parameters, delegatecall abuse, incorrect authorization checks).",
-    "The Relayer can craft a specific message payload within Data Flow 207 that successfully triggers this vulnerability.",
-    "The Interchain Security Module (ISM) does not, or cannot, prevent the exploitation of this specific Mailbox vulnerability."
+    "The Sentinel (Actor ID 3) is not the current, legitimate PIC for the token associated with the stream being liquidated.",
+    "A flaw, race condition, or exploitable logic exists in the Superfluid Host contract or its interaction with the TOGA contract that allows a non-PIC Sentinel to be credited with PIC rewards."
   ],
   "mitigation": {
-    "strategy": "Conduct rigorous, ongoing security audits of the Mailbox contract (Component 102) and all interacting contracts (ISMs, Hooks). Adhere strictly to secure smart contract development best practices (e.g., checks-effects-interactions pattern, thorough input validation, principle of least privilege). Utilize formal verification methods where applicable.",
+    "strategy": "Ensure robust, atomic, and non-manipulable verification of the PIC status by the Superfluid Host contract at the moment of processing liquidations and distributing rewards. Secure the interface and state transitions between the Host and TOGA contracts.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Relayer (Actor 3) could craft a special message for the `process()` call (Behavior 402) to Mailbox (Component 102) that exploits a software vulnerability in the Mailbox or its interactions, potentially allowing the Relayer to perform unauthorized actions or gain elevated privileges.",
+  "description": "A Sentinel (Actor ID 3) that is not the current Patrician in Charge (PIC) for a given Super Token exploits a flaw or race condition. This allows it to submit a liquidation transaction (Behavior ID 505) for a stream of that token in such a way that it illegitimately receives the priority reward (Asset ID 105) designated for the actual PIC.",
   "trace_source": {
-    "doc_reference": "doc_17",
-    "matched_capability": "Process messages on destination chain Mailbox (doc_21, doc_10)"
+    "doc_reference": "doc_18",
+    "matched_capability": "Earn rewards (buffer deposits or PIC rewards) for closing streams"
   }
 }

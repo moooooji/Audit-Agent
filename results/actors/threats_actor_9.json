@@ -1,61 +1,55 @@
 {
-  "id": 6,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
     "behavior_id": null,
-    "capability_match": "Deploy code changes (doc_4, doc_10 for agent deployment procedures)"
+    "capability_match": "Provide external data (e.g., token prices)"
   },
   "threat_target": {
     "component_id": null,
-    "asset_ids": [
-      10,
-      12,
-      23
-    ]
+    "asset_ids": []
   },
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "CI system software vulnerabilities, insecure build script execution (e.g., running untrusted code with high privileges), misconfigured access controls between CI and deployment targets, or compromised CI agent environments."
+    "data_description": "Oracle data feed content, interpreted by consuming system for authorization or critical actions."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": null,
+    "boundary_name": "Oracle-Consumer System Boundary",
     "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": true,
+    "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Vulnerabilities in the CI software, its plugins, or insecurely configured build scripts allow an attacker to gain higher privileges than intended. This could involve escaping build sandboxes, accessing secrets of other jobs, or leveraging CI's deployment credentials for unauthorized actions."
+    "gap_description": "System implicitly trusts oracle data for decisions that have security implications, allowing manipulated data to grant unintended capabilities."
   },
   "actor_risk": {
     "actor_id": 9,
-    "type": "Off-chain Service/Bot",
+    "type": "Oracle",
     "overprivileged": true,
-    "description": "A compromised CI system can become a powerful pivot point for an attacker due to its inherent access to source code, build environments, and deployment credentials (Assets 10, 12, 23)."
+    "description": "A compromised or spoofed oracle providing manipulated data that a consuming system uses to make authorization decisions, effectively making the oracle's data input overprivileged."
   },
   "behavioral_risk": {
     "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Elevation of privilege through the CI system can lead to full compromise of deployed applications, infrastructure, and theft of sensitive data or credentials."
+    "rationale": "If oracle data influences privileged operations, its compromise can lead to unauthorized system control or actions."
   },
   "assumptions": [
-    "The CI system software, its plugins, or underlying operating systems have unpatched vulnerabilities.",
-    "Build scripts execute with excessive privileges (e.g., root access on build agents) or can be manipulated to run arbitrary commands in a privileged context (e.g., through PRs from untrusted sources).",
-    "Credentials used by the CI system for deployment or other integrations have overly broad permissions in target environments.",
-    "Secrets or environment variables from one CI job might be accessible to other, less trusted jobs if isolation is not properly enforced."
+    "A consuming Superfluid service uses oracle data to control access or trigger privileged functions.",
+    "An attacker can control the data provided by the oracle (either by compromising the oracle or spoofing it)."
   ],
   "mitigation": {
-    "strategy": "Keep CI software, plugins, and build agent OS patched. Apply the principle of least privilege to CI build agents, service accounts, and deployment credentials. Sanitize inputs to build scripts and avoid running untrusted code with high privileges. Implement strong isolation between CI jobs. Conduct regular security audits and penetration tests of CI configurations and scripts.",
-    "type": "Technical Control",
+    "strategy": "Decouple oracle data from direct authorization logic. Validate oracle data rigorously. Implement strict checks and balances for any action triggered by oracle data. Use multiple oracles for critical decisions.",
+    "type": "Architectural Change",
     "priority": "High"
   },
-  "description": "An attacker exploits a vulnerability in the CI system software, a plugin, an insecure build script, or a misconfiguration to gain elevated privileges. This could allow them to take administrative control of the CI server, steal high-privilege credentials (e.g., for production deployments, cloud accounts), modify build processes of other projects, or directly deploy malicious code to sensitive environments with the CI system's authority.",
+  "description": "A compromised or spoofed External Oracle provides manipulated data (e.g., an extremely low asset price for a liquidation oracle) that a Superfluid-related service uses to make critical decisions. This could lead to an attacker gaining unauthorized advantages or triggering actions that benefit them, effectively elevating their privilege within the context of that service.",
   "trace_source": {
-    "doc_reference": "doc_4, doc_10",
-    "matched_capability": "Deploy code changes (doc_4, doc_10 for agent deployment procedures)"
+    "doc_reference": "doc_9 concepts/use-cases/Token-Cost-Averaging, doc_15 protocol/advanced-topics/automations/Stream Accounting API",
+    "matched_capability": "Provide external data (e.g., token prices)"
   }
 }

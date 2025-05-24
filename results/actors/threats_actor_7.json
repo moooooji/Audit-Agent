@@ -1,60 +1,59 @@
 {
-  "id": 5,
-  "stride_category": "Repudiation",
+  "id": 7,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": null,
-    "capability_match": "Access GCP Secret Manager secrets (doc_43)"
+    "behavior_id": 508,
+    "capability_match": "Deploy Super Tokens (Wrapped, Pure, Custom)"
   },
   "threat_target": {
-    "component_id": 127,
+    "component_id": null,
     "asset_ids": [
-      11
+      101,
+      102
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
+    "behavior_id": 508,
     "data_flow_id": null,
-    "data_description": "Audit logging mechanisms for actions (e.g., read, write) performed by the GCP Service Account within GCP Secret Manager."
+    "data_description": "The custom code deployed as part of a custom Super Token via the SuperTokenFactory."
   },
   "trust_boundary_risk": {
-    "boundary_id": 305,
-    "boundary_name": "Hyperlane-to-ExternalServices",
-    "between_component_ids": [
-      101,
-      127
-    ]
+    "boundary_id": null,
+    "boundary_name": "N/A (Internal to deployed token)",
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "Insufficient or unreliable audit logging for actions performed by the GCP Service Account makes it difficult to definitively prove which actions were taken by this account."
+    "availability_required": false,
+    "gap_description": "Vulnerabilities or backdoors in the custom logic of a deployed Super Token could allow unauthorized control over token functions or user balances within that token."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "Off-chain Service/Bot",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Lack of non-repudiable audit trails for the service account's actions on secrets hinders forensic investigation and accountability."
+    "description": "A malicious developer can intentionally create a custom token with backdoors. An unintentional flaw can also lead to EoP."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "GCP typically has strong auditing, but misconfiguration is possible."
+    "behavior_id": 508,
+    "risk_level": "High",
+    "rationale": "Exploitation of EoP in a custom token can lead to theft of funds or manipulation of token behavior, severely impacting users of that specific token."
   },
   "assumptions": [
-    "GCP audit logs for Secret Manager are not enabled, are tampered with, or lack sufficient detail to attribute actions specifically to this service account.",
-    "The service account might be used by multiple distinct processes without clear differentiation in logs."
+    "The developer deploys a Super Token with custom logic (as allowed by doc_43).",
+    "This custom logic contains an intentional backdoor or an unintentional vulnerability that allows privileged actions (e.g., arbitrary minting/burning, draining funds, changing critical parameters post-deployment without proper governance).",
+    "Users interact with this custom Super Token, trusting its declared functionality."
   ],
   "mitigation": {
-    "strategy": "Ensure comprehensive audit logging is enabled and protected in GCP for Secret Manager access and modifications. Regularly review logs. Use distinct service accounts for distinct major functions if feasible to improve attribution.",
-    "type": "Monitoring Control",
-    "priority": "Medium"
+    "strategy": "Rigorous security audits and formal verification for custom Super Token logic. Clear documentation of any special administrative privileges. Users should perform due diligence before interacting with custom tokens, preferring those with transparent and audited codebases.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "Actions performed by the GCP Service Account (or an attacker using its credentials) within GCP Secret Manager (e.g., accessing secrets) cannot be reliably attributed or proven if audit logs are insufficient or compromised.",
+  "description": "A developer deploys a custom Super Token via the SuperTokenFactory that contains malicious or flawed logic. This logic allows the developer (or an attacker exploiting the flaw) to gain unauthorized administrative control over that specific token's functions, such as minting tokens to themselves, burning tokens from other users, seizing funds held by the token contract, or altering its core parameters without consent.",
   "trace_source": {
     "doc_reference": "doc_43",
-    "matched_capability": "Access GCP Secret Manager secrets (doc_43)"
+    "matched_capability": "Deploy Super Tokens (Wrapped, Pure, Custom)"
   }
 }

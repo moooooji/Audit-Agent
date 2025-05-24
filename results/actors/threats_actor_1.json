@@ -1,58 +1,58 @@
 {
-  "id": 15,
-  "stride_category": "Elevation of Privilege",
+  "id": 8,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
-    "behavior_id": 416,
-    "capability_match": "Use Hyperlane SDK (doc_45)"
+    "behavior_id": 507,
+    "capability_match": "Stake in TOGA to become a PIC"
   },
   "threat_target": {
-    "component_id": 8,
-    "asset_ids": []
+    "component_id": 207,
+    "asset_ids": [
+      106
+    ]
   },
   "attack_surface": {
-    "behavior_id": 416,
-    "data_flow_id": null,
-    "data_description": "Crafted API request to Github Proxy specifying a malicious source for artifacts."
+    "behavior_id": 507,
+    "data_flow_id": 309,
+    "data_description": "User's staking transaction in the public mempool."
   },
   "trust_boundary_risk": {
-    "boundary_id": 302,
-    "boundary_name": "Developer-to-Tooling",
-    "between_component_ids": [
-      116,
-      117
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "If the Github Proxy can be made to fetch artifacts from untrusted Github locations, and these artifacts are then trusted by downstream tools, it could lead to execution of malicious code."
+    "availability_required": true,
+    "gap_description": "TOGA staking transactions are susceptible to front-running due to public mempool."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Developer's tool is compromised or intentionally malicious, crafting requests to fetch harmful content."
+    "description": "User's attempt to become PIC can be thwarted by front-runners."
   },
   "behavioral_risk": {
-    "behavior_id": 416,
-    "risk_level": "High",
-    "rationale": "Fetching and trusting malicious artifacts can lead to compromise of developer environments or CI/CD systems."
+    "behavior_id": 507,
+    "risk_level": "Medium",
+    "rationale": "Front-running can prevent a user from becoming PIC or make it more expensive, impacting their ability to participate in the liquidation mechanism."
   },
   "assumptions": [
-    "The Github Proxy allows fetching artifacts from arbitrary Github repositories or paths specified in the incoming request.",
-    "Downstream Hyperlane tools (e.g., build systems, SDK components) consume artifacts fetched via the proxy without sufficient validation or sandboxing."
+    "Malicious actors (e.g., MEV bots) monitor the mempool for TOGA staking transactions.",
+    "The staking amount is predictable or can be inferred.",
+    "The front-runner can get their transaction mined before the user's."
   ],
   "mitigation": {
-    "strategy": "Restrict the Github Proxy to fetch artifacts only from whitelisted, trusted Github repositories/organizations/paths. Implement integrity checks (e.g., checksums, digital signatures) for all fetched artifacts before use by downstream tools.",
+    "strategy": "Use transaction privacy solutions (e.g., Flashbots for ETH). Implement commit-reveal schemes for staking if feasible, though this adds complexity. Users can increase gas price to reduce front-running window.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A Developer's tool could craft a request to the Github Proxy to fetch malicious code or artifacts from a compromised or attacker-controlled Github repository. If these artifacts are then trusted and used by other Hyperlane tools or build processes, it could lead to code execution or system compromise.",
+  "description": "A user's transaction to stake tokens in the TOGA contract to become PIC is observed in the mempool by a malicious actor. The attacker front-runs the user's transaction by submitting their own staking transaction with a slightly higher stake and higher gas price, causing the user's attempt to become PIC to fail or become economically unviable.",
   "trace_source": {
-    "doc_reference": "doc_37",
-    "matched_capability": "Use Hyperlane SDK (doc_45)"
+    "doc_reference": "doc_18 protocol/advanced-topics/solvency/liquidations-and-toga.mdx",
+    "matched_capability": "Stake in TOGA to become a PIC"
   }
 }

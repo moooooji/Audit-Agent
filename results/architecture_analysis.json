@@ -2,827 +2,328 @@
   "actors": [
     {
       "id": 1,
-      "name": "Developer",
+      "name": "User/Account",
       "type": "EOA (Externally Owned Account)",
-      "description": "Individuals who build, deploy, and maintain applications or contribute to the Hyperlane protocol. (doc_1, doc_2, doc_4, doc_17, doc_21, doc_31, doc_45)",
+      "description": "An externally owned account interacting with the Superfluid protocol, acting as a sender, receiver, stream creator, pool member, or token holder.",
       "capabilities": [
-        "Develop applications using Hyperlane (doc_4, doc_45)",
-        "Deploy Hyperlane core contracts (doc_31)",
-        "Deploy Warp Routes (doc_21, doc_31)",
-        "Contribute to Hyperlane source code (doc_2)",
-        "Submit pull requests (doc_2, doc_8)",
-        "Submit issues (doc_2, doc_9)",
-        "Configure Post-Dispatch Hooks (doc_18)",
-        "Configure Interchain Security Modules (doc_19)",
-        "Use Hyperlane CLI (doc_31)",
-        "Use Hyperlane SDK (doc_45)",
-        "Trigger Docker builds in CI (doc_4)",
-        "Manage agent releases (doc_4)"
+        "Wrap/Unwrap Super Tokens",
+        "Create, update, or delete money streams (flows)",
+        "Participate in distributions as a pool member",
+        "Grant/revoke flow operator permissions",
+        "Deploy Super Apps or custom Super Tokens",
+        "Stake in TOGA to become a PIC"
       ]
     },
     {
       "id": 2,
-      "name": "User",
-      "type": "EOA (Externally Owned Account)",
-      "description": "End-users interacting with applications built on Hyperlane, for example, transferring tokens. (doc_3, doc_21)",
+      "name": "Super App",
+      "type": "Smart Contract",
+      "description": "A smart contract registered with the Superfluid Protocol, designed to react to Superfluid agreement actions (streams, distributions) via callbacks.",
       "capabilities": [
-        "Initiate interchain messages (doc_4)",
-        "Transfer tokens via Warp Routes (doc_21)",
-        "Interact with dApps using Hyperlane (doc_4)",
-        "Use public digital wallet address for interactions (doc_3)"
+        "React to stream creation, updates, and deletion",
+        "React to distribution events",
+        "Execute custom logic in callbacks (e.g., mint NFTs, start new streams)",
+        "Be registered with the Superfluid Host"
       ]
     },
     {
       "id": 3,
-      "name": "Relayer",
+      "name": "Sentinel",
       "type": "Off-chain Service/Bot",
-      "description": "Off-chain agent responsible for relaying messages between blockchains by indexing messages on an origin chain Mailbox and submitting them to the destination chain's Mailbox. (doc_10, doc_21)",
+      "description": "A node monitoring the Superfluid network, specifically Constant Flow Agreements, to close critical or insolvent streams.",
       "capabilities": [
-        "Index messages from Mailbox on origin chain (doc_21, doc_10)",
-        "Process messages on destination chain Mailbox (doc_21, doc_10)",
-        "Submit transactions to blockchains (doc_10)",
-        "Compensated for services (doc_21)"
+        "Monitor stream solvency",
+        "Close critical or insolvent streams",
+        "Earn rewards (buffer deposits or PIC rewards) for closing streams"
       ]
     },
     {
       "id": 4,
-      "name": "Validator",
-      "type": "Off-chain Service/Bot",
-      "description": "Off-chain agent responsible for observing messages and providing security attestations for Interchain Security Modules. (doc_10, doc_13)",
+      "name": "Pool Admin",
+      "type": "EOA (Externally Owned Account)",
+      "description": "An account responsible for managing a Superfluid Distribution Pool, including unit allocation for pool members.",
       "capabilities": [
-        "Observe interchain messages (doc_10)",
-        "Provide security attestations (doc_10, doc_19 for ISMs)",
-        "Connect to home chain and replicas (doc_10)",
-        "Run as a node on AWS (example setup) (doc_13)"
+        "Create a Distribution Pool",
+        "Assign/update units for pool members",
+        "Manage pool configuration",
+        "Can be the distributor of funds to the pool"
       ]
     },
     {
       "id": 5,
-      "name": "Scraper Agent",
-      "type": "Off-chain Service/Bot",
-      "description": "Off-chain agent that collects and stores data from blockchains, typically into a database like Postgres. (doc_10, doc_11)",
+      "name": "Superfluid DAO Participant",
+      "type": "DAO Participant/Token Holder",
+      "description": "A participant in the Superfluid DAO, typically holding SUP tokens, involved in protocol governance.",
       "capabilities": [
-        "Read data from blockchains (doc_10)",
-        "Store data in a database (doc_11)",
-        "Connect to Postgres database (doc_11)"
+        "Vote on governance proposals",
+        "Submit governance proposals (potentially)",
+        "Participate in discussions regarding protocol upgrades and parameters"
       ]
     },
     {
       "id": 6,
-      "name": "Maintainer/Core Dev",
-      "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-      "description": "Individuals with privileged access to review and merge contributions to the Hyperlane codebase. (doc_2)",
+      "name": "PIC (Patrician in Charge)",
+      "type": "EOA (Externally Owned Account)",
+      "description": "An account that has staked tokens in the TOGA contract to become the primary entity responsible for liquidating critical streams for a specific Super Token, earning rewards during a priority period.",
       "capabilities": [
-        "Review pull requests (doc_2)",
-        "Merge code into main codebase (doc_2)",
-        "Guide project philosophy (doc_2)"
+        "Stake tokens in TOGA",
+        "Receive rewards for closing streams during the patrician period",
+        "Run sentinel software to automate liquidations",
+        "Can be slashed if streams become insolvent"
       ]
     },
     {
       "id": 7,
-      "name": "GCP Service Account",
-      "type": "Off-chain Service/Bot",
-      "description": "A Google Cloud Platform service account used by systems like 'external-secrets' to access GCP resources, such as Secret Manager. (doc_43)",
+      "name": "Developer",
+      "type": "EOA (Externally Owned Account)",
+      "description": "An individual or entity building applications or tools on top of or interacting with the Superfluid protocol.",
       "capabilities": [
-        "Access GCP Secret Manager secrets (doc_43)",
-        "Authenticate with GCP (doc_43)"
+        "Deploy Super Tokens (Wrapped, Pure, Custom)",
+        "Deploy Super Apps",
+        "Integrate Superfluid SDK into applications",
+        "Participate in bounty programs",
+        "Submit tokens for listing on the Superfluid Explorer"
       ]
     },
     {
       "id": 8,
-      "name": "Github Proxy",
+      "name": "Automation Service (e.g., Auto-Wrap, Schedulers)",
       "type": "Off-chain Service/Bot",
-      "description": "A CloudFlare Worker that proxies Github API requests using an API key to allow higher rate limits. (doc_37)",
+      "description": "Off-chain services that automate specific Superfluid operations like token wrapping, stream scheduling, or vesting.",
       "capabilities": [
-        "Make authenticated Github API requests (doc_37)",
-        "Fetch contract artifacts from Github (doc_24)"
+        "Monitor Super Token balances and auto-wrap underlying tokens",
+        "Execute scheduled stream creation/updates/deletion",
+        "Manage vesting schedules including cliff distributions and stream initiation"
       ]
     },
     {
       "id": 9,
-      "name": "CI System",
-      "type": "Off-chain Service/Bot",
-      "description": "Continuous Integration system (e.g., GitHub Actions) that automates building, testing, and deployment processes. (doc_4)",
+      "name": "External Oracle",
+      "type": "Oracle",
+      "description": "An external data provider, such as Coingecko for token prices or a Time-Weighted Average Price (TWAP) oracle, used by Superfluid-related services or applications.",
       "capabilities": [
-        "Build Docker images for agents (doc_4, doc_10)",
-        "Run automated tests (doc_4, doc_10 for E2E tests)",
-        "Deploy code changes (doc_4, doc_10 for agent deployment procedures)"
-      ]
-    },
-    {
-      "id": 10,
-      "name": "Message Sender",
-      "type": "EOA (Externally Owned Account)",
-      "description": "An entity (EOA or smart contract) that initiates a message dispatch through the Mailbox. (doc_18, solidity/contracts/hooks/README.md)",
-      "capabilities": [
-        "Dispatch messages via Mailbox (doc_18)",
-        "Specify destination, recipient, and message body (doc_18, general Mailbox functionality)",
-        "Optionally specify hooks and metadata (doc_18)",
-        "Pay for message dispatch (doc_18)"
-      ]
-    },
-    {
-      "id": 11,
-      "name": "Message Recipient",
-      "type": "Smart Contract",
-      "description": "A smart contract on a destination chain that is designated to receive and handle an interchain message. (doc_19, solidity/contracts/isms/README.md)",
-      "capabilities": [
-        "Handle incoming messages from Mailbox (doc_19)",
-        "Define an InterchainSecurityModule for message verification (doc_19)"
-      ]
-    },
-    {
-      "id": 12,
-      "name": "Deployer (Interchain Account)",
-      "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-      "description": "The account on an origin chain that deploys and exclusively controls an Interchain Account on a remote chain. (doc_20, solidity/contracts/middleware/README.md)",
-      "capabilities": [
-        "Deploy Interchain Accounts (doc_20)",
-        "Control Interchain Accounts on remote chains (doc_20)"
-      ]
-    },
-    {
-      "id": 13,
-      "name": "Hyperlane CLI User",
-      "type": "EOA (Externally Owned Account)",
-      "description": "A developer or operator using the Hyperlane Command Line Interface. (doc_31)",
-      "capabilities": [
-        "Deploy core contracts (doc_31)",
-        "Deploy warp routes (doc_31)",
-        "Send test messages (doc_31)",
-        "Manage configurations (doc_31, e.g. `hyperlane config create`)"
-      ]
-    },
-    {
-      "id": 14,
-      "name": "Hyperlane SDK User",
-      "type": "EOA (Externally Owned Account)",
-      "description": "A developer using the Hyperlane Software Development Kit to build applications. (doc_45)",
-      "capabilities": [
-        "Build multi-chain applications (doc_45)",
-        "Deploy contracts (doc_45)",
-        "Interact with Hyperlane core deployments (doc_45)",
-        "Manage chain metadata and RPC providers (doc_45)"
-      ]
-    },
-    {
-      "id": 15,
-      "name": "CCIP Relayer",
-      "type": "Off-chain Service/Bot",
-      "description": "A relayer specific to the CCIP (Cross-Chain Interoperability Protocol) context, interacting with the CCIP-read service framework. (doc_29)",
-      "capabilities": [
-        "Make POST requests to CCIP Server with ABI-encoded data (doc_29)"
-      ]
-    },
-    {
-      "id": 16,
-      "name": "Kubernetes Workload",
-      "type": "Off-chain Service/Bot",
-      "description": "Applications or services running on a Kubernetes cluster that may need to access secrets. (doc_43)",
-      "capabilities": [
-        "Access secrets from GCP Secret Manager via ExternalSecret and ClusterSecretStore (doc_43)"
+        "Provide external data (e.g., token prices)"
       ]
     }
   ],
   "assets": [
     {
-      "id": 1,
-      "name": "Arbitrary Interchain Data",
-      "description": "General data sent between blockchains via the Hyperlane Protocol. (doc_3)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 2,
-      "name": "Digital Assets / Tokens",
-      "description": "Cryptocurrency tokens or other digital assets transferred or managed by the Hyperlane Protocol. (doc_3, doc_21)",
-      "type": "Token",
+      "id": 101,
+      "name": "Super Token (Generic)",
+      "description": "A programmable token standard extending ERC20, enabling real-time financial interactions like streaming and distributions. Can be a Wrapper, Pure, or Native Super Token.",
+      "type": "Utility Token",
       "sensitivity": "High"
     },
     {
-      "id": 3,
-      "name": "Shared State",
-      "description": "Application state shared between blockchains using Hyperlane. (doc_4)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 4,
-      "name": "Interchain Messages",
-      "description": "The payload and metadata of messages dispatched through the Mailbox. (doc_4, doc_18, doc_19)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 5,
-      "name": "Source Code",
-      "description": "The codebase of the Hyperlane protocol and related tools. (doc_2, doc_4, doc_17, etc.)",
-      "type": "Data",
+      "id": 102,
+      "name": "Underlying ERC20 Token",
+      "description": "A standard ERC20 token that can be wrapped to become a Super Token (e.g., DAI wrapped into DAIx).",
+      "type": "Utility Token",
       "sensitivity": "High"
     },
     {
-      "id": 6,
-      "name": "Docker Images",
-      "description": "Container images for Hyperlane agents. (doc_4, doc_10)",
-      "type": "Data",
+      "id": 103,
+      "name": "Flow/Stream",
+      "description": "A continuous, second-by-second transfer of Super Tokens between two accounts, defined by a flow rate.",
+      "type": "Financial Instrument (e.g., LP Token, Bond)",
+      "sensitivity": "High"
+    },
+    {
+      "id": 104,
+      "name": "Distribution Pool Units",
+      "description": "Shares representing a member's proportional claim on distributions from a GDA Pool. Can be ERC20-like if configured.",
+      "type": "Financial Instrument (e.g., LP Token, Bond)",
       "sensitivity": "Medium"
     },
     {
-      "id": 7,
-      "name": "NPM Packages",
-      "description": "Published software packages for Hyperlane SDK, CLI, core, etc. (doc_4, doc_17, doc_30, doc_44)",
-      "type": "Data",
+      "id": 105,
+      "name": "Stream Buffer/Deposit",
+      "description": "An amount of Super Tokens locked by a stream sender as collateral to ensure stream solvency during critical periods.",
+      "type": "Financial Instrument (e.g., LP Token, Bond)",
+      "sensitivity": "High"
+    },
+    {
+      "id": 106,
+      "name": "TOGA Stake",
+      "description": "Super Tokens staked by a PIC in the TOGA contract as a commitment to perform liquidations and as collateral against insolvent streams.",
+      "type": "Financial Instrument (e.g., LP Token, Bond)",
+      "sensitivity": "High"
+    },
+    {
+      "id": 107,
+      "name": "SUP Token",
+      "description": "The native governance token of the Superfluid protocol, used for DAO participation and voting.",
+      "type": "Governance Token",
+      "sensitivity": "High"
+    },
+    {
+      "id": 108,
+      "name": "User Data",
+      "description": "Arbitrary byte data that can be attached to Superfluid operations, allowing for custom logic and off-chain integrations.",
+      "type": "Data Record",
       "sensitivity": "Medium"
-    },
-    {
-      "id": 8,
-      "name": "Contract Addresses",
-      "description": "Deployed addresses of Hyperlane smart contracts. (doc_10, doc_31 `hyperlane chains addresses`)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 9,
-      "name": "Configuration Files",
-      "description": "Files containing settings for agents, deployments, and other components. (doc_4, doc_10, doc_31)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 10,
-      "name": "Environment Variables",
-      "description": "Configuration variables, potentially including secrets, used by Hyperlane components. (doc_4 `LOG_LEVEL`, doc_10 `HYP_DB`)",
-      "type": "Data",
-      "sensitivity": "High"
-    },
-    {
-      "id": 11,
-      "name": "Secrets (GCP Secret Manager)",
-      "description": "Sensitive data like API keys or credentials stored in GCP Secret Manager. (doc_43)",
-      "type": "Key",
-      "sensitivity": "High"
-    },
-    {
-      "id": 12,
-      "name": "Service Account Keys",
-      "description": "Credentials for service accounts, e.g., for GCP. (doc_10 `GCS_SERVICE_ACCOUNT_KEY`, doc_43 `gcp-sa-secret.yaml`)",
-      "type": "Key",
-      "sensitivity": "High"
-    },
-    {
-      "id": 13,
-      "name": "Database Data (Scraper)",
-      "description": "Data collected by the Scraper agent and stored in its database. (doc_11)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 14,
-      "name": "Contract Artifacts",
-      "description": "Compiled bytecode and ABI of smart contracts. (doc_16, doc_17, doc_23, doc_24)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 15,
-      "name": "ERC20 Tokens",
-      "description": "Fungible tokens adhering to the ERC20 standard, managed by Warp Routes. (doc_21)",
-      "type": "Token",
-      "sensitivity": "High"
-    },
-    {
-      "id": 16,
-      "name": "ERC721 Tokens",
-      "description": "Non-fungible tokens adhering to the ERC721 standard, managed by Warp Routes. (doc_21)",
-      "type": "NFT",
-      "sensitivity": "High"
-    },
-    {
-      "id": 17,
-      "name": "Native Assets",
-      "description": "Native blockchain assets (e.g., ETH) warped via Hyperlane. (doc_21)",
-      "type": "Token",
-      "sensitivity": "High"
-    },
-    {
-      "id": 18,
-      "name": "Yield-bearing Assets (ERC4626)",
-      "description": "Assets that generate yield, transferred across chains using ERC4626 standard via Yield Routes. (doc_22)",
-      "type": "Token",
-      "sensitivity": "High"
-    },
-    {
-      "id": 19,
-      "name": "Vault Shares (ERC4626)",
-      "description": "Shares representing a user's deposit in an ERC4626 vault. (doc_22)",
-      "type": "Token",
-      "sensitivity": "High"
-    },
-    {
-      "id": 20,
-      "name": "Exchange Rate Data",
-      "description": "Exchange rate information used in Yield Routes for ERC4626 assets. (doc_22)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 21,
-      "name": "Message Nonce",
-      "description": "A number used once, often for replay protection or ordering in messaging systems. (doc_22 `nonce += 1`)",
-      "type": "Data",
-      "sensitivity": "Low"
-    },
-    {
-      "id": 22,
-      "name": "Public Digital Wallet Address",
-      "description": "User's public blockchain address used for interactions. (doc_3)",
-      "type": "Data",
-      "sensitivity": "Low"
-    },
-    {
-      "id": 23,
-      "name": "Github API Key",
-      "description": "API key for authenticating with the Github API, used by Github Proxy. (doc_37)",
-      "type": "Key",
-      "sensitivity": "High"
-    },
-    {
-      "id": 24,
-      "name": "TokenMessage",
-      "description": "Encoded payload for token transfers containing amount and recipient. (doc_21)",
-      "type": "Data",
-      "sensitivity": "Medium"
-    },
-    {
-      "id": 25,
-      "name": "Monitoring Dashboard Templates",
-      "description": "JSON templates for Grafana dashboards used for monitoring Hyperlane. (doc_25)",
-      "type": "Data",
-      "sensitivity": "Low"
     }
   ],
   "components": [
     {
-      "id": 101,
-      "name": "Hyperlane Protocol",
-      "description": "An open generalized interchain messaging protocol. (doc_3)",
+      "id": 201,
+      "name": "Superfluid Host Contract",
+      "description": "The central smart contract of the Superfluid protocol. It manages Super Token interactions, agreement registrations, Super App registrations, and callback executions. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        1,
-        2,
-        3,
-        4
+        101,
+        103,
+        104,
+        105,
+        108
       ]
     },
     {
-      "id": 102,
-      "name": "Mailbox (Solidity EVM)",
-      "description": "Core smart contract on EVM chains for dispatching and receiving interchain messages. Manages interactions with Hooks and ISMs. (doc_17, doc_18, doc_19)",
+      "id": 202,
+      "name": "Super Token Contract",
+      "description": "A smart contract representing a specific Super Token (e.g., DAIx). It implements ISuperToken or ISETH and handles balance calculations, wrapping/unwrapping, and standard token operations. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        4,
-        24
+        101,
+        102,
+        103
       ]
     },
     {
-      "id": 103,
-      "name": "Mailbox (Sealevel SVM)",
-      "description": "Core smart contract on Sealevel (Solana Virtual Machine) chains for interchain messaging. (doc_10, doc_14)",
+      "id": 203,
+      "name": "Constant Flow Agreement (CFAv1)",
+      "description": "A Superfluid agreement smart contract that enables the creation, modification, and deletion of continuous money streams (flows) between accounts. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        4,
-        24
+        103,
+        105
       ]
     },
     {
-      "id": 104,
-      "name": "Post-Dispatch Hook (IPostDispatchHook)",
-      "description": "Interface for smart contracts that define additional origin chain behavior for dispatched messages. Can charge fees. (doc_18)",
+      "id": 204,
+      "name": "General Distribution Agreement (GDAv1)",
+      "description": "A Superfluid agreement smart contract that enables one-to-many or many-to-many distributions of Super Tokens, either instantly or as continuous streams, via Distribution Pools. It is an UUPS Proxy.",
+      "trust_level": "High",
+      "assets_managed": [
+        101,
+        104
+      ]
+    },
+    {
+      "id": 205,
+      "name": "SuperTokenFactory Contract",
+      "description": "A smart contract used to deploy new Super Token contracts (both Wrapper and Pure types). It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 105,
-      "name": "Interchain Security Module (ISM)",
-      "description": "Smart contracts that define additional security checks for incoming messages on the destination chain. (doc_19)",
+      "id": 206,
+      "name": "SuperfluidPool Contract",
+      "description": "A smart contract instance representing a specific Distribution Pool, created via the GDAv1. It manages member units and distributes tokens. It is an UUPS Proxy.",
+      "trust_level": "High",
+      "assets_managed": [
+        101,
+        104
+      ]
+    },
+    {
+      "id": 207,
+      "name": "TOGA Contract",
+      "description": "The Transparent Ongoing Auction smart contract where aspiring PICs stake tokens to participate in the liquidation process for a specific Super Token.",
+      "trust_level": "High",
+      "assets_managed": [
+        106
+      ]
+    },
+    {
+      "id": 208,
+      "name": "CFAv1Forwarder Contract",
+      "description": "An immutable helper smart contract designed for client-side applications to interact with CFAv1 functionalities more easily.",
+      "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 106,
-      "name": "TokenRouter (Solidity)",
-      "description": "A collection of contracts for Hyperlane Warp Routes, enabling interchain token transfers (ERC20, ERC721, Native). (doc_21)",
-      "assets_managed": [
-        2,
-        15,
-        16,
-        17,
-        24
-      ]
-    },
-    {
-      "id": 107,
-      "name": "HypNative",
-      "description": "TokenRouter flavor for warping native assets from their canonical chain. (doc_21)",
-      "assets_managed": [
-        17,
-        24
-      ]
-    },
-    {
-      "id": 108,
-      "name": "HypERC20Collateral",
-      "description": "TokenRouter flavor for warping ERC20 or ERC721 tokens from their canonical chain. (doc_21)",
-      "assets_managed": [
-        15,
-        16,
-        24
-      ]
-    },
-    {
-      "id": 109,
-      "name": "HypERC20 (Synthetic)",
-      "description": "TokenRouter flavor for representing warped tokens (Native, ERC20, ERC721) on a non-canonical chain. (doc_21)",
-      "assets_managed": [
-        15,
-        16,
-        17,
-        24
-      ]
-    },
-    {
-      "id": 110,
-      "name": "HypERC4626Collateral",
-      "description": "Contract for Yield Routes; implements ERC4626 deposits upon transfer and withdrawal upon transfer back. (doc_22)",
-      "assets_managed": [
-        18,
-        19,
-        20,
-        21,
-        24
-      ]
-    },
-    {
-      "id": 111,
-      "name": "HypERC4626 (Synthetic)",
-      "description": "Contract for Yield Routes; implements a rebasing ERC20 representing shares in an ERC4626 vault on the collateral chain. (doc_22)",
-      "assets_managed": [
-        18,
-        19,
-        20,
-        21,
-        24
-      ]
-    },
-    {
-      "id": 112,
-      "name": "Interchain Account (ICA)",
-      "description": "Smart contract deployed on a remote chain, controlled by an origin chain deployer account, offering a transparent multicall API. (doc_20)",
+      "id": 209,
+      "name": "GDAv1Forwarder Contract",
+      "description": "An immutable helper smart contract designed for client-side applications to interact with GDAv1 functionalities more easily.",
+      "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 113,
-      "name": "Interchain Query System (IQS)",
-      "description": "System generalizing view calls to contracts on remote chains via a transparent multicall API. (doc_20)",
+      "id": 210,
+      "name": "SuperTokenV1Library",
+      "description": "A Solidity library that provides convenient functions for smart contracts to interact with Super Tokens and Superfluid agreements (CFA, GDA).",
+      "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 114,
-      "name": "Hyperlane Core (Solidity Package)",
-      "description": "Package containing contracts and typechain artifacts for Hyperlane EVM implementation. (doc_17)",
-      "assets_managed": [
-        5,
-        14
-      ]
-    },
-    {
-      "id": 115,
-      "name": "Hyperlane Starknet Core (Cairo/TS Package)",
-      "description": "Package providing TypeScript tooling and Cairo contract artifacts for Hyperlane on Starknet. (doc_24)",
-      "assets_managed": [
-        5,
-        14
-      ]
-    },
-    {
-      "id": 116,
-      "name": "Hyperlane CLI (Command Line Interface)",
-      "description": "Typescript tool for deploying Hyperlane core contracts and warp routes, sending messages, etc. (doc_31)",
-      "assets_managed": [
-        8,
-        9
-      ]
-    },
-    {
-      "id": 117,
-      "name": "Hyperlane SDK (Software Development Kit)",
-      "description": "Typescript library for developers to create and manage interchain applications. (doc_45)",
-      "assets_managed": [
-        8,
-        9
-      ]
-    },
-    {
-      "id": 118,
-      "name": "CCIP-read Service Framework",
-      "description": "Service framework for CCIP-read, allowing execution logic based on Hyperlane Relayer calls. (doc_29)",
+      "id": 211,
+      "name": "Superfluid Subgraph",
+      "description": "An off-chain indexing service (The Graph) that provides queryable data about Superfluid protocol activities across various networks.",
+      "trust_level": "Medium",
       "assets_managed": []
     },
     {
-      "id": 119,
-      "name": "CCIP Server",
-      "description": "Main entry point for the CCIP-read service framework, handles requests from CCIP Relayers. (doc_29)",
+      "id": 212,
+      "name": "MacroForwarder Contract",
+      "description": "A trusted forwarder contract that allows users to execute pre-defined batch operations (macros) on the Superfluid protocol in a single transaction.",
+      "trust_level": "High",
       "assets_managed": []
     },
     {
-      "id": 120,
-      "name": "Hyperlane Cosmos Module SDK",
-      "description": "TypeScript SDK for the Cosmos Hyperlane Module Implementation. (doc_33)",
+      "id": 213,
+      "name": "Superfluid Governance II Contract",
+      "description": "The smart contract facilitating the Superfluid DAO's governance processes, including proposal submission and voting. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        5,
-        14
+        107
       ]
     },
     {
-      "id": 121,
-      "name": "Hyperlane Infra Scripts",
-      "description": "Scripts and utilities for managing and deploying Hyperlane infrastructure. (doc_42)",
+      "id": 214,
+      "name": "Instant Distribution Agreement (IDAv1)",
+      "description": "A Superfluid agreement smart contract for mass dispersion of Super Tokens to multiple addresses based on distribution shares or 'units' at a fixed gas cost. It is an UUPS Proxy. (Being deprecated in favor of GDAv1)",
+      "trust_level": "High",
       "assets_managed": [
-        9
+        101,
+        104
       ]
     },
     {
-      "id": 122,
-      "name": "External Secrets Helm Chart (GCP)",
-      "description": "Helm chart to allow Kubernetes workloads to access secrets from GCP Secret Manager. (doc_43)",
+      "id": 215,
+      "name": "ConstantFlowNFT",
+      "description": "Smart contract for non-fungible tokens (NFTs) that represent Money Streaming flows. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        11,
-        12
+        103
       ]
     },
     {
-      "id": 123,
-      "name": "Hyperlane Widgets",
-      "description": "Common React components for projects using Hyperlane, e.g., ChainLogo, MessageTimeline. (doc_50)",
-      "assets_managed": []
-    },
-    {
-      "id": 124,
-      "name": "Rust Agents (Relayer, Validator, Scraper)",
-      "description": "Off-chain programs written in Rust that manage Hyperlane operations. (doc_10)",
+      "id": 216,
+      "name": "PoolAdminNFT",
+      "description": "NFT contract representing admin rights over a SuperfluidPool. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        9,
-        10,
-        13
+        104
       ]
     },
     {
-      "id": 125,
-      "name": "ERC20 Contract (Generic)",
-      "description": "A standard ERC20 token contract. (doc_21, doc_22)",
+      "id": 217,
+      "name": "PoolMemberNFT",
+      "description": "NFT contract where tokens represent membership within a pool, granting units to members in that pool. It is an UUPS Proxy.",
+      "trust_level": "High",
       "assets_managed": [
-        15
-      ]
-    },
-    {
-      "id": 126,
-      "name": "ERC4626 Vault Contract (Generic)",
-      "description": "A standard ERC4626 tokenized vault contract. (doc_22)",
-      "assets_managed": [
-        18,
-        19
-      ]
-    },
-    {
-      "id": 127,
-      "name": "GCP Secret Manager",
-      "description": "Google Cloud Platform service for storing secrets. (doc_43)",
-      "assets_managed": [
-        11,
-        12
-      ]
-    },
-    {
-      "id": 128,
-      "name": "Postgres Database (Scraper)",
-      "description": "PostgreSQL database used by the Scraper agent. (doc_11)",
-      "assets_managed": [
-        13
-      ]
-    },
-    {
-      "id": 129,
-      "name": "Github API",
-      "description": "External API for Github services. (doc_37, doc_24)",
-      "assets_managed": [
-        5,
-        23
-      ]
-    },
-    {
-      "id": 130,
-      "name": "Hyperlane Registry",
-      "description": "A source for Hyperlane chain metadata, contract addresses, and configurations. (doc_10 `hyperlane-registry` repo, doc_30 CLI interaction with registry)",
-      "assets_managed": [
-        8,
-        9
-      ]
-    },
-    {
-      "id": 131,
-      "name": "Terraform Module for Hyperlane Validator",
-      "description": "Terraform module to set up the necessary infrastructure for a Hyperlane validator on AWS. It automates the creation of resources such as ECS clusters, VPCs, subnets, and security groups required for running a validator node. (doc_13)",
-      "assets_managed": [
-        9
-      ]
-    },
-    {
-      "id": 132,
-      "name": "Grafana Dashboards",
-      "description": "JSON model templates for Grafana dashboards, used for monitoring Hyperlane. These are imported/exported manually. (doc_25)",
-      "assets_managed": [
-        25
-      ]
-    },
-    {
-      "id": 133,
-      "name": "Scraper Migrator CLI",
-      "description": "Command Line Interface (cargo run --package migration) for managing scraper PostgreSQL database schema migrations, including initializing the DB, recreating it, and generating SeaORM entities. (doc_11, doc_12)",
-      "assets_managed": [
-        13
+        104
       ]
     }
   ],
   "data_flows": [
     {
-      "id": 201,
-      "source_id": 10,
-      "destination_id": 102,
-      "data": "Dispatch call (destination, recipient, body, metadata, hook, value)",
-      "description": "Message Sender dispatches a message via the EVM Mailbox. (doc_18)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 202,
-      "source_id": 102,
-      "destination_id": 104,
-      "data": "postDispatch call (message, metadata, value)",
-      "description": "EVM Mailbox calls a Post-Dispatch Hook. (doc_18)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 203,
-      "source_id": 102,
-      "destination_id": 105,
-      "data": "Verify call (metadata, message)",
-      "description": "EVM Mailbox calls an ISM on the destination chain to verify a message. (doc_19)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 204,
-      "source_id": 102,
-      "destination_id": 11,
-      "data": "Handle call (origin, sender, body)",
-      "description": "EVM Mailbox delivers a verified message to the recipient contract. (doc_19)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 205,
-      "source_id": 2,
-      "destination_id": 106,
-      "data": "transferRemote call (destination, recipient, amount)",
-      "description": "User initiates a remote token transfer via TokenRouter. (doc_21)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 206,
-      "source_id": 106,
-      "destination_id": 102,
-      "data": "Dispatch call (TokenMessage: recipient, amount)",
-      "description": "TokenRouter dispatches a TokenMessage via the Mailbox. (doc_21)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 207,
-      "source_id": 3,
-      "destination_id": 102,
-      "data": "Process call (message from origin)",
-      "description": "Relayer submits a message from an origin chain to the destination Mailbox. (doc_21, doc_10)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 208,
-      "source_id": 108,
-      "destination_id": 125,
-      "data": "transferFrom call / approve call",
-      "description": "HypERC20Collateral interacts with the underlying ERC20 token contract. (doc_21 diagram)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 209,
-      "source_id": 110,
-      "destination_id": 126,
-      "data": "deposit / convertToAssets / redeem calls",
-      "description": "HypERC4626Collateral interacts with an ERC4626 vault. (doc_22 diagram)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 210,
-      "source_id": 110,
-      "destination_id": 102,
-      "data": "Dispatch call (TokenMessage: recipient, shares, exchangeRate, nonce)",
-      "description": "HypERC4626Collateral dispatches yield route message via Mailbox. (doc_22 diagram)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 211,
-      "source_id": 5,
-      "destination_id": 128,
-      "data": "Blockchain data",
-      "description": "Scraper agent writes collected blockchain data to Postgres database. (doc_11)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 212,
-      "source_id": 8,
-      "destination_id": 129,
-      "data": "Github API request",
-      "description": "Github Proxy makes authenticated requests to Github API. (doc_37)",
-      "security_properties": {
-        "confidentiality_required": true,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 213,
-      "source_id": 122,
-      "destination_id": 127,
-      "data": "Secret access request",
-      "description": "External Secrets Helm Chart (via ClusterSecretStore) accesses secrets from GCP Secret Manager. (doc_43)",
-      "security_properties": {
-        "confidentiality_required": true,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 214,
-      "source_id": 15,
-      "destination_id": 119,
-      "data": "POST Request with ABI-encoded data (sender, data)",
-      "description": "CCIP Relayer sends request to CCIP Server. (doc_29)",
-      "security_properties": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true
-      }
-    },
-    {
-      "id": 215,
+      "id": 301,
       "source_id": 1,
-      "destination_id": 116,
-      "data": "CLI commands and configurations",
-      "description": "Developer uses Hyperlane CLI to manage deployments. (doc_31)",
+      "destination_id": 202,
+      "data": "Wrap/Unwrap request (amount, underlying token for wrap)",
+      "description": "User converts ERC20 tokens to Super Tokens or vice-versa.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -830,11 +331,11 @@
       }
     },
     {
-      "id": 216,
-      "source_id": 116,
-      "destination_id": 102,
-      "data": "Deployment/Configuration transactions",
-      "description": "Hyperlane CLI deploys or configures Mailbox contract. (doc_31 `deploy core`)",
+      "id": 302,
+      "source_id": 1,
+      "destination_id": 201,
+      "data": "Create/Update/Delete Flow parameters (token, receiver, flowRate, userData)",
+      "description": "User initiates or modifies a money stream via the Host, which calls the CFA.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -842,11 +343,155 @@
       }
     },
     {
-      "id": 217,
-      "source_id": 117,
-      "destination_id": 130,
-      "data": "Registry data request (chain metadata, addresses)",
-      "description": "Hyperlane SDK fetches configuration from Hyperlane Registry. (doc_44 SDK uses registry, doc_30 CLI uses registry)",
+      "id": 303,
+      "source_id": 201,
+      "destination_id": 203,
+      "data": "Flow operation details (sender, receiver, flowRate)",
+      "description": "Host contract delegates flow management to the CFA contract.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 304,
+      "source_id": 4,
+      "destination_id": 201,
+      "data": "Create Pool parameters (token, admin, config) or Update Member Units (pool, member, units)",
+      "description": "Pool Admin creates a new distribution pool or updates member shares via the Host, which calls the GDA.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 305,
+      "source_id": 201,
+      "destination_id": 204,
+      "data": "Distribution operation details (pool creation, unit updates, distribution execution)",
+      "description": "Host contract delegates distribution management to the GDA contract.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 306,
+      "source_id": 201,
+      "destination_id": 2,
+      "data": "Callback invocation (agreement details, context)",
+      "description": "Host contract triggers callbacks on a registered Super App when relevant agreement actions occur.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 307,
+      "source_id": 2,
+      "destination_id": 201,
+      "data": "callAgreementWithContext (new operation details, context)",
+      "description": "Super App calls back into the Host to perform further Superfluid operations.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 308,
+      "source_id": 3,
+      "destination_id": 201,
+      "data": "Liquidation transaction (close stream for critical account)",
+      "description": "Sentinel submits a transaction to close a critical stream.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 309,
+      "source_id": 1,
+      "destination_id": 207,
+      "data": "Stake amount for PIC registration",
+      "description": "User stakes tokens in TOGA to become a PIC.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 310,
+      "source_id": 203,
+      "destination_id": 202,
+      "data": "Real-time balance updates due to flow",
+      "description": "CFA instructs Super Token contract to adjust real-time balances based on active flows.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 311,
+      "source_id": 204,
+      "destination_id": 202,
+      "data": "Real-time balance updates due to distribution",
+      "description": "GDA instructs Super Token contract to adjust real-time balances based on distributions.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 312,
+      "source_id": 1,
+      "destination_id": 208,
+      "data": "Flow creation/update/deletion parameters via CFAv1Forwarder",
+      "description": "User interacts with CFAv1Forwarder from a client application.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 313,
+      "source_id": 208,
+      "destination_id": 201,
+      "data": "Forwarded CFA operation to Host",
+      "description": "CFAv1Forwarder calls the Superfluid Host to execute the CFA operation.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 314,
+      "source_id": 1,
+      "destination_id": 209,
+      "data": "Pool creation/management parameters via GDAv1Forwarder",
+      "description": "User interacts with GDAv1Forwarder from a client application.",
+      "security_properties": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true
+      }
+    },
+    {
+      "id": 315,
+      "source_id": 209,
+      "destination_id": 201,
+      "data": "Forwarded GDA operation to Host",
+      "description": "GDAv1Forwarder calls the Superfluid Host to execute the GDA operation.",
       "security_properties": {
         "confidentiality_required": false,
         "integrity_required": true,
@@ -856,238 +501,196 @@
   ],
   "trust_boundaries": [
     {
-      "id": 301,
-      "name": "User-to-SmartContract",
-      "between_ids": [
-        2,
-        102,
-        106
-      ],
-      "description": "Boundary between end-users (EOAs) and Hyperlane smart contracts. Interactions are typically transactions. (General blockchain interaction model)",
-      "validation_required": true
-    },
-    {
-      "id": 302,
-      "name": "Developer-to-Tooling",
+      "id": 401,
+      "name": "User Wallet - Protocol Interface",
       "between_ids": [
         1,
-        116,
-        117
+        201
       ],
-      "description": "Boundary between developers and Hyperlane CLI/SDK. (doc_31, doc_45)",
+      "description": "Separates the user's private key management and transaction signing from the on-chain protocol logic. Protects user assets from direct unauthorized access by the protocol.",
       "validation_required": true
     },
     {
-      "id": 303,
-      "name": "OffChainAgent-to-SmartContract",
+      "id": 402,
+      "name": "On-Chain (Protocol) - Off-Chain (Sentinel/Automation/API)",
       "between_ids": [
-        3,
-        4,
-        102,
-        103
+        201,
+        3
       ],
-      "description": "Boundary between off-chain agents (Relayer, Validator) and Hyperlane smart contracts (Mailbox). Scraper reads from chain but direct interactive boundary with Mailbox is less prominent for write/control actions. (doc_10, doc_19, doc_21)",
+      "description": "Separates the deterministic on-chain smart contracts from potentially fallible or malicious off-chain services. Protects protocol integrity from off-chain manipulation.",
       "validation_required": true
     },
     {
-      "id": 304,
-      "name": "Inter-Chain Communication",
+      "id": 403,
+      "name": "Superfluid Host - Super App",
       "between_ids": [
-        102,
-        103
+        201,
+        2
       ],
-      "description": "Logical boundary representing communication between Mailbox contracts on different chains, facilitated by Relayers and secured by ISMs. (doc_4, doc_10)",
+      "description": "Separates the core protocol (Host) from user-deployed Super Apps. Callbacks and registration involve crossing this boundary. Protects Host from malicious Super App code.",
       "validation_required": true
     },
     {
-      "id": 305,
-      "name": "Hyperlane-to-ExternalServices",
+      "id": 404,
+      "name": "Superfluid Host - Agreement Contracts (CFA/GDA)",
       "between_ids": [
-        101,
-        8,
-        127,
-        129
+        201,
+        203
       ],
-      "description": "Boundary between Hyperlane system components and external services like Github (via Github Proxy), GCP Secret Manager. (doc_37, doc_43)",
+      "description": "The Host calls registered agreement contracts. Protects Host from faulty agreement logic (though agreements are part of the core protocol).",
       "validation_required": true
     },
     {
-      "id": 306,
-      "name": "SmartContract-to-SmartContract (Internal)",
+      "id": 405,
+      "name": "Client Application - Forwarder Contracts",
       "between_ids": [
-        102,
-        104,
-        105,
-        106
+        1,
+        208
       ],
-      "description": "Boundary for interactions between different Hyperlane smart contracts on the same chain (e.g., Mailbox to Hook/ISM, TokenRouter to Mailbox). (doc_18, doc_19, doc_21)",
+      "description": "Users interact with immutable forwarder contracts from their client applications (e.g., web UIs). Protects users from interacting with incorrect or malicious contract addresses if they use the official forwarders.",
       "validation_required": true
     },
     {
-      "id": 307,
-      "name": "CCIP_Relayer-to-CCIP_Server",
+      "id": 406,
+      "name": "Protocol - External Oracle",
       "between_ids": [
-        15,
-        119
+        201,
+        9
       ],
-      "description": "Boundary between CCIP Relayer and the CCIP-read service framework server. (doc_29)",
-      "validation_required": true
-    },
-    {
-      "id": 308,
-      "name": "Kubernetes-to-GCP_SecretManager",
-      "between_ids": [
-        16,
-        127
-      ],
-      "description": "Boundary between Kubernetes workloads and GCP Secret Manager, mediated by External Secrets. (doc_43)",
+      "description": "Boundary between the Superfluid protocol and external data providers like price oracles (e.g., Coingecko for Stream Accounting API, TWAP for TCA example). Protects protocol from inaccurate oracle data.",
       "validation_required": true
     }
   ],
   "behaviors": [
     {
-      "id": 401,
-      "name": "Dispatch Interchain Message",
-      "initiator_type": "Actor",
-      "initiator_id": 10,
-      "target_id": 102,
-      "action": "call dispatch()",
-      "description": "A Message Sender initiates an interchain message by calling the dispatch function on the Mailbox contract. (doc_18)"
-    },
-    {
-      "id": 402,
-      "name": "Relay Message",
-      "initiator_type": "Actor",
-      "initiator_id": 3,
-      "target_id": 102,
-      "action": "call process()",
-      "description": "A Relayer submits a message, observed on an origin chain, to the Mailbox contract on a destination chain. (doc_21, doc_10)"
-    },
-    {
-      "id": 403,
-      "name": "Verify Message (ISM)",
-      "initiator_type": "Component",
-      "initiator_id": 102,
-      "target_id": 105,
-      "action": "call verify()",
-      "description": "The Mailbox contract calls the verify function on a configured Interchain Security Module for an incoming message. (doc_19)"
-    },
-    {
-      "id": 404,
-      "name": "Handle Message",
-      "initiator_type": "Component",
-      "initiator_id": 102,
-      "target_id": 11,
-      "action": "call handle()",
-      "description": "The Mailbox contract calls the handle function on the designated Message Recipient contract after successful verification. (doc_19)"
-    },
-    {
-      "id": 405,
-      "name": "Transfer Remote Tokens",
-      "initiator_type": "Actor",
-      "initiator_id": 2,
-      "target_id": 106,
-      "action": "call transferRemote()",
-      "description": "A User initiates an interchain token transfer by calling transferRemote on a TokenRouter contract. (doc_21)"
-    },
-    {
-      "id": 406,
-      "name": "Deploy Core Contracts",
+      "id": 501,
+      "name": "User creates a money stream",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 116,
-      "action": "execute deploy core command",
-      "description": "A Developer uses the Hyperlane CLI to deploy core Hyperlane contracts to a blockchain. (doc_31)"
+      "target_id": 201,
+      "action": "invoke_protocol_feature",
+      "description": "User initiates a transaction to create a continuous flow of Super Tokens to a receiver. The Host calls the CFA.",
+      "risk_level": "Medium"
     },
     {
-      "id": 407,
-      "name": "Deploy Warp Route",
+      "id": 502,
+      "name": "User wraps ERC20 tokens into Super Tokens",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 116,
-      "action": "execute deploy warp command",
-      "description": "A Developer uses the Hyperlane CLI to deploy a Warp Route. (doc_31)"
+      "target_id": 202,
+      "action": "invoke_protocol_feature",
+      "description": "User approves the Super Token contract and calls 'upgrade' to convert their ERC20 tokens into the corresponding Super Token version.",
+      "risk_level": "Medium"
     },
     {
-      "id": 408,
-      "name": "Call Post-Dispatch Hook",
-      "initiator_type": "Component",
-      "initiator_id": 102,
-      "target_id": 104,
-      "action": "call postDispatch()",
-      "description": "The Mailbox contract calls a configured Post-Dispatch Hook after a message is dispatched. (doc_18)"
-    },
-    {
-      "id": 409,
-      "name": "Mint Synthetic Token",
-      "initiator_type": "Component",
-      "initiator_id": 109,
-      "target_id": 11,
-      "action": "call mint()",
-      "description": "A Synthetic TokenRouter (e.g., HypERC20) mints tokens for the recipient on the destination chain. (doc_21 diagram)"
-    },
-    {
-      "id": 410,
-      "name": "Burn Synthetic Token",
-      "initiator_type": "Component",
-      "initiator_id": 109,
-      "target_id": 2,
-      "action": "call burn()",
-      "description": "A Synthetic TokenRouter burns tokens from a user when transferring back to a canonical chain. (doc_21 diagram)"
-    },
-    {
-      "id": 411,
-      "name": "Deposit to ERC4626 Vault",
-      "initiator_type": "Component",
-      "initiator_id": 110,
-      "target_id": 126,
-      "action": "call deposit()",
-      "description": "HypERC4626Collateral deposits assets into an ERC4626 vault during a remote transfer. (doc_22 diagram)"
-    },
-    {
-      "id": 412,
-      "name": "Redeem from ERC4626 Vault",
-      "initiator_type": "Component",
-      "initiator_id": 110,
-      "target_id": 126,
-      "action": "call redeem()",
-      "description": "HypERC4626Collateral redeems assets from an ERC4626 vault when handling an incoming transfer. (doc_22 diagram)"
-    },
-    {
-      "id": 413,
-      "name": "Fetch Secret from GCP",
-      "initiator_type": "Component",
-      "initiator_id": 122,
-      "target_id": 127,
-      "action": "access secret",
-      "description": "External Secrets Helm Chart, through ClusterSecretStore and GCP Service Account, fetches a secret from GCP Secret Manager. (doc_43)"
-    },
-    {
-      "id": 414,
-      "name": "Submit Attestation",
+      "id": 503,
+      "name": "Pool Admin creates a Distribution Pool",
       "initiator_type": "Actor",
       "initiator_id": 4,
-      "target_id": 105,
-      "action": "provide attestation data",
-      "description": "A Validator provides security attestations to an Interchain Security Module. (doc_10, doc_19)"
+      "target_id": 201,
+      "action": "invoke_protocol_feature",
+      "description": "Pool Admin calls the Host (which calls GDA) to deploy a new SuperfluidPool contract for token distributions.",
+      "risk_level": "Medium"
     },
     {
-      "id": 415,
-      "name": "Scrape Blockchain Data",
+      "id": 504,
+      "name": "Pool Admin updates member units in a pool",
       "initiator_type": "Actor",
-      "initiator_id": 5,
-      "target_id": 128,
-      "action": "write data",
-      "description": "Scraper agent reads data from blockchains and writes it to a Postgres database. (doc_11)"
+      "initiator_id": 4,
+      "target_id": 206,
+      "action": "invoke_protocol_feature",
+      "description": "Pool Admin calls 'updateMemberUnits' on the SuperfluidPool contract to change a member's share.",
+      "risk_level": "Medium"
     },
     {
-      "id": 416,
-      "name": "Proxy Github API Request",
+      "id": 505,
+      "name": "Sentinel liquidates a critical stream",
+      "initiator_type": "Actor",
+      "initiator_id": 3,
+      "target_id": 201,
+      "action": "submit_transaction_for_action",
+      "description": "Sentinel identifies a stream where the sender's balance is zero and submits a transaction to close it, potentially earning a reward.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 506,
+      "name": "Super App reacts to an incoming stream",
+      "initiator_type": "Component",
+      "initiator_id": 201,
+      "target_id": 2,
+      "action": "trigger_automated_process",
+      "description": "The Superfluid Host invokes a callback function (e.g., 'onFlowCreated') on a registered Super App when a stream is created to it.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 507,
+      "name": "User stakes tokens in TOGA",
       "initiator_type": "Actor",
       "initiator_id": 1,
-      "target_id": 8,
-      "action": "request data",
-      "description": "A client (e.g., developer tool using Hyperlane Starknet Core (doc_24)) requests Github data via the Github Proxy. (doc_37)"
+      "target_id": 207,
+      "action": "invoke_protocol_feature",
+      "description": "User sends Super Tokens to the TOGA contract to become the PIC for that token, or to outbid the current PIC.",
+      "risk_level": "High"
+    },
+    {
+      "id": 508,
+      "name": "Developer deploys a new Super Token",
+      "initiator_type": "Actor",
+      "initiator_id": 7,
+      "target_id": 205,
+      "action": "invoke_protocol_feature",
+      "description": "Developer calls 'createERC20Wrapper' or 'createPureSuperToken' on the SuperTokenFactory to deploy a new Super Token contract.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 509,
+      "name": "User interacts with protocol via CFAv1Forwarder",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 208,
+      "action": "submit_transaction_for_action",
+      "description": "User's client application calls a function on the CFAv1Forwarder (e.g., 'createFlow'), which then calls the Superfluid Host.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 510,
+      "name": "User interacts with protocol via GDAv1Forwarder",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 209,
+      "action": "submit_transaction_for_action",
+      "description": "User's client application calls a function on the GDAv1Forwarder (e.g., 'createPool'), which then calls the Superfluid Host.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 511,
+      "name": "DAO Participant votes on a proposal",
+      "initiator_type": "Actor",
+      "initiator_id": 5,
+      "target_id": 213,
+      "action": "participate_in_governance_vote",
+      "description": "A SUP token holder casts a vote on an active governance proposal through the Superfluid Governance II contract.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 512,
+      "name": "Auto-Wrap Service wraps tokens",
+      "initiator_type": "Actor",
+      "initiator_id": 8,
+      "target_id": 202,
+      "action": "submit_transaction_for_action",
+      "description": "The Auto-Wrap service, acting on behalf of a user/DAO, calls 'upgrade' on a Super Token contract when the Super Token balance is low.",
+      "risk_level": "Medium"
+    },
+    {
+      "id": 513,
+      "name": "User executes a batch operation via MacroForwarder",
+      "initiator_type": "Actor",
+      "initiator_id": 1,
+      "target_id": 212,
+      "action": "invoke_protocol_feature",
+      "description": "User calls 'runMacro' on the MacroForwarder, providing the address of a User-Defined Macro contract and parameters. The MacroForwarder then executes the batch operations defined by the macro by calling the Superfluid Host.",
+      "risk_level": "Medium"
     }
   ]
 }

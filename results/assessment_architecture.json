@@ -1,66 +1,78 @@
 {
   "evaluation_summary": {
-    "actors": "Actors are largely traceable to roles and entities described in the documentation. Capabilities are generally supported. Some actor types are standard classifications.",
-    "assets": "Assets are generally identifiable from the documentation. However, their assigned 'sensitivity' levels are not explicitly stated in the documents and appear to be inferred.",
-    "components": "Core and infrastructural components are well-documented. 'Trust_level' assignments appear inferred. Some tools mentioned in documentation (e.g., Terraform Module, Grafana, Migrator CLI) are not listed as distinct components, indicating potential omissions.",
-    "data_flows": "Key interactions are represented. The specific boolean values for 'security_properties' (confidentiality, integrity, availability) for each flow are not explicitly detailed in the documentation and seem to be inferred based on common security assumptions.",
-    "trust_boundaries": "Boundaries depict logical separations. The 'validation_required' attribute appears to be an inferred security best practice rather than explicitly stated for each boundary. One boundary (ID 303) includes an interaction for the Scraper agent that might need further clarification for directness.",
-    "behaviors": "Listed behaviors correspond to key system actions. Assigned 'risk_level' for each behavior is not explicitly found in the documentation and appears to be an inferred assessment."
+    "actors": "The extracted actors are well-supported by the documentation, covering users, smart contracts (Super Apps), off-chain services (Sentinels, Automation Services), and governance participants. Descriptions and capabilities align with the provided texts.",
+    "assets": "The listed assets accurately reflect the core financial instruments and data types within the Superfluid ecosystem as described in the documentation. Their types and sensitivity levels appear appropriate.",
+    "components": "Most components, primarily smart contracts and key services like the Subgraph, are correctly identified and described. Asset management references are generally accurate, with one exception involving an invalid asset ID. Several potentially relevant components (IDAv1, existential NFTs) mentioned in the documentation are missing from the extracted list.",
+    "data_flows": "The data flows depict key interactions between actors and components. Most flows are traceable to documented processes. However, several flows reference non-existent component IDs for forwarder contracts, indicating an issue with ID mapping or incomplete component extraction.",
+    "trust_boundaries": "The identified trust boundaries highlight critical security interfaces within the Superfluid architecture. The descriptions are consistent with the documentation. One boundary refers to a non-existent element ID for an external entity not defined as an actor or component.",
+    "behaviors": "The behaviors describe common actions and interactions within the protocol. Initiators, targets, and actions are largely consistent with documented functionalities, with one identified misattribution of a target actor in a specific behavior."
   },
   "findings": [
     {
-      "category": "assets",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'sensitivity' levels assigned to assets (e.g., Asset ID 1 'Arbitrary Interchain Data' as 'Medium', Asset ID 2 'Digital Assets / Tokens' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values based on general assessment rather than direct textual support."
-    },
-    {
       "category": "components",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'trust_level' assigned to components (e.g., Component ID 101 'Hyperlane Protocol' as 'Medium', Component ID 102 'Mailbox (Solidity EVM)' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values."
+      "type": "invalid_reference",
+      "id": 213,
+      "description": "Component `Superfluid Governance II Contract` (ID 213) in `assets_managed` refers to asset ID `13`, which is not found in the assets list."
     },
     {
       "category": "data_flows",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'security_properties' (confidentiality_required, integrity_required, availability_required) for data flows (e.g., Data Flow ID 201) are not explicitly defined with their specific boolean values in the provided documentation. These appear to be inferred based on general security best practices for such interactions."
+      "type": "invalid_reference",
+      "id": 312,
+      "description": "Data flow `User interacts with CFAv1Forwarder from a client application.` (ID 312) `destination_id` refers to component ID `216`, which is not found in the components list. Expected ID `208` (CFAv1Forwarder Contract)."
+    },
+    {
+      "category": "data_flows",
+      "type": "invalid_reference",
+      "id": 313,
+      "description": "Data flow `CFAv1Forwarder calls the Superfluid Host to execute the CFA operation.` (ID 313) `source_id` refers to component ID `216`, which is not found in the components list. Expected ID `208` (CFAv1Forwarder Contract)."
+    },
+    {
+      "category": "data_flows",
+      "type": "invalid_reference",
+      "id": 314,
+      "description": "Data flow `User interacts with GDAv1Forwarder from a client application.` (ID 314) `destination_id` refers to component ID `217`, which is not found in the components list. Expected ID `209` (GDAv1Forwarder Contract)."
+    },
+    {
+      "category": "data_flows",
+      "type": "invalid_reference",
+      "id": 315,
+      "description": "Data flow `GDAv1Forwarder calls the Superfluid Host to execute the GDA operation.` (ID 315) `source_id` refers to component ID `217`, which is not found in the components list. Expected ID `209` (GDAv1Forwarder Contract)."
     },
     {
       "category": "trust_boundaries",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'validation_required' field for trust boundaries (e.g., Trust Boundary ID 301) is not explicitly defined with a boolean value in the provided documentation. This appears to be an inferred security principle for interactions crossing these boundaries."
+      "type": "invalid_reference",
+      "id": 406,
+      "description": "Trust boundary `Protocol - External Oracle` (ID 406) in `between_ids` refers to element ID `13`, which is not found in the defined actors or components. The description indicates an external oracle."
     },
     {
       "category": "behaviors",
-      "type": "potential_concern",
-      "id": null,
-      "description": "The 'risk_level' assigned to behaviors (e.g., Behavior ID 401 'Dispatch Interchain Message' as 'Medium', Behavior ID 405 'Transfer Remote Tokens' as 'High') are not explicitly defined in the provided documentation. These appear to be inferred values based on risk assessment."
+      "type": "invalid_reference",
+      "id": 506,
+      "description": "Behavior `Super App reacts to an incoming stream` (ID 506) `target_id` refers to actor ID `6` (PIC). Based on the behavior's description (\"The Superfluid Host invokes a callback function ... on a registered Super App\"), the target should be actor ID `2` (Super App)."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "The documentation explicitly mentions a 'Terraform Module for Hyperlane Validator' (doc_13), which could be considered a distinct component for infrastructure deployment. While 'Hyperlane Infra Scripts' (ID 121) exists, this specific Terraform module is not listed as a separate component."
+      "description": "Component `Instant Distribution Agreement (IDAv1)` is mentioned in documentation (e.g., Doc 1, Doc 12, Doc 21, Doc 61) with specific contract addresses and callback interactions, but is not listed in the components section of the JSON output."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "'Grafana Dashboards' (doc_25) are mentioned for monitoring. Grafana itself or 'Grafana Dashboards' as a component is not listed in the extracted components."
+      "description": "Component `ConstantFlowNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "A 'Migrator CLI' (doc_12) for scraper database migrations is documented (e.g., `cargo run --package migration --bin init-db`) but not listed as a distinct component. It is unclear if this tool is considered part of the Scraper Agent (Actor ID 5) or a separate developer tool."
+      "description": "Component `PoolAdminNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
     },
     {
-      "category": "trust_boundaries",
-      "type": "potential_concern",
-      "id": 303,
-      "description": "Trust boundary 303 'OffChainAgent-to-SmartContract' includes Scraper (Actor ID 5) interacting with Mailbox (Component IDs 102, 103). While Scrapers read blockchain data (which may include Mailbox events), a direct interactive boundary with Mailbox contracts, similar to how Relayers or Validators interact, is not clearly detailed for the Scraper. The primary documented data flow for the Scraper is to a database (DF 211)."
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component `PoolMemberNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
     }
   ]
 }
