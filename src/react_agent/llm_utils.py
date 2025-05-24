@@ -401,11 +401,17 @@ def generate_llm_response(state: State) -> str:
             
             # 개별 위협에 대한 API 호출
             target_docs = load_file(state.target_docs_path)
-            threat_analysis = load_file("results/all_threats.json")
+            
+            # 현재 위협만 포함하는 개별 프롬프트 생성
+            individual_threat = {
+                "threat": threat,  # 현재 처리 중인 위협만
+                "context": threat_context  # 해당 위협의 컨텍스트 정보
+            }
+            
             prompt = CHECKLIST_TEMPLATE.replace(
                 "{context}", json.dumps(context)
                 ).replace(
-                    "{threat_analysis}", threat_analysis
+                    "{threat_analysis}", json.dumps(individual_threat)  # 개별 위협만 전달
                 )
             
             contents = [
@@ -497,12 +503,21 @@ def generate_llm_response(state: State) -> str:
             # 개별 위협에 대한 API 호출
             initial_checklist = load_file("results/checklist.json")
             assessment_checklist_json = load_file("results/assessment_checklist.json")
+            
+            # 현재 위협만 포함하는 개별 프롬프트 생성
+            individual_threat = {
+                "threat": threat,  # 현재 처리 중인 위협만
+                "context": threat_context  # 해당 위협의 컨텍스트 정보
+            }
+            
             prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
                 "{context}", json.dumps(context)
                 ).replace(
                     "{initial_checklist}", initial_checklist
                 ).replace(
                     "{assessment_checklist}", assessment_checklist_json
+                ).replace(
+                    "{threat_analysis}", json.dumps(individual_threat)  # 개별 위협만 전달 (추가 필요한 경우)
                 )
             
             contents = [

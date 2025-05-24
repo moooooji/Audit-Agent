@@ -15,7 +15,7 @@ def main():
     """
     Main function to run the Audit Agent graph.
     """
-    initial_input_path = os.path.join(DATASET_DIR, 'docs_merged.md')
+    initial_input_path = os.path.join(DATASET_DIR, 'superflui_docs_merged.md')
     print(f"Current working directory: {os.getcwd()}")
     
     input_: dict | None = {"target_docs_path": initial_input_path}
@@ -61,8 +61,8 @@ def main():
                     
                 elif current_graph_state_snapshot.next == "code_binding":
                     user_response = input("output: checklist.json [*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
-                    
-                user_response = input("[*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
+                else:    
+                    user_response = input("[*input*](resume/quit) Type 'resume' to continue, or 'quit' to exit: ").lower()
                     
                 if user_response == 'quit':
                     print("Exiting.")
@@ -73,6 +73,7 @@ def main():
                 else:
                     print("Invalid input. Defaulting to resume.")
                     input_ = None
+
 
         except Exception as e:
             print(f"\n--- ERROR DURING GRAPH EXECUTION ---")
