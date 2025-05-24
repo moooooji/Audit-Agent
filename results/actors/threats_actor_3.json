@@ -1,61 +1,58 @@
 {
-  "id": 4,
-  "stride_category": "Tampering",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
-    "from_chunk": false,
+    "from_chunk": true,
     "actor_id": null,
-    "behavior_id": 505,
-    "capability_match": null
+    "behavior_id": 203,
+    "capability_match": "Create Distribution Pools"
   },
   "threat_target": {
-    "component_id": 203,
-    "asset_ids": [
-      106
-    ]
+    "component_id": 38,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 505,
-    "data_flow_id": 303,
-    "data_description": "Sentinel's liquidation transaction (Data Flow ID 303) being observed in the mempool and superseded by an attacker's transaction."
+    "behavior_id": 203,
+    "data_flow_id": 53,
+    "data_description": "`token` parameter of `createPool` call"
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "On-chain Protocol to Off-chain Sentinel Interface",
+    "boundary_id": 102,
+    "boundary_name": "DApp/Wallet to Blockchain Network",
     "between_component_ids": [
-      3,
-      203
+      31,
+      38
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": true,
+    "integrity_required": false,
     "availability_required": true,
-    "gap_description": "Public mempools allow attackers to see Sentinel liquidation transactions and front-run them to capture the reward (Buffer Deposit ID 106)."
+    "gap_description": "Pool creation can be blocked by providing a malicious Super Token address that causes a revert or excessive gas consumption during an internal call."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "Off-chain Service/Bot",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The Sentinel (ID 3) may be consistently front-run, losing its earned liquidation rewards, which disincentivizes its operation."
+    "description": "Pool Admin's ability to create a pool is dependent on the benign behavior of the Super Token contract specified as a parameter."
   },
   "behavioral_risk": {
-    "behavior_id": 505,
+    "behavior_id": 203,
     "risk_level": "Medium",
-    "rationale": "Systematic front-running can undermine the economic incentives for Sentinels, potentially reducing the number of active Sentinels and thereby weakening the protocol's solvency mechanisms."
+    "rationale": "Prevents legitimate pool creation if a malicious or buggy token is used, impacting the usability of the protocol for the Pool Admin."
   },
   "assumptions": [
-    "Sentinel liquidation transactions are broadcast to public mempools.",
-    "Attackers (e.g., MEV bots) actively monitor mempools for such profitable opportunities.",
-    "Attackers can ensure their transactions are mined before the Sentinel's by manipulating gas prices."
+    "The `GDAv1Forwarder.createPool` function, or subsequent internal calls by the Host/GDAv1, interact with the provided `token` contract address.",
+    "A malicious or buggy Super Token contract can be crafted to revert, consume all gas, or enter an infinite loop upon interaction."
   ],
   "mitigation": {
-    "strategy": "Sentinels (ID 3) should be encouraged to use private transaction relays (e.g., Flashbots) to prevent their transactions from being seen in the public mempool. The protocol's TOGA mechanism (Component ID 215) with PICs aims to provide a dedicated period for specific actors to liquidate.",
-    "type": "Technical Control",
+    "strategy": "Pool Admins should only use verified and trusted Super Token addresses. DApps should validate token addresses against a known list or warn users. The protocol contracts (Host/GDAv1) should use try-catch for external calls to token contracts or apply strict gas stipends if possible.",
+    "type": "Process Control",
     "priority": "Medium"
   },
-  "description": "An attacker (e.g., MEV bot) observes a Sentinel's (ID 3) liquidation transaction in the public mempool. The attacker then submits an identical liquidation transaction with a higher gas price, getting their transaction mined first and thereby 'stealing' the liquidation reward (Buffer Deposit ID 106) from the original Sentinel. This tampers with the fair distribution of rewards.",
+  "description": "A Pool Admin's attempt to create a pool via `GDAv1Forwarder.createPool` fails (reverts or runs out of gas) if the specified Super Token address points to a malicious contract that disrupts the execution flow.",
   "trace_source": {
-    "doc_reference": "doc_18, doc_19",
-    "matched_capability": "Earn rewards for liquidations"
+    "doc_reference": "doc_5, doc_28, doc_47, doc_57",
+    "matched_capability": "Create Distribution Pools"
   }
 }

@@ -1,61 +1,58 @@
 {
-  "id": 8,
+  "id": 13,
   "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
     "actor_id": 1,
-    "behavior_id": 510,
-    "capability_match": "Interact with Superfluid Dashboard"
+    "behavior_id": 212,
+    "capability_match": "Create/Update/Delete Money Streams"
   },
   "threat_target": {
-    "component_id": 210,
+    "component_id": 43,
     "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 510,
-    "data_flow_id": 306,
-    "data_description": "User's ability to send GraphQL queries to the Superfluid Subgraph."
+    "behavior_id": 212,
+    "data_flow_id": 71,
+    "data_description": "UserDefinedMacro returns an excessive number of operations or operations that are individually too complex/gas-intensive."
   },
   "trust_boundary_risk": {
-    "boundary_id": 404,
-    "boundary_name": "On-chain Protocol to Off-chain Data Indexer Interface",
+    "boundary_id": 103,
+    "boundary_name": "Superfluid Core Protocol Boundary",
     "between_component_ids": [
-      201,
-      202,
-      203,
-      204,
-      210
+      43,
+      44
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": false,
     "availability_required": true,
-    "gap_description": "The Superfluid Subgraph, being an off-chain service, may become unavailable due to technical issues, maintenance, or being overwhelmed by queries."
+    "gap_description": "Macro execution fails due to out-of-gas errors if the UserDefinedMacro generates overly complex or numerous batch operations."
   },
   "actor_risk": {
     "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "User or applications (like the Superfluid Dashboard) rely on the Subgraph's availability for displaying data or making informed decisions."
+    "description": "User's attempt to execute a batch operation via a macro fails if the macro is poorly designed or intentionally crafted to consume excessive gas."
   },
   "behavioral_risk": {
-    "behavior_id": 510,
-    "risk_level": "Low",
-    "rationale": "Temporary unavailability of the Subgraph can hinder user experience and data analysis, though critical operations should have on-chain fallbacks."
+    "behavior_id": 212,
+    "risk_level": "Medium",
+    "rationale": "Macros that are too gas-intensive can become unusable, denying users the benefit of batching."
   },
   "assumptions": [
-    "The Superfluid Subgraph is hosted as a centralized or semi-centralized service with potential points of failure.",
-    "Users or applications heavily rely on the Subgraph for data retrieval and do not have robust fallbacks to direct on-chain queries for all necessary information."
+    "The UserDefinedMacro contract's `buildBatchOperations` function generates a list of operations that, when executed by the Superfluid Host, exceeds block gas limits or transaction gas limits.",
+    "The MacroForwarder or Superfluid Host does not have sufficient mechanisms to prevent or handle such gas-heavy batches gracefully beyond transaction failure."
   ],
   "mitigation": {
-    "strategy": "Applications should implement fallbacks to direct on-chain contract calls for essential data if the Subgraph is unavailable. Users should be informed about potential Subgraph downtime. Consider decentralized indexing solutions or multiple redundant indexers where feasible.",
-    "type": "Architectural Change",
-    "priority": "Low"
+    "strategy": "Developers of UserDefinedMacro contracts must carefully optimize for gas and test extensively. The MacroForwarder or Host could potentially implement checks on the number of operations or estimated gas, though this is complex. Users should be cautious with unvetted macros.",
+    "type": "Technical Control",
+    "priority": "Medium"
   },
-  "description": "The User (Actor ID: 1) or applications like the Superfluid Dashboard (Component ID: 209) may be unable to query protocol data if the Superfluid Subgraph (Component ID: 210) becomes unavailable. This could be due to issues with the indexing service, maintenance, or excessive load, leading to a denial of service for data retrieval via Data Flow 306.",
+  "description": "If a User interacts with a UserDefinedMacro contract (either intentionally or via a DApp) that is poorly designed or malicious, its `buildBatchOperations` function might return an array of operations (data flow 71) that is too large or too gas-intensive for the MacroForwarder (43) and subsequently the Superfluid Host (32) to execute within blockchain transaction gas limits. This would cause the `runMacro` transaction to fail, denying the user the service of batch execution.",
   "trace_source": {
-    "doc_reference": "doc_48, doc_52, doc_62",
-    "matched_capability": "Interact with Superfluid Dashboard"
+    "doc_reference": "doc_45",
+    "matched_capability": "Create/Update/Delete Money Streams"
   }
 }

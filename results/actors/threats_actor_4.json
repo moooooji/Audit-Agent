@@ -1,58 +1,60 @@
 {
   "id": 4,
-  "stride_category": "Elevation of Privilege",
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
+    "actor_id": 4,
     "behavior_id": null,
-    "capability_match": "Manage protocol upgrades"
+    "capability_match": "Interact with Superfluid Host and Agreements"
   },
   "threat_target": {
-    "component_id": 201,
-    "asset_ids": []
+    "component_id": null,
+    "asset_ids": [
+      16
+    ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "Governance execution calls that modify ownership, administrative roles, critical contract pointers, or logic within the protocol's core contracts."
+    "data_flow_id": 63,
+    "data_description": "The `userData` field within the `data` payload of `callAgreementWithContext`."
   },
   "trust_boundary_risk": {
-    "boundary_id": 403,
-    "boundary_name": "Protocol to Governance Interface",
+    "boundary_id": 105,
+    "boundary_name": "On-chain/Off-chain Boundary",
     "between_component_ids": [
       4,
-      201
+      32
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If a vulnerability in the governance contract, its voting logic, or the proposal execution process allows an unauthorized party to execute administrative functions, such as changing the owner of a core contract or forcing an upgrade to an arbitrary (malicious) implementation without legitimate DAO consensus."
+    "gap_description": "Super App developers might inadvertently include sensitive information in the `userData` field when calling the Superfluid Host, making it publicly visible on the blockchain."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "DAO Participant/Token Holder",
+    "type": "Smart Contract",
     "overprivileged": false,
-    "description": "The DAO's governance mechanism is the intended authority for protocol control. The risk is this authority being illegitimately seized, bypassed, or exploited by an attacker."
+    "description": "A Super App, if poorly designed, might pass sensitive off-chain data or internal state information through the public `userData` field in its interactions with the Superfluid Host."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Gaining unauthorized administrative control over core protocol contracts via governance exploitation leads to complete protocol compromise, including potential theft of all managed funds and manipulation of all functionalities."
+    "risk_level": "Low",
+    "rationale": "This is a common risk with any public blockchain interaction. The `userData` field is intended for public data or data that can be safely exposed. The risk arises from developer error in the Super App."
   },
   "assumptions": [
-    "There might be exploitable flaws in the governance contract's access control, voting logic, or proposal execution pathway.",
-    "An attacker could accumulate enough governance tokens (e.g., through flash loans if snapshot mechanisms are weak or absent) to manipulate a vote and pass a malicious proposal granting them elevated privileges."
+    "Super App developers are aware that any data passed in `userData` to on-chain functions becomes public.",
+    "There is no encryption or off-chain communication channel for sensitive data related to these specific on-chain calls."
   ],
   "mitigation": {
-    "strategy": "Conduct rigorous and continuous audits of all governance contracts and processes. Implement robust timelocks for all sensitive administrative operations. Ensure a sufficiently decentralized governance token distribution. Utilize secure snapshot-based voting mechanisms to mitigate flash loan-assisted governance attacks. Consider an emergency multi-signature council for pausing or vetoing clearly malicious governance actions in extreme scenarios, with transparent and limited powers.",
-    "type": "Architectural Change",
-    "priority": "High"
+    "strategy": "Educate Super App developers about the public nature of blockchain data, including `userData`. Recommend using `userData` only for non-sensitive information or for data that is intended to be public. Sensitive data should be handled off-chain or encrypted if absolutely necessary to pass on-chain (though generally discouraged).",
+    "type": "Process Control",
+    "priority": "Low"
   },
-  "description": "An attacker exploits a vulnerability in the Superfluid DAO's governance mechanism or its associated tokenomics to illegitimately gain the privileges of the DAO. This allows them to execute arbitrary protocol upgrades, change critical parameters without proper consensus, or directly call administrative functions on core contracts, effectively seizing control of the protocol.",
+  "description": "If a Super App includes sensitive information within the `userData` parameter when calling `callAgreementWithContext` on the Superfluid Host (Data Flow ID 63), this information becomes publicly visible on the blockchain. While `userData` is designed for extensibility, developers must be cautious not to expose confidential data through this mechanism.",
   "trace_source": {
-    "doc_reference": "doc_11, doc_41",
-    "matched_capability": "Manage protocol upgrades"
+    "doc_reference": "doc_21, doc_1",
+    "matched_capability": "Interact with Superfluid Host and Agreements"
   }
 }

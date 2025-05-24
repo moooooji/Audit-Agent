@@ -1,60 +1,58 @@
 {
-  "id": 6,
+  "id": 4,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 5,
-    "behavior_id": 502,
-    "capability_match": "Assign/Update units for pool members"
+    "behavior_id": 210,
+    "capability_match": "Deploy Super App contracts"
   },
   "threat_target": {
-    "component_id": 207,
-    "asset_ids": [
-      101
-    ]
+    "component_id": 32,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 502,
-    "data_flow_id": 305,
-    "data_description": "'pool' parameter in 'Update units parameters', if it can target unauthorized pools due to a flaw."
+    "behavior_id": 210,
+    "data_flow_id": null,
+    "data_description": "Super App registration transaction sent from Developer (5) to Superfluid Host (32), containing the Super App's address and configuration word."
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet to On-chain Protocol Interface",
+    "boundary_id": 102,
+    "boundary_name": "DApp/Wallet to Blockchain Network",
     "between_component_ids": [
-      5,
-      207
+      30,
+      32
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A vulnerability in the access control of underlying GDAv1/SuperfluidPool contracts might allow a Pool Admin to manage pools they don't own."
+    "gap_description": "If `APP_WHITE_LISTING_ENABLED` is false or the deployer whitelisting process is flawed, an unvetted Super App could be registered, gaining the privilege to receive callbacks and interact with the protocol."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "EOA (Externally Owned Account)",
-    "overprivileged": true,
-    "description": "A malicious Pool Admin could exploit a flaw in underlying contracts to gain unauthorized administrative control over other pools."
+    "overprivileged": false,
+    "description": "A Developer (5) might exploit lax registration rules to register a malicious or unvetted Super App."
   },
   "behavioral_risk": {
-    "behavior_id": 502,
+    "behavior_id": 210,
     "risk_level": "High",
-    "rationale": "Unauthorized control over pools can lead to fund theft or major disruption."
+    "rationale": "Registration of an unvetted Super App can grant it privileges to interact with user funds and data via protocol callbacks, potentially leading to exploits if the app is malicious."
   },
   "assumptions": [
-    "A critical access control vulnerability exists in the GDAv1 or SuperfluidPool smart contracts that are called by the GDAv1Forwarder.",
-    "This vulnerability allows an actor authenticated as an admin for one pool to perform administrative actions on another pool."
+    "The `APP_WHITE_LISTING_ENABLED` flag on the Superfluid Host (32) is set to false on the target network, or the whitelisting process for Super App deployers is compromised or insufficient.",
+    "The Developer (5) intends to register a Super App that has not undergone proper security vetting."
   ],
   "mitigation": {
-    "strategy": "Conduct thorough security audits of GDAv1 and SuperfluidPool contracts, specifically focusing on access control mechanisms (e.g., `onlyAdmin` modifiers). Ensure strict separation of administrative privileges between different pool instances. Implement defense-in-depth.",
-    "type": "Technical Control",
+    "strategy": "Enforce `APP_WHITE_LISTING_ENABLED` on mainnet deployments. Implement a robust and transparent process for whitelisting Super App deployers or individual Super Apps. Regularly audit the list of registered Super Apps.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "If a vulnerability exists in the access control logic of the GDAv1 or SuperfluidPool contracts (which are invoked by the GDAv1Forwarder), a malicious Pool Admin might be able to craft an 'update member units' transaction that targets a pool they do not legitimately administer. This would allow them to illicitly modify another pool's settings or unit distributions, effectively elevating their privileges.",
+  "description": "A Developer (5) deploys a Super App (4) and successfully registers it with the Superfluid Host (32). If app whitelisting (`APP_WHITE_LISTING_ENABLED` in doc_23) is not enforced or is bypassed, this unvetted Super App gains the privilege of being an active component in the Superfluid ecosystem, capable of receiving callbacks and potentially exploiting users or the protocol.",
   "trace_source": {
-    "doc_reference": "doc_30, doc_47",
-    "matched_capability": "Assign/Update units for pool members"
+    "doc_reference": "doc_23",
+    "matched_capability": "Deploy Super App contracts"
   }
 }

@@ -8,286 +8,280 @@
       "dapps": ""
     },
     "components": {
-      "201": {
-        "id": 201,
+      "30": {
+        "id": 30,
+        "name": "User Wallet",
+        "description": "Software or hardware used by actors (User, Developer, Pool Admin, PIC, DAO Participant) to manage keys and sign transactions for interacting with the Berachain network and Superfluid contracts. (doc_13, doc_44)",
+        "trust_level": "Medium",
+        "assets_managed": [
+          10,
+          11,
+          12,
+          17
+        ]
+      },
+      "31": {
+        "id": 31,
+        "name": "DApp/Client Application",
+        "description": "Frontend interface (e.g., Superfluid Dashboard, custom web application) used by users to interact with Superfluid Forwarder contracts or directly with protocol contracts. (doc_44, doc_49)",
+        "trust_level": "Low",
+        "assets_managed": []
+      },
+      "32": {
+        "id": 32,
         "name": "Superfluid Host Contract",
-        "description": "The central UUPS proxy contract of the Superfluid protocol. It manages Superfluid Agreements, Super App registrations and callbacks, and overall protocol logic. Referenced in doc_1, doc_4, doc_23, doc_45, doc_61.",
+        "description": "The central UUPS proxy contract of the Superfluid protocol. It manages agreement registrations, Super App callbacks, and routes calls to appropriate agreement contracts. (doc_4, doc_61)",
         "trust_level": "High",
-        "assets_managed": [
-          101,
-          105,
-          106
-        ]
+        "assets_managed": []
       },
-      "202": {
-        "id": 202,
+      "33": {
+        "id": 33,
         "name": "Super Token Contract",
-        "description": "An instance of a UUPS proxy contract for each specific Super Token (e.g., fDAIx). It implements ERC20/ERC777 standards and Superfluid-specific logic like real-time balance calculation and interaction with agreements. Referenced in doc_7, doc_39, doc_59.",
+        "description": "UUPS proxy contract implementing the ISuperToken interface. Manages the logic for a specific Super Token (Wrapper, Pure, or Native Asset type), including real-time balance calculations and wrap/unwrap operations. (doc_7, doc_39, doc_59, doc_58)",
         "trust_level": "High",
         "assets_managed": [
-          101,
-          102,
-          103
+          10,
+          13,
+          14
         ]
       },
-      "203": {
-        "id": 203,
-        "name": "Constant Flow Agreement (CFAv1) Contract",
-        "description": "A UUPS proxy contract, a Superfluid Agreement that manages the logic for creating, updating, deleting, and accounting for money streams (continuous token flows). Referenced in doc_1, doc_21, doc_61, doc_63.",
+      "34": {
+        "id": 34,
+        "name": "Constant Flow Agreement V1 (CFAv1) Contract",
+        "description": "UUPS proxy contract managing the logic for creating, updating, and deleting continuous money streams (flows). (doc_1, doc_6, doc_61)",
         "trust_level": "High",
         "assets_managed": [
-          101,
-          106
+          13
         ]
       },
-      "204": {
-        "id": 204,
-        "name": "General Distribution Agreement (GDAv1) Contract",
-        "description": "A UUPS proxy contract, a Superfluid Agreement that manages the logic for distribution pools, allowing one-to-many or many-to-many token distributions (instant or streamed). Referenced in doc_28, doc_29, doc_61, doc_63.",
+      "35": {
+        "id": 35,
+        "name": "General Distribution Agreement V1 (GDAv1) Contract",
+        "description": "UUPS proxy contract managing the logic for creating distribution pools and distributing Super Tokens (instantly or as streams) to pool members based on their units. (doc_5, doc_28, doc_61)",
         "trust_level": "High",
         "assets_managed": [
-          101
+          15
         ]
       },
-      "205": {
-        "id": 205,
+      "36": {
+        "id": 36,
         "name": "Super Token Factory Contract",
-        "description": "A UUPS proxy contract used to deploy new Super Token contracts (both wrapper and pure types). Referenced in doc_41, doc_42, doc_61.",
+        "description": "UUPS proxy contract used to deploy new Super Token contracts (Wrapper or Pure types). (doc_41, doc_42, doc_61)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "206": {
-        "id": 206,
+      "37": {
+        "id": 37,
         "name": "CFAv1Forwarder Contract",
-        "description": "An immutable contract providing a simplified and gas-efficient interface for client-side applications to interact with the Constant Flow Agreement (e.g., creating/updating/deleting streams). Referenced in doc_10, doc_44, doc_50, doc_56.",
+        "description": "An immutable helper contract that simplifies client-side interactions with the CFAv1 for creating, updating, and deleting flows, and managing permissions. (doc_50, doc_56)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "207": {
-        "id": 207,
+      "38": {
+        "id": 38,
         "name": "GDAv1Forwarder Contract",
-        "description": "An immutable contract providing a simplified interface for client-side applications to interact with the General Distribution Agreement (e.g., creating pools, managing members). Referenced in doc_10, doc_44, doc_46, doc_57.",
+        "description": "An immutable helper contract that simplifies client-side interactions with the GDAv1 for creating pools, managing members, distributing tokens, and claiming from pools. (doc_46, doc_47, doc_57)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "208": {
-        "id": 208,
-        "name": "Sentinel Node Software",
-        "description": "Off-chain software run by Sentinels to monitor Superfluid streams, identify critical/insolvent ones, and trigger liquidation transactions. Referenced in doc_1, doc_18, doc_19.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "209": {
-        "id": 209,
-        "name": "Superfluid Dashboard",
-        "description": "A web-based user interface that allows users to interact with the Superfluid protocol, manage streams, pools, wrap/unwrap tokens, and view account activity. Referenced in doc_2, doc_16, doc_26, doc_53, doc_64.",
-        "trust_level": "Medium",
-        "assets_managed": []
-      },
-      "210": {
-        "id": 210,
+      "39": {
+        "id": 39,
         "name": "Superfluid Subgraph",
-        "description": "A data indexing service (using The Graph protocol) that provides a queryable API for accessing historical and real-time data from the Superfluid protocol. Referenced in doc_15, doc_20, doc_48, doc_52, doc_54, doc_62.",
+        "description": "An off-chain indexing service (The Graph node) that processes Superfluid contract events, providing a queryable GraphQL API for protocol data. (doc_48, doc_52, doc_62)",
         "trust_level": "Medium",
         "assets_managed": []
       },
-      "211": {
-        "id": 211,
-        "name": "Vesting Scheduler Contract",
-        "description": "A smart contract designed for setting up token vesting schedules with optional cliffs, initiating Superfluid streams for linear vesting. Referenced in doc_17, doc_64.",
+      "40": {
+        "id": 40,
+        "name": "TOGA Contract",
+        "description": "UUPS proxy contract managing the Transparent Ongoing Auction for PIC selection and stake management. (doc_1, doc_18)",
         "trust_level": "High",
         "assets_managed": [
-          101
+          14
         ]
       },
-      "212": {
-        "id": 212,
+      "41": {
+        "id": 41,
+        "name": "Sentinel Node Software",
+        "description": "Off-chain software run by Sentinels to monitor stream solvency and submit liquidation transactions to the CFAv1 contract via the Superfluid Host. (doc_19)",
+        "trust_level": "Medium",
+        "assets_managed": []
+      },
+      "42": {
+        "id": 42,
+        "name": "SuperfluidPool Contract",
+        "description": "A UUPS proxy contract instance representing a specific distribution pool, created via GDAv1. It manages member units and distributes received tokens. (doc_28, doc_60, doc_61)",
+        "trust_level": "High",
+        "assets_managed": [
+          10,
+          15
+        ]
+      },
+      "43": {
+        "id": 43,
         "name": "MacroForwarder Contract",
-        "description": "A trusted forwarder contract that allows users to execute predefined batch operations (macros) on the Superfluid protocol in a single transaction. Referenced in doc_45, doc_49.",
+        "description": "An immutable, trusted forwarder contract that allows users to execute pre-defined batch operations (macros) on the Superfluid protocol. (doc_45)",
         "trust_level": "High",
         "assets_managed": []
       },
-      "213": {
-        "id": 213,
+      "44": {
+        "id": 44,
         "name": "UserDefinedMacro Contract",
-        "description": "A user-deployed smart contract that defines a specific sequence of Superfluid operations to be executed as a batch via the MacroForwarder. Referenced in doc_45.",
+        "description": "A custom smart contract deployed by a developer that defines a specific set of batch operations to be executed via the MacroForwarder. (doc_45)",
         "trust_level": "Medium",
         "assets_managed": []
       },
-      "214": {
-        "id": 214,
-        "name": "SuperfluidPool Contract Instance",
-        "description": "An instance of a UUPS proxy contract representing a specific distribution pool, created via the GDAv1. It holds pool-specific data like members and units. Referenced in doc_60, doc_61.",
+      "45": {
+        "id": 45,
+        "name": "SuperfluidGovernanceII Contract",
+        "description": "The UUPS proxy contract responsible for the governance of the Superfluid protocol, allowing DAO participants to vote on proposals. (doc_11, doc_61)",
         "trust_level": "High",
-        "assets_managed": [
-          101
-        ]
+        "assets_managed": []
       },
-      "215": {
-        "id": 215,
-        "name": "TOGA (Transparent Ongoing Auction) Contract",
-        "description": "A smart contract that manages the auction for becoming the Patrician in Charge (PIC) for a given token, and handles staking and slashing for PICs. Referenced in doc_1, doc_18.",
+      "46": {
+        "id": 46,
+        "name": "Existential NFT Contract",
+        "description": "UUPS proxy contract implementing logic for Superfluid NFTs (ConstantFlowNFT, PoolAdminNFT, PoolMemberNFT) which represent ownership or roles. (doc_61)",
         "trust_level": "High",
         "assets_managed": [
-          107,
-          101
+          17
         ]
       }
     },
     "actors": {
       "1": {
         "id": 1,
-        "name": "User",
+        "name": "User (Superfluid)",
         "type": "EOA (Externally Owned Account)",
-        "description": "End-user interacting with the Superfluid protocol, initiating transactions like wrapping tokens, creating/managing streams, deploying contracts, and interacting with dApps. Referenced in doc_2, doc_13, doc_44.",
+        "description": "Individual or entity interacting with the Superfluid protocol to manage Super Tokens, create streams, or participate in distributions. Interacts via a wallet and DApp/Client Application. (doc_2, doc_13, doc_44)",
         "capabilities": [
-          "Initiate token wrapping/unwrapping",
-          "Create/Update/Delete money streams",
-          "Create/Manage distribution pools",
-          "Deploy Super Tokens",
-          "Deploy Super Apps",
-          "Interact with Superfluid Dashboard",
-          "Sign transactions with private keys"
+          "Wrap/Unwrap Super Tokens",
+          "Create/Update/Delete Money Streams",
+          "Create/Join/Manage Distribution Pools",
+          "Claim from Distribution Pools",
+          "Deploy Super Tokens and Super Apps (if also a Developer)",
+          "Stake in TOGA (if also a PIC)"
         ]
       },
       "2": {
         "id": 2,
-        "name": "Super App",
-        "type": "Smart Contract",
-        "description": "Smart contracts registered with the Superfluid Protocol that react to Superfluid agreement events (e.g., stream creation/update/deletion) via callbacks. Referenced in doc_3, doc_21, doc_22, doc_24.",
+        "name": "Sentinel",
+        "type": "Off-chain Service/Bot",
+        "description": "Operator of off-chain software that monitors the Superfluid network and liquidates critical or insolvent streams. (doc_1, doc_19, doc_43)",
         "capabilities": [
-          "Execute custom logic on stream events",
-          "Receive Superfluid streams",
-          "Initiate Superfluid streams",
-          "Interact with Superfluid Host for callbacks"
+          "Monitor stream solvency",
+          "Submit liquidation transactions for streams"
         ]
       },
       "3": {
         "id": 3,
-        "name": "Sentinel",
-        "type": "Off-chain Service/Bot",
-        "description": "Off-chain nodes that monitor the Superfluid network for critical or insolvent streams and initiate liquidation transactions. Referenced in doc_1, doc_6, doc_18, doc_19.",
+        "name": "Pool Admin",
+        "type": "EOA (Externally Owned Account)",
+        "description": "An account (EOA or contract) responsible for creating and managing a specific Superfluid Distribution Pool, including assigning units to members. (doc_5, doc_28, doc_30)",
         "capabilities": [
-          "Monitor stream solvency",
-          "Close critical/insolvent streams",
-          "Participate in TOGA (Transparent Ongoing Auction)",
-          "Earn rewards for liquidations"
+          "Create Distribution Pools",
+          "Update member units in a pool",
+          "Distribute funds/streams to a pool (if configured)"
         ]
       },
       "4": {
         "id": 4,
-        "name": "Superfluid DAO",
-        "type": "DAO Participant/Token Holder",
-        "description": "The decentralized autonomous organization responsible for governing the Superfluid protocol, including upgrades and parameter changes. Referenced in doc_11, doc_41.",
+        "name": "Super App",
+        "type": "Smart Contract",
+        "description": "A smart contract registered with the Superfluid Protocol that can react to Superfluid agreement actions (e.g., stream creation/updates) via callbacks. (doc_3, doc_24, doc_21)",
         "capabilities": [
-          "Vote on governance proposals",
-          "Manage protocol upgrades",
-          "Set protocol parameters"
+          "Execute custom logic upon receiving Superfluid callbacks",
+          "Interact with Superfluid Host and Agreements"
         ]
       },
       "5": {
         "id": 5,
-        "name": "Pool Admin",
+        "name": "Developer",
         "type": "EOA (Externally Owned Account)",
-        "description": "An actor responsible for creating and managing Superfluid Distribution Pools, including assigning units to pool members. Referenced in doc_5, doc_28, doc_30.",
+        "description": "Individual or entity that deploys Super Tokens, Super Apps, or other smart contracts interacting with the Superfluid protocol. (doc_41, doc_42, doc_22)",
         "capabilities": [
-          "Create distribution pools",
-          "Assign/Update units for pool members",
-          "Manage pool configurations",
-          "Initiate distributions (if configured)"
+          "Deploy Super Token contracts",
+          "Deploy Super App contracts",
+          "Deploy UserDefinedMacro contracts"
         ]
       },
       "6": {
         "id": 6,
-        "name": "Pool Member",
+        "name": "PIC (Patrician in Charge)",
         "type": "EOA (Externally Owned Account)",
-        "description": "An actor who is a recipient in a Superfluid Distribution Pool, receiving tokens based on their allocated units. Referenced in doc_5, doc_28, doc_30.",
+        "description": "An account that stakes Super Tokens in the TOGA contract to become eligible for rewards from liquidating critical streams during the patrician period. (doc_1, doc_18)",
         "capabilities": [
-          "Receive token distributions (instant or streamed)",
-          "Claim distributed tokens",
-          "Connect/Disconnect from pools"
+          "Stake Super Tokens in TOGA contract",
+          "Receive liquidation rewards"
         ]
       },
       "7": {
         "id": 7,
-        "name": "Developer",
-        "type": "EOA (Externally Owned Account)",
-        "description": "Individuals or teams building applications, Super Apps, or custom Super Tokens on top of the Superfluid protocol. Referenced in doc_13, doc_22, doc_26.",
+        "name": "Superfluid DAO Participant",
+        "type": "DAO Participant/Token Holder",
+        "description": "Holder of Superfluid governance tokens (e.g., SUP) participating in protocol governance decisions. (doc_11)",
         "capabilities": [
-          "Deploy Super Tokens",
-          "Deploy Super Apps",
-          "Integrate Superfluid SDK/APIs",
-          "Develop smart contracts interacting with Superfluid"
-        ]
-      },
-      "8": {
-        "id": 8,
-        "name": "PIC (Patrician in Charge)",
-        "type": "EOA (Externally Owned Account)",
-        "description": "An actor who participates in the Transparent Ongoing Auction (TOGA) to become the designated liquidator for a specific token, earning rewards for closing critical streams during the patrician period. Referenced in doc_1, doc_18.",
-        "capabilities": [
-          "Stake tokens in TOGA",
-          "Receive rewards for liquidating streams during patrician period",
-          "Monitor streams for liquidation opportunities"
+          "Vote on governance proposals",
+          "Propose changes to the protocol (depending on governance rules)"
         ]
       }
     },
     "assets": {
-      "101": {
-        "id": 101,
+      "10": {
+        "id": 10,
         "name": "Super Token",
-        "description": "Programmable tokens (e.g., USDCx, DAIx, ETHx) that are ERC20 compatible and enable Superfluid functionalities like money streaming and distributions. Can be wrapped from ERC20s/native assets or be pure. Referenced in doc_1, doc_2, doc_7, doc_39.",
-        "type": "Digital Currency (Programmable)",
+        "description": "A programmable token standard extending ERC20/ERC777, enabling features like money streaming and distributions. Can be Wrapper, Pure, or Native Asset type. (doc_7, doc_39)",
+        "type": "Digital Currency/Token",
         "sensitivity": "High"
       },
-      "102": {
-        "id": 102,
-        "name": "ERC20 Token",
-        "description": "Standard ERC20 tokens (e.g., USDC, DAI) that can be wrapped into Super Tokens to gain Superfluid functionalities. Referenced in doc_7, doc_14, doc_55.",
-        "type": "Digital Currency",
+      "11": {
+        "id": 11,
+        "name": "Underlying ERC20 Token",
+        "description": "A standard ERC20 token that can be wrapped to create a Wrapper Super Token. (doc_7, doc_42)",
+        "type": "Digital Currency/Token",
         "sensitivity": "High"
       },
-      "103": {
-        "id": 103,
-        "name": "Native Asset",
-        "description": "Native blockchain assets (e.g., ETH, MATIC) that can be wrapped into Native Super Tokens. Referenced in doc_39, doc_55.",
-        "type": "Digital Currency (Blockchain Native)",
+      "12": {
+        "id": 12,
+        "name": "Native Blockchain Asset",
+        "description": "The native currency of a blockchain (e.g., ETH, MATIC) that can be wrapped to create a Native Asset Super Token. (doc_39, doc_58)",
+        "type": "Digital Currency/Native Coin",
         "sensitivity": "High"
       },
-      "104": {
-        "id": 104,
-        "name": "Superfluid NFT",
-        "description": "Non-Fungible Tokens used within the Superfluid ecosystem, such as Tradeable Cashflow NFTs, ConstantOutflowNFTs, PoolAdminNFTs, representing ownership or rights related to streams or pools. Referenced in doc_3, doc_24, doc_32, doc_61.",
-        "type": "Digital Asset (Non-Fungible)",
-        "sensitivity": "Medium"
-      },
-      "105": {
-        "id": 105,
-        "name": "User Data",
-        "description": "Arbitrary byte data that can be attached to Superfluid operations (e.g., stream creation, updates) for custom logic or off-chain processing. Referenced in doc_1, doc_21, doc_37, doc_51.",
-        "type": "Arbitrary Data (bytes)",
-        "sensitivity": "Medium"
-      },
-      "106": {
-        "id": 106,
-        "name": "Buffer Deposit",
-        "description": "Super Tokens locked by a stream sender in the protocol when a stream is created, serving as a security deposit to ensure stream solvency. Referenced in doc_1, doc_6, doc_18.",
-        "type": "Digital Currency (Locked)",
+      "13": {
+        "id": 13,
+        "name": "Stream Buffer/Deposit",
+        "description": "An amount of Super Tokens locked by a stream sender in the CFAv1 agreement as a security deposit to ensure stream solvency. (doc_1, doc_6, doc_18)",
+        "type": "Locked Funds/Super Token",
         "sensitivity": "High"
       },
-      "107": {
-        "id": 107,
+      "14": {
+        "id": 14,
         "name": "TOGA Stake",
-        "description": "Super Tokens staked by a Patrician in Charge (PIC) in the Transparent Ongoing Auction (TOGA) contract as a commitment to perform liquidations. Referenced in doc_1, doc_18.",
-        "type": "Digital Currency (Locked)",
+        "description": "Super Tokens staked by a PIC in the TOGA contract to participate in the liquidation auction. (doc_1, doc_18)",
+        "type": "Locked Funds/Super Token",
         "sensitivity": "High"
       },
-      "108": {
-        "id": 108,
-        "name": "Private Keys",
-        "description": "Cryptographic keys used by actors (Users, Sentinels, Developers, etc.) to authorize transactions and interact with the blockchain. Referenced in doc_13, doc_19.",
-        "type": "Cryptographic Key",
-        "sensitivity": "High"
+      "15": {
+        "id": 15,
+        "name": "Pool Units",
+        "description": "Represents a member's proportional share in a GDAv1 Distribution Pool. Can be an ERC20-like representation within the pool contract. (doc_1, doc_5, doc_28, doc_30)",
+        "type": "Entitlement/Share Representation",
+        "sensitivity": "Medium"
+      },
+      "16": {
+        "id": 16,
+        "name": "User-provided Data (in transactions)",
+        "description": "Arbitrary byte data that can be attached to Superfluid operations (e.g., creating a stream, distributing to a pool) for custom logic or off-chain interpretation. (doc_1, doc_37, doc_51)",
+        "type": "Arbitrary Data",
+        "sensitivity": "Low"
+      },
+      "17": {
+        "id": 17,
+        "name": "Existential NFT",
+        "description": "Non-Fungible Tokens representing specific roles or states within the Superfluid protocol, such as ConstantFlowNFT for streams, PoolAdminNFT for pool administration rights, or PoolMemberNFT for pool membership. (doc_61)",
+        "type": "Non-Fungible Token/Entitlement",
+        "sensitivity": "Medium"
       }
     }
   }

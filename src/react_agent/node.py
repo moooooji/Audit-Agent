@@ -147,13 +147,23 @@ def generate_checklist(state: State) -> State:
         
         response = generate_llm_response(state)
         
-        # 모든 위협의 checklist_items를 합치기
-        checklist_items = []
-        for threat_response in response:
-            if 'checklist_items' in threat_response:
-                checklist_items.extend(threat_response['checklist_items'])
+        # response는 이미 수정된 체크리스트를 포함한 딕셔너리
+        checklist_items = response.get('checklist_items', [])
         
-        print("checklist_items : ", checklist_items)
+        print(f"받은 checklist_items 개수: {len(checklist_items)}개")
+        
+        # 피드백 후에는 중복이 이미 제거되어 있어야 하지만, 안전을 위해 한 번 더 체크
+        unique_items = []
+        seen = set()
+        for item in checklist_items:
+            # title과 description을 기준으로 중복 체크
+            item_key = (item.get('title', ''), item.get('description', ''))
+            if item_key not in seen:
+                seen.add(item_key)
+                unique_items.append(item)
+        
+        checklist_items = unique_items
+        print(f"중복 제거 후 checklist_items : {len(checklist_items)}개")
                     
         print("completed initial checklist analysis")
         
@@ -184,11 +194,23 @@ def generate_checklist(state: State) -> State:
         
         response = generate_llm_response(state)
         
-        # 모든 위협의 checklist_items를 합치기
-        checklist_items = []
-        for threat_response in response:
-            if 'checklist_items' in threat_response:
-                checklist_items.extend(threat_response['checklist_items'])
+        # response는 이미 수정된 체크리스트를 포함한 딕셔너리
+        checklist_items = response.get('checklist_items', [])
+        
+        print(f"받은 checklist_items 개수: {len(checklist_items)}개")
+        
+        # 피드백 후에는 중복이 이미 제거되어 있어야 하지만, 안전을 위해 한 번 더 체크
+        unique_items = []
+        seen = set()
+        for item in checklist_items:
+            # title과 description을 기준으로 중복 체크
+            item_key = (item.get('title', ''), item.get('description', ''))
+            if item_key not in seen:
+                seen.add(item_key)
+                unique_items.append(item)
+        
+        checklist_items = unique_items
+        print(f"중복 제거 후 checklist_items : {len(checklist_items)}개")
             
         print("completed feedback loop checklist analysis")
         

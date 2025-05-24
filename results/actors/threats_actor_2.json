@@ -1,58 +1,60 @@
 {
   "id": 5,
-  "stride_category": "Tampering",
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": 501,
-    "capability_match": "Initiate Superfluid streams"
+    "behavior_id": 206,
+    "capability_match": "Submit liquidation transactions for streams"
   },
   "threat_target": {
-    "component_id": 2,
+    "component_id": 32,
     "asset_ids": [
-      101
+      13
     ]
   },
   "attack_surface": {
-    "behavior_id": 501,
-    "data_flow_id": null,
-    "data_description": "Internal logic within the Super App that triggers `createFlow` or `updateFlow` to external addresses using its own funds."
+    "behavior_id": 206,
+    "data_flow_id": 64,
+    "data_description": "Crafted liquidation transaction exploiting a vulnerability."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 105,
+    "boundary_name": "On-chain/Off-chain Boundary",
+    "between_component_ids": [
+      41,
+      32
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "A bug or exploit in the Super App's logic for initiating outgoing streams could lead to it sending more funds than intended, sending to incorrect recipients, or failing to stop streams, thus tampering with its own token balances."
+    "availability_required": true,
+    "gap_description": "A flaw in the Superfluid Host or CFAv1's liquidation logic could allow a Sentinel to perform actions beyond simply liquidating a stream and claiming the buffer."
   },
   "actor_risk": {
     "actor_id": 2,
-    "type": "Smart Contract",
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "A buggy or poorly designed Super App might contain flaws in its stream creation or management logic, leading to unintentional draining or misdirection of its own Super Token reserves when it acts as a sender."
+    "description": "A malicious Sentinel or one controlled by an attacker attempts to exploit a protocol vulnerability through the liquidation mechanism."
   },
   "behavioral_risk": {
-    "behavior_id": 501,
-    "risk_level": "Medium",
-    "rationale": "Bugs in financial logic within a smart contract can lead to direct and irreversible loss of its own funds."
+    "behavior_id": 206,
+    "risk_level": "High",
+    "rationale": "Exploitation of liquidation logic could lead to unauthorized fund extraction, state corruption, or other critical failures."
   },
   "assumptions": [
-    "The Super App holds a balance of Super Tokens intended for streaming outwards.",
-    "The Super App's internal logic for determining stream parameters (recipient, flow rate, duration/termination conditions) for outgoing streams is flawed or can be manipulated through other interactions.",
-    "There are insufficient internal controls or limits on the Super App's streaming behavior."
+    "The liquidation logic in the Host or CFAv1 contract might contain an undiscovered vulnerability.",
+    "A Sentinel can craft specific transaction inputs to trigger such a vulnerability."
   ],
   "mitigation": {
-    "strategy": "Implement rigorous testing, formal verification (if applicable), and security audits for Super Apps, especially those that manage and stream significant token balances. Implement internal financial controls, rate limits, and emergency stop mechanisms within the Super App.",
+    "strategy": "Rigorous and continuous security audits of the Superfluid Host and CFAv1 contracts, especially the liquidation logic. Formal verification methods. Bug bounty programs.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Super App with flawed internal logic for initiating or managing its outgoing Superfluid streams could inadvertently tamper with its own Super Token balance. This might occur by creating streams with excessive flow rates, sending streams to incorrect or unintended recipients, or failing to terminate streams when conditions require, leading to a drain of its funds.",
+  "description": "A malicious Sentinel (or an attacker controlling a Sentinel's EOA) submits a specially crafted liquidation transaction. This transaction exploits an unknown vulnerability in the Superfluid Host contract or the underlying CFAv1 agreement's handling of liquidations. This could allow the Sentinel to drain funds beyond the intended stream buffer, affect unrelated streams, manipulate protocol state incorrectly, or gain other unauthorized privileges.",
   "trace_source": {
-    "doc_reference": "doc_3",
-    "matched_capability": "Initiate Superfluid streams"
+    "doc_reference": "doc_18, doc_19",
+    "matched_capability": "Submit liquidation transactions for streams"
   }
 }

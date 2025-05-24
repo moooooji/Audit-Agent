@@ -347,13 +347,10 @@ def generate_llm_response(state: State) -> str:
             threat_id = threat["id"]
             print(f"Processing threat ID: {threat_id}")
             
-            # 개별 위협에 대한 context 생성
-            context = []
-            
             # actor_risk 정보 보강
             actor_id = threat["actor_risk"]["actor_id"]
             actor_details = None
-            if actor_id is not None:  # None이 아닌 경우에만 처리
+            if actor_id is not None:
                 actor_details = react_agent.variables.actors_map.get(actor_id, {})
             
             # threat_target 컴포넌트 및 자산 정보 보강
@@ -387,32 +384,28 @@ def generate_llm_response(state: State) -> str:
             if boundary_id is not None:
                 boundary_details = react_agent.variables.trust_boundaries_map.get(boundary_id, {})
             
-            # 보강된 세부 정보들만 context에 추가
-            threat_context = {
-                "threat_id": threat_id,
-                "actor_details": actor_details,
-                "component_details": component_details,
-                "asset_details": asset_details,
-                "behavior_details": behavior_details,
-                "data_flow_details": data_flow_details,
-                "boundary_details": boundary_details
+            # 개별 위협과 관련 상세 정보를 하나의 객체로 구성
+            threat_with_context = {
+                "threat": threat,
+                "related_entities": {
+                    "actor": actor_details,
+                    "component": component_details,
+                    "assets": asset_details,
+                    "behavior": behavior_details,
+                    "data_flow": data_flow_details,
+                    "trust_boundary": boundary_details
+                }
             }
-            context.append(threat_context)
             
             # 개별 위협에 대한 API 호출
             target_docs = load_file(state.target_docs_path)
             
-            # 현재 위협만 포함하는 개별 프롬프트 생성
-            individual_threat = {
-                "threat": threat,  # 현재 처리 중인 위협만
-                "context": threat_context  # 해당 위협의 컨텍스트 정보
-            }
-            
+            # 프롬프트 생성 - 개별 위협만 전달
             prompt = CHECKLIST_TEMPLATE.replace(
-                "{context}", json.dumps(context)
-                ).replace(
-                    "{threat_analysis}", json.dumps(individual_threat)  # 개별 위협만 전달
-                )
+                "{context}", json.dumps(threat_with_context["related_entities"])
+            ).replace(
+                "{threat_analysis}", json.dumps({"threats": [threat]})  # 단일 위협을 배열로 감싸서 템플릿 형식 유지
+            )
             
             contents = [
                 {
@@ -433,28 +426,23 @@ def generate_llm_response(state: State) -> str:
     elif state.is_feedback_checklist_analysis:
         print("=============feedback checklist analysis node=============")
         
-        # threats_list 파일 파싱
-        with open("results/all_threats.json", "r") as f:
-            threats_data = json.load(f)
+        # 필요한 파일들 로드
+        threat_analysis = load_file("results/all_threats.json")
+        initial_checklist = load_file("results/checklist.json")
+        assessment_checklist_json = load_file("results/assessment_checklist.json")
         
-        # threats 배열 가져오기
+        # 모든 위협에 대한 컨텍스트를 한 번에 준비
+        threats_data = json.loads(threat_analysis)
         threats = threats_data["threats"]
+        all_contexts = []
         
-        # 모든 응답을 저장할 배열 초기화
-        all_responses = []
-        
-        # 각 위협(threat)에 대해 반복
         for threat in threats:
             threat_id = threat["id"]
-            print(f"Processing feedback for threat ID: {threat_id}")
-            
-            # 개별 위협에 대한 context 생성
-            context = []
             
             # actor_risk 정보 보강
             actor_id = threat["actor_risk"]["actor_id"]
             actor_details = None
-            if actor_id is not None:  # None이 아닌 경우에만 처리
+            if actor_id is not None:
                 actor_details = react_agent.variables.actors_map.get(actor_id, {})
             
             # threat_target 컴포넌트 및 자산 정보 보강
@@ -488,7 +476,7 @@ def generate_llm_response(state: State) -> str:
             if boundary_id is not None:
                 boundary_details = react_agent.variables.trust_boundaries_map.get(boundary_id, {})
             
-            # 보강된 세부 정보들만 context에 추가
+            # 각 위협의 컨텍스트 추가
             threat_context = {
                 "threat_id": threat_id,
                 "actor_details": actor_details,
@@ -498,43 +486,31 @@ def generate_llm_response(state: State) -> str:
                 "data_flow_details": data_flow_details,
                 "boundary_details": boundary_details
             }
-            context.append(threat_context)
-            
-            # 개별 위협에 대한 API 호출
-            initial_checklist = load_file("results/checklist.json")
-            assessment_checklist_json = load_file("results/assessment_checklist.json")
-            
-            # 현재 위협만 포함하는 개별 프롬프트 생성
-            individual_threat = {
-                "threat": threat,  # 현재 처리 중인 위협만
-                "context": threat_context  # 해당 위협의 컨텍스트 정보
+            all_contexts.append(threat_context)
+        
+        # 전체를 한 번에 처리하는 프롬프트 생성
+        prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
+            "{context}", json.dumps(all_contexts)
+        ).replace(
+            "{initial_checklist}", initial_checklist
+        ).replace(
+            "{assessment_checklist}", assessment_checklist_json
+        )
+        
+        contents = [
+            {
+                "role": "user",
+                "content": prompt
             }
-            
-            prompt = CHECKLIST_CORRECTION_TEMPLATE.replace(
-                "{context}", json.dumps(context)
-                ).replace(
-                    "{initial_checklist}", initial_checklist
-                ).replace(
-                    "{assessment_checklist}", assessment_checklist_json
-                ).replace(
-                    "{threat_analysis}", json.dumps(individual_threat)  # 개별 위협만 전달 (추가 필요한 경우)
-                )
-            
-            contents = [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+        ]
 
-            # API 호출 및 응답 저장
-            response = call_chatgpt_api(contents, ChecklistConfig)
-            all_responses.append(json_str_to_dict(response.choices[0].message.content))
-            
-            print(f"Completed feedback processing for threat ID: {threat_id}")
-
-        # 모든 응답을 하나의 배열로 반환
-        return all_responses
+        # 한 번의 API 호출로 수정된 체크리스트 생성
+        response = call_chatgpt_api(contents, ChecklistConfig)
+        corrected_checklist = json_str_to_dict(response.choices[0].message.content)
+        
+        print(f"Corrected checklist with {len(corrected_checklist.get('checklist_items', []))} items")
+        
+        return corrected_checklist
     
     # verify checklist node
     elif state.is_assessment_checklist and state.checklist_feedback_loop_count < CHECKLIST_FEEDBACK_LOOP_COUNT:

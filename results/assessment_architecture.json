@@ -1,324 +1,300 @@
 {
   "evaluation_summary": {
-    "actors": "The 'actors' list in the provided JSON is empty. The documentation describes numerous actors (e.g., Users, Super Apps, Sentinels, DAO, Pool Admins, Pool Members, Developers) that are not present, indicating a complete lack of extraction for this category. Therefore, it fails on completeness. Traceability, schema compliance, and consistency cannot be evaluated for an empty list.",
-    "assets": "The 'assets' list in the provided JSON is empty. The documentation details various assets (e.g., Super Tokens, ERC20 Tokens, NFTs, Smart Contract code, User Data, Buffer Deposits, Governance Tokens) that have not been extracted. This indicates a complete failure in completeness for this category. Traceability, schema compliance, and consistency are not evaluable for an empty list.",
-    "components": "The 'components' list in the provided JSON is empty. The documentation outlines many components (e.g., Superfluid Host, Super Token Contracts, Agreement Contracts like CFAv1/GDAv1, Forwarder Contracts, Sentinel Nodes, Superfluid Dashboard, Subgraph) that are missing. This shows a complete lack of extraction for components, failing the completeness criterion. Traceability, schema compliance, and consistency cannot be assessed for an empty list.",
-    "data_flows": "The 'data_flows' list in the provided JSON is empty. The documentation describes numerous interactions and data movements (e.g., stream creation, token wrapping, callback execution, governance voting, liquidation processes) that are not captured. This signifies a complete omission in extracting data flows, failing the completeness test. Traceability, schema compliance, and consistency are not assessable for an empty list.",
-    "trust_boundaries": "The 'trust_boundaries' list in the provided JSON is empty. The documentation implies several trust boundaries (e.g., between user wallets and smart contracts, between on-chain and off-chain components, between the protocol and its governance mechanism) that have not been identified. This indicates a complete failure to extract trust boundaries, thus failing on completeness. Traceability, schema compliance, and consistency cannot be evaluated for an empty list.",
-    "behaviors": "The 'behaviors' list in the provided JSON is empty. The documentation details a wide range of system behaviors and use cases (e.g., money streaming, token distribution, vesting, staking, batch transactions) that are entirely missing from the extraction. This represents a complete failure in terms of completeness for this category. Traceability, schema compliance, and consistency are not evaluable for an empty list."
+    "actors": "The actors (Voter, Proposal Creator, System Administrator) in the provided JSON describe a Decentralized Voting Platform (DVP) and are not traceable to the Berachain documentation. Conversely, key Berachain actors like Users of Superfluid, Sentinels, Pool Admins, and Super Apps are missing.",
+    "assets": "The assets (Vote Data, Proposal Data, Authentication Token) are specific to a DVP and not found in the Berachain documentation. Berachain-specific assets such as Super Tokens, Buffers, and TOGA Stakes are missing.",
+    "components": "The components (Frontend Web Application, API Gateway, generic Database) model a DVP's architecture, not Berachain's. Core Berachain components like the Superfluid Host, Agreement Contracts (CFAv1, GDAv1), Super Token Contracts, and Forwarders are missing.",
+    "data_flows": "The data flows depicted are for a DVP and do not reflect Berachain's operations like stream creation/management or pool interactions. These Berachain-specific data flows are missing.",
+    "trust_boundaries": "The trust boundaries (Public Network, Application Backend) are for a DVP's architecture. Berachain's trust boundaries involving users, wallets, smart contracts, and off-chain services are not represented and are missing.",
+    "behaviors": "The behaviors (Voter Casts Vote, APIG Authenticates) are actions within a DVP. They do not align with Berachain behaviors such as creating streams, managing pools, or sentinel liquidations, which are missing."
   },
   "findings": [
     {
       "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'User' (initiating transactions like wrapping, streaming, deploying contracts) is described throughout the documentation (e.g., doc_2, doc_13, doc_44) but not extracted."
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Actor 'Voter' (ID: 1) is not supported by the Berachain documentation; it pertains to a DVP."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Actor 'Proposal Creator' (ID: 2) is not supported by the Berachain documentation; it pertains to a DVP."
+    },
+    {
+      "category": "actors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Actor 'System Administrator' (ID: 3) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Super App' (smart contracts reacting to Superfluid events) is a core concept (doc_3, doc_21, doc_22, doc_24) but not extracted."
+      "description": "Actor 'User (Superfluid)' who interacts with Super Tokens, streams, and distributions (e.g., doc_2, doc_13) is not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Sentinel' (nodes monitoring and liquidating streams) is described (doc_1, doc_6, doc_18, doc_19) but not extracted."
+      "description": "Actor 'Sentinel' responsible for monitoring and liquidating streams (doc_1, doc_19) is not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'DAO (Decentralized Autonomous Organization)' (governing the Superfluid protocol) is mentioned (doc_11, doc_41) but not extracted."
+      "description": "Actor 'Pool Admin' who manages distribution pools (doc_5, doc_28) is not extracted."
     },
     {
       "category": "actors",
       "type": "missing",
       "id": null,
-      "description": "Actor 'Pool Admin' (managing distribution pools and units) is described (doc_5, doc_28, doc_30) but not extracted."
+      "description": "Actor 'Super App' (smart contract reacting to Superfluid events, doc_3, doc_24) is not extracted."
     },
     {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Pool Member' (recipients in a distribution pool) is described (doc_5, doc_28, doc_30) but not extracted."
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Asset 'Vote Data' (ID: 1) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'Developer' (building on Superfluid, deploying tokens/apps) is an implicit actor targeted by much of the documentation (e.g., doc_13, doc_22, doc_26) but not extracted."
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Asset 'Proposal Data' (ID: 2) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "actors",
-      "type": "missing",
-      "id": null,
-      "description": "Actor 'PIC (Patrician in Charge)' (participant in TOGA for liquidations) is described (doc_1, doc_18) but not extracted."
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Asset 'Voting Results' (ID: 3) is not supported by the Berachain documentation; it pertains to a DVP."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Asset 'User Account Information' (ID: 4) as described for a DVP is not supported by the Berachain documentation."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Asset 'Proposal Metadata' (ID: 5) is not supported by the Berachain documentation; it pertains to a DVP."
+    },
+    {
+      "category": "assets",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Asset 'Authentication Token' (ID: 6) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Super Token' (e.g., USDCx, DAIx, ETHx - the core programmable tokens) is fundamental to the protocol (doc_1, doc_2, doc_7, doc_39) but not extracted."
+      "description": "Asset 'Super Token' (various types: Wrapper, Pure, Native Asset Super Tokens, doc_7, doc_39) is not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'ERC20 Token' (underlying tokens that can be wrapped, e.g., USDC, DAI) is mentioned (doc_7, doc_14, doc_55) but not extracted."
+      "description": "Asset 'Stream Buffer/Deposit' locked when creating streams (doc_1, doc_6, doc_18) is not extracted."
     },
     {
       "category": "assets",
       "type": "missing",
       "id": null,
-      "description": "Asset 'Native Asset' (e.g., ETH, MATIC - can be wrapped into Native Super Tokens) is mentioned (doc_39, doc_55) but not extracted."
+      "description": "Asset 'TOGA Stake' for Patrician in Charge (doc_1, doc_18) is not extracted."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'NFT (Non-Fungible Token)' (e.g., Tradeable Cashflow NFT, ConstantOutflowNFT, PoolAdminNFT) is mentioned (doc_3, doc_24, doc_32, doc_61) but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Component 'Frontend Web Application' (ID: 1) is not supported by the Berachain documentation; it pertains to a DVP architecture."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'User Data' (bytes attachable to Superfluid operations) is described (doc_1, doc_21, doc_37, doc_51) but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Component 'API Gateway' (ID: 2) is not supported by the Berachain documentation; it pertains to a DVP architecture."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Buffer Deposit' (funds locked when creating a stream) is described (doc_1, doc_6, doc_18) but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Component 'Voting Service' (ID: 3) is not supported by the Berachain documentation; it pertains to a DVP architecture."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'TOGA Stake' (funds locked by PIC in the TOGA contract) is described (doc_1, doc_18) but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 4,
+      "description": "Component 'Smart Contract' (ID: 4) as a generic DVP component is not representative of specific Berachain smart contracts."
     },
     {
-      "category": "assets",
-      "type": "missing",
-      "id": null,
-      "description": "Asset 'Private Keys' (used by users/sentinels to sign transactions) are implicitly critical assets (doc_13, doc_19) but not extracted."
+      "category": "components",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Component 'Database' (ID: 5) as described for a DVP is not a core on-chain component of Berachain, though off-chain services might use databases."
+    },
+    {
+      "category": "components",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Component 'Admin Dashboard' (ID: 6) is not supported by the Berachain documentation; it pertains to a DVP architecture."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Superfluid Host Contract' (core protocol contract) is central to the architecture (doc_1, doc_4, doc_23, doc_45, doc_61) but not extracted."
+      "description": "Component 'Superfluid Host Contract' (doc_4, doc_61) is not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Super Token Contract' (instance for each Super Token) is described (doc_7, doc_39, doc_59) but not extracted."
+      "description": "Component 'Super Token Contract' (implementations for Wrapper, Pure, Native, doc_39, doc_59) is not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Constant Flow Agreement (CFAv1) Contract' (manages money streams) is described (doc_1, doc_21, doc_61, doc_63) but not extracted."
+      "description": "Component 'Constant Flow Agreement V1 (CFAv1)' (doc_1, doc_61) is not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'General Distribution Agreement (GDAv1) Contract' (manages distribution pools) is described (doc_28, doc_29, doc_61, doc_63) but not extracted."
+      "description": "Component 'General Distribution Agreement V1 (GDAv1)' (doc_28, doc_61) is not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'Super Token Factory Contract' (deploys Super Tokens) is described (doc_41, doc_42, doc_61) but not extracted."
+      "description": "Component 'Super Token Factory' (doc_41, doc_42, doc_61) is not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'CFAv1Forwarder Contract' (interface for client-side stream operations) is described (doc_10, doc_44, doc_50, doc_56) but not extracted."
+      "description": "Component 'CFAv1Forwarder' (doc_50, doc_56) and 'GDAv1Forwarder' (doc_46, doc_57) are not extracted."
     },
     {
       "category": "components",
       "type": "missing",
       "id": null,
-      "description": "Component 'GDAv1Forwarder Contract' (interface for client-side pool operations) is described (doc_10, doc_44, doc_46, doc_57) but not extracted."
+      "description": "Component 'Superfluid Subgraph' (doc_48, doc_52, doc_62) is not extracted."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Sentinel Node Software' (run by Sentinels for liquidations) is described (doc_1, doc_18, doc_19) but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Data Flow 1 (FWA to APIG user requests) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Superfluid Dashboard' (web UI for interacting with the protocol) is mentioned (doc_2, doc_16, doc_26, doc_53, doc_64) but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Data Flow 3 (APIG to Voting Service) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Superfluid Subgraph' (for querying protocol data) is described (doc_15, doc_20, doc_48, doc_52, doc_54, doc_62) but not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'Vesting Scheduler Contract' (for automated vesting) is described (doc_17, doc_64) but not extracted."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component 'MacroForwarder Contract' (for batching transactions) is described (doc_45, doc_49) but not extracted."
+      "category": "data_flows",
+      "type": "hallucinated",
+      "id": 5,
+      "description": "Data Flow 5 (Voting Service to Smart Contract for DVP) is not supported by the Berachain documentation."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User creates a money stream to Receiver via CFAv1Forwarder' is a primary use case (doc_44, doc_50) but not extracted."
+      "description": "Data Flow 'User creates/updates/deletes a stream via CFAv1Forwarder or SuperTokenV1Library' (doc_36, doc_50) is not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Super App contract executes callback logic upon receiving a stream' is a key feature (doc_3, doc_21, doc_24) but not extracted."
+      "description": "Data Flow 'User creates a pool/distributes tokens via GDAv1Forwarder or SuperTokenV1Library' (doc_29, doc_47) is not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'Sentinel liquidates an insolvent stream by interacting with CFAv1 and TOGA contracts' is described (doc_18, doc_19) but not extracted."
+      "description": "Data Flow 'Super App receives callback from Superfluid Host' (doc_3, doc_21) is not extracted."
     },
     {
       "category": "data_flows",
       "type": "missing",
       "id": null,
-      "description": "Data flow 'User wraps ERC20 token into Super Token via Super Token contract' is described (doc_7, doc_55) but not extracted."
+      "description": "Data Flow 'Sentinel liquidates a stream' (doc_18, doc_19) is not extracted."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Pool Admin updates member units in a Distribution Pool via GDAv1Forwarder or directly' is described (doc_30, doc_47) but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Trust Boundary 'Public Network Boundary' (ID: 1) is specific to a DVP architecture and not found in Berachain documentation."
     },
     {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User queries Superfluid Subgraph for account stream data' is described (doc_48, doc_52, doc_54) but not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'Vesting Scheduler creates a stream to a recipient after cliff period' is described (doc_17, doc_64) but not extracted."
-    },
-    {
-      "category": "data_flows",
-      "type": "missing",
-      "id": null,
-      "description": "Data flow 'User executes batch operations via MacroForwarder calling a UserDefinedMacro contract' is described (doc_45, doc_49) but not extracted."
+      "category": "trust_boundaries",
+      "type": "hallucinated",
+      "id": 2,
+      "description": "Trust Boundary 'Application Backend Boundary' (ID: 2) is specific to a DVP architecture and not found in Berachain documentation."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'User Wallet <-> Superfluid Smart Contracts (Host, Forwarders, Tokens)' is fundamental (doc_44, doc_50) but not extracted."
+      "description": "Trust Boundary between 'User/DApp' and 'Berachain Smart Contracts (Host, Agreements, Tokens)' is not extracted."
     },
     {
       "category": "trust_boundaries",
       "type": "missing",
       "id": null,
-      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Off-chain Sentinel Nodes' is described (doc_18, doc_19) but not extracted."
+      "description": "Trust Boundary between 'Off-chain services (Sentinels, Subgraphs)' and 'Berachain Smart Contracts' is not extracted."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Superfluid Governance (DAO)' is described (doc_11, doc_41) but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 1,
+      "description": "Behavior 'Voter Casts Vote' (ID: 1) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Superfluid Protocol (On-chain Contracts) <-> Off-chain Subgraph Indexers/Query Nodes' is described (doc_48, doc_52) but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 3,
+      "description": "Behavior 'Proposal Creator Submits Proposal' (ID: 3) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Super App Contract <-> Superfluid Host Contract (Callbacks)' is described (doc_3, doc_21) but not extracted."
-    },
-    {
-      "category": "trust_boundaries",
-      "type": "missing",
-      "id": null,
-      "description": "Trust boundary 'Client Application (e.g., Superfluid Dashboard) <-> User Wallet (e.g., MetaMask)' is implicit in SDK guides (doc_44, doc_50) but not extracted."
+      "category": "behaviors",
+      "type": "hallucinated",
+      "id": 6,
+      "description": "Behavior 'APIG Authenticates and Authorizes' (ID: 6) is not supported by the Berachain documentation; it pertains to a DVP."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Money Streaming (Create/Update/Delete Flow)' is a core functionality (doc_2, doc_6, doc_34, doc_36, doc_50) but not extracted."
+      "description": "Behavior 'User creates a money stream' (doc_6, doc_13, doc_34) is not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Token Distribution (Instant/Streaming via Pools)' is a core functionality (doc_5, doc_28, doc_29, doc_47) but not extracted."
+      "description": "Behavior 'User wraps an ERC20 token into a Super Token' (doc_7, doc_55) is not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Token Wrapping/Unwrapping (ERC20 to SuperToken and vice-versa)' is described (doc_7, doc_14, doc_55) but not extracted."
+      "description": "Behavior 'User creates a distribution pool and distributes funds' (doc_5, doc_28, doc_29) is not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Super App Reactivity (Callbacks on stream events)' is described (doc_3, doc_21, doc_24) but not extracted."
+      "description": "Behavior 'Sentinel liquidates an insolvent stream' (doc_18, doc_19) is not extracted."
     },
     {
       "category": "behaviors",
       "type": "missing",
       "id": null,
-      "description": "Behavior 'Stream Liquidation (by Sentinels for insolvent accounts)' is described (doc_1, doc_18, doc_19) but not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Automated Vesting (Scheduled token release with cliffs)' is described (doc_17, doc_64) but not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Batching Transactions (using Macros and MacroForwarder)' is described (doc_45, doc_49) but not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Access Control Management (granting/revoking flow operator permissions)' is described (doc_37, doc_51) but not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Deploying Super Tokens (Pure, Wrapper, Custom)' is described (doc_41, doc_42, doc_43) but not extracted."
-    },
-    {
-      "category": "behaviors",
-      "type": "missing",
-      "id": null,
-      "description": "Behavior 'Querying Protocol Data (using Subgraph or Explorer)' is described (doc_48, doc_52, doc_54) but not extracted."
+      "description": "Behavior 'Super App reacts to a stream being created to it' (doc_3, doc_21, doc_24) is not extracted."
     }
   ]
 }

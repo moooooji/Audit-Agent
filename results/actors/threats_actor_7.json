@@ -1,61 +1,55 @@
 {
-  "id": 3,
-  "stride_category": "Tampering",
+  "id": 5,
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
-    "actor_id": 7,
-    "behavior_id": 509,
-    "capability_match": "Deploy Super Tokens"
+    "actor_id": null,
+    "behavior_id": 213,
+    "capability_match": "Vote on governance proposals"
   },
   "threat_target": {
-    "component_id": null,
-    "asset_ids": [
-      101
-    ]
+    "component_id": 45,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 509,
-    "data_flow_id": null,
-    "data_description": "Bytecode of the custom Super Token logic deployed via the factory."
+    "behavior_id": 213,
+    "data_flow_id": 73,
+    "data_description": "Vote data within governance transactions, which is publicly visible on the blockchain."
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet to On-chain Protocol Interface",
-    "between_component_ids": [
-      7,
-      205
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Super Token Factory allows deployment of custom Super Token logic (supplied by Actor 7) which is not inherently vetted by the factory, potentially leading to vulnerabilities in the deployed token instance."
+    "gap_description": "The public nature of on-chain voting reveals individual DAO Participants' votes as they are cast. This information could be used to influence other voters, enable targeted vote buying, or apply pressure/retaliation."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "EOA (Externally Owned Account)",
+    "type": "DAO Participant/Token Holder",
     "overprivileged": false,
-    "description": "Developer (Actor 7) deploying a Custom Super Token might introduce vulnerabilities in its logic, either intentionally or unintentionally."
+    "description": "A DAO Participant's voting decision is publicly disclosed, potentially exposing them to undue influence or social pressures."
   },
   "behavioral_risk": {
-    "behavior_id": 509,
+    "behavior_id": 213,
     "risk_level": "Medium",
-    "rationale": "Deploying custom, unaudited code as a financial primitive (Super Token) carries significant risk for users of that specific token."
+    "rationale": "Public voting can lead to suboptimal governance outcomes if voters are influenced by early results or external pressures."
   },
   "assumptions": [
-    "The Super Token Factory (Component 205) facilitates the deployment of custom logic for Super Tokens.",
-    "This custom logic is not audited or verified by the Super Token Factory itself during deployment.",
-    "Users may interact with these custom Super Tokens, trusting them to behave like standard Super Tokens or as advertised."
+    "The voting mechanism is entirely on-chain and transparent, making individual votes visible before the voting period ends.",
+    "There are external actors or entities motivated to use this information to influence the outcome of governance proposals."
   ],
   "mitigation": {
-    "strategy": "Developers should ensure their custom Super Token logic is thoroughly audited. Users should perform due diligence before interacting with custom Super Tokens. Clear distinction in UIs for custom vs standard tokens.",
-    "type": "Process Control",
-    "priority": "High"
+    "strategy": "Implement commit-reveal voting schemes to hide individual votes until the voting period ends. Alternatively, explore off-chain voting solutions with on-chain aggregation if privacy is a major concern, though this adds complexity. Acknowledge this as an inherent trade-off of on-chain governance if privacy mechanisms are not implemented.",
+    "type": "Technical Control",
+    "priority": "Medium"
   },
-  "description": "A Developer (Actor 7) deploys a Custom Super Token (Asset 101) via the Super Token Factory (Component 205). This custom token contains a vulnerability (e.g., reentrancy, incorrect access control) in its developer-written logic. An attacker later exploits this vulnerability to tamper with the token's state, steal funds from its users, or gain elevated privileges within that specific token instance.",
+  "description": "Individual votes cast by Superfluid DAO Participants on governance proposals are publicly visible on the blockchain before the voting period concludes. This premature disclosure could allow for strategic voting, vote buying, or coercion, potentially compromising the integrity of the governance outcome.",
   "trace_source": {
-    "doc_reference": "doc_43, doc_26",
-    "matched_capability": "Deploy Super Tokens"
+    "doc_reference": "doc_11",
+    "matched_capability": "Vote on governance proposals"
   }
 }

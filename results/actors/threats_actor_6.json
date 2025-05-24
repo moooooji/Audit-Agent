@@ -1,60 +1,59 @@
 {
   "id": 4,
-  "stride_category": "Tampering",
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
-    "behavior_id": null,
-    "capability_match": "Receive token distributions (instant or streamed)"
+    "behavior_id": 208,
+    "capability_match": "Stake Super Tokens in TOGA contract"
   },
   "threat_target": {
-    "component_id": 6,
-    "asset_ids": [
-      101
-    ]
+    "component_id": 40,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 502,
-    "data_flow_id": 305,
-    "data_description": "The process of token distribution from a SuperfluidPool (ID: 214) or GDAv1 (ID: 204) to the Pool Member (ID: 6), where the amount is determined by unit assignments or distribution logic."
+    "behavior_id": 208,
+    "data_flow_id": 65,
+    "data_description": "Publicly visible `exitRate` parameter set by a PIC when staking or managing their stake in the TOGA contract."
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet to On-chain Protocol Interface",
+    "boundary_id": 102,
+    "boundary_name": "DApp/Wallet to Blockchain Network",
     "between_component_ids": [
-      214,
-      6
+      30,
+      40
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": true,
+    "confidentiality_required": true,
+    "integrity_required": false,
     "availability_required": false,
-    "gap_description": "The amount of tokens a Pool Member receives might be incorrect if a Pool Admin maliciously alters unit assignments or if there's a flaw in the pool's distribution or accounting logic."
+    "gap_description": "The `exitRate` parameter, if it reveals a PIC's liquidation strategy, capital availability, or unstaking intentions, is publicly accessible on the blockchain. This transparency could be exploited by competing PICs."
   },
   "actor_risk": {
     "actor_id": 6,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The integrity of a Pool Member's received distributions depends on the correct and fair operation of the pool by its admin and the soundness of the underlying smart contracts."
+    "description": "Strategic information related to the PIC's (ID: 6) staking or unstaking plans (inferred from `exitRate`) is disclosed to all blockchain observers, including competitors."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "High",
-    "rationale": "Receiving an incorrect (tampered) amount of tokens directly results in financial loss or unfair gain for the Pool Member."
+    "behavior_id": 208,
+    "risk_level": "Low",
+    "rationale": "All on-chain data is inherently public. The strategic value of `exitRate` and the likelihood of its exploitation are uncertain without more details on the TOGA auction dynamics. However, any information leakage can potentially be used."
   },
   "assumptions": [
-    "A Pool Admin (ID: 5) has the technical capability to manipulate unit assignments or distribution parameters in a way that unfairly affects payouts to Pool Members.",
-    "Alternatively, the SuperfluidPool (ID: 214) or GDAv1 (ID: 204) contract contains a vulnerability in its share calculation, accounting, or token distribution mechanism."
+    "The `exitRate` parameter set by a PIC (ID: 6) in the TOGA Contract (ID: 40) is publicly readable.",
+    "This `exitRate` provides meaningful, actionable intelligence to competing PICs regarding the staking PIC's strategy, financial commitment, or unstaking timeline.",
+    "Competitors can effectively use this disclosed information to gain an advantage in the TOGA mechanism (e.g., by front-running unstaking or strategically adjusting their own stakes)."
   ],
   "mitigation": {
-    "strategy": "For malicious admin risk: Implement transparent and auditable pool management and unit assignment processes, possibly with DAO oversight or multi-sig controls for critical admin functions. For contract vulnerabilities: Conduct extensive smart contract audits, apply formal verification to critical calculation logic, maintain comprehensive test suites, and run bug bounty programs.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Acknowledge that on-chain parameters like `exitRate` are public. If the strategic sensitivity is high, explore complex mechanisms like private commitments or delayed revelations (though these add significant complexity and may not be feasible). Otherwise, this is an accepted consequence of blockchain transparency. PICs should be aware of this public visibility.",
+    "type": "Policy",
+    "priority": "Low"
   },
-  "description": "A Pool Member (ID: 6) may receive a tampered (incorrect) amount of Super Tokens (ID: 101) from a distribution. This could occur if a malicious or compromised Pool Admin (ID: 5) manipulates the member's units or other distribution-affecting parameters (via Behavior ID: 502, Data Flow ID: 305), or if there is an exploitable vulnerability in the SuperfluidPool (ID: 214) or GDAv1 (ID: 204) contract's logic for calculating or disbursing shares.",
+  "description": "The `exitRate` parameter, which a PIC (ID: 6) configures for their stake in the TOGA Contract (ID: 40) (as per doc_18, related to unstaking), is publicly visible on the blockchain. Competing PICs or other observers could analyze this `exitRate` to infer the PIC's potential unstaking timeline, capital commitment, or overall strategy, potentially using this information to their advantage in the TOGA auctions or liquidation process.",
   "trace_source": {
-    "doc_reference": "doc_5, doc_28, doc_30, doc_47",
-    "matched_capability": "Receive token distributions (instant or streamed)"
+    "doc_reference": "doc_18",
+    "matched_capability": "Stake Super Tokens in TOGA contract"
   }
 }
