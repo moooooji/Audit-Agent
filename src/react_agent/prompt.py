@@ -7,25 +7,25 @@
 
 # ===== 아키텍처 분석 프롬프트 =====
 ARCHITECTURE_ANALYSIS_TEMPLATE = """
-System: You are an expert threat-modeling assistant.
+System: You are an expert threat-modeling assistant specializing in Web3 and smart contract security. Your goal is to extract key elements from system documentation (typically whitepapers, litepapers, or high-level architectural descriptions) to facilitate threat modeling. **Be mindful that these documents primarily describe concepts and mechanisms, and may not contain code-level implementation details.**
 
-Context:  
+Context:
 Here is the system documentation:
 {target_docs}
 
 Task:
 1. Extract all **actors** mentioned in the documentation. For each actor include:
-    - `id`: unique integer 
-    - `name`: actor name (e.g., "External User", "Admin Service") 
-    - `type`: actor category (e.g., "External User", "Internal Service", "Partner System")
+    - `id`: unique integer
+    - `name`: actor name (e.g., "User", "Protocol DAO", "Validator Node")
+    - `type`: actor category (e.g., "External User", "Internal Governance Body", "Network Participant")
     - `description`: short description if given
-    - `capabilities`: list of actions or permissions the actor has (e.g., "can submit requests", "has database write access")    
-2. Extract all **assets** mentioned in the documentation.
-3. Extract all **components**, with their `trust_level` if given, and list of managed asset IDs.
-4. Extract all **data_flows** between components, referencing by IDs.
+    - `capabilities`: list of actions or permissions the actor has, as described in the documentation (e.g., "can stake tokens to participate in consensus", "can submit proposals for protocol upgrades")
+2. Extract all **assets** mentioned in the documentation, **focusing on those central to the protocol's economic model, security, or core functionality as described in the whitepaper.**
+3. Extract all **components** (e.g., core protocol mechanisms, specific smart contract functionalities if detailed, off-chain services), with their `trust_level` if given, and list of managed asset IDs.
+4. Extract all **data_flows** between components, referencing by IDs, **based on the interactions and information exchanges described in the whitepaper.**
 5. Extract all **trust_boundaries** and which components they separate, referencing by IDs.
-6. Extract all **behaviors** describing actions initiated by an actor or component toward another component.
-    
+6. Extract all **behaviors** describing actions initiated by an actor or component toward another component, **focusing on key interactions with the protocol's described functionalities (e.g., participating in staking, executing a governance decision).**
+
 
 After extraction, **validate each item** against the source text:
 - If an entry is inaccurate or attributes are wrong, **correct** it.
@@ -34,25 +34,25 @@ After extraction, **validate each item** against the source text:
 Output Requirements:
 - Return **only** valid JSON (no extra text).
 - Use this schema exactly:
-    
+
 
 {
   "actors": [
     {
       "id": 1,
       "name": "Actor Name",
-      "type": "External User|Internal Service|Partner System",
-      "description": "Short description",
-      "capabilities": ["Capability A", "Capability B"]
+      "type": "External User|Internal Governance Body|Network Participant|Automated System",
+      "description": "Short description based on whitepaper",
+      "capabilities": ["Capability A as described", "Capability B as described"]
     }
     // …
   ],
   "assets": [
     {
       "id": 1,
-      "name": "Asset Name",
-      "description": "Short description",
-      "type": "Token|NFT|Key|Voting Power|…",
+      "name": "Asset Name (e.g., 'Native Protocol Token', 'Staked Governance Tokens', 'Protocol Treasury Funds', 'User Data Records')",
+      "description": "Short description of the asset's role and significance within the protocol, as per the whitepaper (e.g., 'Used for transaction fees and staking', 'Represents voting power in governance', 'Accumulated protocol revenue')",
+      "type": "Utility Token|Governance Token|Data Record|Financial Instrument (e.g., LP Token, Bond)|Reputation Score|Protocol Parameter Value",
       "sensitivity": "High|Medium|Low"
     }
     // …
@@ -60,8 +60,8 @@ Output Requirements:
   "components": [
     {
       "id": 1,
-      "name": "Component Name",
-      "description": "Short description",
+      "name": "Component Name (e.g., 'Staking Mechanism', 'Governance Module', 'Oracle System Interface', 'Data Marketplace Logic')",
+      "description": "Short description of the component's purpose and high-level function as outlined in the whitepaper. If it clearly represents a smart contract or set of contracts, note that.",
       "trust_level": "High|Medium|Low",
       "assets_managed": [1,2]
     }
@@ -72,8 +72,8 @@ Output Requirements:
       "id": 1,
       "source_id": 2,
       "destination_id": 3,
-      "data": "What data moves",
-      "description": "Short description",
+      "data": "Nature of data exchanged (e.g., 'Staking request details', 'Governance proposal content', 'Price feed update')",
+      "description": "Short description of the purpose of this data exchange",
       "security_properties": {
         "confidentiality_required": true,
         "integrity_required": true,
@@ -85,9 +85,9 @@ Output Requirements:
   "trust_boundaries": [
     {
       "id": 1,
-      "name": "Boundary Name",
+      "name": "Boundary Name (e.g., 'On-Chain vs Off-Chain Systems', 'User Wallet - Protocol Interface', 'External Oracle - Protocol')",
       "between_ids": [2,4],
-      "description": "What is protected",
+      "description": "What this boundary aims to protect (e.g., 'Integrity of protocol state', 'Confidentiality of user inputs before transaction')",
       "validation_required": true
     }
     // …
@@ -95,12 +95,12 @@ Output Requirements:
   "behaviors": [
     {
       "id": 1,
-      "name": "Behavior Name",
+      "name": "Behavior Name (e.g., 'User initiates staking operation', 'DAO executes approved proposal', 'Oracle submits data update')",
       "initiator_type": "Actor|Component",
       "initiator_id": 5,
       "target_id": 3,
-      "action": "call|send|fetch|…",
-      "description": "Short description",
+      "action": "invoke_protocol_feature|submit_transaction_for_action|query_protocol_information|transfer_protocol_asset|participate_in_governance_vote|trigger_automated_process",
+      "description": "Short description of the behavior and its intended outcome based on the whitepaper (e.g., 'User locks tokens to earn rewards', 'Protocol parameter is updated based on vote')",
       "risk_level": "High|Medium|Low"
     }
     // …
@@ -109,11 +109,10 @@ Output Requirements:
 
 
 Strict Requirements:
-- Only extract information **explicitly** stated in the documentation.
-- Do **not** infer or assume beyond the text.
-- If a field is not clearly provided, **omit** that field.
+- Only extract information **explicitly stated in the documentation (e.g., whitepaper, high-level design)**.
+- Do **not** infer or assume beyond the text, **especially regarding specific code implementation details, function signatures, or precise variable names unless explicitly stated in the document.**
+- If a field is not clearly provided in the whitepaper or requires code-level knowledge not present, **omit** that field or provide a generalized description based on the document.
 - Do **not** hallucinate any element.
-- Ensure every entry can be traced to specific evidence in `{target_docs}`.
 
 Begin JSON output now.
 """
