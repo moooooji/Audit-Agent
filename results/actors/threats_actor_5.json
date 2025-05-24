@@ -1,58 +1,60 @@
 {
-  "id": 4,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 5,
-    "behavior_id": 210,
-    "capability_match": "Deploy Super App contracts"
+    "actor_id": 105,
+    "behavior_id": 613,
+    "capability_match": "Manage database migrations (Doc 12)"
   },
   "threat_target": {
-    "component_id": 32,
-    "asset_ids": []
+    "component_id": 313,
+    "asset_ids": [
+      215
+    ]
   },
   "attack_surface": {
-    "behavior_id": 210,
-    "data_flow_id": null,
-    "data_description": "Super App registration transaction sent from Developer (5) to Superfluid Host (32), containing the Super App's address and configuration word."
+    "behavior_id": 613,
+    "data_flow_id": 419,
+    "data_description": "Database connection credentials used by Scraper Agent (105)"
   },
   "trust_boundary_risk": {
-    "boundary_id": 102,
-    "boundary_name": "DApp/Wallet to Blockchain Network",
+    "boundary_id": null,
+    "boundary_name": null,
     "between_component_ids": [
-      30,
-      32
+      312,
+      313
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If `APP_WHITE_LISTING_ENABLED` is false or the deployer whitelisting process is flawed, an unvetted Super App could be registered, gaining the privilege to receive callbacks and interact with the protocol."
+    "gap_description": "If the Scraper Agent's (105) database credentials used for Data Flow 419 also grant permissions for migrations (Doc 12), compromising the agent could lead to broader database compromise than just data writing."
   },
   "actor_risk": {
-    "actor_id": 5,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "A Developer (5) might exploit lax registration rules to register a malicious or unvetted Super App."
+    "actor_id": 105,
+    "type": "Off-chain Service/Bot",
+    "overprivileged": true,
+    "description": "The Scraper Agent (105) might possess database credentials with more privileges (e.g., for migrations as per Doc 12) than strictly necessary for routine data writing (Behavior 613)."
   },
   "behavioral_risk": {
-    "behavior_id": 210,
+    "behavior_id": 613,
     "risk_level": "High",
-    "rationale": "Registration of an unvetted Super App can grant it privileges to interact with user funds and data via protocol callbacks, potentially leading to exploits if the app is malicious."
+    "rationale": "Compromise of the Scraper Agent (105) could allow an attacker to leverage its potentially overprivileged database credentials to modify database schema, delete data (Asset 215 and others), or access other databases if credentials are not scoped properly."
   },
   "assumptions": [
-    "The `APP_WHITE_LISTING_ENABLED` flag on the Superfluid Host (32) is set to false on the target network, or the whitelisting process for Super App deployers is compromised or insufficient.",
-    "The Developer (5) intends to register a Super App that has not undergone proper security vetting."
+    "The database account used by the Scraper Agent (105) for writing data (Behavior 613, Data Flow 419) also has privileges to 'Manage database migrations (Doc 12)'.",
+    "The Scraper Agent (105) itself could be compromised, allowing an attacker to leverage its database credentials."
   ],
   "mitigation": {
-    "strategy": "Enforce `APP_WHITE_LISTING_ENABLED` on mainnet deployments. Implement a robust and transparent process for whitelisting Super App deployers or individual Super Apps. Regularly audit the list of registered Super Apps.",
-    "type": "Process Control",
+    "strategy": "Apply the principle of least privilege. Use separate, restricted database accounts for routine data writing versus schema migrations. Secure the Scraper Agent (105) and its credentials robustly.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Developer (5) deploys a Super App (4) and successfully registers it with the Superfluid Host (32). If app whitelisting (`APP_WHITE_LISTING_ENABLED` in doc_23) is not enforced or is bypassed, this unvetted Super App gains the privilege of being an active component in the Superfluid ecosystem, capable of receiving callbacks and potentially exploiting users or the protocol.",
+  "description": "If the Scraper Agent (105) is compromised or its database credentials grant excessive permissions (e.g., for managing migrations as per Doc 12, beyond just writing data for Behavior 613), an attacker could gain elevated privileges on the Postgres Database (313), allowing unauthorized data modification, deletion, or schema changes.",
   "trace_source": {
-    "doc_reference": "doc_23",
-    "matched_capability": "Deploy Super App contracts"
+    "doc_reference": "Doc 11, Doc 12",
+    "matched_capability": "Manage database migrations (Doc 12)"
   }
 }

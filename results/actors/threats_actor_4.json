@@ -1,60 +1,60 @@
 {
-  "id": 4,
-  "stride_category": "Information Disclosure",
+  "id": 7,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 4,
-    "behavior_id": null,
-    "capability_match": "Interact with Superfluid Host and Agreements"
+    "actor_id": null,
+    "behavior_id": 614,
+    "capability_match": "Submit attestations/signatures for messages (Doc 10, 19)"
   },
   "threat_target": {
-    "component_id": null,
+    "component_id": 320,
     "asset_ids": [
-      16
+      216,
+      201
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": 63,
-    "data_description": "The `userData` field within the `data` payload of `callAgreementWithContext`."
+    "behavior_id": 614,
+    "data_flow_id": null,
+    "data_description": "Validator's private signing key or the software/hardware responsible for signing attestations."
   },
   "trust_boundary_risk": {
-    "boundary_id": 105,
+    "boundary_id": 501,
     "boundary_name": "On-chain/Off-chain Boundary",
     "between_component_ids": [
-      4,
-      32
+      320
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Super App developers might inadvertently include sensitive information in the `userData` field when calling the Superfluid Host, making it publicly visible on the blockchain."
+    "gap_description": "Compromise of a Validator's signing key or its operational security allows an attacker to act with the Validator's authority."
   },
   "actor_risk": {
-    "actor_id": 4,
-    "type": "Smart Contract",
+    "actor_id": 104,
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "A Super App, if poorly designed, might pass sensitive off-chain data or internal state information through the public `userData` field in its interactions with the Superfluid Host."
+    "description": "If a Validator's (Actor ID 104) signing mechanism is compromised, an attacker gains its privileges to sign attestations."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "This is a common risk with any public blockchain interaction. The `userData` field is intended for public data or data that can be safely exposed. The risk arises from developer error in the Super App."
+    "behavior_id": 614,
+    "risk_level": "High",
+    "rationale": "Compromise of a Validator's key allows an attacker to submit arbitrary valid attestations as that Validator, fundamentally undermining ISM security."
   },
   "assumptions": [
-    "Super App developers are aware that any data passed in `userData` to on-chain functions becomes public.",
-    "There is no encryption or off-chain communication channel for sensitive data related to these specific on-chain calls."
+    "A Validator's private signing key can be exfiltrated due to poor key management or software vulnerability.",
+    "An attacker can gain control over the Validator's infrastructure used for signing attestations."
   ],
   "mitigation": {
-    "strategy": "Educate Super App developers about the public nature of blockchain data, including `userData`. Recommend using `userData` only for non-sensitive information or for data that is intended to be public. Sensitive data should be handled off-chain or encrypted if absolutely necessary to pass on-chain (though generally discouraged).",
-    "type": "Process Control",
-    "priority": "Low"
+    "strategy": "Implement robust key management practices for Validators (e.g., Hardware Security Modules, secure enclaves, multi-party computation for signing). Regularly audit validator security and infrastructure. Implement defense-in-depth for validator operations.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "If a Super App includes sensitive information within the `userData` parameter when calling `callAgreementWithContext` on the Superfluid Host (Data Flow ID 63), this information becomes publicly visible on the blockchain. While `userData` is designed for extensibility, developers must be cautious not to expose confidential data through this mechanism.",
+  "description": "An attacker compromises a Validator's (Actor ID 104) signing key or its operational infrastructure, effectively elevating their privilege to that of a legitimate Validator. This allows the attacker to submit malicious attestations that will be accepted by the Multisig ISM.",
   "trace_source": {
-    "doc_reference": "doc_21, doc_1",
-    "matched_capability": "Interact with Superfluid Host and Agreements"
+    "doc_reference": "Doc 10, 13, 19",
+    "matched_capability": "Submit attestations/signatures for messages (Doc 10, 19)"
   }
 }

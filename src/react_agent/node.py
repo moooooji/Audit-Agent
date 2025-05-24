@@ -104,6 +104,8 @@ def analyze_threats(state: State) -> State:
     print(f"[+] Threats count: {len(response_dict['threats'])}")
     for threat in response_dict["threats"]:
         react_agent.variables.threats_list.append(threat)
+
+        
         
         save_json(threat, f'results/actors/threats_actor_{state.current_actor_id+1}.json')
     
@@ -147,12 +149,15 @@ def generate_checklist(state: State) -> State:
         
         response = generate_llm_response(state)
         
-        # response는 이미 수정된 체크리스트를 포함한 딕셔너리
-        checklist_items = response.get('checklist_items', [])
+        # 초기 생성 시 response는 리스트 (개별 처리 결과들)
+        checklist_items = []
+        for threat_response in response:
+            if 'checklist_items' in threat_response:
+                checklist_items.extend(threat_response['checklist_items'])
         
         print(f"받은 checklist_items 개수: {len(checklist_items)}개")
         
-        # 피드백 후에는 중복이 이미 제거되어 있어야 하지만, 안전을 위해 한 번 더 체크
+        # 중복 제거: title과 description이 같은 항목 제거
         unique_items = []
         seen = set()
         for item in checklist_items:
@@ -194,12 +199,12 @@ def generate_checklist(state: State) -> State:
         
         response = generate_llm_response(state)
         
-        # response는 이미 수정된 체크리스트를 포함한 딕셔너리
+        # 피드백 시 response는 딕셔너리 (전체 처리 결과)
         checklist_items = response.get('checklist_items', [])
         
         print(f"받은 checklist_items 개수: {len(checklist_items)}개")
         
-        # 피드백 후에는 중복이 이미 제거되어 있어야 하지만, 안전을 위해 한 번 더 체크
+        # 중복 제거: title과 description이 같은 항목 제거
         unique_items = []
         seen = set()
         for item in checklist_items:

@@ -1,60 +1,61 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 22,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": 2,
-    "behavior_id": 206,
-    "capability_match": "Submit liquidation transactions for streams"
+    "actor_id": 102,
+    "behavior_id": 620,
+    "capability_match": "Initiate remote token transfers via TokenRouter (Doc 21)"
   },
   "threat_target": {
-    "component_id": 32,
+    "component_id": 306,
     "asset_ids": [
-      13
+      204,
+      207
     ]
   },
   "attack_surface": {
-    "behavior_id": 206,
-    "data_flow_id": 64,
-    "data_description": "Crafted liquidation transaction exploiting a vulnerability."
+    "behavior_id": 620,
+    "data_flow_id": null,
+    "data_description": "Call to 'transferRemote' on SyntheticTokenRouter, attempting to burn a specified amount of tokens."
   },
   "trust_boundary_risk": {
-    "boundary_id": 105,
-    "boundary_name": "On-chain/Off-chain Boundary",
+    "boundary_id": 503,
+    "boundary_name": "Application-Protocol Boundary",
     "between_component_ids": [
-      41,
-      32
+      102,
+      306
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in the Superfluid Host or CFAv1's liquidation logic could allow a Sentinel to perform actions beyond simply liquidating a stream and claiming the buffer."
+    "gap_description": "Transaction may revert if user attempts to burn more synthetic tokens than they own."
   },
   "actor_risk": {
-    "actor_id": 2,
-    "type": "Off-chain Service/Bot",
+    "actor_id": 102,
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious Sentinel or one controlled by an attacker attempts to exploit a protocol vulnerability through the liquidation mechanism."
+    "description": "User error in specifying amount or insufficient balance."
   },
   "behavioral_risk": {
-    "behavior_id": 206,
-    "risk_level": "High",
-    "rationale": "Exploitation of liquidation logic could lead to unauthorized fund extraction, state corruption, or other critical failures."
+    "behavior_id": 620,
+    "risk_level": "Low",
+    "rationale": "Causes transaction revert and wasted gas for the user."
   },
   "assumptions": [
-    "The liquidation logic in the Host or CFAv1 contract might contain an undiscovered vulnerability.",
-    "A Sentinel can craft specific transaction inputs to trigger such a vulnerability."
+    "User attempts to transfer (and thus burn) an amount of synthetic tokens exceeding their current balance.",
+    "The SyntheticTokenRouter's burn function correctly checks balances and reverts on underflow."
   ],
   "mitigation": {
-    "strategy": "Rigorous and continuous security audits of the Superfluid Host and CFAv1 contracts, especially the liquidation logic. Formal verification methods. Bug bounty programs.",
+    "strategy": "Frontend UI should check and display user balance before allowing transfer. Contract should have clear revert messages.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Low"
   },
-  "description": "A malicious Sentinel (or an attacker controlling a Sentinel's EOA) submits a specially crafted liquidation transaction. This transaction exploits an unknown vulnerability in the Superfluid Host contract or the underlying CFAv1 agreement's handling of liquidations. This could allow the Sentinel to drain funds beyond the intended stream buffer, affect unrelated streams, manipulate protocol state incorrectly, or gain other unauthorized privileges.",
+  "description": "User attempts to transfer (and burn) an amount of synthetic tokens via the SyntheticTokenRouter that is greater than their balance, causing the transaction to revert and waste gas.",
   "trace_source": {
-    "doc_reference": "doc_18, doc_19",
-    "matched_capability": "Submit liquidation transactions for streams"
+    "doc_reference": "Doc 21",
+    "matched_capability": "Initiate remote token transfers via TokenRouter (Doc 21)"
   }
 }

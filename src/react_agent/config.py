@@ -18,7 +18,7 @@ SMART_CONTRACT_ACTOR_TYPES_EN = [
     "Off-chain Service/Bot"
 ]
 
-def set_gemini_config(config_name: str, cache: str):
+def set_gemini_config(config_name: str):
     if config_name == "ARCHITECTURE_RESPONSE_CONFIG":
         ARCHITECTURE_RESPONSE_CONFIG = types.GenerateContentConfig(
     response_mime_type="application/json",
@@ -243,7 +243,6 @@ def set_gemini_config(config_name: str, cache: str):
             ),
         },
     ),
-    cached_content=cache.name         
 )
         return ARCHITECTURE_RESPONSE_CONFIG
         
@@ -318,7 +317,6 @@ def set_gemini_config(config_name: str, cache: str):
             ),
         },
     ),
-    cached_content=cache.name          
 )
         return ARCHITECTURE_ASSESSMENT_CONFIG
         
@@ -548,7 +546,6 @@ def set_gemini_config(config_name: str, cache: str):
             ),
         }
     ),
-    cached_content=cache.name          
 )
         return ARCHITECTURE_CORRECTION_CONFIG
     
@@ -794,7 +791,6 @@ def set_gemini_config(config_name: str, cache: str):
             ),
         }
     ),
-    cached_content=cache.name          
 )
         return THREAT_ANALYSIS_CONFIG
         

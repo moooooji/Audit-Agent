@@ -1,59 +1,57 @@
 {
-  "id": 4,
-  "stride_category": "Information Disclosure",
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 6,
-    "behavior_id": 208,
-    "capability_match": "Stake Super Tokens in TOGA contract"
+    "actor_id": 106,
+    "behavior_id": 615,
+    "capability_match": "Deploy and control Interchain Accounts (Doc 20)"
   },
   "threat_target": {
-    "component_id": 40,
+    "component_id": 318,
     "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 208,
-    "data_flow_id": 65,
-    "data_description": "Publicly visible `exitRate` parameter set by a PIC when staking or managing their stake in the TOGA contract."
+    "behavior_id": 615,
+    "data_flow_id": null,
+    "data_description": "The arbitrary nature of 'remote calls' executed via InterchainAccount Contract (318), potentially exploiting vulnerabilities in target contracts on the remote chain."
   },
   "trust_boundary_risk": {
-    "boundary_id": 102,
-    "boundary_name": "DApp/Wallet to Blockchain Network",
+    "boundary_id": 502,
+    "boundary_name": "Inter-Blockchain Boundary",
     "between_component_ids": [
-      30,
-      40
+      318
     ]
   },
   "security_gap": {
-    "confidentiality_required": true,
-    "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "The `exitRate` parameter, if it reveals a PIC's liquidation strategy, capital availability, or unstaking intentions, is publicly accessible on the blockchain. This transparency could be exploited by competing PICs."
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "The ICA (318) might be able to call vulnerable functions on remote contracts, or the ICA itself might have a flaw allowing broader privileges than intended."
   },
   "actor_risk": {
-    "actor_id": 6,
+    "actor_id": 106,
     "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "Strategic information related to the PIC's (ID: 6) staking or unstaking plans (inferred from `exitRate`) is disclosed to all blockchain observers, including competitors."
+    "overprivileged": true,
+    "description": "Deployer (106) can craft specific remote calls to exploit vulnerabilities if they exist in target contracts or the ICA mechanism."
   },
   "behavioral_risk": {
-    "behavior_id": 208,
-    "risk_level": "Low",
-    "rationale": "All on-chain data is inherently public. The strategic value of `exitRate` and the likelihood of its exploitation are uncertain without more details on the TOGA auction dynamics. However, any information leakage can potentially be used."
+    "behavior_id": 615,
+    "risk_level": "High",
+    "rationale": "Successful privilege escalation via ICA could grant unauthorized control over assets or functions on the remote chain."
   },
   "assumptions": [
-    "The `exitRate` parameter set by a PIC (ID: 6) in the TOGA Contract (ID: 40) is publicly readable.",
-    "This `exitRate` provides meaningful, actionable intelligence to competing PICs regarding the staking PIC's strategy, financial commitment, or unstaking timeline.",
-    "Competitors can effectively use this disclosed information to gain an advantage in the TOGA mechanism (e.g., by front-running unstaking or strategically adjusting their own stakes)."
+    "Contracts on the remote chain that the ICA (318) is authorized to interact with may contain exploitable vulnerabilities (e.g., reentrancy, unprotected admin functions).",
+    "The ICA contract (318) itself could have an undiscovered vulnerability allowing its controller (Deployer 106) to gain more privileges than designed."
   ],
   "mitigation": {
-    "strategy": "Acknowledge that on-chain parameters like `exitRate` are public. If the strategic sensitivity is high, explore complex mechanisms like private commitments or delayed revelations (though these add significant complexity and may not be feasible). Otherwise, this is an accepted consequence of blockchain transparency. PICs should be aware of this public visibility.",
-    "type": "Policy",
-    "priority": "Low"
+    "strategy": "Thoroughly audit the InterchainAccount (ICA) Contract (318) and all contracts it is intended to interact with on remote chains. Apply the principle of least privilege when defining the ICA's capabilities on remote chains. Implement strict input validation for any parameters passed in remote calls if possible within the target contracts.",
+    "type": "Technical Control",
+    "priority": "High"
   },
-  "description": "The `exitRate` parameter, which a PIC (ID: 6) configures for their stake in the TOGA Contract (ID: 40) (as per doc_18, related to unstaking), is publicly visible on the blockchain. Competing PICs or other observers could analyze this `exitRate` to infer the PIC's potential unstaking timeline, capital commitment, or overall strategy, potentially using this information to their advantage in the TOGA auctions or liquidation process.",
+  "description": "A Deployer (106) crafts malicious 'remote calls' executed via the InterchainAccount (ICA) Contract (318) to exploit a vulnerability in a target contract on the remote chain, or in the ICA mechanism itself, thereby gaining unintended elevated privileges on that remote chain.",
   "trace_source": {
-    "doc_reference": "doc_18",
-    "matched_capability": "Stake Super Tokens in TOGA contract"
+    "doc_reference": "Doc 20",
+    "matched_capability": "Deploy and control Interchain Accounts (Doc 20)"
   }
 }

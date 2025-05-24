@@ -1,58 +1,58 @@
 {
-  "id": 13,
+  "id": 12,
   "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 212,
-    "capability_match": "Create/Update/Delete Money Streams"
+    "actor_id": 101,
+    "behavior_id": 622,
+    "capability_match": "Use Hyperlane SDK (Doc 45)"
   },
   "threat_target": {
-    "component_id": 43,
+    "component_id": 323,
     "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 212,
-    "data_flow_id": 71,
-    "data_description": "UserDefinedMacro returns an excessive number of operations or operations that are individually too complex/gas-intensive."
+    "behavior_id": 622,
+    "data_flow_id": 425,
+    "data_description": "High volume of configuration requests to the registry"
   },
   "trust_boundary_risk": {
-    "boundary_id": 103,
-    "boundary_name": "Superfluid Core Protocol Boundary",
+    "boundary_id": 503,
+    "boundary_name": "Application-Protocol Boundary",
     "between_component_ids": [
-      43,
-      44
+      101,
+      323
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
-    "integrity_required": false,
+    "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Macro execution fails due to out-of-gas errors if the UserDefinedMacro generates overly complex or numerous batch operations."
+    "gap_description": "The Hyperlane Registry might lack sufficient rate limiting for read requests, making it vulnerable to overload."
   },
   "actor_risk": {
-    "actor_id": 1,
+    "actor_id": 101,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "User's attempt to execute a batch operation via a macro fails if the macro is poorly designed or intentionally crafted to consume excessive gas."
+    "description": "A malicious Developer or buggy tooling can cause excessive read requests."
   },
   "behavioral_risk": {
-    "behavior_id": 212,
+    "behavior_id": 622,
     "risk_level": "Medium",
-    "rationale": "Macros that are too gas-intensive can become unusable, denying users the benefit of batching."
+    "rationale": "Excessive read requests can overload the registry, denying service to others."
   },
   "assumptions": [
-    "The UserDefinedMacro contract's `buildBatchOperations` function generates a list of operations that, when executed by the Superfluid Host, exceeds block gas limits or transaction gas limits.",
-    "The MacroForwarder or Superfluid Host does not have sufficient mechanisms to prevent or handle such gas-heavy batches gracefully beyond transaction failure."
+    "The Hyperlane Registry (especially if centralized) is susceptible to overload from a high volume of read requests.",
+    "No effective client-side caching or server-side rate-limiting is in place for registry access."
   ],
   "mitigation": {
-    "strategy": "Developers of UserDefinedMacro contracts must carefully optimize for gas and test extensively. The MacroForwarder or Host could potentially implement checks on the number of operations or estimated gas, though this is complex. Users should be cautious with unvetted macros.",
+    "strategy": "Implement robust rate limiting on the Hyperlane Registry. Encourage client-side caching of registry data within SDKs and CLIs. Distribute registry data via CDNs if applicable.",
     "type": "Technical Control",
     "priority": "Medium"
   },
-  "description": "If a User interacts with a UserDefinedMacro contract (either intentionally or via a DApp) that is poorly designed or malicious, its `buildBatchOperations` function might return an array of operations (data flow 71) that is too large or too gas-intensive for the MacroForwarder (43) and subsequently the Superfluid Host (32) to execute within blockchain transaction gas limits. This would cause the `runMacro` transaction to fail, denying the user the service of batch execution.",
+  "description": "A Developer or a misconfigured tool makes an excessive number of read requests to the Hyperlane Registry, potentially overwhelming it and causing a denial of service for other users trying to access configuration data.",
   "trace_source": {
-    "doc_reference": "doc_45",
-    "matched_capability": "Create/Update/Delete Money Streams"
+    "doc_reference": "Doc 30, Doc 45",
+    "matched_capability": "Use Hyperlane SDK (Doc 45)"
   }
 }

@@ -1,55 +1,60 @@
 {
   "id": 5,
-  "stride_category": "Information Disclosure",
+  "stride_category": "Elevation of Privilege",
   "origin": {
-    "from_chunk": true,
+    "from_chunk": false,
     "actor_id": null,
-    "behavior_id": 213,
-    "capability_match": "Vote on governance proposals"
+    "behavior_id": null,
+    "capability_match": null
   },
   "threat_target": {
-    "component_id": 45,
-    "asset_ids": []
+    "component_id": 323,
+    "asset_ids": [
+      210,
+      208
+    ]
   },
   "attack_surface": {
-    "behavior_id": 213,
-    "data_flow_id": 73,
-    "data_description": "Vote data within governance transactions, which is publicly visible on the blockchain."
+    "behavior_id": null,
+    "data_flow_id": 427,
+    "data_description": "Malicious contract artifacts or registry configuration provided to Hyperlane Registry"
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_name": "External Github API to Hyperlane Registry",
+    "between_component_ids": [
+      323
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The public nature of on-chain voting reveals individual DAO Participants' votes as they are cast. This information could be used to influence other voters, enable targeted vote buying, or apply pressure/retaliation."
+    "gap_description": "If malicious contract artifacts or configurations are accepted from a compromised/spoofed Github API and subsequently used, they could execute with unintended privileges within the Hyperlane ecosystem."
   },
   "actor_risk": {
-    "actor_id": 7,
-    "type": "DAO Participant/Token Holder",
+    "actor_id": 107,
+    "type": "Oracle",
     "overprivileged": false,
-    "description": "A DAO Participant's voting decision is publicly disclosed, potentially exposing them to undue influence or social pressures."
+    "description": "A compromised or spoofed Github API (Actor 107) could serve malicious artifacts or configurations that, when used by Hyperlane, lead to privilege escalation."
   },
   "behavioral_risk": {
-    "behavior_id": 213,
-    "risk_level": "Medium",
-    "rationale": "Public voting can lead to suboptimal governance outcomes if voters are influenced by early results or external pressures."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Execution of malicious code from untrusted artifacts or use of malicious configurations can lead to full system compromise or unauthorized control."
   },
   "assumptions": [
-    "The voting mechanism is entirely on-chain and transparent, making individual votes visible before the voting period ends.",
-    "There are external actors or entities motivated to use this information to influence the outcome of governance proposals."
+    "Contract artifacts or registry configurations fetched from the Github API are trusted and used in deployment or operational processes without sufficient independent verification, code review, or sandboxing.",
+    "Malicious code embedded in an artifact, or a malicious configuration, can grant attackers elevated privileges or unauthorized capabilities when the artifact is deployed/executed or the configuration is applied."
   ],
   "mitigation": {
-    "strategy": "Implement commit-reveal voting schemes to hide individual votes until the voting period ends. Alternatively, explore off-chain voting solutions with on-chain aggregation if privacy is a major concern, though this adds complexity. Acknowledge this as an inherent trade-off of on-chain governance if privacy mechanisms are not implemented.",
-    "type": "Technical Control",
-    "priority": "Medium"
+    "strategy": "Implement strict validation, integrity checks (e.g., checksums, signature verification), and mandatory code review for all critical artifacts and configurations fetched from external sources like Github API before they are used in deployment or operations. Use sandboxing for execution where feasible.",
+    "type": "Process Control",
+    "priority": "High"
   },
-  "description": "Individual votes cast by Superfluid DAO Participants on governance proposals are publicly visible on the blockchain before the voting period concludes. This premature disclosure could allow for strategic voting, vote buying, or coercion, potentially compromising the integrity of the governance outcome.",
+  "description": "An attacker, by providing malicious contract artifacts (Asset 210) or registry configurations (Asset 208) through a compromised or spoofed Github API feed (Actor 107) via Data Flow 427 to Hyperlane Registry (Component 323), causes these items to be used by Hyperlane, leading to unauthorized privilege escalation within the system.",
   "trace_source": {
-    "doc_reference": "doc_11",
-    "matched_capability": "Vote on governance proposals"
+    "doc_reference": "Doc 24, 45",
+    "matched_capability": "Provide contract artifacts (e.g., Cairo ABIs)"
   }
 }

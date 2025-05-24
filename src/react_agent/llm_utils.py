@@ -208,7 +208,6 @@ def create_cache(display_name: str, content: str, ttl: str = "3600s"):
             print(f"[!] 콘텐츠가 최소 토큰 요구사항(4096)을 충족하지 않을 수 있습니다. 예상 토큰: {estimated_tokens:.0f}")
             # 토큰이 부족하면 None 반환하고 캐시 없이 진행
             return None
-        
         # 캐시 생성 시도
         cache = gemini_client.caches.create(
             model=gemini_model,
@@ -235,18 +234,19 @@ def generate_llm_response(state: State) -> str:
         print("=============initial architecture analysis node=============")
         target_docs = load_file(state.target_docs_path)
         
-        # 공통으로 사용되는 docs만 캐싱
-        cached_content = create_cache("target_docs", target_docs)
+        prompt = ARCHITECTURE_ANALYSIS_TEMPLATE.replace(
+            "{target_docs}", target_docs
+        )
         
         # 프롬프트 템플릿만 사용
         contents = [
             types.Content(
                 role="user",
-                parts=[types.Part.from_text(text=ARCHITECTURE_ANALYSIS_TEMPLATE)],
+                parts=[types.Part.from_text(text=prompt)],
             ),
         ]
         
-        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_ANALYSIS_CONFIG", cached_content))
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_RESPONSE_CONFIG"))
         return response
     
     elif state.is_assessment_analysis and state.architecture_feedback_loop_count < ARCHITECTURE_FEEDBACK_LOOP_COUNT:
@@ -256,10 +256,9 @@ def generate_llm_response(state: State) -> str:
         # read architecture_analysis 
         analysis_json = load_file("results/architecture_analysis.json")
         
-        # 공통으로 사용되는 docs만 캐싱
-        cached_content = create_cache("target_docs", target_docs)
-        
         prompt = ARCHITECTURE_ASSESSMENT_TEMPLATE.replace(
+            "{target_docs}", target_docs
+        ).replace(
             "{initial_architecture_analysis}", analysis_json
         )
         
@@ -270,21 +269,23 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_ASSESSMENT_CONFIG", cached_content))
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_ASSESSMENT_CONFIG"))
         return response
     
     # feedback loop architecture analysis node
     elif state.is_feedback_architecture_analysis:
         print("=============feedback architecture analysis node=============")
+        
         target_docs = load_file(state.target_docs_path)
         analysis_json = load_file("results/architecture_analysis.json")
         # read assessment file
         assessment_architecture_json = load_file("results/assessment_architecture.json")
         
-        # 공통으로 사용되는 docs만 캐싱
-        cached_content = create_cache("target_docs", target_docs)
+        
             
         prompt = ARCHITECTURE_CORRECTION_TEMPLATE.replace(
+            "{target_docs}", target_docs
+        ).replace(
             "{initial_architecture_analysis}", analysis_json
         ).replace(
             "{assessment_architecture}", assessment_architecture_json
@@ -297,7 +298,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
         
-        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_CORRECTION_CONFIG", cached_content))
+        response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_CORRECTION_CONFIG"))
         
         return response
     
@@ -310,14 +311,13 @@ def generate_llm_response(state: State) -> str:
         
         cur_actor = build_llm_chunk(architecture_analysis, state.current_actor_id + 1)
         
-        # 공통으로 사용되는 docs만 캐싱
-        cached_content = create_cache("target_docs", target_docs)
-        
         prompt = THREAT_ANALYSIS_TEMPLATE.replace(
-                "{chunk}", json.dumps(cur_actor)
-            ).replace(
-                "{architecture_analysis}", architecture_analysis
-            )
+            "{target_docs}", target_docs
+        ).replace(
+            "{chunk}", json.dumps(cur_actor)
+        ).replace(
+            "{architecture_analysis}", architecture_analysis
+        )
         
         contents = [
             types.Content(
@@ -326,7 +326,7 @@ def generate_llm_response(state: State) -> str:
             ),
         ]
 
-        response = call_gemini_api(contents, set_gemini_config("THREAT_ANALYSIS_CONFIG", cached_content))
+        response = call_gemini_api(contents, set_gemini_config("THREAT_ANALYSIS_CONFIG"))
         return response
     
     elif state.is_initial_checklist_analysis:

@@ -1,0 +1,58 @@
+{
+  "id": 5,
+  "stride_category": "Tampering",
+  "origin": {
+    "from_chunk": true,
+    "actor_id": 109,
+    "behavior_id": null,
+    "capability_match": "Run automated E2E tests (Doc 10)"
+  },
+  "threat_target": {
+    "component_id": 109,
+    "asset_ids": []
+  },
+  "attack_surface": {
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Test scripts, test environment configuration, test execution logs, and reported test results."
+  },
+  "trust_boundary_risk": {
+    "boundary_id": null,
+    "boundary_name": "CI Test Execution Boundary",
+    "between_component_ids": [
+      109
+    ]
+  },
+  "security_gap": {
+    "confidentiality_required": false,
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "Lack of integrity controls over the test execution environment, test code, or result reporting can allow falsification of test outcomes, masking vulnerabilities."
+  },
+  "actor_risk": {
+    "actor_id": 109,
+    "type": "Off-chain Service/Bot",
+    "overprivileged": false,
+    "description": "If the CI system's test execution environment or result reporting mechanism is compromised, test results become unreliable and cannot be trusted."
+  },
+  "behavioral_risk": {
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "Tampered E2E tests can mask critical vulnerabilities or regressions in Hyperlane components, leading to insecure code being deployed and potentially exploited."
+  },
+  "assumptions": [
+    "An attacker can gain access to modify test code before or during execution within the CI system.",
+    "An attacker can alter the test environment (e.g., network conditions, deployed contract versions, test data) to skew results.",
+    "An attacker can directly manipulate the reported test results or logs after test execution but before review."
+  ],
+  "mitigation": {
+    "strategy": "Ensure test code integrity (e.g., run tests from signed commits/tags), secure test environment configurations (e.g., use immutable infrastructure for tests), implement tamper-evident logging for test results, and conduct periodic manual review or audit of critical test paths and results.",
+    "type": "Process Control",
+    "priority": "Medium"
+  },
+  "description": "An attacker with access to the CI system tampers with the E2E test execution by modifying test code, altering the test environment, or directly manipulating test results. This could lead to critical vulnerabilities or regressions being missed and deployed to production environments.",
+  "trace_source": {
+    "doc_reference": "Doc 10",
+    "matched_capability": "Run automated E2E tests (Doc 10)"
+  }
+}
