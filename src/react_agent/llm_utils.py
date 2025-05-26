@@ -20,7 +20,6 @@ from react_agent.prompt import (
 )
 from react_agent.config import (
     set_gemini_config,
-    ChecklistConfig,
     ChecklistAssessmentConfig,
     CodeBindingAssessmentConfig
 )
@@ -406,15 +405,15 @@ def generate_llm_response(state: State) -> str:
             )
             
             contents = [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(text=prompt)],
+                ),
             ]
 
             # API 호출 및 응답 저장
-            response = call_chatgpt_api(contents, ChecklistConfig)
-            all_responses.append(json_str_to_dict(response.choices[0].message.content))
+            response = call_gemini_api(contents, set_gemini_config("CHECKLIST_CONFIG"))
+            all_responses.append(json_str_to_dict(response.text))
             
             print(f"Completed processing threat ID: {threat_id}")
 
@@ -496,15 +495,15 @@ def generate_llm_response(state: State) -> str:
         )
         
         contents = [
-            {
-                "role": "user",
-                "content": prompt
-            }
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(text=prompt)],
+            ),
         ]
 
         # 한 번의 API 호출로 수정된 체크리스트 생성
-        response = call_chatgpt_api(contents, ChecklistConfig)
-        corrected_checklist = json_str_to_dict(response.choices[0].message.content)
+        response = call_gemini_api(contents, set_gemini_config("CHECKLIST_CONFIG"))
+        corrected_checklist = json_str_to_dict(response.text)
         
         print(f"Corrected checklist with {len(corrected_checklist.get('checklist_items', []))} items")
         
@@ -524,13 +523,13 @@ def generate_llm_response(state: State) -> str:
             )
         
         contents = [
-            {
-                "role": "user",
-                "content": prompt
-            }
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(text=prompt)],
+            ),
         ]
 
-        response = call_chatgpt_api(contents, ChecklistAssessmentConfig)
+        response = call_gemini_api(contents, set_gemini_config("CHECKLIST_ASSESSMENT_CONFIG"))
         
         return response
         

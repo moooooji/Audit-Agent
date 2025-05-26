@@ -5,25 +5,23 @@
     "from_chunk": true,
     "actor_id": 2,
     "behavior_id": null,
-    "capability_match": "Execute custom logic in callbacks"
+    "capability_match": "Execute custom logic based on Superfluid agreement state changes"
   },
   "threat_target": {
     "component_id": 201,
     "asset_ids": [
       101,
       103,
-      104,
-      105,
-      108
+      104
     ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": 307,
-    "data_description": "new operation details and context in callAgreementWithContext"
+    "data_flow_id": 312,
+    "data_description": "Crafted malicious parameters in 'New context or further agreement calls' exploiting a vulnerability."
   },
   "trust_boundary_risk": {
-    "boundary_id": 403,
+    "boundary_id": 404,
     "boundary_name": "Superfluid Host - Super App",
     "between_component_ids": [
       201,
@@ -34,31 +32,31 @@
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Host's authorization logic based on 'ctx' might be insufficient to prevent unauthorized operations requested by the Super App."
+    "gap_description": "Potential undiscovered vulnerabilities in the Host or agreement contracts that can be triggered by specific inputs from a Super App, allowing unauthorized actions."
   },
   "actor_risk": {
     "actor_id": 2,
     "type": "Smart Contract",
-    "overprivileged": true,
-    "description": "A malicious Super App attempts to gain unauthorized capabilities by manipulating its calls to the Host."
+    "overprivileged": false,
+    "description": "A Super App specifically designed to exploit a vulnerability in the core protocol."
   },
   "behavioral_risk": {
     "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Could allow Super App to control protocol aspects or assets it shouldn't, leading to fund loss or state corruption."
+    "rationale": "Successful exploitation could lead to unauthorized control over protocol functions or assets."
   },
   "assumptions": [
-    "The Superfluid Host's permission checks based on the 'ctx' (e.g., ensuring operations are relevant to the triggering event) can be bypassed or are incomplete.",
-    "The Super App can craft specific 'new operation details' that exploit such a flaw in authorization logic."
+    "A vulnerability exists in the Superfluid Host or agreement contracts that can be triggered by a Super App callback.",
+    "The Super App is crafted to send specific inputs to exploit this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Host must implement strict and comprehensive permission checks based on 'ctx' for all operations initiated by Super Apps. Ensure 'ctx' cannot be forged or replayed for unintended purposes. Apply the principle of least privilege for Super App actions within callbacks.",
+    "strategy": "Rigorous security audits of Superfluid core contracts. Formal verification. Secure coding practices. Permissioned Super App registration and review process.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Super App exploits `callAgreementWithContext` to perform Superfluid operations (e.g., modifying flows, distributing funds) for which it is not authorized by its current callback context (`ctx`) or its general registration permissions.",
+  "description": "A Super App, through carefully crafted calls to the Superfluid Host during its callback execution, could potentially exploit an unknown vulnerability in the Host or underlying agreement contracts to gain unauthorized access or perform actions beyond its intended scope, effectively elevating its privileges.",
   "trace_source": {
-    "doc_reference": "protocol/advanced-topics/super-apps/callbacks.mdx",
-    "matched_capability": "Execute custom logic in callbacks"
+    "doc_reference": "doc_3, doc_4, doc_21, doc_24, doc_26",
+    "matched_capability": "Execute custom logic based on Superfluid agreement state changes"
   }
 }

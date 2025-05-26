@@ -1,58 +1,60 @@
 {
-  "id": 4,
-  "stride_category": "Information Disclosure",
+  "id": 5,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 11,
-    "behavior_id": null,
-    "capability_match": "Handle incoming messages from Mailbox (doc_19)"
+    "behavior_id": 17,
+    "capability_match": "Query indexed protocol data from the Superfluid Subgraph"
   },
   "threat_target": {
-    "component_id": 11,
+    "component_id": 13,
     "asset_ids": [
-      4,
-      1
+      9
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "Events emitted or public state variables updated by the 'handle(origin, sender, body)' function of the Message Recipient (ID 11) contract."
+    "behavior_id": 17,
+    "data_flow_id": 14,
+    "data_description": "GraphQL query for protocol data"
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_id": 2,
+    "boundary_name": "Off-Chain Service - Protocol Interface",
+    "between_component_ids": [
+      11,
+      13
+    ]
   },
   "security_gap": {
     "confidentiality_required": true,
-    "integrity_required": false,
-    "availability_required": false,
-    "gap_description": "The Message Recipient's (ID 11) 'handle' function logs or stores sensitive data (e.g., parts of the message body, internal processing details) on-chain in a way that is publicly accessible and was not intended for public disclosure."
+    "integrity_required": true,
+    "availability_required": true,
+    "gap_description": "Potential vulnerabilities in the Subgraph's GraphQL query processing or resolver logic could allow unauthorized actions or data access if inputs are not properly sanitized."
   },
   "actor_risk": {
     "actor_id": 11,
-    "type": "Smart Contract",
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "The Message Recipient's (ID 11) message handling logic might inadvertently make sensitive information public through blockchain state or events."
+    "description": "Data Consumer can send crafted GraphQL queries that might exploit vulnerabilities in the Subgraph if such vulnerabilities exist."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "Message handling logic (linked via 'Handle incoming messages' capability) might reveal sensitive data if it's unnecessarily logged or stored publicly on-chain."
+    "behavior_id": 17,
+    "risk_level": "High",
+    "rationale": "Exploiting a vulnerability in the Subgraph could lead to unauthorized access to or modification of indexed data (Asset 9), or control over the Subgraph service itself."
   },
   "assumptions": [
-    "The application logic within the 'handle()' function of Message Recipient (ID 11) processes or generates data that has some degree of off-chain sensitivity.",
-    "This sensitive data is unnecessarily included in emitted events or stored in public state variables, making it accessible to any blockchain observer."
+    "The Data Indexing Service (Subgraph) has an exploitable vulnerability in its GraphQL parsing engine, resolver logic, or underlying database access (e.g., injection vulnerability, insecure direct object reference).",
+    "The Data Consumer can craft a malicious GraphQL query to trigger this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Carefully review all data logged in events and stored in public state variables by the 'handle' function. Avoid putting sensitive off-chain information directly on-chain unless essential and the implications are understood. Use hashing or encryption for sensitive identifiers if they must be referenced on-chain.",
+    "strategy": "Keep Subgraph software (e.g., The Graph Node) and its dependencies regularly updated. Implement strict input validation and sanitization for all parts of GraphQL queries and resolver inputs. Follow secure development practices for any custom Subgraph logic (mappings, schema). Conduct regular security audits and penetration testing.",
     "type": "Technical Control",
-    "priority": "Low"
+    "priority": "High"
   },
-  "description": "The Message Recipient's (ID 11) 'handle' function, while processing an incoming message, inadvertently emits events or updates public state variables with sensitive information derived from the message or internal application logic. This information, intended to be private or for off-chain use, becomes publicly accessible on the blockchain.",
+  "description": "The Data Consumer (Actor 11) sends a specially crafted GraphQL query via Data Flow 14 that exploits a vulnerability in the Data Indexing Service (Component 13). This could allow the Data Consumer to access unauthorized data, modify indexed User Data (Asset 9), or potentially gain control over the Subgraph service, thereby elevating its privileges beyond simple querying.",
   "trace_source": {
-    "doc_reference": "doc_19",
-    "matched_capability": "Handle incoming messages from Mailbox (doc_19)"
+    "doc_reference": "sdk/money-streaming/subgraph.mdx",
+    "matched_capability": "Query indexed protocol data from the Superfluid Subgraph"
   }
 }

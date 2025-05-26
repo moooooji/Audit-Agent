@@ -4,56 +4,59 @@
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": 508,
-    "capability_match": "Deploy Super Tokens (Wrapped, Pure, Custom)"
+    "behavior_id": 511,
+    "capability_match": "Operate within a granted flow rate allowance"
   },
   "threat_target": {
-    "component_id": null,
+    "component_id": 210,
     "asset_ids": [
       101,
-      102
+      103,
+      105
     ]
   },
   "attack_surface": {
-    "behavior_id": 508,
-    "data_flow_id": null,
-    "data_description": "The custom code deployed as part of a custom Super Token via the SuperTokenFactory."
+    "behavior_id": 511,
+    "data_flow_id": 301,
+    "data_description": "Flow Operator submits parameters attempting to exceed granted permissions or allowance."
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "N/A (Internal to deployed token)",
-    "between_component_ids": []
+    "boundary_id": 401,
+    "boundary_name": "User Wallet - Protocol Interface",
+    "between_component_ids": [
+      1,
+      210
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Vulnerabilities or backdoors in the custom logic of a deployed Super Token could allow unauthorized control over token functions or user balances within that token."
+    "availability_required": true,
+    "gap_description": "The Superfluid protocol (Host and CFA contract) must strictly enforce permission and flow rate allowance checks. A flaw here would allow privilege escalation."
   },
   "actor_risk": {
     "actor_id": 7,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious developer can intentionally create a custom token with backdoors. An unintentional flaw can also lead to EoP."
+    "description": "The Flow Operator is intended to operate only within explicitly granted permissions and allowances."
   },
   "behavioral_risk": {
-    "behavior_id": 508,
+    "behavior_id": 511,
     "risk_level": "High",
-    "rationale": "Exploitation of EoP in a custom token can lead to theft of funds or manipulation of token behavior, severely impacting users of that specific token."
+    "rationale": "Bypassing permission checks would allow unauthorized control over another user's funds/streams."
   },
   "assumptions": [
-    "The developer deploys a Super Token with custom logic (as allowed by doc_43).",
-    "This custom logic contains an intentional backdoor or an unintentional vulnerability that allows privileged actions (e.g., arbitrary minting/burning, draining funds, changing critical parameters post-deployment without proper governance).",
-    "Users interact with this custom Super Token, trusting its declared functionality."
+    "A Flow Operator attempts to perform an action (e.g., set flowRate higher than allowance, delete flow without delete permission) for which they are not authorized.",
+    "A vulnerability exists in the permission enforcement logic of the CFAv1Forwarder, Superfluid Host, or the Constant Flow Agreement contract."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits and formal verification for custom Super Token logic. Clear documentation of any special administrative privileges. Users should perform due diligence before interacting with custom tokens, preferring those with transparent and audited codebases.",
+    "strategy": "Comprehensive and robust permission and allowance validation logic within the Superfluid Host and CFA contracts. Thorough audits and formal verification of these critical checks.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A developer deploys a custom Super Token via the SuperTokenFactory that contains malicious or flawed logic. This logic allows the developer (or an attacker exploiting the flaw) to gain unauthorized administrative control over that specific token's functions, such as minting tokens to themselves, burning tokens from other users, seizing funds held by the token contract, or altering its core parameters without consent.",
+  "description": "A Flow Operator attempts to escalate their privileges by managing a stream in a way that exceeds their granted permissions (e.g., setting a flow rate above their allowance, or deleting a flow when only create/update is permitted). This relies on a flaw in the Superfluid protocol's access control enforcement.",
   "trace_source": {
-    "doc_reference": "doc_43",
-    "matched_capability": "Deploy Super Tokens (Wrapped, Pure, Custom)"
+    "doc_reference": "protocol/money-streaming/guides/acl-user-data.mdx",
+    "matched_capability": "Operate within a granted flow rate allowance"
   }
 }

@@ -1,61 +1,57 @@
 {
-  "id": 6,
+  "id": 7,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 5,
-    "behavior_id": 511,
-    "capability_match": "Vote on governance proposals"
+    "actor_id": null,
+    "behavior_id": 508,
+    "capability_match": "Stake tokens in TOGA to become PIC"
   },
   "threat_target": {
-    "component_id": 213,
+    "component_id": 207,
     "asset_ids": [
-      107
+      106
     ]
   },
   "attack_surface": {
-    "behavior_id": 511,
+    "behavior_id": 508,
     "data_flow_id": null,
-    "data_description": "Vote data, proposal parameters, and the governance contract's internal logic for vote weighting, quorum/threshold checks, proposal execution, and UUPS upgradeability."
+    "data_description": "Staking function logic and state management within the TOGA contract."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": "DAO Participant to Governance Contract",
-    "between_component_ids": [
-      5,
-      213
-    ]
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Vulnerabilities in the governance contract's logic for vote counting, calculation of voting weight (e.g., from SUP token balance snapshotting), enforcement of proposal thresholds, execution of approved proposals, or the UUPS proxy upgrade mechanism."
+    "gap_description": "A flaw in the TOGA contract's auction or stake management logic could allow an attacker to become PIC without meeting the legitimate criteria."
   },
   "actor_risk": {
-    "actor_id": 5,
-    "type": "DAO Participant/Token Holder",
-    "overprivileged": false,
-    "description": "An attacker, potentially a DAO participant or an external entity, might exploit a flaw to gain undue influence or control over governance decisions."
+    "actor_id": null,
+    "type": null,
+    "overprivileged": true,
+    "description": "An external attacker could exploit a vulnerability to gain PIC status and associated rewards without a valid stake."
   },
   "behavioral_risk": {
-    "behavior_id": 511,
+    "behavior_id": 508,
     "risk_level": "High",
-    "rationale": "Unauthorized execution of governance actions or manipulation of voting power can lead to severe consequences, including theft of treasury funds, malicious protocol parameter changes, or complete protocol compromise."
+    "rationale": "Illegitimately gaining PIC status allows an attacker to unfairly claim liquidation rewards, undermining the TOGA mechanism."
   },
   "assumptions": [
-    "A flaw exists in the Superfluid Governance II contract (Component 213) that allows for incorrect calculation or manipulation of voting power derived from SUP token holdings.",
-    "Proposal execution logic can be triggered without meeting the legitimately defined quorum or passing threshold due to a bug or exploit.",
-    "The admin controls for the UUPS proxy mechanism of the governance contract are compromised, allowing an attacker to deploy a malicious implementation and seize control."
+    "The TOGA contract has a logic flaw in how it determines the current PIC or validates incoming stakes (e.g., stake amount comparison, stake ownership).",
+    "An attacker can craft a transaction that exploits this flaw."
   ],
   "mitigation": {
-    "strategy": "Conduct thorough and repeated security audits of the governance contract and its upgrade mechanisms. Implement robust and manipulation-resistant snapshotting for SUP token balances used in voting. Securely manage admin keys for contract upgrades, ideally using a multi-signature wallet with time-locks and community oversight.",
+    "strategy": "Rigorous smart contract audits focusing on auction logic, stake management, and access control. Adherence to secure development practices and comprehensive testing.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker exploits a vulnerability in the Superfluid Governance II contract or its associated processes to gain disproportionate voting power (e.g., more than their actual SUP token holdings should grant), bypass required voting thresholds, or directly execute privileged governance functions without legitimate DAO approval, potentially leading to unauthorized control or changes to the protocol.",
+  "description": "An attacker exploits a vulnerability in the TOGA contract's staking or auction logic to become the PIC without fulfilling the necessary staking requirements (e.g., staking less than the current highest bid but still becoming PIC, or staking tokens they don't own).",
   "trace_source": {
-    "doc_reference": "governance/Governance Overview#doc_11",
-    "matched_capability": "Vote on governance proposals"
+    "doc_reference": "doc_18",
+    "matched_capability": "Stake tokens in TOGA to become PIC"
   }
 }

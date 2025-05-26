@@ -1,78 +1,54 @@
 {
   "evaluation_summary": {
-    "actors": "The extracted actors are well-supported by the documentation, covering users, smart contracts (Super Apps), off-chain services (Sentinels, Automation Services), and governance participants. Descriptions and capabilities align with the provided texts.",
-    "assets": "The listed assets accurately reflect the core financial instruments and data types within the Superfluid ecosystem as described in the documentation. Their types and sensitivity levels appear appropriate.",
-    "components": "Most components, primarily smart contracts and key services like the Subgraph, are correctly identified and described. Asset management references are generally accurate, with one exception involving an invalid asset ID. Several potentially relevant components (IDAv1, existential NFTs) mentioned in the documentation are missing from the extracted list.",
-    "data_flows": "The data flows depict key interactions between actors and components. Most flows are traceable to documented processes. However, several flows reference non-existent component IDs for forwarder contracts, indicating an issue with ID mapping or incomplete component extraction.",
-    "trust_boundaries": "The identified trust boundaries highlight critical security interfaces within the Superfluid architecture. The descriptions are consistent with the documentation. One boundary refers to a non-existent element ID for an external entity not defined as an actor or component.",
-    "behaviors": "The behaviors describe common actions and interactions within the protocol. Initiators, targets, and actions are largely consistent with documented functionalities, with one identified misattribution of a target actor in a specific behavior."
+    "actors": "Actors are well-defined, traceable to documentation, with appropriate capabilities. No missing actors identified. Schema and consistency are good.",
+    "assets": "Assets are clearly described, traceable, with appropriate types and sensitivities. No missing assets identified. Schema and consistency are good.",
+    "components": "Core components are accurately extracted. However, 'Resolver', 'SuperfluidGovernanceII', and several NFT-related contracts (ConstantFlowNFT, PoolAdminNFT, PoolMemberNFT) mentioned in documentation are missing. `assets_managed` and trust levels are consistent.",
+    "data_flows": "Data flows represent plausible interactions. Source/destination IDs are consistent. Data flow 313 (event indexing) has a simplified source; events originate from multiple protocol contracts, not just the Host.",
+    "trust_boundaries": "Boundaries are logical and align with security considerations. Boundary 406 (Super Token Contract - Underlying ERC20) includes an asset ID in `between_ids`, which is atypical but conceptually clear.",
+    "behaviors": "Behaviors are traceable to documented actions and capabilities. Initiators, targets, and risk levels are consistent and appropriate."
   },
   "findings": [
     {
       "category": "components",
-      "type": "invalid_reference",
-      "id": 213,
-      "description": "Component `Superfluid Governance II Contract` (ID 213) in `assets_managed` refers to asset ID `13`, which is not found in the assets list."
+      "type": "missing",
+      "id": null,
+      "description": "Component 'Resolver' is mentioned in documentation (doc_1: \"A contract assisting in locating all protocol constituent contract addresses.\", doc_61) but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'SuperfluidGovernanceII' is mentioned in documentation (doc_61: \"The main governance contract that will allow Superfluid community members to participate in the governance of the protocol.\") but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'ConstantFlowNFT' is mentioned in documentation (doc_61: \"NFTs minted to represent Money Streaming flows\") but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'PoolAdminNFT' is mentioned in documentation (doc_61: \"NFT contract representing admin rights over a SuperfluidPool\") but not extracted."
+    },
+    {
+      "category": "components",
+      "type": "missing",
+      "id": null,
+      "description": "Component 'PoolMemberNFT' is mentioned in documentation (doc_61: \"NFT contract where tokens represent membership within a pool, granting units to members in that pool\") but not extracted."
     },
     {
       "category": "data_flows",
-      "type": "invalid_reference",
-      "id": 312,
-      "description": "Data flow `User interacts with CFAv1Forwarder from a client application.` (ID 312) `destination_id` refers to component ID `216`, which is not found in the components list. Expected ID `208` (CFAv1Forwarder Contract)."
-    },
-    {
-      "category": "data_flows",
-      "type": "invalid_reference",
+      "type": "inconsistent",
       "id": 313,
-      "description": "Data flow `CFAv1Forwarder calls the Superfluid Host to execute the CFA operation.` (ID 313) `source_id` refers to component ID `216`, which is not found in the components list. Expected ID `208` (CFAv1Forwarder Contract)."
-    },
-    {
-      "category": "data_flows",
-      "type": "invalid_reference",
-      "id": 314,
-      "description": "Data flow `User interacts with GDAv1Forwarder from a client application.` (ID 314) `destination_id` refers to component ID `217`, which is not found in the components list. Expected ID `209` (GDAv1Forwarder Contract)."
-    },
-    {
-      "category": "data_flows",
-      "type": "invalid_reference",
-      "id": 315,
-      "description": "Data flow `GDAv1Forwarder calls the Superfluid Host to execute the GDA operation.` (ID 315) `source_id` refers to component ID `217`, which is not found in the components list. Expected ID `209` (GDAv1Forwarder Contract)."
+      "description": "Data flow 313 (Superfluid Host -> Superfluid Subgraph for protocol events) has a simplified source. Events are emitted by various protocol contracts (e.g., SuperToken, CFA, GDA, Pools), not just the Host. The Subgraph indexes events from the blockchain originating from these multiple components."
     },
     {
       "category": "trust_boundaries",
-      "type": "invalid_reference",
+      "type": "potential_concern",
       "id": 406,
-      "description": "Trust boundary `Protocol - External Oracle` (ID 406) in `between_ids` refers to element ID `13`, which is not found in the defined actors or components. The description indicates an external oracle."
-    },
-    {
-      "category": "behaviors",
-      "type": "invalid_reference",
-      "id": 506,
-      "description": "Behavior `Super App reacts to an incoming stream` (ID 506) `target_id` refers to actor ID `6` (PIC). Based on the behavior's description (\"The Superfluid Host invokes a callback function ... on a registered Super App\"), the target should be actor ID `2` (Super App)."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component `Instant Distribution Agreement (IDAv1)` is mentioned in documentation (e.g., Doc 1, Doc 12, Doc 21, Doc 61) with specific contract addresses and callback interactions, but is not listed in the components section of the JSON output."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component `ConstantFlowNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component `PoolAdminNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
-    },
-    {
-      "category": "components",
-      "type": "missing",
-      "id": null,
-      "description": "Component `PoolMemberNFT` is mentioned in documentation (e.g., Doc 59, Doc 61) as an existential NFT and UUPS Proxy, but is not listed in the components section of the JSON output."
+      "description": "Trust boundary 406 ('Super Token Contract - Underlying ERC20') has `between_ids` [202, 102], where 202 is a component (Super Token Contract) and 102 is an asset (Underlying ERC20 Token). Typically, `between_ids` link two components or actors. While conceptually understandable, this might deviate from the intended use of `between_ids`."
     }
   ]
 }

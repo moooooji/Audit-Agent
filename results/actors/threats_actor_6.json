@@ -1,11 +1,11 @@
 {
-  "id": 4,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 6,
     "behavior_id": null,
-    "capability_match": "Receive rewards for closing streams during the patrician period"
+    "capability_match": "Influence protocol upgrades and parameter changes"
   },
   "threat_target": {
     "component_id": null,
@@ -14,7 +14,7 @@
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "PIC's sentinel or direct interaction attempts to trigger reward payment for a liquidation not performed by them, outside the patrician period, or for an inflated amount."
+    "data_description": "Interaction with the voting or proposal system that exploits a flaw to gain undue influence."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -24,32 +24,33 @@
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The reward mechanism must accurately attribute liquidations and calculate rewards based on protocol rules."
+    "availability_required": false,
+    "gap_description": "A vulnerability in the governance contract (e.g., vote counting, proposal validation, tokenomic interaction like flash loans for voting power) could allow a DAO participant to gain more influence than their stake or role permits."
   },
   "actor_risk": {
     "actor_id": 6,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "A malicious PIC might try to exploit the reward system to obtain funds they are not entitled to."
+    "type": "DAO Participant/Token Holder",
+    "overprivileged": true,
+    "description": "A DAO participant might exploit a flaw to illegitimately increase their governance power, effectively gaining privileges they are not entitled to."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "Medium",
-    "rationale": "Successfully claiming unearned rewards constitutes theft and undermines the fairness of the incentive system."
+    "risk_level": "High",
+    "rationale": "Unauthorized elevation of privilege in governance can lead to protocol capture, malicious changes, or theft of treasury funds."
   },
   "assumptions": [
-    "The reward claim or distribution logic might have a flaw allowing a PIC to claim rewards under false pretenses.",
-    "PIC can manipulate data sent to the reward function."
+    "A flaw exists in the governance smart contract's logic related to voting power calculation, vote aggregation, or execution of proposals.",
+    "The participant has identified and can trigger this flaw.",
+    "Mechanisms like time-locks or veto powers are insufficient or can also be bypassed by the same exploit."
   ],
   "mitigation": {
-    "strategy": "Protocol logic must strictly verify the conditions for PIC reward eligibility (liquidator identity, timing within patrician period, correct stream state) before disbursing rewards. Rewards should be calculated based on immutable on-chain data.",
+    "strategy": "Conduct comprehensive security audits and formal verification of governance contracts. Implement robust testing for all edge cases in voting power calculation and proposal execution. Use time-locks for critical changes and consider a security council with veto power for emergency situations. Ensure voting power is based on locked or time-weighted stake to prevent flash loan attacks.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A PIC attempts to elevate their privileges by claiming rewards for liquidations they did not perform, or for liquidations outside their designated patrician period, or attempts to tamper with the reward calculation to receive more than entitled.",
+  "description": "A Superfluid DAO Participant could exploit a vulnerability in the governance mechanism (e.g., vote counting error, flash loan for temporary voting power if not mitigated) to gain undue influence over protocol upgrades or parameter changes, effectively elevating their privileges.",
   "trace_source": {
-    "doc_reference": "protocol/advanced-topics/solvency/Liquidations & TOGA#patricians-plebs-and-pirates-3ps",
-    "matched_capability": "Receive rewards for closing streams during the patrician period"
+    "doc_reference": "doc_11",
+    "matched_capability": "Influence protocol upgrades and parameter changes"
   }
 }

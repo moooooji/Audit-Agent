@@ -1,63 +1,63 @@
 {
-  "id": 11,
-  "stride_category": "Tampering",
+  "id": 8,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": null,
-    "capability_match": "Can be the distributor of funds to the pool"
+    "behavior_id": 507,
+    "capability_match": "Close critical or insolvent streams"
   },
   "threat_target": {
-    "component_id": 206,
+    "component_id": 201,
     "asset_ids": [
-      108,
-      101
+      101,
+      103,
+      105,
+      107
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": null,
-    "data_description": "UserData parameter in a distribution function call (e.g., 'distribute' or 'distributeFlow') made by the Pool Admin."
+    "behavior_id": 507,
+    "data_flow_id": 310,
+    "data_description": "Crafted liquidation transaction data exploiting a vulnerability"
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet - Protocol Interface",
+    "boundary_id": 405,
+    "boundary_name": "On-chain Protocol - Off-chain Services",
     "between_component_ids": [
-      4,
-      201
+      201,
+      4
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Malicious UserData sent during distribution could exploit vulnerabilities in the pool or recipient contracts/systems if not handled carefully."
+    "gap_description": "A vulnerability in the Superfluid Host Contract might allow a liquidation transaction to grant unauthorized permissions or access."
   },
   "actor_risk": {
     "actor_id": 4,
-    "type": "EOA (Externally Owned Account)",
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "Pool Admin, acting as a distributor, might intentionally send malicious UserData."
+    "description": "A Sentinel submitting a transaction to a vulnerable Host contract could inadvertently (if malicious) trigger privilege escalation."
   },
   "behavioral_risk": {
-    "behavior_id": null,
-    "risk_level": "Low",
-    "rationale": "Impact depends on how UserData is processed. Standard distributions might ignore it, but custom Super Apps or off-chain systems might be vulnerable."
+    "behavior_id": 507,
+    "risk_level": "High",
+    "rationale": "Elevation of privilege could lead to unauthorized control over protocol functions or user assets."
   },
   "assumptions": [
-    "The Pool Admin also acts as a distributor of funds into the pool they manage.",
-    "Distribution functions (like `distribute` or `distributeFlow`) allow a `userData` parameter.",
-    "This `userData` might be logged, passed to pool members, or processed by the pool contract or associated Super Apps/off-chain systems.",
-    "There is a vulnerability in how this `userData` is processed by some component."
+    "A critical vulnerability (e.g., allowing arbitrary calls, parameter manipulation) exists in the Superfluid Host Contract's handling of liquidation transactions.",
+    "The Sentinel (or an attacker acting as one) can craft a specific payload for the liquidation call to exploit this vulnerability."
   ],
   "mitigation": {
-    "strategy": "If `userData` is processed, it must be sanitized and handled carefully. Recipients should be aware that `userData` can be arbitrary. Avoid executing arbitrary logic based on `userData` without validation.",
+    "strategy": "Rigorous security audits, formal verification, adherence to the principle of least privilege in contract design, and a proactive bug bounty program for the Superfluid Host Contract.",
     "type": "Technical Control",
-    "priority": "Low"
+    "priority": "High"
   },
-  "description": "A Pool Admin, when distributing funds to a pool they manage, includes specially crafted malicious `userData` in the transaction. If the pool contract, any connected Super App, or recipients' off-chain systems process this `userData` unsafely, it could lead to issues like XSS in frontends displaying it, or exploitation of logic that parses the `userData`.",
+  "description": "A malicious Sentinel (or an attacker) submits a specially crafted liquidation transaction that exploits a vulnerability in the Superfluid Host Contract. This allows the attacker to gain elevated privileges, such as modifying arbitrary storage, calling restricted functions, or draining funds from the contract or associated Super Tokens.",
   "trace_source": {
-    "doc_reference": "doc_29",
-    "matched_capability": "Can be the distributor of funds to the pool"
+    "doc_reference": "doc_18, doc_26",
+    "matched_capability": "Close critical or insolvent streams"
   }
 }

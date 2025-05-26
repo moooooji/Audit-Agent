@@ -5,56 +5,57 @@
     "from_chunk": true,
     "actor_id": 3,
     "behavior_id": 505,
-    "capability_match": "Earn rewards (buffer deposits or PIC rewards) for closing streams"
+    "capability_match": "Assign/Update units for pool members"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": 211,
     "asset_ids": [
-      105
+      104,
+      101
     ]
   },
   "attack_surface": {
     "behavior_id": 505,
-    "data_flow_id": 308,
-    "data_description": "Liquidation transaction crafted to make the Sentinel appear as the Patrician in Charge (PIC) or to exploit a flaw in PIC reward distribution."
+    "data_flow_id": 306,
+    "data_description": "Parameters of GDAv1Forwarder.updateMemberUnits(), specifically 'memberAddress' and 'newUnits'."
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "On-Chain (Protocol) - Off-Chain (Sentinel/Automation/API)",
+    "boundary_id": null,
+    "boundary_name": "Admin Wallet to Forwarder Contract",
     "between_component_ids": [
-      201,
-      3
+      211
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A weakness exists in how the Superfluid Host contract or the TOGA mechanism identifies the rightful PIC for reward distribution during a liquidation, or this process can be manipulated."
+    "gap_description": "The Pool Admin has legitimate authority to update units; the gap is the potential for abuse of this authority if not monitored or constrained."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "Sentinel illegitimately claims PIC-specific rewards by exploiting a flaw, even if it is not the rightful PIC."
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": false,
+    "description": "A malicious Pool Admin can assign excessive units to themselves or accomplices, abusing their legitimate privilege."
   },
   "behavioral_risk": {
     "behavior_id": 505,
-    "risk_level": "Medium",
-    "rationale": "Misappropriation of PIC rewards undermines the TOGA incentive system and the fairness of the liquidation process."
+    "risk_level": "High",
+    "rationale": "Maliciously assigning excessive units directly translates to siphoning a larger share of distributed funds from the pool."
   },
   "assumptions": [
-    "The Sentinel (Actor ID 3) is not the current, legitimate PIC for the token associated with the stream being liquidated.",
-    "A flaw, race condition, or exploitable logic exists in the Superfluid Host contract or its interaction with the TOGA contract that allows a non-PIC Sentinel to be credited with PIC rewards."
+    "The Pool Admin is malicious or their account is compromised.",
+    "There are no off-chain or DAO-level controls/audits to detect or revert such malicious unit assignments.",
+    "The pool has funds or incoming funds to be distributed."
   ],
   "mitigation": {
-    "strategy": "Ensure robust, atomic, and non-manipulable verification of the PIC status by the Superfluid Host contract at the moment of processing liquidations and distributing rewards. Secure the interface and state transitions between the Host and TOGA contracts.",
-    "type": "Technical Control",
+    "strategy": "Implement monitoring and alerting for significant unit changes. For critical pools, consider DAO oversight or approval for large unit allocations. Time-locks or tiered admin roles for unit updates.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A Sentinel (Actor ID 3) that is not the current Patrician in Charge (PIC) for a given Super Token exploits a flaw or race condition. This allows it to submit a liquidation transaction (Behavior ID 505) for a stream of that token in such a way that it illegitimately receives the priority reward (Asset ID 105) designated for the actual PIC.",
+  "description": "A malicious Pool Admin can abuse their privilege to update member units by assigning an unfairly large number of units to their own account or an accomplice's account via the GDAv1Forwarder. This effectively elevates their privilege to claim a larger portion of the pool's distributions than entitled.",
   "trace_source": {
-    "doc_reference": "doc_18",
-    "matched_capability": "Earn rewards (buffer deposits or PIC rewards) for closing streams"
+    "doc_reference": null,
+    "matched_capability": "Assign/Update units for pool members"
   }
 }
