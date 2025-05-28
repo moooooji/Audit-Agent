@@ -898,7 +898,7 @@ def set_gemini_config(config_name: str):
         type=genai.types.Type.OBJECT,
         required=["evaluation_summary", "findings"],
         properties={
-            "summary": genai.types.Schema(
+            "evaluation_summary": genai.types.Schema(
                 type=genai.types.Type.STRING,
                 description="A concise overall evaluation summary of the checklist_items section"
             ),

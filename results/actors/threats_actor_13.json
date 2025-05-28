@@ -1,62 +1,54 @@
 {
-  "id": 1306,
-  "stride_category": "Repudiation",
+  "id": 15,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 13,
-    "behavior_id": 407,
-    "capability_match": "Deploy warp routes (doc_31)"
+    "behavior_id": null,
+    "capability_match": "Participate in governance via wallet interfaces"
   },
   "threat_target": {
-    "component_id": 106,
-    "asset_ids": [
-      8,
-      9
-    ]
+    "component_id": null,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 407,
-    "data_flow_id": 215,
-    "data_description": "CLI deployment commands and associated logs."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Private keys or seed phrase, phished via fake governance interfaces."
   },
   "trust_boundary_risk": {
-    "boundary_id": 302,
-    "boundary_name": "Developer-to-Tooling",
-    "between_component_ids": [
-      1,
-      116,
-      117
-    ]
+    "boundary_id": null,
+    "boundary_name": "User to Governance Interface (Authentication)",
+    "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The CLI tool may not provide adequate, secure, and tamper-proof logging of deployment actions tied to the user's identity."
+    "gap_description": "Compromise of user's private keys via a malicious governance interface grants attacker full control over assets and voting power."
   },
   "actor_risk": {
     "actor_id": 13,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "The CLI user performs deployment actions that should be attributable."
+    "description": "Attacker gaining user's keys can impersonate them in governance and control their assets."
   },
   "behavioral_risk": {
-    "behavior_id": 407,
-    "risk_level": "Low",
-    "rationale": "Lack of proper audit trails for CLI actions could make it difficult to trace malicious deployments."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Key compromise leads to complete account takeover, including voting power and assets."
   },
   "assumptions": [
-    "The CLI's local logging can be tampered with or is insufficient.",
-    "No centralized or blockchain-based logging mechanism attributes CLI-initiated deployments directly to the specific CLI user beyond the transaction signer."
+    "A malicious governance portal or wallet interface successfully tricks the user into entering their private key or seed phrase."
   ],
   "mitigation": {
-    "strategy": "Implement robust and tamper-evident logging for all CLI deployment operations, potentially including signed attestations or integration with version control systems for configurations. Ensure blockchain transactions are clearly linked to CLI operations.",
+    "strategy": "Educate users to never input private keys/seed phrases into web interfaces. Promote hardware wallet usage for all blockchain interactions, including governance.",
     "type": "Process Control",
-    "priority": "Low"
+    "priority": "High"
   },
-  "description": "If the Hyperlane CLI does not provide adequate, tamper-proof logging of deployment activities tied to the user's identity (beyond the on-chain transaction signer), a user could deploy a malicious warp route and later deny responsibility if the actions cannot be definitively traced back to their specific CLI usage.",
+  "description": "A malicious governance interface or compromised wallet phishes the Wallet User's private keys, allowing an attacker to elevate their privileges, control the user's assets, and impersonate them in governance votes and proposals.",
   "trace_source": {
-    "doc_reference": "doc_31",
-    "matched_capability": "Deploy warp routes (doc_31)"
+    "doc_reference": "doc_48",
+    "matched_capability": "Participate in governance via wallet interfaces"
   }
 }

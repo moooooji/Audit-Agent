@@ -1,58 +1,61 @@
 {
-  "id": 6,
-  "stride_category": "Denial of Service",
+  "id": 8,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 8,
-    "behavior_id": 513,
-    "capability_match": "Trigger on-chain transactions based on predefined logic (e.g., wrap tokens, start/end streams)"
+    "behavior_id": null,
+    "capability_match": "Access secrets from GCP Secret Manager via the ExternalSecret CRD and ClusterSecretStore"
   },
   "threat_target": {
-    "component_id": 202,
+    "component_id": 218,
     "asset_ids": [
-      102
+      105
     ]
   },
   "attack_surface": {
-    "behavior_id": 513,
-    "data_flow_id": null,
-    "data_description": "Auto-Wrap service initiating excessive or continuous wrapping due to a bug or misconfiguration."
+    "behavior_id": null,
+    "data_flow_id": 312,
+    "data_description": "Request for a specific secret identifier, leveraging ExternalSecret CRD and ClusterSecretStore configuration"
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": "Off-chain Service to On-chain Protocol",
-    "between_component_ids": []
+    "boundary_name": "Workload to Secret Integration Boundary",
+    "between_component_ids": [
+      8,
+      218
+    ]
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A faulty Auto-Wrap service might deplete user's underlying tokens, denying them access to those funds in their original form."
+    "gap_description": "Component 218's GCP service account has overly broad permissions (can 'get any secret' as per doc_43), potentially allowing a workload (Actor 8) to request and obtain secrets beyond its intended authorization scope via a misconfigured or overly permissive ExternalSecret definition."
   },
   "actor_risk": {
     "actor_id": 8,
     "type": "Off-chain Service/Bot",
-    "overprivileged": false,
-    "description": "A misbehaving Auto-Wrap service can unintentionally cause financial loss or inconvenience."
+    "overprivileged": true,
+    "description": "Actor 8, through Component 218, might gain access to secrets it's not directly authorized for if Component 218's service account is overprivileged and ExternalSecret definitions are not strictly controlled."
   },
   "behavioral_risk": {
-    "behavior_id": 513,
-    "risk_level": "Medium",
-    "rationale": "Continuous unintended wrapping can lock up user's ERC20 tokens into Super Tokens against their immediate wishes, or deplete them if wrapping to an attacker-controlled address (covered by EoP)."
+    "behavior_id": null,
+    "risk_level": "High",
+    "rationale": "Successful exploitation leads to unauthorized access to a wide range of secrets (Asset 105), effectively elevating the workload's privilege regarding data access."
   },
   "assumptions": [
-    "The Auto-Wrap service contains a bug or is misconfigured leading to excessive wrapping.",
-    "The service has sufficient ERC20 approval to perform these excessive wraps.",
-    "Users may not immediately notice the excessive wrapping activity."
+    "The GCP service account used by Component 218 has permissions to access a wider range of secrets than any single workload is intended to access (explicitly stated in doc_43: 'the GCP service account ... can get any secret').",
+    "A Kubernetes workload (Actor 8) can define or influence its ExternalSecret resource to request arbitrary secret names that are within the scope of Component 218's overprivileged GCP service account.",
+    "There is a lack of fine-grained policies or validation restricting which secrets a specific ExternalSecret (and thus the associated workload) can map to via the ClusterSecretStore."
   ],
   "mitigation": {
-    "strategy": "Implement robust testing and monitoring for the Auto-Wrap service. Include circuit breakers or rate limits for automated actions. Provide users with clear notifications about auto-wrap activity and easy ways to disable the service or adjust settings.",
+    "strategy": "Apply the principle of least privilege to the GCP service account used by Component 218; restrict its access to only necessary secrets or projects. If feasible, use multiple, narrowly-scoped ClusterSecretStores with different service accounts. Implement strict validation and policies (e.g., OPA Gatekeeper) on ExternalSecret definitions to limit which secrets can be requested by specific workloads/namespaces. Prioritize moving to GCP Workload Identity for finer-grained K8s SA to GCP SA permission mapping.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A faulty or misconfigured Auto-Wrap service (Actor 8) excessively wraps a user's Underlying ERC20 Tokens (Asset 102) into Super Tokens via Component 202, effectively denying the user access to their funds in the original ERC20 form and potentially incurring unwanted transaction fees.",
+  "description": "A Kubernetes workload (Actor 8) exploits the `external-secrets-gcp` integration (Component 218), which, as noted in doc_43, uses an overly permissive GCP service account ('can get any secret'). By crafting a specific ExternalSecret definition, the workload requests and obtains GCP secrets (Asset 105) beyond its authorized scope, leading to an elevation of privilege.",
   "trace_source": {
-    "doc_reference": "doc_14",
-    "matched_capability": "Trigger on-chain transactions based on predefined logic (e.g., wrap tokens, start/end streams)"
+    "doc_reference": "doc_43",
+    "matched_capability": "Access secrets from GCP Secret Manager via the ExternalSecret CRD and ClusterSecretStore"
   }
 }

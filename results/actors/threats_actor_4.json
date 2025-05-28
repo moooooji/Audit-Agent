@@ -1,63 +1,64 @@
 {
-  "id": 8,
-  "stride_category": "Elevation of Privilege",
+  "id": 4,
+  "stride_category": "Information Disclosure",
   "origin": {
     "from_chunk": true,
     "actor_id": 4,
-    "behavior_id": 507,
-    "capability_match": "Close critical or insolvent streams"
+    "behavior_id": null,
+    "capability_match": "make POST requests to CCIP-read Server"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": 20,
     "asset_ids": [
-      101,
-      103,
-      105,
-      107
+      100
     ]
   },
   "attack_surface": {
-    "behavior_id": 507,
-    "data_flow_id": 310,
-    "data_description": "Crafted liquidation transaction data exploiting a vulnerability"
+    "behavior_id": null,
+    "data_flow_id": 11,
+    "data_description": "ABI-encoded request data"
   },
   "trust_boundary_risk": {
-    "boundary_id": 405,
-    "boundary_name": "On-chain Protocol - Off-chain Services",
+    "boundary_id": 3,
+    "boundary_name": "External Off-chain Services vs. Hyperlane Protocol",
     "between_component_ids": [
-      201,
-      4
+      4,
+      19,
+      20,
+      10,
+      11,
+      13
     ]
   },
   "security_gap": {
-    "confidentiality_required": false,
-    "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "A vulnerability in the Superfluid Host Contract might allow a liquidation transaction to grant unauthorized permissions or access."
+    "confidentiality_required": true,
+    "integrity_required": false,
+    "availability_required": false,
+    "gap_description": "Sensitive information within ABI-encoded request data could be exposed if the CCIP-read Service Framework is vulnerable to data exfiltration or insecure logging."
   },
   "actor_risk": {
     "actor_id": 4,
     "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "A Sentinel submitting a transaction to a vulnerable Host contract could inadvertently (if malicious) trigger privilege escalation."
+    "description": "The Relayer Agent sends data to the CCIP-read Service Framework. If this data is sensitive and the framework is compromised, it could lead to information disclosure."
   },
   "behavioral_risk": {
-    "behavior_id": 507,
-    "risk_level": "High",
-    "rationale": "Elevation of privilege could lead to unauthorized control over protocol functions or user assets."
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "The CCIP-read Service Framework processes ABI-encoded data which may contain sensitive details. Insecure handling could lead to unauthorized information access."
   },
   "assumptions": [
-    "A critical vulnerability (e.g., allowing arbitrary calls, parameter manipulation) exists in the Superfluid Host Contract's handling of liquidation transactions.",
-    "The Sentinel (or an attacker acting as one) can craft a specific payload for the liquidation call to exploit this vulnerability."
+    "The ABI-encoded request data contains sensitive information that should remain confidential.",
+    "The CCIP-read Service Framework has vulnerabilities (e.g., insecure logging, unauthenticated access, software flaws)."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits, formal verification, adherence to the principle of least privilege in contract design, and a proactive bug bounty program for the Superfluid Host Contract.",
+    "strategy": "Implement strict access controls, secure logging practices, and encryption for sensitive data processed by the CCIP-read Service Framework.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "A malicious Sentinel (or an attacker) submits a specially crafted liquidation transaction that exploits a vulnerability in the Superfluid Host Contract. This allows the attacker to gain elevated privileges, such as modifying arbitrary storage, calling restricted functions, or draining funds from the contract or associated Super Tokens.",
+  "description": "Sensitive information contained within the ABI-encoded request data sent by the Relayer Agent to the CCIP-read Service Framework could be disclosed if the framework is compromised or misconfigured.",
   "trace_source": {
-    "doc_reference": "doc_18, doc_26",
-    "matched_capability": "Close critical or insolvent streams"
+    "doc_reference": "typescript/ccip-server/README.md",
+    "matched_capability": "make POST requests to CCIP-read Server"
   }
 }

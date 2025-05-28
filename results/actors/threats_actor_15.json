@@ -1,20 +1,24 @@
 {
-  "id": 6,
+  "id": 5,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 15,
     "behavior_id": null,
-    "capability_match": "Make POST requests to CCIP Server with ABI-encoded data (doc_29)"
+    "capability_match": "Custody BTC for users"
   },
   "threat_target": {
-    "component_id": 119,
-    "asset_ids": []
+    "component_id": null,
+    "asset_ids": [
+      101,
+      103,
+      107
+    ]
   },
   "attack_surface": {
     "behavior_id": null,
-    "data_flow_id": 214,
-    "data_description": "POST Request with specially crafted ABI-encoded data targeting vulnerabilities in the CCIP Server's handler logic."
+    "data_flow_id": null,
+    "data_description": "Internal administrative interfaces, APIs, software systems, and access control mechanisms of the Custodial Service's platform."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
@@ -22,34 +26,35 @@
     "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Vulnerabilities in the CCIP Server's parsing, validation, or business logic for handling ABI-encoded data could allow an attacker to execute unauthorized functions or gain unintended privileges."
+    "gap_description": "Insufficient separation of duties, weak internal access controls, or exploitable software vulnerabilities within the custodian's systems that allow an attacker or malicious insider to gain unauthorized higher privileges."
   },
   "actor_risk": {
     "actor_id": 15,
     "type": "Off-chain Service/Bot",
-    "overprivileged": false,
-    "description": "The CCIP Relayer sends complex ABI-encoded data. Vulnerabilities in how the CCIP Server parses or processes this data could be exploited for privilege escalation."
+    "overprivileged": true,
+    "description": "If a low-privilege part of the custodian's system or a low-level employee account is compromised and can escalate to gain administrative control, it effectively makes the entire system overprivileged at that point."
   },
   "behavioral_risk": {
     "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Successful elevation of privilege can lead to complete compromise of the CCIP Server, unauthorized data access/modification, or disruption of services."
+    "rationale": "Successful privilege escalation within the custodial service can lead to catastrophic loss of all user funds, theft of sensitive data, and complete disruption of services."
   },
   "assumptions": [
-    "The CCIP Server's ABI decoding logic, or the subsequent business logic that processes the decoded data, contains vulnerabilities (e.g., improper input validation, logic flaws) exploitable via crafted input.",
-    "The attacker can craft and send such a malicious request, possibly by controlling or spoofing a CCIP Relayer."
+    "The Custodial Service has internal roles, permissions, and administrative functions.",
+    "Software vulnerabilities, misconfigurations, or weak access control policies exist within the custodian's platform.",
+    "An attacker (e.g., malicious insider, external hacker who has gained initial access) can exploit these weaknesses to escalate their privileges."
   ],
   "mitigation": {
-    "strategy": "Implement secure and strict parsing and validation of all ABI-encoded data. Apply the principle of least privilege for the CCIP Server's internal operations and data access. Conduct thorough security audits, static/dynamic analysis, and fuzz testing of the ABI handling logic and service endpoints.",
+    "strategy": "Implement strict principle of least privilege for all accounts and systems. Enforce multi-factor authentication for administrative actions. Conduct regular security audits, penetration testing, and code reviews. Implement a robust vulnerability management program and intrusion detection/prevention systems.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious CCIP Relayer or an attacker (potentially spoofing a relayer) sends a specially crafted POST request containing manipulated ABI-encoded data to the CCIP Server. This exploits a vulnerability in the server's data handling, allowing the attacker to gain elevated privileges or execute unauthorized administrative actions.",
+  "description": "An attacker (potentially a malicious insider or an external threat actor who has breached perimeter defenses) exploits a vulnerability or misconfiguration within the Custodial Service's (Actor 15) systems to gain elevated privileges, enabling unauthorized control over users' custodied BTC, staking operations, or rewards.",
   "trace_source": {
-    "doc_reference": "doc_29",
-    "matched_capability": "Make POST requests to CCIP Server with ABI-encoded data (doc_29)"
+    "doc_reference": "guides/btc_stakers/native_staking/custody_support.mdx",
+    "matched_capability": "Custody BTC for users"
   }
 }

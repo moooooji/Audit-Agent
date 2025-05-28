@@ -42,7 +42,7 @@ threats_list = []
 
 checklist_items = []
 
-gemini_model = "gemini-2.5-pro-preview-05-06"
+gemini_model = "gemini-2.5-flash-preview-05-20"
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 gemini_client = genai.Client(

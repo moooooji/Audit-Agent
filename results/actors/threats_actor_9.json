@@ -1,60 +1,60 @@
 {
   "id": 6,
-  "stride_category": "Elevation of Privilege",
+  "stride_category": "Repudiation",
   "origin": {
     "from_chunk": true,
     "actor_id": 9,
-    "behavior_id": 12,
-    "capability_match": "Vote on governance proposals"
+    "behavior_id": 513,
+    "capability_match": "Communicate with Babylon Genesis via IBC"
   },
   "threat_target": {
-    "component_id": 10,
+    "component_id": 202,
     "asset_ids": [
-      8
+      109
     ]
   },
   "attack_surface": {
-    "behavior_id": 12,
-    "data_flow_id": 12,
-    "data_description": "Interaction with the vote submission and processing logic within the Superfluid Governance Module contract, particularly how voting power is calculated and applied."
+    "behavior_id": 513,
+    "data_flow_id": 312,
+    "data_description": "BSN state updates transmitted to Babylon Genesis via IBC for the purpose of checkpointing."
   },
   "trust_boundary_risk": {
-    "boundary_id": 5,
-    "boundary_name": "Governance Module - Protocol Core",
+    "boundary_id": 402,
+    "boundary_name": "Babylon Genesis - BSN Interface",
     "between_component_ids": [
-      10
+      202,
+      9
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "A flaw in the Superfluid Governance Module's smart contract logic for calculating or applying voting power could allow an attacker to cast votes with more weight than their legitimate SUP token holdings, or execute privileged governance functions without proper authorization."
+    "gap_description": "A BSN might attempt to deny having sent a specific state update if the standard IBC acknowledgements and commitment proofs are insufficient for irrefutable proof at the application or dispute resolution layer."
   },
   "actor_risk": {
     "actor_id": 9,
-    "type": "DAO Participant/Token Holder",
-    "overprivileged": true,
-    "description": "A malicious DAO Participant might exploit a vulnerability in the governance contract to gain disproportionate voting power, effectively elevating their privileges within the DAO."
+    "type": "Smart Contract",
+    "overprivileged": false,
+    "description": "A BSN could attempt to repudiate its submitted state updates to evade responsibility for errors or to maliciously disrupt the checkpointing integrity if it perceives an advantage."
   },
   "behavioral_risk": {
-    "behavior_id": 12,
-    "risk_level": "High",
-    "rationale": "Successfully exploiting voting power calculations or access controls within the governance module can lead to unauthorized control over the protocol, fundamentally compromising the DAO's integrity and security."
+    "behavior_id": 513,
+    "risk_level": "Low",
+    "rationale": "The IBC protocol inherently includes mechanisms for packet commitment and acknowledgement, making direct repudiation of sent messages difficult. This threat relies on potential gaps in application-level logging or complex dispute scenarios."
   },
   "assumptions": [
-    "The smart contract logic responsible for tallying votes or determining voting power (e.g., based on token balance at a specific snapshot block) contains a vulnerability (e.g., reentrancy, integer overflow/underflow, incorrect snapshot usage).",
-    "An attacker can craft a specific vote transaction or a series of interactions that trigger this vulnerability to their advantage.",
-    "Access controls for critical governance functions within Component 10 (e.g., proposal execution) might be flawed or bypassed through the voting power exploit."
+    "A BSN has a motive to deny a previously sent state update (e.g., to avoid consequences of an erroneous update).",
+    "The standard IBC proofs of packet commitment/receipt are either not logged sufficiently for all dispute types or can be contested at a higher layer."
   ],
   "mitigation": {
-    "strategy": "Conduct comprehensive security audits of the governance smart contracts, with a specific focus on voting power calculation, vote tallying logic, snapshot mechanisms, and access control for privileged functions. Employ formal verification methods if feasible. Use well-established and audited governance contract patterns and libraries. Implement a bug bounty program.",
-    "type": "Technical Control",
-    "priority": "High"
+    "strategy": "Leverage IBC's built-in non-repudiation features (commitments, acknowledgements). Implement comprehensive application-level logging of IBC interactions on both the BSN and Babylon Genesis sides to provide evidence for dispute resolution.",
+    "type": "Process Control",
+    "priority": "Low"
   },
-  "description": "An attacker exploits a vulnerability within the Superfluid Governance Module (Component 10) to illegitimately increase their voting power or bypass normal voting procedures. This could allow them to cast votes with more weight than their actual SUP token holdings (Asset 8) entitle them to, or to execute privileged governance actions without meeting the required consensus, leading to unauthorized control over protocol decisions.",
+  "description": "A Bitcoin Supercharged Network (BSN) attempts to deny that it sent a specific state update to Babylon Genesis via an IBC transaction. This could be to avoid blame for incorrect data or to disrupt the integrity of the checkpointing process if a dispute arises.",
   "trace_source": {
-    "doc_reference": "governance/Governance Overview#doc_11",
-    "matched_capability": "Vote on governance proposals"
+    "doc_reference": "doc_21",
+    "matched_capability": "Communicate with Babylon Genesis via IBC"
   }
 }

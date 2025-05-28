@@ -1,62 +1,62 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 12,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
     "actor_id": 2,
-    "behavior_id": null,
-    "capability_match": "Execute custom logic based on Superfluid agreement state changes"
+    "behavior_id": 509,
+    "capability_match": "Initiate interchain messages (e.g., TokenRouter.transferRemote, HypERC4626Collateral.transferRemote)"
   },
   "threat_target": {
-    "component_id": 201,
+    "component_id": 208,
     "asset_ids": [
-      101,
-      103,
-      104
+      103
     ]
   },
   "attack_surface": {
-    "behavior_id": null,
-    "data_flow_id": 312,
-    "data_description": "Crafted malicious parameters in 'New context or further agreement calls' exploiting a vulnerability."
+    "behavior_id": 509,
+    "data_flow_id": null,
+    "data_description": "Maliciously crafted interchain message payload (containing shares, exchangeRate, nonce), originating from user's `HypERC4626Collateral.transferRemote` call, delivered to `HypERC4626.handle`."
   },
   "trust_boundary_risk": {
-    "boundary_id": 404,
-    "boundary_name": "Superfluid Host - Super App",
+    "boundary_id": null,
+    "boundary_name": "Hyperlane Protocol - External Application Logic (Yield)",
     "between_component_ids": [
       201,
-      2
+      208
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Potential undiscovered vulnerabilities in the Host or agreement contracts that can be triggered by specific inputs from a Super App, allowing unauthorized actions."
+    "gap_description": "The `HypERC4626.handle` function may be vulnerable to exploits if it improperly processes crafted message payloads related to shares, nonce, or exchange rates."
   },
   "actor_risk": {
     "actor_id": 2,
-    "type": "Smart Contract",
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A Super App specifically designed to exploit a vulnerability in the core protocol."
+    "description": "Attacker crafts a malicious payload for `HypERC4626Collateral.transferRemote` to exploit `HypERC4626.handle` on destination."
   },
   "behavioral_risk": {
-    "behavior_id": null,
+    "behavior_id": 509,
     "risk_level": "High",
-    "rationale": "Successful exploitation could lead to unauthorized control over protocol functions or assets."
+    "rationale": "A vulnerability in `HypERC4626.handle` when processing specific message payloads (e.g., manipulated shares, nonce, or exchangeRate) could lead to incorrect share accounting, unauthorized minting, or theft of underlying assets."
   },
   "assumptions": [
-    "A vulnerability exists in the Superfluid Host or agreement contracts that can be triggered by a Super App callback.",
-    "The Super App is crafted to send specific inputs to exploit this vulnerability."
+    "The `HypERC4626.handle` function (described in doc_22) has a vulnerability in how it processes `shares`, `exchangeRate`, or `nonce` from the delivered message.",
+    "Specifically, the logic for updating `latestNonce` and `latestExchangeRate` might be flawed or bypassable.",
+    "The ISM verifies message origin but not the safety of the payload content for the `handle` function.",
+    "Attacker can craft a payload during `HypERC4626Collateral.transferRemote` that triggers this vulnerability."
   ],
   "mitigation": {
-    "strategy": "Rigorous security audits of Superfluid core contracts. Formal verification. Secure coding practices. Permissioned Super App registration and review process.",
+    "strategy": "Secure coding for `HypERC4626.handle`, robust validation of all payload parameters, careful state updates for nonce and exchange rates, ensuring correct share calculations, and comprehensive security audits.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A Super App, through carefully crafted calls to the Superfluid Host during its callback execution, could potentially exploit an unknown vulnerability in the Host or underlying agreement contracts to gain unauthorized access or perform actions beyond its intended scope, effectively elevating its privileges.",
+  "description": "An attacker crafts a malicious payload for a `HypERC4626Collateral.transferRemote` call. When this payload is delivered to the `HypERC4626.handle` function on the destination chain, it exploits a vulnerability related to share, nonce, or exchange rate processing, potentially leading to incorrect accounting, unauthorized share minting, or manipulation of yield distribution.",
   "trace_source": {
-    "doc_reference": "doc_3, doc_4, doc_21, doc_24, doc_26",
-    "matched_capability": "Execute custom logic based on Superfluid agreement state changes"
+    "doc_reference": "doc_22, doc_16",
+    "matched_capability": "Initiate interchain messages (e.g., TokenRouter.transferRemote, HypERC4626Collateral.transferRemote)"
   }
 }

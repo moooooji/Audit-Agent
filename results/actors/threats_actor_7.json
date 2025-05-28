@@ -1,62 +1,55 @@
 {
-  "id": 7,
+  "id": 6,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
     "actor_id": 7,
-    "behavior_id": 511,
-    "capability_match": "Operate within a granted flow rate allowance"
+    "behavior_id": null,
+    "capability_match": "deploy Interchain Accounts"
   },
   "threat_target": {
-    "component_id": 210,
-    "asset_ids": [
-      101,
-      103,
-      105
-    ]
+    "component_id": null,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 511,
-    "data_flow_id": 301,
-    "data_description": "Flow Operator submits parameters attempting to exceed granted permissions or allowance."
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Role-based access control configurations and smart contract ownership settings."
   },
   "trust_boundary_risk": {
-    "boundary_id": 401,
-    "boundary_name": "User Wallet - Protocol Interface",
-    "between_component_ids": [
-      1,
-      210
-    ]
+    "boundary_id": null,
+    "boundary_name": null,
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": true,
-    "gap_description": "The Superfluid protocol (Host and CFA contract) must strictly enforce permission and flow rate allowance checks. A flaw here would allow privilege escalation."
+    "availability_required": false,
+    "gap_description": "The Deployer Account maintains excessive or unnecessary privileges beyond its immediate deployment function, or deployed ICAs inherit overly broad permissions."
   },
   "actor_risk": {
     "actor_id": 7,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": false,
-    "description": "The Flow Operator is intended to operate only within explicitly granted permissions and allowances."
+    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
+    "overprivileged": true,
+    "description": "The Deployer Account is a privileged role, and if its permissions are not strictly limited to its function, it can be overprivileged."
   },
   "behavioral_risk": {
-    "behavior_id": 511,
+    "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Bypassing permission checks would allow unauthorized control over another user's funds/streams."
+    "rationale": "An overprivileged Deployer Account could perform unauthorized actions beyond ICA deployment, or deploy ICAs with excessive permissions, creating a broader attack vector."
   },
   "assumptions": [
-    "A Flow Operator attempts to perform an action (e.g., set flowRate higher than allowance, delete flow without delete permission) for which they are not authorized.",
-    "A vulnerability exists in the permission enforcement logic of the CFAv1Forwarder, Superfluid Host, or the Constant Flow Agreement contract."
+    "The Deployer Account has permissions to modify critical system parameters unrelated to ICA deployment.",
+    "Deployed Interchain Accounts are not configured with the principle of least privilege."
   ],
   "mitigation": {
-    "strategy": "Comprehensive and robust permission and allowance validation logic within the Superfluid Host and CFA contracts. Thorough audits and formal verification of these critical checks.",
-    "type": "Technical Control",
+    "strategy": "Implement strict least privilege principles for the Deployer Account and all deployed Interchain Accounts, limiting their capabilities to only what is necessary.",
+    "type": "Architectural Change",
     "priority": "High"
   },
-  "description": "A Flow Operator attempts to escalate their privileges by managing a stream in a way that exceeds their granted permissions (e.g., setting a flow rate above their allowance, or deleting a flow when only create/update is permitted). This relies on a flaw in the Superfluid protocol's access control enforcement.",
+  "description": "The Deployer Account, due to its privileged nature, could be overprivileged, allowing it to perform unauthorized actions or deploy Interchain Accounts with excessive permissions.",
   "trace_source": {
-    "doc_reference": "protocol/money-streaming/guides/acl-user-data.mdx",
-    "matched_capability": "Operate within a granted flow rate allowance"
+    "doc_reference": "solidity/contracts/middleware/README.md",
+    "matched_capability": "deploy Interchain Accounts"
   }
 }

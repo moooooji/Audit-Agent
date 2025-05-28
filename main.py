@@ -15,7 +15,7 @@ def main():
     """
     Main function to run the Audit Agent graph.
     """
-    initial_input_path = os.path.join(DATASET_DIR, 'superflui_docs_merged.md')
+    initial_input_path = os.path.join(DATASET_DIR, 'hyperlane-monorepo_docs_merged.md')
     print(f"Current working directory: {os.getcwd()}")
     
     input_: dict | None = {"target_docs_path": initial_input_path}
@@ -72,6 +72,9 @@ def main():
                 #     input_ = None 
                 # else:
                 #     print("Invalid input. Defaulting to resume.")
+                # if current_graph_state_snapshot.next == ("assess_checklist",):
+                #     print("exit")
+                #     exit()
                 input_ = None
 
 

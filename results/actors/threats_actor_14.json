@@ -1,56 +1,60 @@
 {
-  "id": 5,
-  "stride_category": "Elevation of Privilege",
+  "id": 6,
+  "stride_category": "Spoofing",
   "origin": {
     "from_chunk": true,
-    "actor_id": 14,
+    "actor_id": null,
     "behavior_id": null,
-    "capability_match": "Interact with Hyperlane core deployments (doc_45)"
+    "capability_match": "Accept BTC deposits from users"
   },
   "threat_target": {
-    "component_id": 117,
-    "asset_ids": []
+    "component_id": 14,
+    "asset_ids": [
+      101
+    ]
   },
   "attack_surface": {
     "behavior_id": null,
     "data_flow_id": null,
-    "data_description": "Exploitable input, API call sequence, or interaction pattern with the Hyperlane SDK."
+    "data_description": "User interaction with a contract address believed to be the legitimate LST protocol."
   },
   "trust_boundary_risk": {
     "boundary_id": null,
-    "boundary_name": null,
-    "between_component_ids": []
+    "boundary_name": "User to (Potentially Spoofed) LST Contract Interface",
+    "between_component_ids": [
+      14
+    ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": false,
-    "gap_description": "Potential undiscovered vulnerabilities within the Hyperlane SDK software could allow an SDK user to perform actions or access functionalities beyond their intended permissions."
+    "gap_description": "Users can be deceived into interacting with a malicious contract that impersonates the legitimate LST contract, leading to loss of deposited funds."
   },
   "actor_risk": {
     "actor_id": 14,
-    "type": "EOA (Externally Owned Account)",
+    "type": "Smart Contract",
     "overprivileged": false,
-    "description": "SDK User interacts with the Hyperlane SDK, which is a complex piece of software and may have inherent vulnerabilities."
+    "description": "The legitimate LST contract (14) can be impersonated by attackers, putting users at risk of phishing and fund theft if they interact with the wrong address."
   },
   "behavioral_risk": {
     "behavior_id": null,
-    "risk_level": "Medium",
-    "rationale": "Undiscovered vulnerabilities in the SDK could be exploited by a knowledgeable user to gain unintended privileges, potentially impacting systems the SDK interacts with."
+    "risk_level": "High",
+    "rationale": "If users interact with a spoofed LST contract, they will lose their deposited BTC with no recourse from the legitimate protocol."
   },
   "assumptions": [
-    "The Hyperlane SDK, like any sufficiently complex software, may contain unknown security vulnerabilities (e.g., input validation flaws, logic errors).",
-    "An SDK user (either intentionally or accidentally) might trigger such a vulnerability through specific inputs or usage patterns.",
-    "The vulnerability allows the SDK user to bypass normal authorization checks or execute code/actions not permitted by the SDK's intended API for their role."
+    "An attacker can deploy a smart contract that mimics the functionality or branding of the legitimate LST contract.",
+    "The attacker can disseminate the address of this malicious contract through phishing websites, social engineering, or compromised communication channels.",
+    "Users may not diligently verify the contract address before interacting."
   ],
   "mitigation": {
-    "strategy": "Conduct regular, thorough security audits and penetration testing of the SDK. Implement secure coding practices, comprehensive input validation, and principle of least privilege within the SDK's design. Maintain a vulnerability disclosure program.",
-    "type": "Technical Control",
+    "strategy": "Clearly and securely communicate the official LST contract address through multiple verified channels. Integrate warnings in official UIs if users attempt to interact with unknown addresses. Educate users on verifying contract addresses. Use services that flag known phishing sites/contracts.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A Hyperlane SDK User discovers and exploits an unknown vulnerability within the Hyperlane SDK (e.g., improper input sanitization, logic flaw in permission handling). This allows them to elevate their privileges to perform actions or access data/functions within the SDK or connected systems (like Hyperlane core deployments) that they are not normally authorized for.",
+  "description": "An attacker deploys a malicious smart contract that impersonates the legitimate Liquid Staking Protocol (14). Users are tricked into sending their BTC (asset 101) to this fake contract, resulting in theft.",
   "trace_source": {
-    "doc_reference": "doc_45",
-    "matched_capability": "Interact with Hyperlane core deployments (doc_45)"
+    "doc_reference": null,
+    "matched_capability": "Accept BTC deposits from users"
   }
 }

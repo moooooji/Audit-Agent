@@ -4,58 +4,60 @@
   "origin": {
     "from_chunk": true,
     "actor_id": 3,
-    "behavior_id": 505,
-    "capability_match": "Assign/Update units for pool members"
+    "behavior_id": 8,
+    "capability_match": "deploy core contracts"
   },
   "threat_target": {
-    "component_id": 211,
+    "component_id": 10,
     "asset_ids": [
-      104,
-      101
+      106
     ]
   },
   "attack_surface": {
-    "behavior_id": 505,
-    "data_flow_id": 306,
-    "data_description": "Parameters of GDAv1Forwarder.updateMemberUnits(), specifically 'memberAddress' and 'newUnits'."
+    "behavior_id": 8,
+    "data_flow_id": 17,
+    "data_description": "Deployment configurations, transaction data"
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "Admin Wallet to Forwarder Contract",
+    "boundary_id": 2,
+    "boundary_name": "User Wallet vs. Hyperlane Protocol",
     "between_component_ids": [
-      211
+      3,
+      10,
+      13,
+      14,
+      15
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Pool Admin has legitimate authority to update units; the gap is the potential for abuse of this authority if not monitored or constrained."
+    "gap_description": "If a developer's private key or CLI environment is compromised, an attacker could use the Hyperlane CLI/SDK to deploy malicious contracts or alter critical protocol configurations, gaining unauthorized control over the system."
   },
   "actor_risk": {
     "actor_id": 3,
-    "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-    "overprivileged": false,
-    "description": "A malicious Pool Admin can assign excessive units to themselves or accomplices, abusing their legitimate privilege."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": true,
+    "description": "A user with deployment privileges, if compromised, can gain unauthorized control over core protocol components."
   },
   "behavioral_risk": {
-    "behavior_id": 505,
+    "behavior_id": 8,
     "risk_level": "High",
-    "rationale": "Maliciously assigning excessive units directly translates to siphoning a larger share of distributed funds from the pool."
+    "rationale": "Compromised deployment tools can lead to full system compromise and unauthorized control."
   },
   "assumptions": [
-    "The Pool Admin is malicious or their account is compromised.",
-    "There are no off-chain or DAO-level controls/audits to detect or revert such malicious unit assignments.",
-    "The pool has funds or incoming funds to be distributed."
+    "A developer's private key used for deployments is compromised.",
+    "The Hyperlane CLI/SDK environment is compromised, allowing an attacker to execute deployment commands."
   ],
   "mitigation": {
-    "strategy": "Implement monitoring and alerting for significant unit changes. For critical pools, consider DAO oversight or approval for large unit allocations. Time-locks or tiered admin roles for unit updates.",
-    "type": "Process Control",
+    "strategy": "Implement strict access controls for deployment keys, use hardware security modules (HSMs), and enforce multi-signature requirements for critical deployments.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious Pool Admin can abuse their privilege to update member units by assigning an unfairly large number of units to their own account or an accomplice's account via the GDAv1Forwarder. This effectively elevates their privilege to claim a larger portion of the pool's distributions than entitled.",
+  "description": "A compromised Hyperlane CLI or SDK, used by a developer with deployment privileges, could be leveraged by an attacker to deploy malicious smart contracts or modify existing critical configurations, leading to an elevation of privilege and full control over the Hyperlane protocol.",
   "trace_source": {
-    "doc_reference": null,
-    "matched_capability": "Assign/Update units for pool members"
+    "doc_reference": "typescript/cli/README.md#hyperlane-cli",
+    "matched_capability": "deploying the core contracts and/or warp routes to new chains"
   }
 }

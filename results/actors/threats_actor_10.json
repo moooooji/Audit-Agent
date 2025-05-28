@@ -4,57 +4,56 @@
   "origin": {
     "from_chunk": true,
     "actor_id": 10,
-    "behavior_id": 14,
-    "capability_match": "Manage token vesting schedules with cliffs and linear streaming (Vesting Scheduler)"
+    "behavior_id": 512,
+    "capability_match": "Deploy CosmWasm smart contracts on Babylon Genesis (via governance during permissioned phase)"
   },
   "threat_target": {
-    "component_id": 12,
-    "asset_ids": [
-      1,
-      3
-    ]
+    "component_id": 214,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 14,
-    "data_flow_id": 13,
-    "data_description": "Automated action request (e.g., wrap tokens, schedule stream)"
+    "behavior_id": 512,
+    "data_flow_id": null,
+    "data_description": "The smart contract code or address whitelisting parameters contained within the governance proposal submitted by the Developer."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Off-Chain Service - Protocol Interface",
+    "boundary_id": null,
+    "boundary_name": "Developer EOA to Governance Module Interface",
     "between_component_ids": [
-      12
+      10,
+      214
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Automation Framework may not properly enforce permissions or limits for actions requested by the Automation Service, allowing unauthorized operations."
+    "gap_description": "The governance review and voting process might fail to detect malicious logic within a proposed smart contract or the full implications of an address whitelisting, leading to unintended privilege escalation."
   },
   "actor_risk": {
     "actor_id": 10,
-    "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "If the Automation Service is compromised or misconfigured, it could attempt to perform actions beyond its authorized scope within the Automation Framework."
+    "type": "EOA (Externally Owned Account)",
+    "overprivileged": false,
+    "description": "Developer could intentionally propose a contract or whitelisting request designed to grant themselves or their contracts unauthorized privileges."
   },
   "behavioral_risk": {
-    "behavior_id": 14,
-    "risk_level": "Medium",
-    "rationale": "An Automation Service exceeding its intended privileges can lead to unauthorized fund movements, incorrect vesting schedules, or other misuse of automated financial operations."
+    "behavior_id": 512,
+    "risk_level": "High",
+    "rationale": "Successful deployment of a contract with privilege escalation capabilities, or whitelisting an address that gains such privileges, can compromise the integrity and security of Babylon Genesis."
   },
   "assumptions": [
-    "The Automation Framework (ID 12) does not implement or enforce fine-grained access control for different types of automated tasks or parameters initiated by Automation Services (ID 10).",
-    "A vulnerability in the Automation Service (ID 10) allows an attacker to control its requests to the Automation Framework (ID 12)."
+    "The proposed smart contract code contains hidden functions or backdoors that allow the developer to gain administrative control or access restricted functionalities post-deployment.",
+    "The governance voters (BABY token holders) may not have the technical expertise or resources to thoroughly audit every smart contract proposal.",
+    "Whitelisting an address for contract deployment might inadvertently grant it broader system permissions if not carefully scoped during the 'permissioned phase'."
   ],
   "mitigation": {
-    "strategy": "Implement strict, granular permission checks and parameter validation within the Automation Framework for all requests from Automation Services. Apply the principle of least privilege to the Automation Service's capabilities.",
-    "type": "Technical Control",
+    "strategy": "Mandate rigorous third-party security audits for all smart contract code proposed for deployment during the permissioned phase. Implement a formal and transparent review process by a technical committee for all code uploads and address whitelisting proposals. Clearly define and limit the permissions granted by whitelisting.",
+    "type": "Process Control",
     "priority": "High"
   },
-  "description": "A compromised or malicious Automation Service sends requests to the Automation Framework to perform actions beyond its authorized scope, such as modifying vesting schedules for unauthorized accounts or setting excessive stream rates.",
+  "description": "A Developer submits a governance proposal to deploy a new smart contract or whitelist an address. The proposed contract contains stealthy code that, once deployed and approved by governance, allows the Developer to execute privileged operations on Babylon Genesis, such as modifying system parameters, draining funds from other contracts, or halting chain operations.",
   "trace_source": {
-    "doc_reference": "doc_17",
-    "matched_capability": "Manage token vesting schedules with cliffs and linear streaming (Vesting Scheduler)"
+    "doc_reference": "doc_49",
+    "matched_capability": "Deploy CosmWasm smart contracts on Babylon Genesis (via governance during permissioned phase)"
   }
 }

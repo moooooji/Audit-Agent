@@ -583,7 +583,7 @@ You are to review the generated **initial checklist** with the goal of validatin
 - Then return a list of **validation findings** in the following format:
 
 {
-  "summary": "Summary of the validation",
+  "evaluation_summary": "Summary of the validation",
   "findings": [
     {
       "category": "checklist_items",

@@ -1,60 +1,58 @@
 {
-  "id": 5,
+  "id": 3,
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 11,
-    "behavior_id": 17,
-    "capability_match": "Query indexed protocol data from the Superfluid Subgraph"
+    "actor_id": null,
+    "behavior_id": null,
+    "capability_match": "Fund R&D and operations"
   },
   "threat_target": {
-    "component_id": 13,
+    "component_id": null,
     "asset_ids": [
-      9
+      102
     ]
   },
   "attack_surface": {
-    "behavior_id": 17,
-    "data_flow_id": 14,
-    "data_description": "GraphQL query for protocol data"
+    "behavior_id": null,
+    "data_flow_id": null,
+    "data_description": "Access credentials (private keys, passwords, API keys) to the Foundation's financial accounts or systems used for funding R&D and operations."
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "Off-Chain Service - Protocol Interface",
-    "between_component_ids": [
-      11,
-      13
-    ]
+    "boundary_id": null,
+    "boundary_name": "Foundation Operational and Financial Systems",
+    "between_component_ids": []
   },
   "security_gap": {
     "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Potential vulnerabilities in the Subgraph's GraphQL query processing or resolver logic could allow unauthorized actions or data access if inputs are not properly sanitized."
+    "gap_description": "Weak access controls, credential management, or vulnerabilities in systems used by the Foundation for managing and disbursing funds for R&D and operations."
   },
   "actor_risk": {
-    "actor_id": 11,
-    "type": "Off-chain Service/Bot",
+    "actor_id": null,
+    "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Data Consumer can send crafted GraphQL queries that might exploit vulnerabilities in the Subgraph if such vulnerabilities exist."
+    "description": "An external attacker targets the Foundation's systems or personnel to gain unauthorized access to financial controls."
   },
   "behavioral_risk": {
-    "behavior_id": 17,
+    "behavior_id": null,
     "risk_level": "High",
-    "rationale": "Exploiting a vulnerability in the Subgraph could lead to unauthorized access to or modification of indexed data (Asset 9), or control over the Subgraph service itself."
+    "rationale": "Unauthorized control over Foundation funds can lead to theft, disruption of critical R&D and operational activities, and loss of stakeholder confidence."
   },
   "assumptions": [
-    "The Data Indexing Service (Subgraph) has an exploitable vulnerability in its GraphQL parsing engine, resolver logic, or underlying database access (e.g., injection vulnerability, insecure direct object reference).",
-    "The Data Consumer can craft a malicious GraphQL query to trigger this vulnerability."
+    "The Foundation utilizes digital systems (e.g., multi-sig wallets, exchange accounts, traditional bank accounts accessed online) for its financial operations.",
+    "These systems or the credentials to access them are susceptible to compromise via phishing, malware, social engineering, or software vulnerabilities.",
+    "An attacker successfully exploits a weakness to gain privileges equivalent to a legitimate Foundation financial operator."
   ],
   "mitigation": {
-    "strategy": "Keep Subgraph software (e.g., The Graph Node) and its dependencies regularly updated. Implement strict input validation and sanitization for all parts of GraphQL queries and resolver inputs. Follow secure development practices for any custom Subgraph logic (mappings, schema). Conduct regular security audits and penetration testing.",
+    "strategy": "Employ robust multi-factor authentication for all financial systems, use hardware wallets for storing significant crypto assets, enforce strict policies for credential management, conduct regular security audits of internal systems and vendor services, and provide ongoing security awareness training to personnel.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "The Data Consumer (Actor 11) sends a specially crafted GraphQL query via Data Flow 14 that exploits a vulnerability in the Data Indexing Service (Component 13). This could allow the Data Consumer to access unauthorized data, modify indexed User Data (Asset 9), or potentially gain control over the Subgraph service, thereby elevating its privileges beyond simple querying.",
+  "description": "An external attacker compromises the Babylon Foundation's accounts or internal systems, thereby elevating their privileges to gain unauthorized control over funds designated for R&D and operations. This could result in the theft of funds or malicious disruption of the Foundation's ability to operate.",
   "trace_source": {
-    "doc_reference": "sdk/money-streaming/subgraph.mdx",
-    "matched_capability": "Query indexed protocol data from the Superfluid Subgraph"
+    "doc_reference": "doc_71",
+    "matched_capability": "Fund R&D and operations"
   }
 }
