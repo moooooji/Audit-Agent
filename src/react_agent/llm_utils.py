@@ -530,6 +530,7 @@ def generate_llm_response(state: State) -> str:
         ]
 
         response = call_gemini_api(contents, set_gemini_config("CHECKLIST_ASSESSMENT_CONFIG"))
+        response = json_str_to_dict(response.text)
         
         return response
         

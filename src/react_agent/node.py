@@ -1,6 +1,7 @@
 """Utility & helper functions."""
 import json
 import threading
+from langgraph.types import Send
 
 from react_agent.state import State
 from react_agent.llm_utils import (
@@ -137,6 +138,35 @@ def analyze_threats(state: State) -> State:
                     "threat_list_length": len(react_agent.variables.threats_list),
                     "current_threat_count": id_weight-1,
                     }
+            
+def map_reduce_threats(state: State) -> dict:  # Return type is dict for LangGraph node updates
+    print("mapping and reducing threats ...")
+    
+    checklist_nodes = []  # Stores the context for each threat
+    
+    for i in range(len(react_agent.variables.threats_list)):
+        checklist_nodes.append(Send("generate_checklist", State(
+        target_docs_path=state.target_docs_path,
+        current_actor_id=i,
+        is_threat_analysis=state.is_threat_analysis,
+        architecture_feedback_loop_count=state.architecture_feedback_loop_count,
+        checklist_feedback_loop_count=state.checklist_feedback_loop_count,
+        code_binding_feedback_loop_count=state.code_binding_feedback_loop_count,
+        is_initial_architecture_analysis=state.is_initial_architecture_analysis,
+        is_assessment_analysis=state.is_assessment_analysis,
+        is_feedback_architecture_analysis=state.is_feedback_architecture_analysis,
+        is_initial_checklist_analysis=state.is_initial_checklist_analysis,
+        is_feedback_checklist_analysis=state.is_feedback_checklist_analysis,
+        is_initial_code_binding=state.is_initial_code_binding,
+        is_feedback_code_binding=state.is_feedback_code_binding,
+        is_init_db=state.is_init_db,
+        is_assessment_checklist=state.is_assessment_checklist,
+        is_assessment_code_binding=state.is_assessment_code_binding,
+        threat_list_length=state.threat_list_length,
+        current_threat_count=state.current_threat_count,
+    )))
+
+    return checklist_nodes
 
 def generate_checklist(state: State) -> State:
     
@@ -247,8 +277,7 @@ def assess_checklist(state: State) -> State:
     
     response = generate_llm_response(state)
     
-    response_dict = json_str_to_dict(response.choices[0].message.content)
-    save_json(response_dict, "results/assessment_checklist.json")
+    save_json(response, "results/assessment_checklist.json")
     
     print("completed verifying checklist")
     

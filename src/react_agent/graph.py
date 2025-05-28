@@ -20,6 +20,7 @@ from react_agent.variables import (
 
 import react_agent.variables
 react_agent.variables.actors_map
+react_agent.variables.threats_list
 
 from langgraph.types import Send
 from langgraph.checkpoint.memory import MemorySaver
@@ -72,8 +73,8 @@ builder = StateGraph(State, input=InputState)
 # define node
 builder.add_node(analyze_architecture)
 builder.add_node(assess_architecture)
-builder.add_node(analyze_threats)
-builder.add_node(generate_checklist)
+builder.add_node(analyze_threats, defer=True)
+builder.add_node(generate_checklist, defer=True)
 builder.add_node(init_db)
 builder.add_node(code_binding)
 builder.add_node(assess_checklist)
