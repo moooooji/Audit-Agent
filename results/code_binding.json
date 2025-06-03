@@ -1,644 +1,100 @@
 {
   "function_codes": {
-    "1": {
-      "checklist_item_id": 1,
-      "similar_functions": [
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        }
-      ]
+    "0": {
+      "checklist_item_id": 0,
+      "similar_functions": []
     },
     "2": {
       "checklist_item_id": 2,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        }
-      ]
-    },
-    "3": {
-      "checklist_item_id": 3,
-      "similar_functions": [
-        {
-          "contract_name": "IBeraChef",
-          "function_name": "updateWhitelistedVaultMetadata",
-          "code": "function updateWhitelistedVaultMetadata(address receiver, string memory metadata) external;"
-        },
-        {
-          "contract_name": "IBeraChef",
-          "function_name": "updateWhitelistedVaultMetadata",
-          "code": "function updateWhitelistedVaultMetadata(address receiver, string memory metadata) external;"
-        },
-        {
-          "contract_name": "IBeraChef",
-          "function_name": "updateWhitelistedVaultMetadata",
-          "code": "function updateWhitelistedVaultMetadata(address receiver, string memory metadata) external;"
-        }
-      ]
+      "similar_functions": []
     },
     "4": {
       "checklist_item_id": 4,
-      "similar_functions": [
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "5": {
       "checklist_item_id": 5,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        }
-      ]
-    },
-    "6": {
-      "checklist_item_id": 6,
-      "similar_functions": [
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        }
-      ]
-    },
-    "8": {
-      "checklist_item_id": 8,
-      "similar_functions": [
-        {
-          "contract_name": "IRewardVault_V1",
-          "function_name": "getWhitelistedTokensCount",
-          "code": "function getWhitelistedTokensCount() external view returns (uint256);"
-        },
-        {
-          "contract_name": "IRewardVault_V1",
-          "function_name": "getWhitelistedTokensCount",
-          "code": "function getWhitelistedTokensCount() external view returns (uint256);"
-        },
-        {
-          "contract_name": "IRewardVault_V1",
-          "function_name": "getWhitelistedTokensCount",
-          "code": "function getWhitelistedTokensCount() external view returns (uint256);"
-        }
-      ]
-    },
-    "9": {
-      "checklist_item_id": 9,
-      "similar_functions": [
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "10": {
       "checklist_item_id": 10,
-      "similar_functions": [
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_supportsERC20VotesAndMetadata",
-          "code": "function _supportsERC20VotesAndMetadata(address token) internal view returns (bool) {\n        try IVotes(token).getVotes(address(this)) {\n            IERC20Metadata(token).name();\n            IERC20Metadata(token).decimals();\n            return true;\n        } catch {\n            return false;\n        }\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "11": {
       "checklist_item_id": 11,
-      "similar_functions": [
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        }
-      ]
-    },
-    "12": {
-      "checklist_item_id": 12,
-      "similar_functions": [
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        }
-      ]
-    },
-    "13": {
-      "checklist_item_id": 13,
-      "similar_functions": [
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "incentiveTokensPerValidator",
-          "code": "function incentiveTokensPerValidator(bytes calldata pubkey, address token) external view returns (uint256);"
-        },
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "incentiveTokensPerValidator",
-          "code": "function incentiveTokensPerValidator(bytes calldata pubkey, address token) external view returns (uint256);"
-        },
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "incentiveTokensPerValidator",
-          "code": "function incentiveTokensPerValidator(bytes calldata pubkey, address token) external view returns (uint256);"
-        }
-      ]
+      "similar_functions": []
     },
     "14": {
       "checklist_item_id": 14,
-      "similar_functions": [
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "15": {
       "checklist_item_id": 15,
-      "similar_functions": [
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "16": {
       "checklist_item_id": 16,
-      "similar_functions": [
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "receiveIncentive",
-          "code": "function receiveIncentive(bytes calldata pubkey, address token, uint256 _amount) external;"
-        },
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "receiveIncentive",
-          "code": "function receiveIncentive(bytes calldata pubkey, address token, uint256 _amount) external;"
-        },
-        {
-          "contract_name": "IBGTIncentiveDistributor",
-          "function_name": "receiveIncentive",
-          "code": "function receiveIncentive(bytes calldata pubkey, address token, uint256 _amount) external;"
-        }
-      ]
+      "similar_functions": []
     },
-    "22": {
-      "checklist_item_id": 22,
-      "similar_functions": [
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        },
-        {
-          "contract_name": "BeraChef",
-          "function_name": "_validateWeights",
-          "code": "function _validateWeights(bytes memory valPubkey, Weight[] calldata weights) internal {\n        if (weights.length > maxNumWeightsPerRewardAllocation) {\n            TooManyWeights.selector.revertWith();\n        }\n        _checkForDuplicateReceivers(valPubkey, weights);\n        uint96 totalWeight;\n        for (uint256 i; i < weights.length;) {\n            Weight calldata weight = weights[i];\n            if (weight.percentageNumerator == 0 || weight.percentageNumerator > maxWeightPerVault) {\n                InvalidWeight.selector.revertWith();\n            }\n            if (!isWhitelistedVault[weight.receiver]) {\n                NotWhitelistedVault.selector.revertWith();\n            }\n            totalWeight += weight.percentageNumerator;\n            unchecked {\n                ++i;\n            }\n        }\n        if (totalWeight != ONE_HUNDRED_PERCENT) {\n            InvalidRewardAllocationWeights.selector.revertWith();\n        }\n    }"
-        }
-      ]
+    "17": {
+      "checklist_item_id": 17,
+      "similar_functions": []
+    },
+    "18": {
+      "checklist_item_id": 18,
+      "similar_functions": []
     },
     "23": {
       "checklist_item_id": 23,
-      "similar_functions": [
-        {
-          "contract_name": "IBlockRewardController",
-          "function_name": "setRewardConvexity",
-          "code": "function setRewardConvexity(uint256 _rewardConvexity) external;"
-        },
-        {
-          "contract_name": "IBlockRewardController",
-          "function_name": "setRewardConvexity",
-          "code": "function setRewardConvexity(uint256 _rewardConvexity) external;"
-        },
-        {
-          "contract_name": "IBlockRewardController",
-          "function_name": "setRewardConvexity",
-          "code": "function setRewardConvexity(uint256 _rewardConvexity) external;"
-        }
-      ]
+      "similar_functions": []
     },
     "24": {
       "checklist_item_id": 24,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        }
-      ]
+      "similar_functions": []
     },
-    "27": {
-      "checklist_item_id": 27,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "checkSelfStakedBalance",
-          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "checkSelfStakedBalance",
-          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "checkSelfStakedBalance",
-          "code": "modifier checkSelfStakedBalance(address account, uint256 amount) {\n        _checkSelfStakedBalance(account, amount);\n        _;\n    }"
-        }
-      ]
+    "25": {
+      "checklist_item_id": 25,
+      "similar_functions": []
     },
-    "28": {
-      "checklist_item_id": 28,
-      "similar_functions": [
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_deploy",
-          "code": "function _deploy(bytes memory creationCode, uint256 salt) internal returns (address payable proxy) {\n        address impl = deployWithCreate2(salt, creationCode);\n        proxy = payable(deployProxyWithCreate2(impl, salt));\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_deploy",
-          "code": "function _deploy(bytes memory creationCode, uint256 salt) internal returns (address payable proxy) {\n        address impl = deployWithCreate2(salt, creationCode);\n        proxy = payable(deployProxyWithCreate2(impl, salt));\n    }"
-        },
-        {
-          "contract_name": "GovDeployer",
-          "function_name": "_deploy",
-          "code": "function _deploy(bytes memory creationCode, uint256 salt) internal returns (address payable proxy) {\n        address impl = deployWithCreate2(salt, creationCode);\n        proxy = payable(deployProxyWithCreate2(impl, salt));\n    }"
-        }
-      ]
+    "34": {
+      "checklist_item_id": 34,
+      "similar_functions": []
     },
-    "29": {
-      "checklist_item_id": 29,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 3 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 3 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 3 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        }
-      ]
+    "47": {
+      "checklist_item_id": 47,
+      "similar_functions": []
     },
-    "30": {
-      "checklist_item_id": 30,
-      "similar_functions": [
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        }
-      ]
+    "48": {
+      "checklist_item_id": 48,
+      "similar_functions": []
     },
-    "38": {
-      "checklist_item_id": 38,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVaultFactory",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _bgt,\n        address _distributor,\n        address _beaconDepositContract,\n        address _governance,\n        address _vaultImpl\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        _setRoleAdmin(VAULT_PAUSER_ROLE, VAULT_MANAGER_ROLE);\n        bgt = _bgt;\n        distributor = _distributor;\n        beaconDepositContract = _beaconDepositContract;\n        beacon = address(new UpgradeableBeacon(_governance, _vaultImpl));\n    }"
-        },
-        {
-          "contract_name": "RewardVaultFactory",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _bgt,\n        address _distributor,\n        address _beaconDepositContract,\n        address _governance,\n        address _vaultImpl\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        _setRoleAdmin(VAULT_PAUSER_ROLE, VAULT_MANAGER_ROLE);\n        bgt = _bgt;\n        distributor = _distributor;\n        beaconDepositContract = _beaconDepositContract;\n        beacon = address(new UpgradeableBeacon(_governance, _vaultImpl));\n    }"
-        },
-        {
-          "contract_name": "RewardVaultFactory",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _bgt,\n        address _distributor,\n        address _beaconDepositContract,\n        address _governance,\n        address _vaultImpl\n    )\n        external\n        initializer\n    {\n        __AccessControl_init();\n        __UUPSUpgradeable_init();\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        _setRoleAdmin(VAULT_PAUSER_ROLE, VAULT_MANAGER_ROLE);\n        bgt = _bgt;\n        distributor = _distributor;\n        beaconDepositContract = _beaconDepositContract;\n        beacon = address(new UpgradeableBeacon(_governance, _vaultImpl));\n    }"
-        }
-      ]
+    "49": {
+      "checklist_item_id": 49,
+      "similar_functions": []
     },
-    "39": {
-      "checklist_item_id": 39,
-      "similar_functions": [
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        },
-        {
-          "contract_name": "VaultAdmin_V0",
-          "function_name": "__VaultAdmin_init_unchained",
-          "code": "function __VaultAdmin_init_unchained(\n        address _governance,\n        address _polFeeCollector,\n        address _feeReceiver\n    )\n        internal\n        onlyInitializing\n    {\n        if (_governance == address(0)) ZeroAddress.selector.revertWith();\n        if (_polFeeCollector == address(0)) ZeroAddress.selector.revertWith();\n        if (_feeReceiver == address(0)) ZeroAddress.selector.revertWith();\n        beacon = address(new UpgradeableBeacon(_governance, address(new CollateralVault_V0())));\n        _grantRole(DEFAULT_ADMIN_ROLE, _governance);\n        feeReceiver = _feeReceiver;\n        polFeeCollector = _polFeeCollector;\n        emit FeeReceiverSet(_feeReceiver);\n        emit POLFeeCollectorSet(_polFeeCollector);\n    }"
-        }
-      ]
+    "50": {
+      "checklist_item_id": 50,
+      "similar_functions": []
+    },
+    "51": {
+      "checklist_item_id": 51,
+      "similar_functions": []
+    },
+    "53": {
+      "checklist_item_id": 53,
+      "similar_functions": []
+    },
+    "54": {
+      "checklist_item_id": 54,
+      "similar_functions": []
     },
     "55": {
       "checklist_item_id": 55,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "_safeTransferRewardToken",
-          "code": "function _safeTransferRewardToken(address to, uint256 amount) internal override {\n        rewardToken.safeTransferFrom(distributor, to, amount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "_safeTransferRewardToken",
-          "code": "function _safeTransferRewardToken(address to, uint256 amount) internal override {\n        rewardToken.safeTransferFrom(distributor, to, amount);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "_safeTransferRewardToken",
-          "code": "function _safeTransferRewardToken(address to, uint256 amount) internal override {\n        rewardToken.safeTransferFrom(distributor, to, amount);\n    }"
-        }
-      ]
+      "similar_functions": []
     },
     "56": {
       "checklist_item_id": 56,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
-        }
-      ]
-    },
-    "57": {
-      "checklist_item_id": 57,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        }
-      ]
-    },
-    "58": {
-      "checklist_item_id": 58,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
-        }
-      ]
-    },
-    "62": {
-      "checklist_item_id": 62,
-      "similar_functions": [
-        {
-          "contract_name": "IFeeCollector",
-          "function_name": "queuePayoutAmountChange",
-          "code": "function queuePayoutAmountChange(uint256 _newPayoutAmount) external;"
-        },
-        {
-          "contract_name": "IFeeCollector",
-          "function_name": "queuePayoutAmountChange",
-          "code": "function queuePayoutAmountChange(uint256 _newPayoutAmount) external;"
-        },
-        {
-          "contract_name": "IFeeCollector",
-          "function_name": "queuePayoutAmountChange",
-          "code": "function queuePayoutAmountChange(uint256 _newPayoutAmount) external;"
-        }
-      ]
-    },
-    "66": {
-      "checklist_item_id": 66,
-      "similar_functions": [
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        },
-        {
-          "contract_name": "RewardVault_V3",
-          "function_name": "notifyRewardAmount",
-          "code": "function notifyRewardAmount(bytes calldata pubkey, uint256 reward) external onlyDistributor {\n        _notifyRewardAmount(reward);\n        _processIncentives(pubkey, reward);\n    }"
-        }
-      ]
-    },
-    "67": {
-      "checklist_item_id": 67,
-      "similar_functions": [
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        },
-        {
-          "contract_name": "SSZ",
-          "function_name": "verifyProof",
-          "code": "function verifyProof(\n        bytes32[] calldata proof,\n        bytes32 root,\n        bytes32 leaf,\n        uint256 index\n    )\n        internal\n        view\n        returns (bool isValid)\n    {\n        assembly (\"memory-safe\") {\n            if proof.length {\n                let end := add(proof.offset, shl(5, proof.length))\n                let offset := proof.offset\n                for { } 1 { } {\n                    let scratch := shl(5, and(index, 1))\n                    index := shr(1, index)\n                    if iszero(index) {\n                        mstore(0x00, 0x5849603f)\n                        revert(0x1c, 0x04)\n                    }\n                    mstore(scratch, leaf)\n                    mstore(xor(scratch, 0x20), calldataload(offset))\n                    let result := staticcall(gas(), SHA256, 0x00, 0x40, 0x00, 0x20)\n                    if eq(result, 0) { revert(0, 0) }\n                    leaf := mload(0x00)\n                    offset := add(offset, 0x20)\n                    if iszero(lt(offset, end)) { break }\n                }\n            }\n            if gt(sub(index, 1), 0) {\n                mstore(0x00, 0x1b6661c3)\n                revert(0x1c, 0x04)\n            }\n            isValid := eq(leaf, root)\n        }\n    }"
-        }
-      ]
-    },
-    "70": {
-      "checklist_item_id": 70,
-      "similar_functions": [
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        },
-        {
-          "contract_name": "POLDeployer",
-          "function_name": "constructor",
-          "code": null
-        }
-      ]
+      "similar_functions": []
     }
   }
 }

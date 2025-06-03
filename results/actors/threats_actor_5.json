@@ -23,36 +23,44 @@
     "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
     "between_component_ids": [
       10,
-      5
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      4,
+      5,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "Insufficient checks on Validator Agent's verification results could allow it to bypass security modules."
+    "availability_required": true,
+    "gap_description": "Weak access controls or vulnerabilities in Validator Agent code/configuration could allow unauthorized privilege escalation."
   },
   "actor_risk": {
     "actor_id": 5,
     "type": "Off-chain Service/Bot",
-    "overprivileged": true,
-    "description": "A Validator Agent, if compromised or malicious, could leverage its verification role to gain unauthorized control over message processing."
+    "overprivileged": false,
+    "description": "A Validator Agent could be compromised, allowing an attacker to gain unauthorized control over its functions."
   },
   "behavioral_risk": {
     "behavior_id": 10,
     "risk_level": "High",
-    "rationale": "If a Validator Agent can submit false verifications that are accepted, it effectively bypasses the intended security model, leading to unauthorized actions."
+    "rationale": "Elevated privileges could allow an attacker to bypass or manipulate critical verification logic, undermining the security model."
   },
   "assumptions": [
-    "The Mailbox or ISM relies solely on the Validator Agent's attestation without independent verification or sufficient redundancy.",
-    "A single Validator Agent or a small collusion of agents can influence the acceptance of invalid messages."
+    "The Validator Agent has exploitable vulnerabilities (e.g., insecure API endpoints, misconfigured permissions).",
+    "The Mailbox's verification logic can be bypassed or manipulated by an attacker with elevated privileges over a Validator Agent."
   ],
   "mitigation": {
-    "strategy": "Implement a robust consensus mechanism among multiple independent Validator Agents (e.g., multi-signature, fraud proofs) and strict slashing conditions.",
-    "type": "Architectural Change",
+    "strategy": "Enforce principle of least privilege, conduct regular security audits, and implement robust access control mechanisms for Validator Agents.",
+    "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A malicious or compromised Validator Agent could elevate its privileges by submitting fraudulent verification results that are accepted by the Mailbox, leading to unauthorized message handling.",
+  "description": "A malicious actor could exploit vulnerabilities in a Validator Agent to elevate their privileges, gaining unauthorized control over its verification capabilities and potentially submitting fraudulent or bypassing legitimate message verifications.",
   "trace_source": {
     "doc_reference": "rust/README.md",
     "matched_capability": "verify messages"

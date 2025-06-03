@@ -18,7 +18,7 @@ clean:
 ######################
 
 run:
-	source venv/bin/activate && langgraph dev
+	source venv/bin/activate && langgraph dev --allow-blocking
 
 ######################
 # HELP

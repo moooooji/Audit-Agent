@@ -1,59 +1,69 @@
 {
-  "id": 12,
-  "stride_category": "Elevation of Privilege",
+  "id": 3,
+  "stride_category": "Denial of Service",
   "origin": {
     "from_chunk": true,
-    "actor_id": 1,
-    "behavior_id": 510,
-    "capability_match": "Configure interchain application logic"
+    "actor_id": 3,
+    "behavior_id": 1,
+    "capability_match": "call TokenRouter.transferRemote"
   },
   "threat_target": {
-    "component_id": 209,
-    "asset_ids": []
+    "component_id": 13,
+    "asset_ids": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ]
   },
   "attack_surface": {
-    "behavior_id": 510,
-    "data_flow_id": null,
-    "data_description": "ICA commands sent to the remote chain, targeting privileged functions"
+    "behavior_id": 1,
+    "data_flow_id": 20,
+    "data_description": "Approval (CollateralTokenRouter, infinity) or burn(Alice, amount) calls"
   },
   "trust_boundary_risk": {
-    "boundary_id": 402,
-    "boundary_name": "Inter-Blockchain Communication Path",
+    "boundary_id": 2,
+    "boundary_name": "User Wallet vs. Hyperlane Protocol",
     "between_component_ids": [
-      201,
-      210,
-      206
+      3,
+      10,
+      13,
+      14,
+      15,
+      23,
+      24
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
-    "availability_required": false,
-    "gap_description": "ICA used to execute actions on remote chain that developer's EOA couldn't directly, by leveraging ICA's privileges."
+    "availability_required": true,
+    "gap_description": "Lack of rate limiting or transaction volume controls on user-initiated token operations (approve, burn) could allow a malicious actor to exhaust network resources or contract gas limits."
   },
   "actor_risk": {
-    "actor_id": 1,
+    "actor_id": 3,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "Application Developer controls the origin EOA that directs the ICA."
+    "description": "A malicious user could intentionally or unintentionally trigger excessive transactions (e.g., approvals, burns), impacting network and contract availability for others."
   },
   "behavioral_risk": {
-    "behavior_id": 510,
-    "risk_level": "High",
-    "rationale": "If the remote ICA has excessive permissions, or can interact with vulnerable privileged contracts, the developer can abuse this to gain unauthorized control on the remote chain."
+    "behavior_id": 1,
+    "risk_level": "Medium",
+    "rationale": "Excessive transactions can lead to increased gas fees, network congestion, and temporary unavailability of contract functions for other legitimate users."
   },
   "assumptions": [
-    "The Interchain Account contract on the destination chain is deployed with or can be granted significant privileges (e.g., admin of other contracts).",
-    "The Application Developer can craft ICA messages to make the remote ICA call privileged functions on other contracts or perform actions it shouldn't."
+    "Smart contracts (TokenRouter, ERC20, ERC4626 Vault) do not implement sufficient rate-limiting or transaction volume controls.",
+    "Network gas fees are not prohibitive enough to prevent such attacks from being economically viable."
   ],
   "mitigation": {
-    "strategy": "Adhere to the principle of least privilege when deploying and configuring the remote ICA contract. Carefully audit all contracts the ICA is authorized to interact with. Implement strict controls on the types of calls the ICA can make.",
-    "type": "Architectural Change",
-    "priority": "High"
+    "strategy": "Implement on-chain rate limiting or transaction volume caps for user-initiated token operations (e.g., per-address limits, cooldowns).",
+    "type": "Technical Control",
+    "priority": "Medium"
   },
-  "description": "An Application Developer uses the Interchain Account system to make the remote ICA contract execute a privileged action on another contract on the destination chain, an action the developer's own EOA would not be authorized to perform directly on that chain, effectively elevating their privileges via the ICA.",
+  "description": "A malicious user could flood the network with excessive token approval or burn transactions via the TokenRouter, leading to resource exhaustion, increased gas costs, and denial of service for other legitimate users interacting with the protocol.",
   "trace_source": {
-    "doc_reference": "doc_20",
-    "matched_capability": "Configure interchain application logic"
+    "doc_reference": "solidity/contracts/token/Hyperlane Tokens and Warp Routes#Remote Transfer Lifecycle Diagrams",
+    "matched_capability": "call TokenRouter.transferRemote"
   }
 }

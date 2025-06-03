@@ -5,6 +5,414 @@
       "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Mailbox relies on authenticity of Validator Agent for verification results without sufficient identity checks."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could be impersonated by a malicious actor."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "The integrity of interchain messages depends on the authenticity of the Validator Agent's verification."
+      },
+      "assumptions": [
+        "The Mailbox does not sufficiently authenticate the identity of the Validator Agent submitting verification results.",
+        "The communication channel between the Validator Agent and Mailbox is vulnerable to identity spoofing."
+      ],
+      "mitigation": {
+        "strategy": "Implement strong cryptographic authentication for Validator Agents interacting with the Mailbox.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious actor could spoof the identity of a legitimate Validator Agent to submit false verification results to the Mailbox, compromising message integrity.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 2,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Verification results or messages/checkpoints could be altered in transit or at rest before verification."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could be compromised, or data flows could be intercepted by an attacker."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Tampering with verification data directly impacts the integrity and authenticity of interchain messages."
+      },
+      "assumptions": [
+        "The data flow (Data Flow 20) between the Validator Agent and Mailbox is susceptible to modification.",
+        "The Mailbox does not sufficiently validate the integrity of the verification results or the underlying messages/checkpoints."
+      ],
+      "mitigation": {
+        "strategy": "Implement cryptographic hashing and digital signatures for all messages, checkpoints, and verification results. Use secure communication channels.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious actor could tamper with the messages or checkpoints that the Validator Agent is verifying, or modify the verification results submitted by the Validator Agent to the Mailbox, leading to acceptance of invalid messages.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of non-repudiation mechanisms for Validator Agent actions, allowing denial of past verifications."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could deny having performed a verification or submitted a specific result."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Accountability of Validator Agents is crucial for the security model, especially in dispute resolution."
+      },
+      "assumptions": [
+        "The Mailbox does not require cryptographically signed proofs of verification from the Validator Agent.",
+        "There is no immutable record linking a Validator Agent to its specific verification submissions."
+      ],
+      "mitigation": {
+        "strategy": "Require digital signatures on all verification submissions by Validator Agents, ensuring non-repudiation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A Validator Agent could repudiate its past verification actions or submitted results, making it difficult to hold them accountable for incorrect or malicious verifications.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 4,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 5,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Sensitive message content or verification logic could be exposed through compromised Validator Agents or insecure logging."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could be compromised or misconfigured, leading to unauthorized data exposure."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Validator Agents handle interchain messages, which may contain sensitive or private data."
+      },
+      "assumptions": [
+        "The Validator Agent processes or stores sensitive message content or verification logic.",
+        "Access controls or logging practices within the Validator Agent are insufficient to prevent unauthorized disclosure."
+      ],
+      "mitigation": {
+        "strategy": "Implement strict access controls, encryption for data at rest and in transit, and secure logging practices for Validator Agents.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "Sensitive information contained within interchain messages or the internal workings of the verification process could be disclosed if a Validator Agent is compromised or improperly configured.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 5,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "Vulnerability to resource exhaustion or network attacks preventing Validator Agents from performing their duties."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could be targeted by an attacker or suffer from operational issues."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Disruption of message verification directly impacts the liveness and functionality of the Hyperlane protocol."
+      },
+      "assumptions": [
+        "The Validator Agent's infrastructure is vulnerable to DoS attacks (e.g., network saturation, resource exhaustion).",
+        "The Mailbox relies on timely verification from Validator Agents for message finality."
+      ],
+      "mitigation": {
+        "strategy": "Implement redundancy, load balancing, rate limiting, and robust infrastructure for Validator Agents. Introduce economic incentives for liveness.",
+        "type": "Architectural Change",
+        "priority": "High"
+      },
+      "description": "An attacker could launch a Denial of Service attack against Validator Agents, preventing them from querying the Mailbox or submitting verification results, thereby halting interchain message processing.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 6,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Weak access controls or vulnerabilities in Validator Agent code/configuration could allow unauthorized privilege escalation."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A Validator Agent could be compromised, allowing an attacker to gain unauthorized control over its functions."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Elevated privileges could allow an attacker to bypass or manipulate critical verification logic, undermining the security model."
+      },
+      "assumptions": [
+        "The Validator Agent has exploitable vulnerabilities (e.g., insecure API endpoints, misconfigured permissions).",
+        "The Mailbox's verification logic can be bypassed or manipulated by an attacker with elevated privileges over a Validator Agent."
+      ],
+      "mitigation": {
+        "strategy": "Enforce principle of least privilege, conduct regular security audits, and implement robust access control mechanisms for Validator Agents.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious actor could exploit vulnerabilities in a Validator Agent to elevate their privileges, gaining unauthorized control over its verification capabilities and potentially submitting fraudulent or bypassing legitimate message verifications.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 7,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
         "actor_id": 4,
         "behavior_id": 3,
         "capability_match": "process messages to Mailbox on destination chain"
@@ -69,7 +477,7 @@
       }
     },
     {
-      "id": 2,
+      "id": 8,
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
@@ -137,7 +545,7 @@
       }
     },
     {
-      "id": 3,
+      "id": 9,
       "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
@@ -205,7 +613,7 @@
       }
     },
     {
-      "id": 4,
+      "id": 10,
       "stride_category": "Information Disclosure",
       "origin": {
         "from_chunk": true,
@@ -266,367 +674,6 @@
       "trace_source": {
         "doc_reference": "typescript/ccip-server/README.md",
         "matched_capability": "make POST requests to CCIP-read Server"
-      }
-    },
-    {
-      "id": 5,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Lack of robust authentication for Validator Agent's verification submissions."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A malicious actor could impersonate a legitimate Validator Agent."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "The integrity of interchain messages relies heavily on the authenticity of the Validator Agent's verification."
-      },
-      "assumptions": [
-        "The Mailbox does not sufficiently authenticate the source of verification data.",
-        "An attacker can gain access to credentials or communication channels used by a legitimate Validator Agent."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong cryptographic authentication for Validator Agent submissions (e.g., digital signatures).",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could spoof the identity of a Validator Agent to submit false verification results or invalid checkpoints to the Mailbox, compromising message integrity.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 6,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 3,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5,
-          4
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Vulnerability in message transport or storage before verification allows modification."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A compromised Relayer Agent could tamper with messages before they reach the Mailbox for verification."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Tampered messages, if not detected by the Validator, can lead to incorrect state transitions or unauthorized actions on the destination chain."
-      },
-      "assumptions": [
-        "Messages or checkpoints are not sufficiently protected against modification during transit or storage before verification.",
-        "The Validator Agent's verification logic is unable to detect all forms of tampering."
-      ],
-      "mitigation": {
-        "strategy": "Implement end-to-end integrity checks (e.g., cryptographic hashes, Merkle proofs) for messages and checkpoints.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could tamper with interchain messages or checkpoints before they are queried and verified by the Validator Agent, leading to false verification results.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 7,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Lack of non-repudiation mechanisms for Validator Agent's actions."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could deny having performed a specific verification or submitted a checkpoint."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "Medium",
-        "rationale": "Without non-repudiation, accountability for verification failures or malicious actions by a Validator Agent is difficult to establish."
-      },
-      "assumptions": [
-        "The system does not record irrefutable proof of a Validator Agent's verification actions.",
-        "A Validator Agent could be compromised and then deny its actions."
-      ],
-      "mitigation": {
-        "strategy": "Ensure all Validator Agent verification submissions are cryptographically signed and logged on-chain.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "A Validator Agent could deny having performed a specific message verification or checkpoint submission, hindering accountability and incident response.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 8,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "run validation processes"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Sensitive data within messages or checkpoints is not encrypted or access-controlled during query/processing."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A compromised Validator Agent could expose sensitive information from interchain messages."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "Low",
-        "rationale": "While messages are public on-chain, the Validator's internal processing or logging could expose data not intended for public consumption, or data that is sensitive in context."
-      },
-      "assumptions": [
-        "Interchain messages or checkpoints contain sensitive information not intended for public exposure.",
-        "The Validator Agent's operational environment or logging is not adequately secured against unauthorized access."
-      ],
-      "mitigation": {
-        "strategy": "Implement encryption for sensitive message payloads where confidentiality is required. Secure Validator Agent's operational environment and logs.",
-        "type": "Technical Control",
-        "priority": "Low"
-      },
-      "description": "Sensitive information contained within interchain messages or checkpoints could be disclosed if the Validator Agent's query or processing environment is compromised.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "run validation processes"
-      }
-    },
-    {
-      "id": 9,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "run validation processes"
-      },
-      "threat_target": {
-        "component_id": 5,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "Validator Agent is vulnerable to resource exhaustion or attack, preventing timely verification."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be targeted to disrupt its verification capabilities."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Disruption of Validator Agent operations directly impacts the availability and security of interchain messaging."
-      },
-      "assumptions": [
-        "The Validator Agent's infrastructure is vulnerable to resource exhaustion attacks (e.g., network floods, excessive queries).",
-        "There are no sufficient rate limits or anti-DoS mechanisms in place for the Validator Agent's interactions with the Mailbox."
-      ],
-      "mitigation": {
-        "strategy": "Implement rate limiting, robust infrastructure scaling, and monitoring for Validator Agents to withstand DoS attacks.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could launch a Denial of Service attack against a Validator Agent, preventing it from querying the Mailbox and verifying messages, thus halting interchain communication.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "run validation processes"
-      }
-    },
-    {
-      "id": 10,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          5
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Insufficient checks on Validator Agent's verification results could allow it to bypass security modules."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": true,
-        "description": "A Validator Agent, if compromised or malicious, could leverage its verification role to gain unauthorized control over message processing."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "If a Validator Agent can submit false verifications that are accepted, it effectively bypasses the intended security model, leading to unauthorized actions."
-      },
-      "assumptions": [
-        "The Mailbox or ISM relies solely on the Validator Agent's attestation without independent verification or sufficient redundancy.",
-        "A single Validator Agent or a small collusion of agents can influence the acceptance of invalid messages."
-      ],
-      "mitigation": {
-        "strategy": "Implement a robust consensus mechanism among multiple independent Validator Agents (e.g., multi-signature, fraud proofs) and strict slashing conditions.",
-        "type": "Architectural Change",
-        "priority": "High"
-      },
-      "description": "A malicious or compromised Validator Agent could elevate its privileges by submitting fraudulent verification results that are accepted by the Mailbox, leading to unauthorized message handling.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
       }
     },
     {

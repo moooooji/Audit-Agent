@@ -1,101 +1,275 @@
 {
-  "summary": "The overall code binding analysis reveals several areas where the code artifacts either do not correspond to the checklist items, lack sufficient detail, or are missing entirely. Notably, multiple checklist items lack any bound code or have bindings that are not relevant or insufficiently specific to the described threats. Additionally, schema compliance issues are observed in some bindings, necessitating explicit inclusion of required fields and specific references.",
+  "summary": "The provided code binding output maps numerous threats to code artifacts, but certain checklist items lack corresponding bindings, and some existing bindings may not be fully aligned with their threats' security concerns. Overall, the mappings require refinement to ensure traceability, completeness, and accuracy. Several findings indicate the need for retrying code binding with specific guidance.",
   "findings": [
     {
       "type": "missing_binding",
       "checklist_id": 2,
       "description": "Checklist item 2 is not bound to any code artifact.",
-      "code_reference": "N/A - No code binding detected for this item in the provided artifacts."
-    },
-    {
-      "type": "invalid_reference",
-      "checklist_id": 3,
-      "description": "Checklist item 3's linked code references are invalid or do not exist in the source repository.",
-      "code_reference": "src/react_agent/update_metadata.py - File path does not match any existing code section; verify correct location."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 7,
-      "description": "The code bound to checklist item 7 does not handle the risk described in its threat.",
-      "code_reference": "src/security/monitoring.py - Does not contain logic related to Validator Agent's operational resilience or DoS mitigation."
-    },
-    {
-      "type": "schema_error",
-      "checklist_id": 12,
-      "description": "Missing required field `file_path` in code binding object.",
-      "code_reference": "src/verification/validation.lua - Lacks structured fields; expected `file_path` and `function` to be specified."
+      "code_reference": "N/A (No binding)"
     },
     {
       "type": "missing_binding",
-      "checklist_id": 14,
-      "description": "Checklist item 14 is not bound to any code artifact.",
-      "code_reference": "N/A - No code binding detected for this item."
+      "checklist_id": 6,
+      "description": "Checklist item 6 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "invalid_reference",
+      "type": "missing_binding",
+      "checklist_id": 11,
+      "description": "Checklist item 11 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 13,
+      "description": "Checklist item 13 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 15,
+      "description": "Checklist item 15 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 16,
+      "description": "Checklist item 16 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 18,
+      "description": "Checklist item 18 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 19,
+      "description": "Checklist item 19 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 20,
+      "description": "Checklist item 20 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 21,
+      "description": "Checklist item 21 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 22,
+      "description": "Checklist item 22 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
       "checklist_id": 23,
-      "description": "Linked code reference for checklist item 23 is a placeholder and does not point to actual implementation.",
-      "code_reference": "contracts/IBlockRewardController.sol - Verify that actual implementation of setRewardConvexity function includes cryptographic validation."
+      "description": "Checklist item 23 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "irrelevant_binding",
+      "type": "missing_binding",
+      "checklist_id": 24,
+      "description": "Checklist item 24 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 25,
+      "description": "Checklist item 25 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 26,
+      "description": "Checklist item 26 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 27,
+      "description": "Checklist item 27 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 28,
+      "description": "Checklist item 28 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 29,
+      "description": "Checklist item 29 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 30,
+      "description": "Checklist item 30 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 31,
+      "description": "Checklist item 31 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 32,
+      "description": "Checklist item 32 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 33,
+      "description": "Checklist item 33 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 34,
+      "description": "Checklist item 34 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
       "checklist_id": 35,
-      "description": "Bound code pertains to treasury management, not deployment funds verification.",
-      "code_reference": "tools/deployment/funds_check.sh - Script for operational checks, unrelated to actual smart contract validation."
+      "description": "Checklist item 35 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "schema_error",
+      "type": "missing_binding",
+      "checklist_id": 36,
+      "description": "Checklist item 36 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 37,
+      "description": "Checklist item 37 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
       "checklist_id": 38,
-      "description": "Lack of specified `file_path`, `function`, and `reason` fields in code binding; schema non-compliant.",
-      "code_reference": "contracts/VaultAdmin.sol - Binding exists but lacks required structured metadata."
+      "description": "Checklist item 38 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 39,
+      "description": "Checklist item 39 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 40,
+      "description": "Checklist item 40 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 41,
+      "description": "Checklist item 41 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 42,
+      "description": "Checklist item 42 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 43,
+      "description": "Checklist item 43 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 44,
+      "description": "Checklist item 44 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 45,
+      "description": "Checklist item 45 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 46,
+      "description": "Checklist item 46 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 47,
+      "description": "Checklist item 47 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
       "type": "missing_binding",
       "checklist_id": 48,
-      "description": "Checklist item 48 is not bound, and no relevant code artifacts are provided.",
-      "code_reference": "N/A - No code binding detected."
-    },
-    {
-      "type": "invalid_reference",
-      "checklist_id": 62,
-      "description": "Code reference for postDispatch hook is a generic placeholder; specific implementation needed.",
-      "code_reference": "src/hooks/PostDispatchHook.sol - Confirm implementation that handles insufficient payment gracefully."
-    },
-    {
-      "type": "irrelevant_binding",
-      "checklist_id": 70,
-      "description": "Code bound is from an unrelated constructor and does not address multi-signature requirements.",
-      "code_reference": "contracts/HyperlaneDeployer.sol - Ensure that deployment uses multi-sig or governance approval mechanisms."
-    },
-    {
-      "type": "schema_error",
-      "checklist_id": 66,
-      "description": "Code binding missing required `reason` field, affecting completeness.",
-      "code_reference": "src/rewardVault/incentives.sol - Add `reason` detailing the security concern."
+      "description": "Checklist item 48 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
       "type": "missing_binding",
-      "checklist_id": 67,
-      "description": "No code artifact provided for threat related to ISM replay protection.",
-      "code_reference": "N/A - Absence of code binding for this threat."
+      "checklist_id": 49,
+      "description": "Checklist item 49 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "invalid_reference",
-      "checklist_id": 68,
-      "description": "Code binding references an outdated or non-existent environment hardening procedure.",
-      "code_reference": "tools/security/hardening_guidelines.md - Update to actual code or configuration files."
+      "type": "missing_binding",
+      "checklist_id": 50,
+      "description": "Checklist item 50 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "irrelevant_binding",
-      "checklist_id": 73,
-      "description": "Binding provided does not relate to the threat description for threat 22.",
-      "code_reference": "src/security/privilege_settings.py - Verify if relevant to privilege escalation threat."
+      "type": "missing_binding",
+      "checklist_id": 51,
+      "description": "Checklist item 51 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     },
     {
-      "type": "schema_error",
-      "checklist_id": 69,
-      "description": "Code binding lacks explicit `function` and `file_path` fields.",
-      "code_reference": "scripts/deploy/configs/deployment.yaml - Add structured fields for schema compliance."
+      "type": "missing_binding",
+      "checklist_id": 52,
+      "description": "Checklist item 52 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 53,
+      "description": "Checklist item 53 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 54,
+      "description": "Checklist item 54 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 55,
+      "description": "Checklist item 55 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 56,
+      "description": "Checklist item 56 is not bound to any code artifact.",
+      "code_reference": "N/A (No binding)"
     }
   ]
 }

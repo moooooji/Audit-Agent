@@ -1,62 +1,63 @@
 {
-  "id": 12,
+  "id": 6,
   "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": 2,
-    "behavior_id": 509,
-    "capability_match": "Initiate interchain messages (e.g., TokenRouter.transferRemote, HypERC4626Collateral.transferRemote)"
+    "actor_id": 4,
+    "behavior_id": null,
+    "capability_match": "make POST requests to CCIP-read Server"
   },
   "threat_target": {
-    "component_id": 208,
-    "asset_ids": [
-      103
-    ]
+    "component_id": 20,
+    "asset_ids": []
   },
   "attack_surface": {
-    "behavior_id": 509,
-    "data_flow_id": null,
-    "data_description": "Maliciously crafted interchain message payload (containing shares, exchangeRate, nonce), originating from user's `HypERC4626Collateral.transferRemote` call, delivered to `HypERC4626.handle`."
+    "behavior_id": null,
+    "data_flow_id": 11,
+    "data_description": "ABI-encoded request data"
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": "Hyperlane Protocol - External Application Logic (Yield)",
+    "boundary_id": 3,
+    "boundary_name": "External Off-chain Services vs. Hyperlane Protocol",
     "between_component_ids": [
-      201,
-      208
+      4,
+      19,
+      20,
+      22,
+      10,
+      11,
+      13
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The `HypERC4626.handle` function may be vulnerable to exploits if it improperly processes crafted message payloads related to shares, nonce, or exchange rates."
+    "gap_description": "ABI-encoded request data sent by a compromised Relayer Agent to the CCIP-read Service Framework could be maliciously altered."
   },
   "actor_risk": {
-    "actor_id": 2,
-    "type": "EOA (Externally Owned Account)",
+    "actor_id": 4,
+    "type": "Off-chain Service/Bot",
     "overprivileged": false,
-    "description": "Attacker crafts a malicious payload for `HypERC4626Collateral.transferRemote` to exploit `HypERC4626.handle` on destination."
+    "description": "A compromised Relayer Agent could send malformed or malicious requests to the CCIP-read Service Framework."
   },
   "behavioral_risk": {
-    "behavior_id": 509,
-    "risk_level": "High",
-    "rationale": "A vulnerability in `HypERC4626.handle` when processing specific message payloads (e.g., manipulated shares, nonce, or exchangeRate) could lead to incorrect share accounting, unauthorized minting, or theft of underlying assets."
+    "behavior_id": null,
+    "risk_level": "Medium",
+    "rationale": "The CCIP-read Service Framework processes execution logic based on Relayer requests, and tampering with these requests could lead to unintended operations."
   },
   "assumptions": [
-    "The `HypERC4626.handle` function (described in doc_22) has a vulnerability in how it processes `shares`, `exchangeRate`, or `nonce` from the delivered message.",
-    "Specifically, the logic for updating `latestNonce` and `latestExchangeRate` might be flawed or bypassable.",
-    "The ISM verifies message origin but not the safety of the payload content for the `handle` function.",
-    "Attacker can craft a payload during `HypERC4626Collateral.transferRemote` that triggers this vulnerability."
+    "The Relayer Agent is compromised or malicious.",
+    "The CCIP-read Service Framework does not sufficiently validate the integrity of the ABI-encoded request data."
   ],
   "mitigation": {
-    "strategy": "Secure coding for `HypERC4626.handle`, robust validation of all payload parameters, careful state updates for nonce and exchange rates, ensuring correct share calculations, and comprehensive security audits.",
+    "strategy": "Implement robust input validation and authentication for requests received by the CCIP-read Service Framework from the Relayer Agent.",
     "type": "Technical Control",
-    "priority": "High"
+    "priority": "Medium"
   },
-  "description": "An attacker crafts a malicious payload for a `HypERC4626Collateral.transferRemote` call. When this payload is delivered to the `HypERC4626.handle` function on the destination chain, it exploits a vulnerability related to share, nonce, or exchange rate processing, potentially leading to incorrect accounting, unauthorized share minting, or manipulation of yield distribution.",
+  "description": "A compromised Relayer Agent could tamper with the ABI-encoded request data sent to the CCIP-read Service Framework, leading to unintended execution logic.",
   "trace_source": {
-    "doc_reference": "doc_22, doc_16",
-    "matched_capability": "Initiate interchain messages (e.g., TokenRouter.transferRemote, HypERC4626Collateral.transferRemote)"
+    "doc_reference": "typescript/ccip-server/README.md",
+    "matched_capability": "make POST requests to CCIP-read Server"
   }
 }
