@@ -1,3 +1,4 @@
+from typing import Annotated, Any, TypedDict, Optional, List, Literal
 from google.generativeai import types as genai_types # google.generativeai.types에 대한 별칭 사용
 from google import genai # genai.types.Schema 접근을 위해 유지
 # from openai import OpenAI # 현재 코드에서는 사용되지 않으므로 주석 처리 또는 제거 가능
@@ -935,7 +936,105 @@ def set_gemini_config(config_name: str):
     )
 )
         return CHECKLIST_ASSESSMENT_CONFIG
-        
+  
+  
+# --- 아래는 THREAT_ANALYSIS_CONFIG에 해당하는 Pydantic 모델들 ---
+
+class ThreatSchemaOrigin(BaseModel):
+    from_chunk: bool = Field(description="Identified from document chunk.")
+    actor_id: Optional[int] = Field(description="Originating actor ID.")
+    behavior_id: Optional[int] = Field(description="Related behavior ID.")
+    capability_match: Optional[str] = Field(description="Matching capability.")
+
+class ThreatSchemaThreatTarget(BaseModel):
+    component_id: Optional[int] = Field(description="Targeted component ID.")
+    asset_ids: List[int] = Field(description="Targeted asset IDs.")
+
+class ThreatSchemaAttackSurface(BaseModel):
+    behavior_id: Optional[int] = Field(description="Exposing behavior ID.")
+    data_flow_id: Optional[int] = Field(description="Involved data flow ID.")
+    data_description: str = Field(description="Data/input description.")
+
+class ThreatSchemaTrustBoundaryRisk(BaseModel):
+    boundary_id: Optional[int] = Field(description="Involved boundary ID.")
+    boundary_name: Optional[str] = Field(description="Boundary name.")
+    between_component_ids: List[int] = Field(description="Component IDs across boundary.")
+
+class ThreatSchemaSecurityGap(BaseModel):
+    confidentiality_required: bool = Field(description="Confidentiality gap.")
+    integrity_required: bool = Field(description="Integrity gap.")
+    availability_required: bool = Field(description="Availability gap.")
+    gap_description: str = Field(description="Gap description.")
+
+class ThreatSchemaActorRisk(BaseModel):
+    actor_id: Optional[int] = Field(description="Actor ID.")
+    # SMART_CONTRACT_ACTOR_TYPES_EN의 실제 Enum 값을 알 수 없어 str로 정의합니다.
+    # 필요시 Literal[SMART_CONTRACT_ACTOR_TYPES_EN_VALUES...] 형태로 수정하세요.
+    type: Optional[str] = Field(description="Actor type.")
+    overprivileged: bool = Field(description="Actor overprivileged.")
+    description: str = Field(description="Actor risk description.")
+
+class ThreatSchemaBehavioralRisk(BaseModel):
+    behavior_id: Optional[int] = Field(description="Behavior ID.")
+    risk_level: Literal["High", "Medium", "Low"] = Field(description="Risk level.")
+    rationale: str = Field(description="Risk rationale.")
+
+class ThreatSchemaMitigation(BaseModel):
+    strategy: str = Field(description="Mitigation strategy.")
+    type: Literal[
+        "Technical Control", "Process Control",
+        "Policy", "Monitoring Control", "Architectural Change"
+    ] = Field(description="Mitigation type.")
+    priority: Literal["High", "Medium", "Low"] = Field(description="Mitigation priority.")
+
+class ThreatSchemaTraceSource(BaseModel):
+    doc_reference: Optional[str] = Field(description="Document reference.")
+    matched_capability: Optional[str] = Field(description="Matched capability from document.")
+
+class ThreatSchemaItem(BaseModel):
+    id: int = Field(description="Threat ID.")
+    stride_category: Literal[
+        "Spoofing", "Tampering", "Repudiation",
+        "Information Disclosure", "Denial of Service",
+        "Elevation of Privilege"
+    ] = Field(description="STRIDE category.")
+    origin: ThreatSchemaOrigin = Field(description="Threat origin.")
+    threat_target: ThreatSchemaThreatTarget = Field(description="Threat target.")
+    attack_surface: ThreatSchemaAttackSurface = Field(description="Attack surface.")
+    trust_boundary_risk: ThreatSchemaTrustBoundaryRisk = Field(description="Trust boundary risk.")
+    security_gap: ThreatSchemaSecurityGap = Field(description="Security gap.")
+    actor_risk: ThreatSchemaActorRisk = Field(description="Actor risk.")
+    behavioral_risk: ThreatSchemaBehavioralRisk = Field(description="Behavioral risk.")
+    assumptions: List[str] = Field(description="Assumptions made.")
+    mitigation: ThreatSchemaMitigation = Field(description="Mitigation measures.")
+    description: str = Field(description="Comprehensive threat description.")
+    trace_source: ThreatSchemaTraceSource = Field(description="Trace to source document.")
+
+class ThreatAnalysisOutput(BaseModel):
+    threats: List[ThreatSchemaItem] = Field(description="List of potential threats identified.")      
+
+class ChecklistItem(BaseModel): 
+        id: int = Field(description="Unique ID for the check item")
+        title: str = Field(description="Short, clear, and actionable title")
+        description: str = Field(description="Explanation of what needs to be checked and why")
+        linked_threat_id: int = Field(description="Threat ID this check is associated with")
+        category: str = Field(description="Category of the check")
+        check_type: str = Field(description="Type of the check")
+        target_entity: int = Field(description="ID of the component or asset being verified")
+        target_type: str = Field(description="Type of the target entity")
+        security_property: str = Field(description="Security property being verified")
+        priority: str = Field(description="Priority of the check")
+        assumption_ref: str = Field(description="Assumption that motivates this check")
+        mitigation_ref: str = Field(description="Mitigation action related to this check")
+        evidence_required: str = Field(description="Evidence needed to prove the check")
+        automatable: bool = Field(description="Whether this check can be automated")
+        status: str = Field(description="Status of the check")
+        need_code_binding: bool = Field(description="Whether this check needs smart contract code binding")
+        last_checked: str = Field(description="Timestamp of last validation")
+        owner: str = Field(description="Team or person responsible")
+
+class Checklist(BaseModel):
+    checklist_items: list[ChecklistItem]
         
 # ───────────── ENUM 정의 (스마트 컨트랙트 감사에 맞게 확장/조정된 버전 사용) ─────────────
 class CategoryEnum(str, Enum):
