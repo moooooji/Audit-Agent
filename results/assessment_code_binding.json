@@ -1,11 +1,35 @@
 {
-  "summary": "The code binding output contains mappings of threats to specific code artifacts, but some mappings lack completeness, relevance, or schema compliance. Several findings indicate missing or inappropriate bindings, requiring retries with detailed guidance.",
+  "summary": "The provided code binding evidence covers numerous threats with relevant functions and contracts, but there are gaps where the checklist items lack corresponding code references or the references are insufficiently detailed. Some code artifacts do not clearly correspond to the described threats, necessitating further investigation or more precise bindings. Several findings indicate the need for retrying code binding with targeted guidance.",
   "findings": [
     {
       "type": "missing_binding",
       "checklist_id": 2,
       "description": "Checklist item 2 is not bound to any code artifact.",
-      "code_reference": "N/A (no binding) for checklist item 2. Perhaps no relevant code identified or bound yet. Consider reviewing the codebase for relevant quoteDispatch implementations or related fee calculation functions to establish proper bindings in future assessments."
+      "code_reference": "src/mailbox/quote_dispatch.py or related function implementations for quoteDispatch logic in Mailbox or Hooks system."
+    },
+    {
+      "type": "missing_binding",
+      "checklist_id": 13,
+      "description": "Checklist item 13 is not bound to any code artifact.",
+      "code_reference": "Code related to Validator Agent verification, cryptographic signing, or on-chain verification in the Validator or ISM contracts."
+    },
+    {
+      "type": "invalid_reference",
+      "checklist_id": 3,
+      "description": "The code reference provided for checklist item 3 does not seem to address the quoteDispatch robustness.",
+      "code_reference": "src/mailbox/quote_dispatch.py or related code handling quote estimation."
+    },
+    {
+      "type": "irrelevant_binding",
+      "checklist_id": 7,
+      "description": "The code bound to checklist item 7 does not handle the risk described in its threat.",
+      "code_reference": "src/ism/validators.py, focusing on multisig or validation logic not directly on the ISM signature requirement."
+    },
+    {
+      "type": "schema_error",
+      "checklist_id": 5,
+      "description": "Missing required field `file_path` in code binding object.",
+      "code_reference": "src/ism/verification.py"
     }
   ]
 }

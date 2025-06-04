@@ -65,18 +65,18 @@
       "similar_functions": [
         {
           "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         },
         {
           "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         },
         {
           "contract_name": "RewardVault_V0",
-          "function_name": "initialize",
-          "code": "function initialize(\n        address _beaconDepositContract,\n        address _bgt,\n        address _distributor,\n        address _stakingToken\n    )\n        external\n        initializer\n    {\n        __FactoryOwnable_init(msg.sender);\n        __Pausable_init();\n        __ReentrancyGuard_init();\n        __StakingRewards_init(_stakingToken, _bgt, 7 days);\n        maxIncentiveTokensCount = 2;\n        distributor = _distributor;\n        beaconDepositContract = IBeaconDeposit(_beaconDepositContract);\n        emit DistributorSet(_distributor);\n        emit MaxIncentiveTokensCountUpdated(2);\n    }"
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         }
       ]
     },
@@ -184,19 +184,19 @@
       "checklist_item_id": 13,
       "similar_functions": [
         {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
+          "contract_name": "BGT",
+          "function_name": "invariantCheck",
+          "code": "modifier invariantCheck() {\n        _;\n        _invariantCheck();\n    }"
         },
         {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
+          "contract_name": "BGT",
+          "function_name": "invariantCheck",
+          "code": "modifier invariantCheck() {\n        _;\n        _invariantCheck();\n    }"
         },
         {
-          "contract_name": "RewardVault_V0",
-          "function_name": "_checkRewardSolvency",
-          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
+          "contract_name": "BGT",
+          "function_name": "invariantCheck",
+          "code": "modifier invariantCheck() {\n        _;\n        _invariantCheck();\n    }"
         }
       ]
     },
@@ -204,19 +204,19 @@
       "checklist_item_id": 14,
       "similar_functions": [
         {
-          "contract_name": "BGT",
-          "function_name": "whitelistSender",
-          "code": "function whitelistSender(address sender, bool approved) external onlyOwner {\n        isWhitelistedSender[sender] = approved;\n        emit SenderWhitelisted(sender, approved);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         },
         {
-          "contract_name": "BGT",
-          "function_name": "whitelistSender",
-          "code": "function whitelistSender(address sender, bool approved) external onlyOwner {\n        isWhitelistedSender[sender] = approved;\n        emit SenderWhitelisted(sender, approved);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         },
         {
-          "contract_name": "BGT",
-          "function_name": "whitelistSender",
-          "code": "function whitelistSender(address sender, bool approved) external onlyOwner {\n        isWhitelistedSender[sender] = approved;\n        emit SenderWhitelisted(sender, approved);\n    }"
+          "contract_name": "RewardVault_V2",
+          "function_name": "_checkRewardSolvency",
+          "code": "function _checkRewardSolvency() internal view override {\n        uint256 allowance = rewardToken.allowance(distributor, address(this));\n        if (undistributedRewards / PRECISION > allowance) InsolventReward.selector.revertWith();\n    }"
         }
       ]
     },
@@ -344,19 +344,19 @@
       "checklist_item_id": 27,
       "similar_functions": [
         {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
+          "contract_name": "HoneyFactory_V0",
+          "function_name": "_checkInvariants",
+          "code": "function _checkInvariants(address asset) internal view {\n        ERC4626 vault = vaults[asset];\n        uint256 totalShares = vault.totalSupply();\n        uint256 totalAssets = ERC20(asset).balanceOf(address(vault));\n        if (vault.convertToAssets(totalShares) > totalAssets) {\n            InsufficientAssets.selector.revertWith(totalAssets, totalShares);\n        }\n        uint256 vaultShares = vault.balanceOf(address(this));\n        if (vaultShares < collectedAssetFees[asset]) {\n            uint256 vaultAssets = vault.convertToAssets(vaultShares);\n            InsufficientAssets.selector.revertWith(vaultAssets, vaultShares);\n        }\n    }"
         },
         {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
+          "contract_name": "HoneyFactory_V0",
+          "function_name": "_checkInvariants",
+          "code": "function _checkInvariants(address asset) internal view {\n        ERC4626 vault = vaults[asset];\n        uint256 totalShares = vault.totalSupply();\n        uint256 totalAssets = ERC20(asset).balanceOf(address(vault));\n        if (vault.convertToAssets(totalShares) > totalAssets) {\n            InsufficientAssets.selector.revertWith(totalAssets, totalShares);\n        }\n        uint256 vaultShares = vault.balanceOf(address(this));\n        if (vaultShares < collectedAssetFees[asset]) {\n            uint256 vaultAssets = vault.convertToAssets(vaultShares);\n            InsufficientAssets.selector.revertWith(vaultAssets, vaultShares);\n        }\n    }"
         },
         {
-          "contract_name": "BeaconRootsHelper",
-          "function_name": "_verifyValidatorPubkeyInBeaconBlock",
-          "code": "function _verifyValidatorPubkeyInBeaconBlock(\n        bytes32 beaconBlockRoot,\n        bytes32[] calldata validatorPubkeyProof,\n        bytes calldata validatorPubkey,\n        uint64 validatorIndex\n    )\n        internal\n        view\n    {\n        if (validatorIndex >= VALIDATOR_REGISTRY_LIMIT) {\n            IndexOutOfRange.selector.revertWith();\n        }\n        bytes32 validatorPubkeyRoot = SSZ.validatorPubkeyHashTreeRoot(validatorPubkey);\n        uint256 gIndex = zeroValidatorPubkeyGIndex + (VALIDATOR_PUBKEY_OFFSET * validatorIndex);\n        if (!SSZ.verifyProof(validatorPubkeyProof, beaconBlockRoot, validatorPubkeyRoot, gIndex)) {\n            InvalidProof.selector.revertWith();\n        }\n    }"
+          "contract_name": "HoneyFactory_V0",
+          "function_name": "_checkInvariants",
+          "code": "function _checkInvariants(address asset) internal view {\n        ERC4626 vault = vaults[asset];\n        uint256 totalShares = vault.totalSupply();\n        uint256 totalAssets = ERC20(asset).balanceOf(address(vault));\n        if (vault.convertToAssets(totalShares) > totalAssets) {\n            InsufficientAssets.selector.revertWith(totalAssets, totalShares);\n        }\n        uint256 vaultShares = vault.balanceOf(address(this));\n        if (vaultShares < collectedAssetFees[asset]) {\n            uint256 vaultAssets = vault.convertToAssets(vaultShares);\n            InsufficientAssets.selector.revertWith(vaultAssets, vaultShares);\n        }\n    }"
         }
       ]
     },

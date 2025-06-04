@@ -1,11 +1,8 @@
-"""Utility & helper functions."""
 import json
 import os
-import threading
 from langgraph.types import Send
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-from pydantic import BaseModel
 
 from react_agent.state import State
 from react_agent.llm_utils import (
@@ -15,7 +12,6 @@ from react_agent.llm_utils import (
     _init_db,
     load_file,
     call_gemini_api,
-    set_gemini_config,
     call_chatgpt_api,
     build_llm_chunk
 )
@@ -25,7 +21,6 @@ from react_agent.prompt import (
     ARCHITECTURE_ASSESSMENT_TEMPLATE,
     ARCHITECTURE_CORRECTION_TEMPLATE,
     THREAT_ANALYSIS_TEMPLATE,
-    CHECKLIST_TEMPLATE,
     CHECKLIST_CORRECTION_TEMPLATE,
     CHECKLIST_ASSESSMENT_TEMPLATE,
     CODE_BINDING_ASSESSMENT_TEMPLATE,
@@ -40,19 +35,8 @@ from google.genai import types
 # import variables
 import react_agent.variables
 
-react_agent.variables.threats_list
 react_agent.variables.actors_map
 
-threat_count = 0
-checklist_count = 0
-BATCH_SIZE = 10
-
-# 병렬 처리를 위한 세마포어 변수 추가
-api_semaphore = threading.Semaphore(1)  # 한 번에 하나의 스레드만 API 대기 로직 실행
-processed_threats_batches = 0  # 처리된 위협 배치 수 추적
-processed_checklist_batches = 0  # 처리된 체크리스트 배치 수 추적
-
-from time import sleep
 from react_agent.Utils.RedisUtil import RedisUtil
 from react_agent.Utils.AnalyzeSolidity import AnalyzeSolidity
 
@@ -198,9 +182,6 @@ def generate_batch_threats(state: State) -> State:
 async def generate_parallel_threats(state: State) -> State:
     print("analyzing threats ...")
 
-    global threat_count
-    global processed_threats_batches
-    
     target_docs = load_file(state["target_docs_path"])
     # read architecture_correction file
     architecture_analysis = load_file("results/architecture_analysis.json")
@@ -224,8 +205,6 @@ async def generate_parallel_threats(state: State) -> State:
     print(f"[+] Threats count: {len(json_data['threats'])}")
     
     for threat in json_data["threats"]:
-        react_agent.variables.threats_list.append(threat)
-
         save_json(threat, f'results/actors/threats_actor_{state["current_actor_id"]+1}.json')
         
     return {"tmp_threats": json_data["threats"], "is_threat_analysis": False}
@@ -284,13 +263,6 @@ def map_get_assessment_checklist(state: State) -> State:
     else:
         return "assess_checklist"
     
-from langchain_core.globals import set_llm_cache
-from langchain_community.cache import SQLiteCache
-import os
-if not os.path.exists("cache"):
-    os.makedirs("cache")
-set_llm_cache(SQLiteCache(database_path="./cache/llm_cache.db"))
-
 async def generate_parallel_checklist(state: State) -> State:
     threat_with_context = state["threat_with_context"]
     threat = threat_with_context["threat"]
@@ -315,7 +287,6 @@ async def generate_parallel_checklist(state: State) -> State:
         }
 
 def route_checklist(state: State):
-    from react_agent.variables import CHECKLIST_FEEDBACK_LOOP_COUNT
     tmp_checklist = state["tmp_checklist"]
     print(f"in route_checklist, generated {len(tmp_checklist)} checklist items")
     
@@ -325,7 +296,6 @@ def route_checklist(state: State):
         return {"is_initial_checklist_analysis": True}
     else:
         # 여기서 생성된 체크리스트들 전부 모일테니, unique id 다시 재 부여할 필요가있을거같음
-        print(f"여길 들어오나?")
         checklist_items = tmp_checklist
         index = 0
         for item in checklist_items:
@@ -334,6 +304,7 @@ def route_checklist(state: State):
             # TODO 중복체크 여기서 처리하는 로직 넣으면 될듯.
         with open("results/checklist.json", "w") as f:
             json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
+        print("completed parallel checklist")
         return {}
     
 def feedback_loop_checklist(state: State) -> State:
@@ -543,8 +514,6 @@ def code_binding(state: State) -> State:
         
         return {"code_binding_feedback_loop_count": state["code_binding_feedback_loop_count"]}
 
-
-
 def assess_code_binding(state: State) -> State:
     print("assessing code binding ...")
     
@@ -572,22 +541,3 @@ def assess_code_binding(state: State) -> State:
     print("completed assessing code binding")
     
     return {"code_binding_feedback_loop_count": state["code_binding_feedback_loop_count"]+1}
-
-# def initialize_state(state: State) -> State:
-#     state["architecture_feedback_loop_count"] = 0
-#     state["checklist_feedback_loop_count"] = 0
-#     state["code_binding_feedback_loop_count"] = 0
-    
-#     state["is_initial_architecture_analysis"] = False
-#     state["is_feedback_architecture_analysis"] = False
-#     state["is_assessment_analysis"] = False
-#     state["is_assessment_checklist"] = False
-#     state["is_assessment_code_binding"] = False
-#     state["is_init_db"] = False
-#     state["is_initial_checklist_analysis"] = False
-#     state["is_feedback_checklist_analysis"] = False
-#     state["is_initial_code_binding"] = False
-#     state["is_feedback_code_binding"] = False
-#     state["is_threat_analysis"] = False
-    
-#     state["current_actor_id"] = 0
