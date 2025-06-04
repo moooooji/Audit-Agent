@@ -25,7 +25,6 @@ from react_agent.variables import (
 
 import react_agent.variables
 react_agent.variables.actors_map
-react_agent.variables.threats_list
 
 from langgraph.types import Send
 from langgraph.checkpoint.memory import MemorySaver
