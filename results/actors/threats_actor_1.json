@@ -1,69 +1,68 @@
 {
-  "id": 3,
-  "stride_category": "Denial of Service",
+  "id": 6,
+  "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": 3,
-    "behavior_id": 1,
-    "capability_match": "call TokenRouter.transferRemote"
+    "actor_id": 1,
+    "behavior_id": 8,
+    "capability_match": "deploy Interchain Accounts"
   },
   "threat_target": {
-    "component_id": 13,
+    "component_id": 14,
     "asset_ids": [
-      101,
-      102,
-      103,
-      104,
-      105
+      100
     ]
   },
   "attack_surface": {
-    "behavior_id": 1,
-    "data_flow_id": 20,
-    "data_description": "Approval (CollateralTokenRouter, infinity) or burn(Alice, amount) calls"
+    "behavior_id": 8,
+    "data_flow_id": 18,
+    "data_description": "Deployment configurations, transaction data"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "User Wallet vs. Hyperlane Protocol",
+    "boundary_id": 1,
+    "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
     "between_component_ids": [
-      3,
       10,
+      11,
+      12,
       13,
       14,
       15,
-      23,
-      24
+      18,
+      4,
+      5,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "Lack of rate limiting or transaction volume controls on user-initiated token operations (approve, burn) could allow a malicious actor to exhaust network resources or contract gas limits."
+    "gap_description": "A vulnerability in the deployment or configuration logic could allow a Developer to assign themselves or another entity unintended administrative control over Interchain Accounts or other critical contracts."
   },
   "actor_risk": {
-    "actor_id": 3,
+    "actor_id": 1,
     "type": "EOA (Externally Owned Account)",
     "overprivileged": false,
-    "description": "A malicious user could intentionally or unintentionally trigger excessive transactions (e.g., approvals, burns), impacting network and contract availability for others."
+    "description": "The Developer's role involves deploying and configuring contracts, and any flaw in this process could lead to unintended privilege escalation."
   },
   "behavioral_risk": {
-    "behavior_id": 1,
-    "risk_level": "Medium",
-    "rationale": "Excessive transactions can lead to increased gas fees, network congestion, and temporary unavailability of contract functions for other legitimate users."
+    "behavior_id": 8,
+    "risk_level": "High",
+    "rationale": "Unintended privilege escalation can lead to unauthorized control over critical protocol functions, potentially allowing an attacker to bypass security checks or steal assets."
   },
   "assumptions": [
-    "Smart contracts (TokenRouter, ERC20, ERC4626 Vault) do not implement sufficient rate-limiting or transaction volume controls.",
-    "Network gas fees are not prohibitive enough to prevent such attacks from being economically viable."
+    "A bug exists in the smart contract code or the SDK/CLI's deployment logic.",
+    "Access control mechanisms are not sufficiently granular or are misconfigured during deployment."
   ],
   "mitigation": {
-    "strategy": "Implement on-chain rate limiting or transaction volume caps for user-initiated token operations (e.g., per-address limits, cooldowns).",
+    "strategy": "Conduct thorough smart contract audits, implement strict access control policies (Principle of Least Privilege), and use automated tools for static and dynamic analysis of deployment scripts.",
     "type": "Technical Control",
-    "priority": "Medium"
+    "priority": "High"
   },
-  "description": "A malicious user could flood the network with excessive token approval or burn transactions via the TokenRouter, leading to resource exhaustion, increased gas costs, and denial of service for other legitimate users interacting with the protocol.",
+  "description": "A Developer, either maliciously or due to a software vulnerability in the CLI/SDK or smart contract, gains unintended administrative privileges over Interchain Accounts or other core protocol components, allowing them to bypass intended access controls and perform unauthorized actions.",
   "trace_source": {
-    "doc_reference": "solidity/contracts/token/Hyperlane Tokens and Warp Routes#Remote Transfer Lifecycle Diagrams",
-    "matched_capability": "call TokenRouter.transferRemote"
+    "doc_reference": "solidity/contracts/middleware/README.md#Interchain Accounts",
+    "matched_capability": "deploy Interchain Accounts"
   }
 }

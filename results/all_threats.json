@@ -2,1361 +2,12 @@
   "threats": [
     {
       "id": 1,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Mailbox relies on authenticity of Validator Agent for verification results without sufficient identity checks."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be impersonated by a malicious actor."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "The integrity of interchain messages depends on the authenticity of the Validator Agent's verification."
-      },
-      "assumptions": [
-        "The Mailbox does not sufficiently authenticate the identity of the Validator Agent submitting verification results.",
-        "The communication channel between the Validator Agent and Mailbox is vulnerable to identity spoofing."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong cryptographic authentication for Validator Agents interacting with the Mailbox.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious actor could spoof the identity of a legitimate Validator Agent to submit false verification results to the Mailbox, compromising message integrity.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 2,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Verification results or messages/checkpoints could be altered in transit or at rest before verification."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be compromised, or data flows could be intercepted by an attacker."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Tampering with verification data directly impacts the integrity and authenticity of interchain messages."
-      },
-      "assumptions": [
-        "The data flow (Data Flow 20) between the Validator Agent and Mailbox is susceptible to modification.",
-        "The Mailbox does not sufficiently validate the integrity of the verification results or the underlying messages/checkpoints."
-      ],
-      "mitigation": {
-        "strategy": "Implement cryptographic hashing and digital signatures for all messages, checkpoints, and verification results. Use secure communication channels.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious actor could tamper with the messages or checkpoints that the Validator Agent is verifying, or modify the verification results submitted by the Validator Agent to the Mailbox, leading to acceptance of invalid messages.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 3,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Lack of non-repudiation mechanisms for Validator Agent actions, allowing denial of past verifications."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could deny having performed a verification or submitted a specific result."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Accountability of Validator Agents is crucial for the security model, especially in dispute resolution."
-      },
-      "assumptions": [
-        "The Mailbox does not require cryptographically signed proofs of verification from the Validator Agent.",
-        "There is no immutable record linking a Validator Agent to its specific verification submissions."
-      ],
-      "mitigation": {
-        "strategy": "Require digital signatures on all verification submissions by Validator Agents, ensuring non-repudiation.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A Validator Agent could repudiate its past verification actions or submitted results, making it difficult to hold them accountable for incorrect or malicious verifications.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 4,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 5,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Sensitive message content or verification logic could be exposed through compromised Validator Agents or insecure logging."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be compromised or misconfigured, leading to unauthorized data exposure."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Validator Agents handle interchain messages, which may contain sensitive or private data."
-      },
-      "assumptions": [
-        "The Validator Agent processes or stores sensitive message content or verification logic.",
-        "Access controls or logging practices within the Validator Agent are insufficient to prevent unauthorized disclosure."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict access controls, encryption for data at rest and in transit, and secure logging practices for Validator Agents.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "Sensitive information contained within interchain messages or the internal workings of the verification process could be disclosed if a Validator Agent is compromised or improperly configured.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 5,
       "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "Vulnerability to resource exhaustion or network attacks preventing Validator Agents from performing their duties."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be targeted by an attacker or suffer from operational issues."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Disruption of message verification directly impacts the liveness and functionality of the Hyperlane protocol."
-      },
-      "assumptions": [
-        "The Validator Agent's infrastructure is vulnerable to DoS attacks (e.g., network saturation, resource exhaustion).",
-        "The Mailbox relies on timely verification from Validator Agents for message finality."
-      ],
-      "mitigation": {
-        "strategy": "Implement redundancy, load balancing, rate limiting, and robust infrastructure for Validator Agents. Introduce economic incentives for liveness.",
-        "type": "Architectural Change",
-        "priority": "High"
-      },
-      "description": "An attacker could launch a Denial of Service attack against Validator Agents, preventing them from querying the Mailbox or submitting verification results, thereby halting interchain message processing.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 6,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 5,
-        "behavior_id": 10,
-        "capability_match": "verify messages"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 10,
-        "data_flow_id": 20,
-        "data_description": "Messages/Checkpoints"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Weak access controls or vulnerabilities in Validator Agent code/configuration could allow unauthorized privilege escalation."
-      },
-      "actor_risk": {
-        "actor_id": 5,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "A Validator Agent could be compromised, allowing an attacker to gain unauthorized control over its functions."
-      },
-      "behavioral_risk": {
-        "behavior_id": 10,
-        "risk_level": "High",
-        "rationale": "Elevated privileges could allow an attacker to bypass or manipulate critical verification logic, undermining the security model."
-      },
-      "assumptions": [
-        "The Validator Agent has exploitable vulnerabilities (e.g., insecure API endpoints, misconfigured permissions).",
-        "The Mailbox's verification logic can be bypassed or manipulated by an attacker with elevated privileges over a Validator Agent."
-      ],
-      "mitigation": {
-        "strategy": "Enforce principle of least privilege, conduct regular security audits, and implement robust access control mechanisms for Validator Agents.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious actor could exploit vulnerabilities in a Validator Agent to elevate their privileges, gaining unauthorized control over its verification capabilities and potentially submitting fraudulent or bypassing legitimate message verifications.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "verify messages"
-      }
-    },
-    {
-      "id": 7,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 3,
-        "capability_match": "process messages to Mailbox on destination chain"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 4,
-        "data_description": "Message, proof"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The Mailbox may not sufficiently authenticate the Relayer Agent, allowing a malicious actor to impersonate it and submit fraudulent messages/proofs."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Relayer Agent operates off-chain and its identity must be verifiable by on-chain contracts to prevent impersonation."
-      },
-      "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "High",
-        "rationale": "The behavior involves submitting critical interchain messages to a highly trusted component (Mailbox). Impersonation could lead to unauthorized message processing."
-      },
-      "assumptions": [
-        "The Mailbox does not implement strong authentication for Relayer Agents.",
-        "An attacker can forge or obtain valid Relayer credentials/signatures."
-      ],
-      "mitigation": {
-        "strategy": "Implement cryptographic signing of messages by authorized Relayer Agents and require Mailbox to verify these signatures.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could impersonate a legitimate Relayer Agent to submit fraudulent interchain messages or proofs to the Mailbox, leading to unauthorized state changes on destination chains.",
-      "trace_source": {
-        "doc_reference": "rust/README.md",
-        "matched_capability": "process messages to Mailbox on destination chain"
-      }
-    },
-    {
-      "id": 8,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 3,
-        "capability_match": "process messages to Mailbox on destination chain"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 4,
-        "data_description": "Message, proof"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "A compromised Relayer Agent could alter the content of interchain messages or proofs, leading to incorrect data being processed by the Mailbox."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Relayer Agent handles critical message payloads and proofs, making it a high-impact target for integrity attacks if compromised."
-      },
-      "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "High",
-        "rationale": "The behavior involves submitting messages that directly affect state on other chains. Tampering with these messages undermines the core functionality and security of the protocol."
-      },
-      "assumptions": [
-        "The Relayer Agent's system is compromised, allowing modification of data.",
-        "The Mailbox's verification process does not detect all forms of message or proof tampering."
-      ],
-      "mitigation": {
-        "strategy": "Implement robust cryptographic integrity checks (e.g., Merkle proofs, digital signatures) for messages and proofs, verified by the Mailbox and ISMs.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A malicious or compromised Relayer Agent could tamper with the content of interchain messages or their associated proofs before submitting them to the destination Mailbox, leading to unauthorized or incorrect operations on the target chain.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/token/README.md",
-        "matched_capability": "process messages to Mailbox on destination chain"
-      }
-    },
-    {
-      "id": 9,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 3,
-        "capability_match": "process messages to Mailbox on destination chain"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 4,
-        "data_description": "Message, proof"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "A malicious or malfunctioning Relayer Agent could prevent messages from being delivered, or flood the Mailbox with invalid transactions, impacting the availability of cross-chain communication."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Relayer Agent is essential for message delivery. Its failure or malicious intent can directly halt cross-chain operations."
-      },
-      "behavioral_risk": {
-        "behavior_id": 3,
-        "risk_level": "High",
-        "rationale": "The behavior is critical for the availability of the Hyperlane protocol. Disruption here would stop all interchain communication."
-      },
-      "assumptions": [
-        "There are insufficient incentives or penalties to ensure Relayer Agent availability and honest operation.",
-        "The Mailbox lacks effective rate-limiting or spam-prevention mechanisms."
-      ],
-      "mitigation": {
-        "strategy": "Implement a decentralized network of Relayer Agents with economic incentives (e.g., fees) and disincentives (e.g., slashing) to ensure high availability and honest behavior.",
-        "type": "Architectural Change",
-        "priority": "High"
-      },
-      "description": "A Relayer Agent could intentionally or unintentionally fail to relay messages, or flood the network with excessive transactions, leading to a denial of service for interchain communication.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/token/README.md",
-        "matched_capability": "process messages to Mailbox on destination chain"
-      }
-    },
-    {
-      "id": 10,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": null,
-        "capability_match": "make POST requests to CCIP-read Server"
-      },
-      "threat_target": {
-        "component_id": 20,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": 11,
-        "data_description": "ABI-encoded request data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 3,
-        "boundary_name": "External Off-chain Services vs. Hyperlane Protocol",
-        "between_component_ids": [
-          4,
-          19,
-          20,
-          10,
-          11,
-          13
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Sensitive information within ABI-encoded request data could be exposed if the CCIP-read Service Framework is vulnerable to data exfiltration or insecure logging."
-      },
-      "actor_risk": {
-        "actor_id": 4,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Relayer Agent sends data to the CCIP-read Service Framework. If this data is sensitive and the framework is compromised, it could lead to information disclosure."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "Medium",
-        "rationale": "The CCIP-read Service Framework processes ABI-encoded data which may contain sensitive details. Insecure handling could lead to unauthorized information access."
-      },
-      "assumptions": [
-        "The ABI-encoded request data contains sensitive information that should remain confidential.",
-        "The CCIP-read Service Framework has vulnerabilities (e.g., insecure logging, unauthenticated access, software flaws)."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict access controls, secure logging practices, and encryption for sensitive data processed by the CCIP-read Service Framework.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "Sensitive information contained within the ABI-encoded request data sent by the Relayer Agent to the CCIP-read Service Framework could be disclosed if the framework is compromised or misconfigured.",
-      "trace_source": {
-        "doc_reference": "typescript/ccip-server/README.md",
-        "matched_capability": "make POST requests to CCIP-read Server"
-      }
-    },
-    {
-      "id": 11,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Authentication credentials for the Deployer Account"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Weak or compromised authentication mechanisms for the privileged Deployer Account."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": true,
-        "description": "The Deployer Account has exclusive control over deploying interchain accounts, making it a high-value target for impersonation."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "High",
-        "rationale": "Successful spoofing of this privileged account would grant an attacker full control over interchain account deployments."
-      },
-      "assumptions": [
-        "The attacker can obtain or bypass the authentication credentials of the Deployer Account.",
-        "The system relies solely on single-factor authentication for the Deployer Account."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong multi-factor authentication (MFA) and hardware security modules (HSM) for the Deployer Account.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could spoof the identity of the Deployer Account by compromising its private keys or authentication credentials, leading to unauthorized deployment of malicious interchain accounts.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 12,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Interchain Account deployment configuration and transaction parameters."
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "Lack of robust validation or checksums for deployment configurations, allowing malicious modification before deployment."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": true,
-        "description": "The Deployer Account's exclusive control over ICA deployment means any tampering with its inputs or process can lead to compromised accounts."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "High",
-        "rationale": "Tampering with ICA deployment could result in accounts with unintended permissions or malicious logic, impacting interchain composability."
-      },
-      "assumptions": [
-        "An attacker can intercept or modify the deployment transaction or configuration before it is submitted by the Deployer Account.",
-        "The system does not sufficiently verify the integrity of the deployment parameters."
-      ],
-      "mitigation": {
-        "strategy": "Implement multi-party signing for critical deployments and cryptographic hashing of deployment configurations.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker could tamper with the deployment parameters or bytecode of Interchain Accounts during the deployment process by the Deployer Account, leading to the creation of compromised or malicious accounts.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 13,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Deployment logs and transaction records."
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Insufficient non-repudiation controls for actions performed by the Deployer Account, allowing it to deny having performed a deployment."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": false,
-        "description": "The Deployer Account, if not properly audited, could deny responsibility for deploying a malicious or misconfigured interchain account."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "Medium",
-        "rationale": "Lack of accountability for privileged deployment actions could hinder incident response and trust in the system."
-      },
-      "assumptions": [
-        "The system does not maintain immutable, verifiable records of all deployments and their initiators.",
-        "The Deployer Account's actions are not cryptographically signed and timestamped in an auditable manner."
-      ],
-      "mitigation": {
-        "strategy": "Implement comprehensive, immutable logging and auditing for all deployment actions, including transaction hashes and timestamps.",
-        "type": "Process Control",
-        "priority": "Medium"
-      },
-      "description": "The Deployer Account could repudiate having deployed a specific Interchain Account, making it difficult to trace the origin of a compromised or malicious account.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 14,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Private keys, deployment configurations, and sensitive parameters."
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": true,
-        "integrity_required": false,
-        "availability_required": false,
-        "gap_description": "Lack of encryption or proper access controls for sensitive data used by or associated with the Deployer Account."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": false,
-        "description": "The Deployer Account handles sensitive information necessary for deployments, making it a target for information disclosure."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "High",
-        "rationale": "Disclosure of private keys or sensitive configurations could lead to full compromise of the Deployer Account and subsequent malicious deployments."
-      },
-      "assumptions": [
-        "Sensitive data (e.g., private keys, deployment secrets) related to the Deployer Account is stored or transmitted insecurely.",
-        "Access controls to the environment where the Deployer Account operates are weak."
-      ],
-      "mitigation": {
-        "strategy": "Enforce encryption for all sensitive data at rest and in transit, and implement strict access controls based on least privilege.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "Sensitive information, such as private keys or deployment configurations of the Deployer Account, could be disclosed to unauthorized parties, leading to further attacks.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 15,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Deployment transactions and network requests."
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": false,
-        "availability_required": true,
-        "gap_description": "Reliance on single points of failure (e.g., a single RPC provider) or insufficient gas/funds for deployment transactions."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": false,
-        "description": "The Deployer Account's ability to perform critical deployments can be disrupted by external factors or resource exhaustion."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "Medium",
-        "rationale": "Disruption of ICA deployment can halt critical system expansion or recovery efforts."
-      },
-      "assumptions": [
-        "An attacker can flood RPC endpoints or deplete the Deployer Account's operational funds.",
-        "The deployment process does not have built-in retry mechanisms or alternative RPC providers."
-      ],
-      "mitigation": {
-        "strategy": "Implement robust RPC redundancy, ensure sufficient operational funds, and monitor network health for deployment operations.",
-        "type": "Architectural Change",
-        "priority": "Medium"
-      },
-      "description": "An attacker could launch a Denial of Service attack preventing the Deployer Account from deploying Interchain Accounts, thereby halting critical system operations or updates.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 16,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 7,
-        "behavior_id": null,
-        "capability_match": "deploy Interchain Accounts"
-      },
-      "threat_target": {
-        "component_id": null,
-        "asset_ids": []
-      },
-      "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": null,
-        "data_description": "Role-based access control configurations and smart contract ownership settings."
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": false,
-        "gap_description": "The Deployer Account maintains excessive or unnecessary privileges beyond its immediate deployment function, or deployed ICAs inherit overly broad permissions."
-      },
-      "actor_risk": {
-        "actor_id": 7,
-        "type": "Privileged Role (e.g., Owner, Admin, Minter)",
-        "overprivileged": true,
-        "description": "The Deployer Account is a privileged role, and if its permissions are not strictly limited to its function, it can be overprivileged."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "High",
-        "rationale": "An overprivileged Deployer Account could perform unauthorized actions beyond ICA deployment, or deploy ICAs with excessive permissions, creating a broader attack vector."
-      },
-      "assumptions": [
-        "The Deployer Account has permissions to modify critical system parameters unrelated to ICA deployment.",
-        "Deployed Interchain Accounts are not configured with the principle of least privilege."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict least privilege principles for the Deployer Account and all deployed Interchain Accounts, limiting their capabilities to only what is necessary.",
-        "type": "Architectural Change",
-        "priority": "High"
-      },
-      "description": "The Deployer Account, due to its privileged nature, could be overprivileged, allowing it to perform unauthorized actions or deploy Interchain Accounts with excessive permissions.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/middleware/README.md",
-        "matched_capability": "deploy Interchain Accounts"
-      }
-    },
-    {
-      "id": 17,
-      "stride_category": "Spoofing",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Database commands, indexed data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The Scraper Agent's identity might not be strongly authenticated when connecting to the database, allowing an attacker to impersonate it."
-      },
-      "actor_risk": {
-        "actor_id": 6,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Scraper Agent's credentials or connection mechanism could be compromised, allowing an attacker to spoof its identity."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "High",
-        "rationale": "If an attacker successfully spoofs the Scraper Agent, they can inject malicious data or commands into the database, leading to data corruption or system malfunction."
-      },
-      "assumptions": [
-        "The Scraper Agent's connection to the Postgres Database lacks strong mutual authentication.",
-        "An attacker can gain access to the network path between the Scraper Agent and the database."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong authentication mechanisms (e.g., mTLS, API keys) for the Scraper Agent's connection to the database.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker may impersonate the Scraper Agent to send fraudulent database commands or indexed data to the Postgres Database.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 18,
-      "stride_category": "Tampering",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Database commands, indexed data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Data sent to or stored in the Postgres Database may not be adequately protected against unauthorized modification."
-      },
-      "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An external attacker could intercept and modify data in transit or directly tamper with data at rest in the database."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "High",
-        "rationale": "Tampering with indexed blockchain data can lead to incorrect analysis, operational errors, or a compromised view of the system's state."
-      },
-      "assumptions": [
-        "The communication channel between the Scraper Agent and the database is not integrity-protected (e.g., no encryption or hashing).",
-        "The Postgres Database lacks sufficient access controls or is vulnerable to direct data manipulation."
-      ],
-      "mitigation": {
-        "strategy": "Implement data integrity checks and encryption for data in transit and at rest. Enforce strict access controls on the database.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker may tamper with the indexed blockchain data either during transmission from the Scraper Agent to the Postgres Database or directly within the database.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 19,
-      "stride_category": "Repudiation",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 6,
-        "behavior_id": 7,
-        "capability_match": "connect to a Postgres database"
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Database commands, indexed data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "Lack of non-repudiation mechanisms for the Scraper Agent's database operations could allow it to deny having performed certain actions."
-      },
-      "actor_risk": {
-        "actor_id": 6,
-        "type": "Off-chain Service/Bot",
-        "overprivileged": false,
-        "description": "The Scraper Agent could potentially deny its actions if there are no verifiable logs or cryptographic proofs of its database interactions."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "Medium",
-        "rationale": "If the Scraper Agent can repudiate its actions, it hinders auditing, accountability, and the ability to trace data origins, impacting trust in the indexed data."
-      },
-      "assumptions": [
-        "Database logging of Scraper Agent actions is insufficient or can be easily altered.",
-        "No cryptographic signatures or verifiable proofs are generated for database operations performed by the Scraper Agent."
-      ],
-      "mitigation": {
-        "strategy": "Implement comprehensive, immutable logging for all database operations and consider cryptographic signing of critical data updates.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "The Scraper Agent could repudiate its actions of indexing blockchain data into the Postgres Database, making it difficult to verify data provenance or accountability.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 20,
-      "stride_category": "Information Disclosure",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Indexed blockchain data stored in Postgres Database"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The Postgres Database or its network access might not be adequately secured, leading to unauthorized access and disclosure of indexed data."
-      },
-      "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An external attacker or unauthorized internal actor could gain access to the database and exfiltrate sensitive indexed blockchain data."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "Medium",
-        "rationale": "Disclosure of indexed blockchain data, even if not classified as highly sensitive, could expose operational insights or proprietary information to unauthorized parties."
-      },
-      "assumptions": [
-        "The Postgres Database is not adequately protected by network firewalls or access controls.",
-        "Data stored in the database is not encrypted at rest.",
-        "Weak or default credentials are used for database access."
-      ],
-      "mitigation": {
-        "strategy": "Enforce strict network access controls, encrypt data at rest, and implement strong authentication for database access.",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "Unauthorized parties may gain access to the Postgres Database and disclose the indexed blockchain data.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 21,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Postgres Database connection and resources"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The Postgres Database or its network connection may be vulnerable to attacks that disrupt its availability, preventing the Scraper Agent from indexing data."
-      },
-      "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An external attacker could flood the database with requests or exploit vulnerabilities to crash the database service."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "High",
-        "rationale": "A denial of service attack on the database would prevent the Scraper Agent from indexing critical blockchain data, leading to outdated information and impaired operational capabilities."
-      },
-      "assumptions": [
-        "The Postgres Database lacks sufficient resource limits or rate limiting to withstand an attack.",
-        "The network infrastructure protecting the database is vulnerable to DoS attacks."
-      ],
-      "mitigation": {
-        "strategy": "Implement rate limiting, network filtering, and ensure robust infrastructure with redundancy for the Postgres Database.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker may launch a denial of service attack against the Postgres Database, preventing the Scraper Agent from indexing blockchain data.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 22,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 21,
-        "asset_ids": [
-          107
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 7,
-        "data_flow_id": 12,
-        "data_description": "Postgres Database vulnerabilities, Scraper Agent process privileges"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": null,
-        "boundary_name": null,
-        "between_component_ids": []
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "The Scraper Agent might operate with excessive privileges, or the Postgres Database could have exploitable vulnerabilities allowing privilege escalation."
-      },
-      "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An external attacker could exploit vulnerabilities in the database or the Scraper Agent's environment to gain higher-level access."
-      },
-      "behavioral_risk": {
-        "behavior_id": 7,
-        "risk_level": "High",
-        "rationale": "Elevation of privilege could lead to full compromise of the database and potentially the Scraper Agent's host, allowing arbitrary data manipulation, exfiltration, or further attacks on the system."
-      },
-      "assumptions": [
-        "The Scraper Agent runs with more privileges than strictly necessary for its operations.",
-        "The Postgres Database or its underlying operating system has unpatched vulnerabilities that allow privilege escalation."
-      ],
-      "mitigation": {
-        "strategy": "Apply the principle of least privilege to the Scraper Agent. Regularly patch and update the Postgres Database and its host system.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "An attacker may exploit vulnerabilities to elevate their privileges within the Postgres Database or the system running the Scraper Agent.",
-      "trace_source": {
-        "doc_reference": "doc_11",
-        "matched_capability": "connect to a Postgres database"
-      }
-    },
-    {
-      "id": 23,
-      "stride_category": "Spoofing",
       "origin": {
         "from_chunk": true,
         "actor_id": 3,
         "behavior_id": 1,
-        "capability_match": "initiate remote transfers"
+        "capability_match": "call TokenRouter.transferRemote"
       },
       "threat_target": {
         "component_id": 13,
@@ -1388,36 +39,300 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "An attacker could impersonate a legitimate user to initiate unauthorized token transfers if authentication mechanisms are weak or bypassed."
+        "gap_description": "The TokenRouter contract may be unavailable or revert the transferRemote call due to unexpected state or external factors."
       },
       "actor_risk": {
         "actor_id": 3,
         "type": "EOA (Externally Owned Account)",
         "overprivileged": false,
-        "description": "A user's compromised wallet or identity could lead to unauthorized actions."
+        "description": "The user's action of initiating a transfer can trigger a vulnerability if the contract or its dependencies are not robust."
       },
       "behavioral_risk": {
         "behavior_id": 1,
-        "risk_level": "High",
-        "rationale": "Unauthorized initiation of remote token transfers directly impacts asset security."
+        "risk_level": "Medium",
+        "rationale": "The user's attempt to initiate a transfer is blocked."
       },
       "assumptions": [
-        "The user's private key or authentication mechanism is compromised.",
-        "The TokenRouter does not sufficiently verify the authenticity of the transfer initiator."
+        "The TokenRouter contract's transferRemote function or subsequent internal calls can revert unexpectedly.",
+        "Dependent contracts like Post-Dispatch Hooks are not fully reliable."
       ],
       "mitigation": {
-        "strategy": "Implement strong multi-factor authentication for user wallets and robust signature verification for transactions.",
+        "strategy": "Implement robust error handling in TokenRouter; Ensure dependent contracts (like Hooks) are reliable; Monitor contract availability.",
         "type": "Technical Control",
-        "priority": "High"
+        "priority": "Medium"
       },
-      "description": "A malicious actor may spoof a user's identity to initiate unauthorized remote token transfers, leading to asset loss.",
+      "description": "A user may be prevented from initiating a remote token transfer if the TokenRouter contract is unavailable or if the transferRemote function or subsequent protocol interactions fail or revert.",
       "trace_source": {
-        "doc_reference": "solidity/contracts/token/README.md#remote-transfer-lifecycle-diagrams",
-        "matched_capability": "call TokenRouter.transferRemote"
+        "doc_reference": "solidity/contracts/token/README.md",
+        "matched_capability": "transferRemote(uint32 destination, bytes32 recipient, uint256 amount)"
       }
     },
     {
-      "id": 24,
+      "id": 2,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 3,
+        "behavior_id": 1,
+        "capability_match": "query remote smart contracts"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": []
+      },
+      "attack_surface": {
+        "behavior_id": 1,
+        "data_flow_id": 9,
+        "data_description": "Message, metadata, hook address"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 2,
+        "boundary_name": "User Wallet vs. Hyperlane Protocol",
+        "between_component_ids": [
+          3,
+          10,
+          13,
+          14,
+          15
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "The Mailbox or Hook's quoteDispatch function may be unavailable or revert, preventing the user from obtaining a fee quote."
+      },
+      "actor_risk": {
+        "actor_id": 3,
+        "type": "EOA (Externally Owned Account)",
+        "overprivileged": false,
+        "description": "The user is prevented from obtaining necessary fee information to accurately pay for message dispatch."
+      },
+      "behavioral_risk": {
+        "behavior_id": 1,
+        "risk_level": "Low",
+        "rationale": "Failure to get a quote hinders the user experience and ability to accurately pay for dispatch."
+      },
+      "assumptions": [
+        "The Mailbox or Hook's quoteDispatch function is implemented such that it can revert or become unavailable."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust and available quoteDispatch functions; Provide alternative methods for estimating fees.",
+        "type": "Technical Control",
+        "priority": "Low"
+      },
+      "description": "If the Mailbox or the configured Post-Dispatch Hook's quoteDispatch function fails or is unavailable, the user will be unable to get an accurate fee quote for dispatching a message.",
+      "trace_source": {
+        "doc_reference": "solidity/contracts/hooks/README.md",
+        "matched_capability": "quoteDispatch(message, metadata)"
+      }
+    },
+    {
+      "id": 3,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 3,
+        "capability_match": "process messages to Mailbox on destination chain"
+      },
+      "threat_target": {
+        "component_id": 13,
+        "asset_ids": [
+          101,
+          102,
+          103,
+          104,
+          105
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 4,
+        "data_flow_id": 6,
+        "data_description": "Origin, sender, body (recipient, amount)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          13,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Message content can be altered by a malicious Relayer if ISM verification is insufficient or bypassed."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A malicious or compromised Relayer agent can manipulate messages before delivery."
+      },
+      "behavioral_risk": {
+        "behavior_id": 3,
+        "risk_level": "High",
+        "rationale": "A malicious Relayer can cause incorrect token transfers by tampering with messages."
+      },
+      "assumptions": [
+        "A Relayer agent is compromised or malicious and can alter message content before delivery.",
+        "The ISM fails to detect the tampering."
+      ],
+      "mitigation": {
+        "strategy": "Strengthen ISM verification; Implement redundant verification (e.g., multiple Relayers, Watchers); Monitor Relayer behavior.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious or compromised Relayer agent could tamper with the content of an interchain message before submitting it to the destination Mailbox. If the ISM fails to detect this, the user's token transfer could be misdirected or altered.",
+      "trace_source": {
+        "doc_reference": "solidity/contracts/isms/README.md",
+        "matched_capability": "verify(metadata, message)"
+      }
+    },
+    {
+      "id": 4,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "run validation processes"
+      },
+      "threat_target": {
+        "component_id": 13,
+        "asset_ids": [
+          101,
+          102,
+          103,
+          104,
+          105
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 4,
+        "data_flow_id": 6,
+        "data_description": "Origin, sender, body (recipient, amount)"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          13,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "A malicious Validator could sign a fraudulent proof for a tampered message, allowing it to bypass ISM verification."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "A malicious or compromised Validator agent can sign fraudulent proofs for tampered messages."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "A malicious Validator can enable incorrect token transfers by signing fraudulent proofs."
+      },
+      "assumptions": [
+        "A Validator agent is compromised or malicious and can sign fraudulent proofs.",
+        "The ISM relies on these proofs and fails to detect the fraud."
+      ],
+      "mitigation": {
+        "strategy": "Implement fraud detection mechanisms; Require multiple validator signatures (Multisig ISM); Monitor validator behavior; Slashing mechanisms.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A malicious or compromised Validator agent could sign a fraudulent proof for a tampered interchain message. If the ISM relies on this proof for verification, the tampered message could be processed by the destination TokenRouter, leading to unauthorized token transfers.",
+      "trace_source": {
+        "doc_reference": "solidity/contracts/isms/README.md",
+        "matched_capability": "verify(metadata, message)"
+      }
+    },
+    {
+      "id": 5,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 3,
+        "capability_match": "process messages to Mailbox on destination chain"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 3,
+        "data_flow_id": 4,
+        "data_description": "Message, proof"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Mailbox accepts spoofed message or proof without sufficient verification."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "Relayer Agent is an off-chain service that submits critical data to on-chain contracts."
+      },
+      "behavioral_risk": {
+        "behavior_id": 3,
+        "risk_level": "Medium",
+        "rationale": "The behavior involves submitting data from an off-chain agent to an on-chain contract, requiring strong verification."
+      },
+      "assumptions": [
+        "The Mailbox contract does not fully verify the authenticity of the message or proof.",
+        "An attacker can compromise or impersonate a Relayer Agent."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust on-chain verification of message authenticity and proofs.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker submits a fraudulent interchain message or proof to the destination Mailbox by impersonating a Relayer Agent.",
+      "trace_source": {
+        "doc_reference": "Not specified in chunk",
+        "matched_capability": "process messages to Mailbox on destination chain"
+      }
+    },
+    {
+      "id": 6,
       "stride_category": "Tampering",
       "origin": {
         "from_chunk": true,
@@ -1428,12 +343,7 @@
       "threat_target": {
         "component_id": 10,
         "asset_ids": [
-          100,
-          101,
-          102,
-          103,
-          104,
-          105
+          100
         ]
       },
       "attack_surface": {
@@ -1461,37 +371,37 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "A malicious relayer or compromised relayer could alter the message content (e.g., recipient, amount) before submitting it to the destination Mailbox if proof verification is insufficient."
+        "gap_description": "Mailbox does not detect tampering of message or proof during submission."
       },
       "actor_risk": {
         "actor_id": 4,
         "type": "Off-chain Service/Bot",
-        "overprivileged": true,
-        "description": "The Relayer agent is a critical off-chain component that could tamper with messages if compromised or malicious, impacting the integrity of interchain communication."
+        "overprivileged": false,
+        "description": "Relayer Agent's communication channel for submitting messages may be vulnerable."
       },
       "behavioral_risk": {
         "behavior_id": 3,
         "risk_level": "Medium",
-        "rationale": "The Relayer is responsible for faithfully relaying messages; tampering would break core protocol integrity."
+        "rationale": "The behavior involves transmitting data that could be intercepted and modified."
       },
       "assumptions": [
-        "The Relayer agent is compromised or acts maliciously.",
-        "The Mailbox's proof verification mechanism is insufficient to detect message tampering by the Relayer."
+        "The communication channel between the Relayer Agent and the Mailbox is not fully secure.",
+        "The Mailbox's verification process is insufficient to detect tampering."
       ],
       "mitigation": {
-        "strategy": "Implement robust cryptographic proofs and on-chain verification mechanisms for all relayed messages.",
+        "strategy": "Use secure communication channels and cryptographic integrity checks.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "A malicious Relayer agent could tamper with the content of interchain messages (e.g., change recipient or amount) during transit, leading to incorrect state updates on the destination chain.",
+      "description": "An attacker modifies an interchain message or its proof while a Relayer Agent is submitting it to the destination Mailbox.",
       "trace_source": {
-        "doc_reference": "solidity/contracts/token/README.md#remote-transfer-lifecycle-diagrams",
+        "doc_reference": "Not specified in chunk",
         "matched_capability": "process messages to Mailbox on destination chain"
       }
     },
     {
-      "id": 25,
-      "stride_category": "Repudiation",
+      "id": 7,
+      "stride_category": "Denial of Service",
       "origin": {
         "from_chunk": true,
         "actor_id": 4,
@@ -1529,363 +439,744 @@
         "confidentiality_required": false,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "A Relayer could deny having processed a message if there is no sufficient on-chain record or incentive mechanism to ensure its actions."
+        "gap_description": "Protocol relies on Relayer Agents for message delivery without guaranteed availability."
       },
       "actor_risk": {
         "actor_id": 4,
         "type": "Off-chain Service/Bot",
         "overprivileged": false,
-        "description": "The Relayer agent is an off-chain service whose actions might not be fully auditable or attributable if not properly logged on-chain."
+        "description": "Relayer Agent is a critical component for message availability."
       },
       "behavioral_risk": {
         "behavior_id": 3,
         "risk_level": "Medium",
-        "rationale": "Repudiation by a Relayer could disrupt message delivery and accountability."
+        "rationale": "Failure or malicious action of Relayer Agents directly impacts message delivery availability."
       },
       "assumptions": [
-        "The Relayer agent fails to submit a transaction or denies its submission.",
-        "There is no robust on-chain logging or incentive/penalty mechanism for Relayer actions."
+        "There are insufficient active Relayer Agents.",
+        "The protocol lacks effective mechanisms to ensure message delivery despite Relayer failures."
       ],
       "mitigation": {
-        "strategy": "Implement clear on-chain logging of Relayer actions and a robust incentive/penalty mechanism for message delivery.",
+        "strategy": "Incentivize Relayers, implement monitoring, support multiple Relayers, enable permissionless relaying.",
         "type": "Process Control",
-        "priority": "Medium"
+        "priority": "High"
       },
-      "description": "A Relayer agent could repudiate its role in processing and delivering an interchain message, leading to a lack of accountability and potential message loss.",
+      "description": "A Relayer Agent fails or maliciously refuses to deliver messages to the destination Mailbox, causing a denial of service for interchain communication.",
       "trace_source": {
-        "doc_reference": "rust/README.md#running-agents-locally",
+        "doc_reference": "Not specified in chunk",
         "matched_capability": "process messages to Mailbox on destination chain"
       }
     },
     {
-      "id": 26,
+      "id": 8,
       "stride_category": "Information Disclosure",
       "origin": {
         "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": null,
-        "capability_match": null
+        "actor_id": 4,
+        "behavior_id": 3,
+        "capability_match": "process messages to Mailbox on destination chain"
       },
       "threat_target": {
-        "component_id": 106,
+        "component_id": 10,
         "asset_ids": [
-          106
+          100
         ]
       },
       "attack_surface": {
-        "behavior_id": null,
-        "data_flow_id": 21,
-        "data_description": "Registry data/API keys"
+        "behavior_id": 3,
+        "data_flow_id": 4,
+        "data_description": "Message, proof"
       },
       "trust_boundary_risk": {
-        "boundary_id": 3,
-        "boundary_name": "External Off-chain Services vs. Hyperlane Protocol",
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
         "between_component_ids": [
-          4,
-          19,
-          20,
           10,
           11,
-          13
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
         ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Sensitive data within messages is exposed to the off-chain Relayer Agent."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "Relayer Agent has access to the content of interchain messages."
+      },
+      "behavioral_risk": {
+        "behavior_id": 3,
+        "risk_level": "Medium",
+        "rationale": "The behavior involves handling message content off-chain."
+      },
+      "assumptions": [
+        "Interchain Messages (Asset 100) contain sensitive information.",
+        "The Relayer Agent's operating environment is compromised."
+      ],
+      "mitigation": {
+        "strategy": "Encrypt sensitive message payloads or avoid including sensitive data in messages.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "A compromised Relayer Agent leaks sensitive data contained within the interchain messages it processes.",
+      "trace_source": {
+        "doc_reference": "Not specified in chunk",
+        "matched_capability": "process messages to Mailbox on destination chain"
+      }
+    },
+    {
+      "id": 9,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 4,
+        "behavior_id": 3,
+        "capability_match": "process messages to Mailbox on destination chain"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 3,
+        "data_flow_id": 4,
+        "data_description": "Message, proof"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          18,
+          4,
+          5,
+          6
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Vulnerability in Mailbox contract allows Relayer Agent to gain unauthorized privileges during message processing."
+      },
+      "actor_risk": {
+        "actor_id": 4,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "Relayer Agent interacts directly with the Mailbox contract's processing logic."
+      },
+      "behavioral_risk": {
+        "behavior_id": 3,
+        "risk_level": "Medium",
+        "rationale": "The behavior involves invoking critical logic on the Mailbox contract."
+      },
+      "assumptions": [
+        "The Mailbox contract contains an exploitable vulnerability in its message processing function.",
+        "A Relayer Agent can craft a malicious message or proof to trigger the vulnerability."
+      ],
+      "mitigation": {
+        "strategy": "Conduct rigorous smart contract audits and implement secure coding practices for the Mailbox.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "A Relayer Agent exploits a vulnerability in the destination Mailbox contract to gain unauthorized control or modify state beyond its intended function.",
+      "trace_source": {
+        "doc_reference": "Not specified in chunk",
+        "matched_capability": "process messages to Mailbox on destination chain"
+      }
+    },
+    {
+      "id": 10,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "verify messages"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints queried by Validator"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          5
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Integrity of messages or checkpoints in the Mailbox before being queried by the Validator."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The Validator Agent relies on the integrity of data queried from the Mailbox for verification."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Verification based on spoofed or tampered data compromises the security model."
+      },
+      "assumptions": [
+        "The Validator Agent trusts the data it queries from the Mailbox.",
+        "Messages or checkpoints in the Mailbox can be spoofed or tampered with before being queried by the Validator."
+      ],
+      "mitigation": {
+        "strategy": "Implement cryptographic proofs for messages and checkpoints verified by the Validator.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker may spoof or tamper with messages or checkpoints within the Mailbox, leading the Validator Agent to verify and potentially approve malicious data.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "verify messages"
+      }
+    },
+    {
+      "id": 11,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "run validation processes"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": []
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Verification outcome"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          5
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Lack of non-repudiable proof that the Validator Agent performed verification."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The Validator Agent's verification actions may not be attributable."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Repudiation of verification can hide malicious or negligent behavior by the Validator."
+      },
+      "assumptions": [
+        "The Validator Agent's verification actions are not recorded in a non-repudiable manner."
+      ],
+      "mitigation": {
+        "strategy": "Require Validator Agents to cryptographically sign and publish verification outcomes.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "The Validator Agent may deny having performed verification for messages or checkpoints it queried, making it difficult to audit or hold the agent accountable for validation failures.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "run validation processes"
+      }
+    },
+    {
+      "id": 12,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "run validation processes"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": [
+          100
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Messages/Checkpoints queried by Validator"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          5
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Sensitive information in Interchain Messages is accessible to the Validator Agent, which may operate in an untrusted environment."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The Validator Agent processes potentially sensitive message data."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Processing sensitive data in an untrusted environment poses a risk of information leakage."
+      },
+      "assumptions": [
+        "Interchain Messages (Asset 100) contain sensitive information.",
+        "The Validator Agent's operating environment is not fully secure against data exfiltration."
+      ],
+      "mitigation": {
+        "strategy": "Minimize sensitive data in messages or encrypt sensitive portions. Secure the Validator Agent's operating environment.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "The Validator Agent may expose sensitive information contained within the messages or checkpoints it processes during verification.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "run validation processes"
+      }
+    },
+    {
+      "id": 13,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 5,
+        "behavior_id": 10,
+        "capability_match": "run validation processes"
+      },
+      "threat_target": {
+        "component_id": 10,
+        "asset_ids": []
+      },
+      "attack_surface": {
+        "behavior_id": 10,
+        "data_flow_id": 20,
+        "data_description": "Availability of verification process"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 1,
+        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
+        "between_component_ids": [
+          10,
+          5
+        ]
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Message processing is dependent on the availability and performance of the Validator Agent."
+      },
+      "actor_risk": {
+        "actor_id": 5,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The Validator Agent's availability is critical for message processing."
+      },
+      "behavioral_risk": {
+        "behavior_id": 10,
+        "risk_level": "High",
+        "rationale": "Failure of the Validator Agent to perform verification halts message processing."
+      },
+      "assumptions": [
+        "Message processing requires successful verification by the Validator Agent.",
+        "The Validator Agent can be stopped or prevented from performing verification."
+      ],
+      "mitigation": {
+        "strategy": "Implement redundancy, monitoring, and alerting for Validator Agents. Consider alternative verification methods or graceful degradation.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "The Validator Agent may fail or be prevented from performing verification, leading to a Denial of Service for interchain message processing.",
+      "trace_source": {
+        "doc_reference": "rust/README.md",
+        "matched_capability": "run validation processes"
+      }
+    },
+    {
+      "id": 14,
+      "stride_category": "Spoofing",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "connect to a Postgres database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": true,
+        "gap_description": "Database access control is insufficient."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The agent requires specific database access."
+      },
+      "behavioral_risk": {
+        "behavior_id": 7,
+        "risk_level": "Medium",
+        "rationale": "The interaction involves an off-chain agent accessing a database."
+      },
+      "assumptions": [
+        "The database connection does not require strong mutual authentication.",
+        "The database access controls are not sufficiently granular."
+      ],
+      "mitigation": {
+        "strategy": "Implement strong authentication (e.g., TLS, client certificates) and granular access controls for database connections.",
+        "type": "Technical Control",
+        "priority": "High"
+      },
+      "description": "An attacker could impersonate the Scraper Agent to gain unauthorized access to the Postgres Database and its indexed data.",
+      "trace_source": {
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "connect to a Postgres database"
+      }
+    },
+    {
+      "id": 15,
+      "stride_category": "Tampering",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "initiate database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Data written to the database is not validated for integrity."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The agent writes data to the database."
+      },
+      "behavioral_risk": {
+        "behavior_id": 7,
+        "risk_level": "Medium",
+        "rationale": "The behavior involves writing data to a database."
+      },
+      "assumptions": [
+        "The database allows modification of indexed data without sufficient validation.",
+        "The Scraper Agent has write permissions."
+      ],
+      "mitigation": {
+        "strategy": "Implement data validation and integrity checks on data written to the database. Restrict write permissions for the Scraper Agent to only necessary operations.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker could tamper with the indexed blockchain data stored in the Postgres Database, potentially corrupting or falsifying historical information.",
+      "trace_source": {
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "initiate database"
+      }
+    },
+    {
+      "id": 16,
+      "stride_category": "Repudiation",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "connect to a Postgres database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": true,
+        "availability_required": false,
+        "gap_description": "Database operations are not adequately logged for non-repudiation."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The agent interacts with the database."
+      },
+      "behavioral_risk": {
+        "behavior_id": 7,
+        "risk_level": "Low",
+        "rationale": "The behavior involves interactions with a database where actions should be attributable."
+      },
+      "assumptions": [
+        "Database logging is insufficient or can be tampered with."
+      ],
+      "mitigation": {
+        "strategy": "Implement robust logging and monitoring of database interactions. Ensure logs are immutable or stored securely off-site.",
+        "type": "Monitoring Control",
+        "priority": "Medium"
+      },
+      "description": "The Scraper Agent or a malicious actor could perform unauthorized actions on the Postgres Database and deny having done so due to insufficient logging.",
+      "trace_source": {
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "connect to a Postgres database"
+      }
+    },
+    {
+      "id": 17,
+      "stride_category": "Information Disclosure",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "connect to a Postgres database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
+      },
+      "security_gap": {
+        "confidentiality_required": true,
+        "integrity_required": false,
+        "availability_required": false,
+        "gap_description": "Indexed blockchain data is not adequately protected against unauthorized access or interception."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The agent processes and stores indexed data."
+      },
+      "behavioral_risk": {
+        "behavior_id": 7,
+        "risk_level": "Medium",
+        "rationale": "The behavior involves handling and storing data that may contain sensitive information."
+      },
+      "assumptions": [
+        "The database connection is not encrypted.",
+        "Data in the database is not encrypted at rest."
+      ],
+      "mitigation": {
+        "strategy": "Encrypt database connections (e.g., TLS). Encrypt sensitive data at rest in the database. Implement strict access controls.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "Indexed blockchain data stored in the Postgres Database could be exposed to unauthorized parties through unencrypted connections or insufficient database security.",
+      "trace_source": {
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "connect to a Postgres database"
+      }
+    },
+    {
+      "id": 18,
+      "stride_category": "Denial of Service",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "connect to a Postgres database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
+      },
+      "security_gap": {
+        "confidentiality_required": false,
+        "integrity_required": false,
+        "availability_required": true,
+        "gap_description": "The database or the Scraper Agent's connection is vulnerable to disruption."
+      },
+      "actor_risk": {
+        "actor_id": 6,
+        "type": "Off-chain Service/Bot",
+        "overprivileged": false,
+        "description": "The agent interacts with the database."
+      },
+      "behavioral_risk": {
+        "behavior_id": 7,
+        "risk_level": "Medium",
+        "rationale": "Disruption of data indexing or database availability impacts system monitoring and analysis."
+      },
+      "assumptions": [
+        "The database is not protected against denial-of-service attacks (e.g., connection limits, resource limits).",
+        "The network connection between the Scraper and the database is not resilient."
+      ],
+      "mitigation": {
+        "strategy": "Implement rate limiting and resource controls on the database. Ensure network resilience. Validate database commands.",
+        "type": "Technical Control",
+        "priority": "Medium"
+      },
+      "description": "An attacker could disrupt the Scraper Agent's ability to index blockchain data or make the Postgres Database unavailable, impacting monitoring and analysis capabilities.",
+      "trace_source": {
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "connect to a Postgres database"
+      }
+    },
+    {
+      "id": 19,
+      "stride_category": "Elevation of Privilege",
+      "origin": {
+        "from_chunk": true,
+        "actor_id": 6,
+        "behavior_id": 7,
+        "capability_match": "initiate database"
+      },
+      "threat_target": {
+        "component_id": 21,
+        "asset_ids": [
+          107
+        ]
+      },
+      "attack_surface": {
+        "behavior_id": 7,
+        "data_flow_id": 12,
+        "data_description": "Database commands, indexed data"
+      },
+      "trust_boundary_risk": {
+        "boundary_id": 0,
+        "boundary_name": "",
+        "between_component_ids": []
       },
       "security_gap": {
         "confidentiality_required": true,
         "integrity_required": true,
         "availability_required": true,
-        "gap_description": "Sensitive registry data or API keys could be exposed if the Github Proxy is compromised or misconfigured, leading to unauthorized access to Hyperlane's infrastructure."
+        "gap_description": "The Scraper Agent has excessive database privileges, or vulnerabilities allow privilege escalation."
       },
       "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An external attacker could exploit vulnerabilities in the Github Proxy to access sensitive configuration data."
-      },
-      "behavioral_risk": {
-        "behavior_id": null,
-        "risk_level": "High",
-        "rationale": "Exposure of API keys or configuration data can lead to broader system compromise."
-      },
-      "assumptions": [
-        "The Github Proxy is vulnerable to attack or misconfiguration.",
-        "Sensitive API keys or configuration data are stored or transmitted via the Github Proxy."
-      ],
-      "mitigation": {
-        "strategy": "Implement strong access controls, encryption, and regular security audits for the Github Proxy and sensitive data it handles.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "Sensitive protocol configuration data, including API keys, could be disclosed if the Github Proxy is compromised, allowing unauthorized access to Hyperlane's operational infrastructure.",
-      "trace_source": {
-        "doc_reference": "typescript/github-proxy/README.md#overview",
-        "matched_capability": "makes a Github API requests using an API key"
-      }
-    },
-    {
-      "id": 27,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 3,
-        "behavior_id": 6,
-        "capability_match": "configure Post-Dispatch Hooks"
-      },
-      "threat_target": {
-        "component_id": 12,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 6,
-        "data_flow_id": 8,
-        "data_description": "Message, metadata, value"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 2,
-        "boundary_name": "User Wallet vs. Hyperlane Protocol",
-        "between_component_ids": [
-          3,
-          10,
-          13,
-          14,
-          15
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "If the 'postDispatch' function of a hook receives insufficient payment, it may revert, causing a denial of service for message processing through that hook."
-      },
-      "actor_risk": {
-        "actor_id": 3,
-        "type": "EOA (Externally Owned Account)",
-        "overprivileged": false,
-        "description": "A user can intentionally or unintentionally underpay for hook execution, leading to transaction reversion and service disruption."
-      },
-      "behavioral_risk": {
-        "behavior_id": 6,
-        "risk_level": "Medium",
-        "rationale": "Underpayment can halt message processing, impacting availability."
-      },
-      "assumptions": [
-        "The 'postDispatch' function of a hook is configured to revert on insufficient payment.",
-        "Users can submit transactions with insufficient value for hook execution."
-      ],
-      "mitigation": {
-        "strategy": "Implement robust fee quoting mechanisms and ensure sufficient payment is enforced or handled gracefully (e.g., partial processing, refunding excess).",
-        "type": "Technical Control",
-        "priority": "Medium"
-      },
-      "description": "A malicious actor could intentionally provide insufficient payment to a Post-Dispatch Hook, causing its 'postDispatch' function to revert and leading to a denial of service for messages routed through that hook.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/hooks/README.md#post-dispatch-hooks",
-        "matched_capability": "If the postDispatch function receives insufficient payment, it may revert."
-      }
-    },
-    {
-      "id": 28,
-      "stride_category": "Denial of Service",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 4,
-        "behavior_id": 3,
-        "capability_match": "process messages to Mailbox on destination chain"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          100
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 3,
-        "data_flow_id": 4,
-        "data_description": "Message, proof"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "A malicious or failing Relayer agent could refuse to process messages, leading to a complete halt of interchain communication."
-      },
-      "actor_risk": {
-        "actor_id": 4,
+        "actor_id": 6,
         "type": "Off-chain Service/Bot",
         "overprivileged": true,
-        "description": "The Relayer agent is a single point of failure for message delivery if it becomes unavailable or malicious."
+        "description": "The agent requires database access."
       },
       "behavioral_risk": {
-        "behavior_id": 3,
+        "behavior_id": 7,
         "risk_level": "High",
-        "rationale": "Relayer inaction directly prevents interchain message delivery, causing a critical availability issue."
+        "rationale": "The behavior involves database interaction, and excessive privileges can lead to full compromise."
       },
       "assumptions": [
-        "The Relayer agent is compromised or intentionally stops processing messages.",
-        "There are no sufficient redundancy or incentive mechanisms to ensure continuous message relaying."
+        "The database user for the Scraper Agent has more permissions than necessary (e.g., schema modification, user management).",
+        "There are vulnerabilities in the database or agent software."
       ],
       "mitigation": {
-        "strategy": "Implement multiple independent Relayer agents and a robust incentive/penalty system to ensure message delivery.",
-        "type": "Architectural Change",
-        "priority": "High"
-      },
-      "description": "A malicious or failing Relayer agent could intentionally or unintentionally cease processing interchain messages, leading to a denial of service for all cross-chain communication.",
-      "trace_source": {
-        "doc_reference": "solidity/contracts/token/README.md#remote-transfer-lifecycle-diagrams",
-        "matched_capability": "Relayer must be compensated"
-      }
-    },
-    {
-      "id": 29,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": null,
-        "behavior_id": 5,
-        "capability_match": null
-      },
-      "threat_target": {
-        "component_id": 11,
-        "asset_ids": [
-          100,
-          101,
-          102,
-          103,
-          104,
-          105
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 5,
-        "data_flow_id": 5,
-        "data_description": "Metadata, message"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 1,
-        "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
-        "between_component_ids": [
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          18,
-          4,
-          5,
-          6
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "If an Interchain Security Module (ISM) lacks replay protection, a malicious actor could re-execute a previously valid message, potentially gaining unintended privileges or causing state corruption."
-      },
-      "actor_risk": {
-        "actor_id": null,
-        "type": null,
-        "overprivileged": false,
-        "description": "An attacker could exploit the lack of replay protection in an ISM to re-trigger privileged actions."
-      },
-      "behavioral_risk": {
-        "behavior_id": 5,
-        "risk_level": "High",
-        "rationale": "Replaying messages can lead to unauthorized state changes or asset manipulation."
-      },
-      "assumptions": [
-        "A deployed ISM does not implement sufficient replay protection.",
-        "A valid message that grants privilege or performs a sensitive action is intercepted and re-submitted."
-      ],
-      "mitigation": {
-        "strategy": "Enforce replay protection mechanisms (e.g., nonces, unique message IDs) within all Interchain Security Modules.",
+        "strategy": "Apply the principle of least privilege to the Scraper Agent's database user. Regularly patch and secure the database and agent software.",
         "type": "Technical Control",
         "priority": "High"
       },
-      "description": "A malicious actor could replay a previously verified interchain message through a vulnerable Interchain Security Module (ISM) that lacks replay protection, leading to an elevation of privilege or unauthorized actions.",
+      "description": "The Scraper Agent or an attacker could exploit misconfigurations or vulnerabilities to gain elevated privileges on the Postgres Database, potentially leading to full compromise.",
       "trace_source": {
-        "doc_reference": "solidity/contracts/isms/README.md#interchain-security-modules",
-        "matched_capability": "Interchain security modules may be replayable."
-      }
-    },
-    {
-      "id": 30,
-      "stride_category": "Elevation of Privilege",
-      "origin": {
-        "from_chunk": true,
-        "actor_id": 3,
-        "behavior_id": 8,
-        "capability_match": "deploy core contracts"
-      },
-      "threat_target": {
-        "component_id": 10,
-        "asset_ids": [
-          106
-        ]
-      },
-      "attack_surface": {
-        "behavior_id": 8,
-        "data_flow_id": 17,
-        "data_description": "Deployment configurations, transaction data"
-      },
-      "trust_boundary_risk": {
-        "boundary_id": 2,
-        "boundary_name": "User Wallet vs. Hyperlane Protocol",
-        "between_component_ids": [
-          3,
-          10,
-          13,
-          14,
-          15
-        ]
-      },
-      "security_gap": {
-        "confidentiality_required": false,
-        "integrity_required": true,
-        "availability_required": true,
-        "gap_description": "If a developer's private key or CLI environment is compromised, an attacker could use the Hyperlane CLI/SDK to deploy malicious contracts or alter critical protocol configurations, gaining unauthorized control over the system."
-      },
-      "actor_risk": {
-        "actor_id": 3,
-        "type": "EOA (Externally Owned Account)",
-        "overprivileged": true,
-        "description": "A user with deployment privileges, if compromised, can gain unauthorized control over core protocol components."
-      },
-      "behavioral_risk": {
-        "behavior_id": 8,
-        "risk_level": "High",
-        "rationale": "Compromised deployment tools can lead to full system compromise and unauthorized control."
-      },
-      "assumptions": [
-        "A developer's private key used for deployments is compromised.",
-        "The Hyperlane CLI/SDK environment is compromised, allowing an attacker to execute deployment commands."
-      ],
-      "mitigation": {
-        "strategy": "Implement strict access controls for deployment keys, use hardware security modules (HSMs), and enforce multi-signature requirements for critical deployments.",
-        "type": "Technical Control",
-        "priority": "High"
-      },
-      "description": "A compromised Hyperlane CLI or SDK, used by a developer with deployment privileges, could be leveraged by an attacker to deploy malicious smart contracts or modify existing critical configurations, leading to an elevation of privilege and full control over the Hyperlane protocol.",
-      "trace_source": {
-        "doc_reference": "typescript/cli/README.md#hyperlane-cli",
-        "matched_capability": "deploying the core contracts and/or warp routes to new chains"
+        "doc_reference": "rust/main/agents/scraper/README.md",
+        "matched_capability": "initiate database"
       }
     }
   ]

@@ -1,63 +1,68 @@
 {
-  "id": 8,
-  "stride_category": "Elevation of Privilege",
+  "id": 4,
+  "stride_category": "Tampering",
   "origin": {
     "from_chunk": true,
-    "actor_id": 3,
-    "behavior_id": 8,
-    "capability_match": "deploy core contracts"
+    "actor_id": 5,
+    "behavior_id": 10,
+    "capability_match": "run validation processes"
   },
   "threat_target": {
-    "component_id": 10,
+    "component_id": 13,
     "asset_ids": [
-      106
+      101,
+      102,
+      103,
+      104,
+      105
     ]
   },
   "attack_surface": {
-    "behavior_id": 8,
-    "data_flow_id": 17,
-    "data_description": "Deployment configurations, transaction data"
+    "behavior_id": 4,
+    "data_flow_id": 6,
+    "data_description": "Origin, sender, body (recipient, amount)"
   },
   "trust_boundary_risk": {
-    "boundary_id": 2,
-    "boundary_name": "User Wallet vs. Hyperlane Protocol",
+    "boundary_id": 1,
+    "boundary_name": "On-chain Smart Contracts vs. Off-chain Agents",
     "between_component_ids": [
-      3,
       10,
+      11,
       13,
-      14,
-      15
+      4,
+      5,
+      6
     ]
   },
   "security_gap": {
     "confidentiality_required": false,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "If a developer's private key or CLI environment is compromised, an attacker could use the Hyperlane CLI/SDK to deploy malicious contracts or alter critical protocol configurations, gaining unauthorized control over the system."
+    "gap_description": "A malicious Validator could sign a fraudulent proof for a tampered message, allowing it to bypass ISM verification."
   },
   "actor_risk": {
-    "actor_id": 3,
-    "type": "EOA (Externally Owned Account)",
-    "overprivileged": true,
-    "description": "A user with deployment privileges, if compromised, can gain unauthorized control over core protocol components."
+    "actor_id": 5,
+    "type": "Off-chain Service/Bot",
+    "overprivileged": false,
+    "description": "A malicious or compromised Validator agent can sign fraudulent proofs for tampered messages."
   },
   "behavioral_risk": {
-    "behavior_id": 8,
+    "behavior_id": 10,
     "risk_level": "High",
-    "rationale": "Compromised deployment tools can lead to full system compromise and unauthorized control."
+    "rationale": "A malicious Validator can enable incorrect token transfers by signing fraudulent proofs."
   },
   "assumptions": [
-    "A developer's private key used for deployments is compromised.",
-    "The Hyperlane CLI/SDK environment is compromised, allowing an attacker to execute deployment commands."
+    "A Validator agent is compromised or malicious and can sign fraudulent proofs.",
+    "The ISM relies on these proofs and fails to detect the fraud."
   ],
   "mitigation": {
-    "strategy": "Implement strict access controls for deployment keys, use hardware security modules (HSMs), and enforce multi-signature requirements for critical deployments.",
+    "strategy": "Implement fraud detection mechanisms; Require multiple validator signatures (Multisig ISM); Monitor validator behavior; Slashing mechanisms.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "A compromised Hyperlane CLI or SDK, used by a developer with deployment privileges, could be leveraged by an attacker to deploy malicious smart contracts or modify existing critical configurations, leading to an elevation of privilege and full control over the Hyperlane protocol.",
+  "description": "A malicious or compromised Validator agent could sign a fraudulent proof for a tampered interchain message. If the ISM relies on this proof for verification, the tampered message could be processed by the destination TokenRouter, leading to unauthorized token transfers.",
   "trace_source": {
-    "doc_reference": "typescript/cli/README.md#hyperlane-cli",
-    "matched_capability": "deploying the core contracts and/or warp routes to new chains"
+    "doc_reference": "solidity/contracts/isms/README.md",
+    "matched_capability": "verify(metadata, message)"
   }
 }

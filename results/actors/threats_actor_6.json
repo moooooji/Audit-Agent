@@ -3,9 +3,9 @@
   "stride_category": "Elevation of Privilege",
   "origin": {
     "from_chunk": true,
-    "actor_id": null,
-    "behavior_id": null,
-    "capability_match": null
+    "actor_id": 6,
+    "behavior_id": 7,
+    "capability_match": "initiate database"
   },
   "threat_target": {
     "component_id": 21,
@@ -16,42 +16,42 @@
   "attack_surface": {
     "behavior_id": 7,
     "data_flow_id": 12,
-    "data_description": "Postgres Database vulnerabilities, Scraper Agent process privileges"
+    "data_description": "Database commands, indexed data"
   },
   "trust_boundary_risk": {
-    "boundary_id": null,
-    "boundary_name": null,
+    "boundary_id": 0,
+    "boundary_name": "",
     "between_component_ids": []
   },
   "security_gap": {
-    "confidentiality_required": false,
+    "confidentiality_required": true,
     "integrity_required": true,
     "availability_required": true,
-    "gap_description": "The Scraper Agent might operate with excessive privileges, or the Postgres Database could have exploitable vulnerabilities allowing privilege escalation."
+    "gap_description": "The Scraper Agent has excessive database privileges, or vulnerabilities allow privilege escalation."
   },
   "actor_risk": {
-    "actor_id": null,
-    "type": null,
-    "overprivileged": false,
-    "description": "An external attacker could exploit vulnerabilities in the database or the Scraper Agent's environment to gain higher-level access."
+    "actor_id": 6,
+    "type": "Off-chain Service/Bot",
+    "overprivileged": true,
+    "description": "The agent requires database access."
   },
   "behavioral_risk": {
     "behavior_id": 7,
     "risk_level": "High",
-    "rationale": "Elevation of privilege could lead to full compromise of the database and potentially the Scraper Agent's host, allowing arbitrary data manipulation, exfiltration, or further attacks on the system."
+    "rationale": "The behavior involves database interaction, and excessive privileges can lead to full compromise."
   },
   "assumptions": [
-    "The Scraper Agent runs with more privileges than strictly necessary for its operations.",
-    "The Postgres Database or its underlying operating system has unpatched vulnerabilities that allow privilege escalation."
+    "The database user for the Scraper Agent has more permissions than necessary (e.g., schema modification, user management).",
+    "There are vulnerabilities in the database or agent software."
   ],
   "mitigation": {
-    "strategy": "Apply the principle of least privilege to the Scraper Agent. Regularly patch and update the Postgres Database and its host system.",
+    "strategy": "Apply the principle of least privilege to the Scraper Agent's database user. Regularly patch and secure the database and agent software.",
     "type": "Technical Control",
     "priority": "High"
   },
-  "description": "An attacker may exploit vulnerabilities to elevate their privileges within the Postgres Database or the system running the Scraper Agent.",
+  "description": "The Scraper Agent or an attacker could exploit misconfigurations or vulnerabilities to gain elevated privileges on the Postgres Database, potentially leading to full compromise.",
   "trace_source": {
-    "doc_reference": "doc_11",
-    "matched_capability": "connect to a Postgres database"
+    "doc_reference": "rust/main/agents/scraper/README.md",
+    "matched_capability": "initiate database"
   }
 }
