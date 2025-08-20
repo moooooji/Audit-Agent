@@ -14,7 +14,7 @@ This is a **Multi-Agent System** built with:
 
 ### Agent Workflow
 
-![Agent Workflow Diagram](https://github.com/user-attachments/assets/workflow-diagram.png)
+![Agent Workflow Diagram](./img/threat_modeling_agent_workflow.png)
 
 The system follows a sophisticated multi-stage workflow:
 
