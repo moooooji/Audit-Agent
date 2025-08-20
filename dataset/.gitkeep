@@ -1,3 +1,0 @@
-# This file ensures the dataset directory exists
-# Dataset files are ignored by .gitignore but the directory structure is preserved
-# Place your input documentation files here (*.md files)
