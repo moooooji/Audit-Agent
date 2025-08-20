@@ -27,7 +27,7 @@ def set_gemini_config(config_name: str):
     response_schema=genai.types.Schema(
         type=genai.types.Type.OBJECT,
         description="Describes the overall architecture of the Web3 system or smart contract(s) under audit, based on the provided documentation (e.g., whitepaper).",
-        required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors"],
+        required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors", "Architectural Analysis Judgment Basis"],
         properties={
             "actors": genai.types.Schema(
                 type=genai.types.Type.ARRAY,
@@ -242,6 +242,39 @@ def set_gemini_config(config_name: str):
                     },
                 ),
             ),
+            "Architectural Analysis Judgment Basis": genai.types.Schema(
+                type=genai.types.Type.ARRAY,
+                description="Structured rationale explaining the judgment basis for architectural analysis decisions.",
+                items=genai.types.Schema(
+                    type=genai.types.Type.OBJECT,
+                    properties={
+                        "actors_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for actor identification."
+                        ),
+                        "assets_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for asset categorization."
+                        ),
+                        "components_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for component identification."
+                        ),
+                        "data_flows_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for data flow mapping."
+                        ),
+                        "trust_boundaries_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for trust boundary establishment."
+                        ),
+                        "behaviors_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for behavior extraction."
+                        ),
+                    },
+                ),
+            ),
         },
     ),
 )
@@ -329,7 +362,7 @@ def set_gemini_config(config_name: str):
     response_schema=genai.types.Schema( # ARCHITECTURE_RESPONSE_SCHEMA와 구조 동일
         type=genai.types.Type.OBJECT,
         description="Corrected or refined version of the system architecture.",
-        required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors"],
+        required=["actors", "assets", "components", "data_flows", "trust_boundaries", "behaviors", "Architectural Analysis Judgment Basis"],
         properties={ # 상세 설명은 ARCHITECTURE_RESPONSE_SCHEMA 참고, 여기서는 간략히
             "actors": genai.types.Schema(
                 type=genai.types.Type.ARRAY, description="Corrected actors.",
@@ -545,6 +578,39 @@ def set_gemini_config(config_name: str):
                     },
                 ),
             ),
+            "Architectural Analysis Judgment Basis": genai.types.Schema(
+                type=genai.types.Type.ARRAY,
+                description="Structured rationale explaining the judgment basis for architectural analysis decisions.",
+                items=genai.types.Schema(
+                    type=genai.types.Type.OBJECT,
+                    properties={
+                        "actors_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for actor identification."
+                        ),
+                        "assets_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for asset categorization."
+                        ),
+                        "components_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for component identification."
+                        ),
+                        "data_flows_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for data flow mapping."
+                        ),
+                        "trust_boundaries_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for trust boundary establishment."
+                        ),
+                        "behaviors_description": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Source references, extraction logic, risk assessment basis, scope decisions, and assumptions for behavior extraction."
+                        ),
+                    },
+                ),
+            ),
         }
     ),
 )
@@ -557,7 +623,7 @@ def set_gemini_config(config_name: str):
     response_schema=genai.types.Schema(
         type=genai.types.Type.OBJECT,
         description="Analysis of potential threats to the system.",
-        required=["threats"],
+        required=["threats", "Threat_Analysis_Judgment_Basis"],
         properties={
             "threats": genai.types.Schema(
                 type=genai.types.Type.ARRAY,
@@ -790,6 +856,39 @@ def set_gemini_config(config_name: str):
                     },
                 ),
             ),
+            "Threat_Analysis_Judgment_Basis": genai.types.Schema(
+                type=genai.types.Type.ARRAY,
+                description="Structured rationale explaining the judgment basis for threat analysis decisions.",
+                items=genai.types.Schema(
+                    type=genai.types.Type.OBJECT,
+                    properties={
+                        "threat_identification_logic": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Why each STRIDE threat was identified for the specific behavior/component combination and systematic application methodology."
+                        ),
+                        "risk_level_justification": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="What factors from the architecture analysis or documentation justified the assigned risk levels and impact assessments."
+                        ),
+                        "attack_vector_analysis": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="How the identified attack surfaces and trust boundary vulnerabilities support the threat scenarios and entry point analysis."
+                        ),
+                        "mitigation_reasoning": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Why the proposed mitigation strategies are appropriate for the identified security gaps and implementation considerations."
+                        ),
+                        "scope_coverage": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="How comprehensively the STRIDE categories were applied to the chunk entities and completeness verification."
+                        ),
+                        "documentation_traceability": genai.types.Schema(
+                            type=genai.types.Type.STRING,
+                            description="Which specific architectural elements or documentation references support each threat identification and validation process."
+                        ),
+                    },
+                ),
+            ),
         }
     ),
 )
@@ -800,7 +899,7 @@ def set_gemini_config(config_name: str):
         response_mime_type="application/json",
         response_schema=genai.types.Schema(
             type = genai.types.Type.OBJECT,
-            required = ["checklist_items"],
+            required = ["checklist_items", "Checklist_Generation_Judgment_Basis"],
             properties = {
                 "checklist_items": genai.types.Schema(
                     type = genai.types.Type.ARRAY,
@@ -883,6 +982,39 @@ def set_gemini_config(config_name: str):
                                 type = genai.types.Type.STRING,
                                 description = "Team or person responsible",
                             )
+                        },
+                    ),
+                ),
+                "Checklist Generation Judgment Basis": genai.types.Schema(
+                    type=genai.types.Type.ARRAY,
+                    description="Structured rationale explaining the judgment basis for checklist generation decisions.",
+                    items=genai.types.Schema(
+                        type=genai.types.Type.OBJECT,
+                        properties={
+                            "item_selection_logic": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="Why each checklist item was generated from the threat analysis and what specific threat aspects it addresses."
+                            ),
+                            "priority_assignment_reasoning": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="What factors determined the priority levels (High/Medium/Low) for each checklist item and impact considerations."
+                            ),
+                            "category_mapping_justification": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="How STRIDE threat categories were mapped to checklist categories and why those mappings are appropriate."
+                            ),
+                            "code_binding_assessment": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="Which items require code-level verification and why, based on the technical nature of the threats."
+                            ),
+                            "evidence_requirements_analysis": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="Why specific evidence types were chosen for each item and how they validate the security controls."
+                            ),
+                            "actionability_verification": genai.types.Schema(
+                                type=genai.types.Type.STRING,
+                                description="How each item provides clear, executable steps for security verification rather than vague guidelines."
+                            ),
                         },
                     ),
                 ),
@@ -1010,8 +1142,17 @@ class ThreatSchemaItem(BaseModel):
     description: str = Field(description="Comprehensive threat description.")
     trace_source: ThreatSchemaTraceSource = Field(description="Trace to source document.")
 
+class ThreatJudgmentBasis(BaseModel):
+    threat_id: int = Field(description="The unique identifier of the threat being analyzed.")
+    threat_identification_logic: str = Field(description="Why this specific STRIDE threat was identified for the particular behavior/component combination.")
+    risk_level_justification: str = Field(description="What specific factors from the architecture analysis or documentation justified the assigned risk level for this threat.")
+    attack_vector_analysis: str = Field(description="How the identified attack surfaces and trust boundary vulnerabilities specifically support this threat scenario.")
+    mitigation_reasoning: str = Field(description="Why the proposed mitigation strategy is appropriate for this specific threat's security gaps.")
+    documentation_traceability: str = Field(description="Which specific architectural elements or documentation references support this individual threat identification.")
+
 class ThreatAnalysisOutput(BaseModel):
-    threats: List[ThreatSchemaItem] = Field(description="List of potential threats identified.")      
+    threats: List[ThreatSchemaItem] = Field(description="List of potential threats identified.")
+    Threat_Analysis_Judgment_Basis: List[ThreatJudgmentBasis] = Field(description="Structured rationale explaining the judgment basis for threat analysis decisions.")      
 
 class ChecklistItem(BaseModel): 
         id: int = Field(description="Unique ID for the check item")
@@ -1033,8 +1174,18 @@ class ChecklistItem(BaseModel):
         last_checked: str = Field(description="Timestamp of last validation")
         owner: str = Field(description="Team or person responsible")
 
+class ChecklistJudgmentBasis(BaseModel):
+    checklist_item_id: int = Field(description="The unique identifier of the checklist item being analyzed.")
+    item_selection_logic: str = Field(description="Why this specific checklist item was generated from the threat analysis and what specific threat aspects it addresses.")
+    priority_assignment_reasoning: str = Field(description="What factors determined the priority level (High/Medium/Low) for this specific checklist item.")
+    category_mapping_justification: str = Field(description="How the STRIDE threat category was mapped to this checklist category and why that mapping is appropriate.")
+    code_binding_assessment: str = Field(description="Whether this item requires code-level verification and why, based on the technical nature of the specific threat.")
+    evidence_requirements_analysis: str = Field(description="Why the specific evidence type was chosen for this item and how it validates the security control.")
+    actionability_verification: str = Field(description="How this item provides clear, executable steps for security verification rather than vague guidelines.")
+
 class Checklist(BaseModel):
     checklist_items: list[ChecklistItem]
+    Checklist_Generation_Judgment_Basis: List[ChecklistJudgmentBasis] = Field(description="Structured rationale explaining the judgment basis for checklist generation decisions.")
         
 # ───────────── ENUM 정의 (스마트 컨트랙트 감사에 맞게 확장/조정된 버전 사용) ─────────────
 class CategoryEnum(str, Enum):
@@ -1147,6 +1298,7 @@ class ChecklistItem(BaseModel):
 
 class ChecklistConfig(BaseModel):
     checklist_items: List[ChecklistItem]
+    Checklist_Correction_Judgment_Basis: List[ChecklistJudgmentBasis] = Field(description="Structured rationale explaining the judgment basis for checklist correction decisions.")
 
 class ChecklistAssessmentFinding(BaseModel):
     category: str = Field(..., description="Category of the finding")

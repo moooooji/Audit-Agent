@@ -13,7 +13,8 @@ from react_agent.llm_utils import (
     load_file,
     call_gemini_api,
     call_chatgpt_api,
-    build_llm_chunk
+    build_llm_chunk,
+    retry_on_error
 )
 
 from react_agent.prompt import (
@@ -44,7 +45,7 @@ load_dotenv()
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-preview-04-17",
+    model="gemini-2.5-flash",
     temperature=0
 )
 
@@ -105,6 +106,18 @@ def analyze_architecture(state: State) -> State:
         
         response = call_gemini_api(contents, set_gemini_config("ARCHITECTURE_CORRECTION_CONFIG"))
         
+        llm_judgement = json.loads(response.text).get("Architectural Analysis Judgment Basis", [])
+        prompt_ = f"""
+                You are a expert ai engineer. you should summarize the following judgment basis.
+                
+                {llm_judgement}
+                
+                Return a summary of the judgment basis.
+                """
+        res_ = llm.invoke(prompt_)
+        
+        print(f"This is the summary of the analyze architecturejudgment basis: {res_.content}")
+        
         map_update(json.loads(response.text), state)
         
         response_dict = json_str_to_dict(response.text)
@@ -146,6 +159,7 @@ def assess_architecture(state: State) -> State:
     
     return {"architecture_feedback_loop_count": state["architecture_feedback_loop_count"]+1}
 
+@retry_on_error()
 def route_threats(state: State) -> State:
     if state["is_threat_analysis"] == True:
         print("threat 처리중")
@@ -153,7 +167,11 @@ def route_threats(state: State) -> State:
     else:
         
         tmp_threats = state["tmp_threats"]
+        # Collect all judgment basis from all actors - LangGraph automatically aggregates these
+        tmp_judgment_basis = state.get("tmp_judgment_basis", [])
+        
         print(f"tmp_threats : {len(tmp_threats)}")
+        print(f"judgment_basis count: {len(tmp_judgment_basis)}")
         
         id_weight = 1
         
@@ -161,8 +179,27 @@ def route_threats(state: State) -> State:
             threat["id"] = id_weight
             id_weight += 1
         
+        # Save threats with judgment basis  
+        threat_output = {
+            "threats": tmp_threats,
+            "Threat_Analysis_Judgment_Basis": tmp_judgment_basis
+        }
+        
+        llm_judgement = threat_output.get("Threat_Analysis_Judgment_Basis", [])
+    
+        prompt_ = f"""
+                    You are a expert ai engineer. you should summarize the following judgment basis.
+                    
+                    {llm_judgement}
+                    
+                    Return a summary of the judgment basis.
+                    """
+                    
+        llm_judgement_ = llm.invoke(prompt_)
+        print(f"This is the summary of the analyze threat judgment basis: {llm_judgement_.content}")
+        
         with open("results/all_threats.json", "w") as f:
-            json.dump({"threats": tmp_threats}, f, ensure_ascii=False, indent=2)
+            json.dump(threat_output, f, ensure_ascii=False, indent=2)
         
         print("threat 처리완료")
         return {"is_initial_checklist_analysis": True}
@@ -207,7 +244,7 @@ async def generate_parallel_threats(state: State) -> State:
     for threat in json_data["threats"]:
         save_json(threat, f'results/actors/threats_actor_{state["current_actor_id"]+1}.json')
         
-    return {"tmp_threats": json_data["threats"], "is_threat_analysis": False}
+    return {"tmp_threats": json_data["threats"], "tmp_judgment_basis": json_data.get("Threat_Analysis_Judgment_Basis", []), "is_threat_analysis": False}
             
 def map_get_assessment_checklist(state: State) -> State:
     if state["is_initial_checklist_analysis"] == True:
@@ -262,7 +299,7 @@ def map_get_assessment_checklist(state: State) -> State:
         return batch_sends
     else:
         return "assess_checklist"
-    
+
 async def generate_parallel_checklist(state: State) -> State:
     threat_with_context = state["threat_with_context"]
     threat = threat_with_context["threat"]
@@ -280,9 +317,11 @@ async def generate_parallel_checklist(state: State) -> State:
     structured_llm = llm.with_structured_output(Checklist)
     response = await structured_llm.ainvoke(prompt)
     json_data = response.model_dump()
+    
     print(f"in parallel, generated {len(json_data)}, inside length : {len(json_data['checklist_items'])}")
     return {
         "tmp_checklist": json_data["checklist_items"],
+        "tmp_checklist_judgment_basis": json_data.get("Checklist_Generation_Judgment_Basis", []),
         "is_initial_checklist_analysis": False,
         }
 
@@ -297,16 +336,28 @@ def route_checklist(state: State):
     else:
         # 여기서 생성된 체크리스트들 전부 모일테니, unique id 다시 재 부여할 필요가있을거같음
         checklist_items = tmp_checklist
+        # Collect all judgment basis from all parallel checklist generations
+        tmp_checklist_judgment_basis = state.get("tmp_checklist_judgment_basis", [])
+        
+        print(f"checklist_judgment_basis count: {len(tmp_checklist_judgment_basis)}")
+        
         index = 0
         for item in checklist_items:
             item["id"] = index
             index += 1
             # TODO 중복체크 여기서 처리하는 로직 넣으면 될듯.
+        
+        # Save checklist with judgment basis
+        checklist_output = {
+            "checklist_items": checklist_items,
+            "Checklist_Generation_Judgment_Basis": tmp_checklist_judgment_basis
+        }
+        
         with open("results/checklist.json", "w") as f:
-            json.dump({ "checklist_items": checklist_items }, f, ensure_ascii=False, indent=2)
+            json.dump(checklist_output, f, ensure_ascii=False, indent=2)
         print("completed parallel checklist")
         return {}
-    
+ 
 def feedback_loop_checklist(state: State) -> State:
     
     print("feedback loop checklist ...")
@@ -369,13 +420,42 @@ def feedback_loop_checklist(state: State) -> State:
     )
     
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-preview-04-17",
+        model="gemini-2.5-flash",
         temperature=0
     )
     
-    structed_llm = llm.with_structured_output(Checklist)
-    response = structed_llm.invoke(prompt)
-    json_data = response.model_dump()
+    try:
+        structed_llm = llm.with_structured_output(Checklist)
+        response = structed_llm.invoke(prompt)
+        
+        if response is None:
+            print("Warning: LLM returned None response. Using existing checklist.")
+            # 기존 체크리스트를 그대로 사용
+            with open("results/checklist.json", "r") as f:
+                json_data = json.load(f)
+        else:
+            json_data = response.model_dump()
+    except Exception as e:
+        print(f"Error in LLM call: {e}. Using existing checklist.")
+        # 기존 체크리스트를 그대로 사용
+        with open("results/checklist.json", "r") as f:
+            json_data = json.load(f)
+    
+    llm_judgement = json_data.get('Checklist_Generation_Judgment_Basis', [])
+    
+    prompt_ = f"""
+    You are a expert ai engineer. you should summarize the following judgment basis.
+    
+    {llm_judgement}
+    
+    Return a summary of the judgment basis.
+    """
+    
+    res_ = llm.invoke(prompt_)
+    
+    print(f"This is the summary of the checklist judgment basis: {res_.content}")
+    
+    print(f"feedback loop checklist judgment basis count: {len(json_data.get('Checklist_Generation_Judgment_Basis', []))}")
     
     with open("results/checklist.json", "w") as f:
         json.dump(json_data, f, ensure_ascii=False, indent=2)

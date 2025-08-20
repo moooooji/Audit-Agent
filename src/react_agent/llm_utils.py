@@ -124,6 +124,8 @@ def build_llm_chunk(data: dict, actor_id: int) -> dict:
 def retry_on_error(max_retries: int = 3, sleep_time: int = 60) -> Callable:
     """API 호출 실패 시 재시도하는 데코레이터"""
     def decorator(func: Callable) -> Callable:
+        import functools
+        @functools.wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             retries = 0
             while retries < max_retries:

@@ -29,4 +29,6 @@ class State(InputState):
 
     #tmp for parallel
     tmp_threats: Annotated[list[ThreatAnalysisOutput], operator.add]
+    tmp_judgment_basis: Annotated[list, operator.add]
     tmp_checklist: Annotated[list[ChecklistItem], operator.add]
+    tmp_checklist_judgment_basis: Annotated[list, operator.add]

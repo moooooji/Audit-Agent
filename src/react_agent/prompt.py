@@ -25,6 +25,15 @@ Task:
 4. Extract all **data_flows** between components, referencing by IDs, **based on the interactions and information exchanges described in the whitepaper.**
 5. Extract all **trust_boundaries** and which components they separate, referencing by IDs.
 6. Extract all **behaviors** describing actions initiated by an actor or component toward another component, **focusing on key interactions with the protocol's described functionalities (e.g., participating in staking, executing a governance decision).**
+7. **Document Analysis Rationale**: For each category (actors, assets, components, data_flows, trust_boundaries, behaviors), provide specific justification explaining:
+   - **Source Reference**: Which specific section/page/chapter of the documentation was used as evidence
+   - **Extraction Logic**: Why each item was identified and categorized the way it was
+   - **Risk Assessment Basis**: What criteria or information from the documentation justified the assigned risk/trust/sensitivity levels
+   - **Scope Decisions**: Why certain potential items were included or excluded from the analysis
+   - **Assumptions Made**: Any interpretations or assumptions when documentation was ambiguous
+   
+   Each rationale should be traceable, specific, and demonstrate thorough analysis of the source material.
+
 
 
 After extraction, **validate each item** against the source text:
@@ -104,8 +113,18 @@ Output Requirements:
       "risk_level": "High|Medium|Low"
     }
     // …
+  ],
+  "Architectural Analysis Judgment Basis": [
+    {"actors_description" : "Source Reference: Section 4.2 'Governance Framework' and Section 3.1 'Network Participants'. Extraction Logic: Identified actors based on explicit role definitions and capability descriptions. 'Token Holders' extracted due to direct mention of voting rights in governance proposals, 'Validator Nodes' from consensus participation requirements, 'Protocol DAO' from decentralized decision-making authority. Risk Assessment Basis: External actors classified as higher risk due to potential malicious behavior mentioned in Section 5.3 'Security Considerations'. Scope Decisions: Excluded passive users without governance rights to focus on security-relevant actors. Assumptions Made: Assumed implicit admin roles where governance upgrade mechanisms were described but specific admin actors weren't explicitly named."},
+    {"assets_description" : "Source Reference: Section 2.4 'Tokenomics' and Appendix A 'Asset Classification'. Extraction Logic: Prioritized assets central to protocol security and economic incentives. Native tokens identified from fee structure descriptions, governance tokens from voting power allocation tables. Risk Assessment Basis: 'High' sensitivity assigned based on Section 5.1 'Economic Security Risks' which highlights token manipulation impacts. Scope Decisions: Included only protocol-native assets, excluded third-party tokens mentioned in integration examples. Assumptions Made: Classified user private keys as 'High' sensitivity assets though not explicitly categorized in documentation, based on their critical role in transaction authorization."},
+    {"components_description" : "Source Reference: Figure 2 'System Architecture' and Section 3.3 'Component Specifications'. Extraction Logic: Mapped components from architectural diagrams and functional descriptions. Smart contracts identified from deployment addresses in technical appendix. Risk Assessment Basis: Trust levels derived from Section 5.2 'Trust Model' - on-chain components rated 'High' due to immutability guarantees, oracles 'Medium' due to external dependency risks. Scope Decisions: Focused on core protocol components, excluded optional integrations and example implementations. Assumptions Made: Assumed web interfaces have 'Low' trust level due to client-side vulnerability potential, though not explicitly stated in security model."},
+    {"data_flows_description" : "Source Reference: Figure 3 'Data Flow Diagrams' and Section 4.1 'Transaction Lifecycle'. Extraction Logic: Traced data movements from workflow descriptions and sequence diagrams. Governance proposal flows extracted from Section 4.2, staking flows from Section 3.4. Risk Assessment Basis: Security properties assigned based on Table 2 'Data Sensitivity Matrix' and CIA requirements in Section 5.4. Scope Decisions: Included only core protocol flows, excluded debugging and monitoring data paths. Assumptions Made: Assumed all cross-chain communications require integrity validation, though specific validation mechanisms weren't detailed for every flow."},
+    {"trust_boundaries_description" : "Source Reference: Section 5.2 'Trust Model' and Figure 4 'Security Perimeter'. Extraction Logic: Identified boundaries at interfaces where trust assumptions change. On-chain/off-chain boundary from hybrid architecture description, wallet boundaries from user interaction models. Risk Assessment Basis: Validation requirements determined by Section 5.5 'Boundary Controls' which specifies cryptographic verification needs. Scope Decisions: Focused on security-critical boundaries, excluded internal component interfaces within same trust zone. Assumptions Made: Assumed user devices represent separate trust boundary from protocol infrastructure, based on threat model implications rather than explicit statements."},
+    {"behaviors_description" : "Source Reference: Section 4 'Protocol Operations' and Table 3 'User Actions Matrix'. Extraction Logic: Catalogued behaviors from user journey flows and protocol interaction descriptions. Governance voting from Section 4.2, asset transfers from Section 3.5. Risk Assessment Basis: Impact levels derived from Section 5.6 'Risk Assessment' categorizing irreversible vs. reversible actions. High-risk behaviors identified by potential for permanent state changes or economic loss. Scope Decisions: Included active user-initiated behaviors, excluded automated system behaviors and passive monitoring. Assumptions Made: Classified emergency pause actions as 'High' risk due to protocol availability impact, though specific risk level wasn't explicitly stated in documentation."}
   ]
 }
+
+
 
 
 Strict Requirements:
@@ -207,6 +226,15 @@ Generate a **final, corrected JSON output** that:
    * Schema-compliant
    * Internally consistent (IDs, references, types)
 
+4. **Document Analysis Rationale**: For each category (actors, assets, components, data_flows, trust_boundaries, behaviors), provide specific justification explaining:
+   - **Source Reference**: Which specific section/page/chapter of the documentation was used as evidence
+   - **Extraction Logic**: Why each item was identified and categorized the way it was
+   - **Risk Assessment Basis**: What criteria or information from the documentation justified the assigned risk/trust/sensitivity levels
+   - **Scope Decisions**: Why certain potential items were included or excluded from the analysis
+   - **Assumptions Made**: Any interpretations or assumptions when documentation was ambiguous
+   
+   Each rationale should be traceable, specific, and demonstrate thorough analysis of the source material.
+
 ---
 
 **Strict Requirements:**
@@ -222,7 +250,15 @@ Generate a **final, corrected JSON output** that:
   "components": [ ... ],
   "data_flows": [ ... ],
   "trust_boundaries": [ ... ],
-  "behaviors": [ ... ]
+  "behaviors": [ ... ],
+  "Architectural Analysis Judgment Basis": [
+    {"actors_description" : "Source Reference: Section 4.2 'Governance Framework' and Section 3.1 'Network Participants'. Extraction Logic: Identified actors based on explicit role definitions and capability descriptions. 'Token Holders' extracted due to direct mention of voting rights in governance proposals, 'Validator Nodes' from consensus participation requirements, 'Protocol DAO' from decentralized decision-making authority. Risk Assessment Basis: External actors classified as higher risk due to potential malicious behavior mentioned in Section 5.3 'Security Considerations'. Scope Decisions: Excluded passive users without governance rights to focus on security-relevant actors. Assumptions Made: Assumed implicit admin roles where governance upgrade mechanisms were described but specific admin actors weren't explicitly named."},
+    {"assets_description" : "Source Reference: Section 2.4 'Tokenomics' and Appendix A 'Asset Classification'. Extraction Logic: Prioritized assets central to protocol security and economic incentives. Native tokens identified from fee structure descriptions, governance tokens from voting power allocation tables. Risk Assessment Basis: 'High' sensitivity assigned based on Section 5.1 'Economic Security Risks' which highlights token manipulation impacts. Scope Decisions: Included only protocol-native assets, excluded third-party tokens mentioned in integration examples. Assumptions Made: Classified user private keys as 'High' sensitivity assets though not explicitly categorized in documentation, based on their critical role in transaction authorization."},
+    {"components_description" : "Source Reference: Figure 2 'System Architecture' and Section 3.3 'Component Specifications'. Extraction Logic: Mapped components from architectural diagrams and functional descriptions. Smart contracts identified from deployment addresses in technical appendix. Risk Assessment Basis: Trust levels derived from Section 5.2 'Trust Model' - on-chain components rated 'High' due to immutability guarantees, oracles 'Medium' due to external dependency risks. Scope Decisions: Focused on core protocol components, excluded optional integrations and example implementations. Assumptions Made: Assumed web interfaces have 'Low' trust level due to client-side vulnerability potential, though not explicitly stated in security model."},
+    {"data_flows_description" : "Source Reference: Figure 3 'Data Flow Diagrams' and Section 4.1 'Transaction Lifecycle'. Extraction Logic: Traced data movements from workflow descriptions and sequence diagrams. Governance proposal flows extracted from Section 4.2, staking flows from Section 3.4. Risk Assessment Basis: Security properties assigned based on Table 2 'Data Sensitivity Matrix' and CIA requirements in Section 5.4. Scope Decisions: Included only core protocol flows, excluded debugging and monitoring data paths. Assumptions Made: Assumed all cross-chain communications require integrity validation, though specific validation mechanisms weren't detailed for every flow."},
+    {"trust_boundaries_description" : "Source Reference: Section 5.2 'Trust Model' and Figure 4 'Security Perimeter'. Extraction Logic: Identified boundaries at interfaces where trust assumptions change. On-chain/off-chain boundary from hybrid architecture description, wallet boundaries from user interaction models. Risk Assessment Basis: Validation requirements determined by Section 5.5 'Boundary Controls' which specifies cryptographic verification needs. Scope Decisions: Focused on security-critical boundaries, excluded internal component interfaces within same trust zone. Assumptions Made: Assumed user devices represent separate trust boundary from protocol infrastructure, based on threat model implications rather than explicit statements."},
+    {"behaviors_description" : "Source Reference: Section 4 'Protocol Operations' and Table 3 'User Actions Matrix'. Extraction Logic: Catalogued behaviors from user journey flows and protocol interaction descriptions. Governance voting from Section 4.2, asset transfers from Section 3.5. Risk Assessment Basis: Impact levels derived from Section 5.6 'Risk Assessment' categorizing irreversible vs. reversible actions. High-risk behaviors identified by potential for permanent state changes or economic loss. Scope Decisions: Included active user-initiated behaviors, excluded automated system behaviors and passive monitoring. Assumptions Made: Classified emergency pause actions as 'High' risk due to protocol availability impact, though specific risk level wasn't explicitly stated in documentation."}
+  ]
 }
 
 
@@ -367,12 +403,40 @@ For each identified threat, generate a JSON object including:
 * You may output multiple STRIDE threats for a single behavior if applicable.
 * For each threat, include a `"assumptions"` field: an array of short, concrete statements describing the conditions assumed in order for the threat to exist.
 
+5. **Individual Threat Analysis Rationale**: For each threat identified, provide a specific judgment basis explaining:
+   - **Threat ID**: The unique identifier of the threat being analyzed
+   - **Threat Identification Logic**: Why this specific STRIDE threat was identified for the particular behavior/component combination
+   - **Risk Level Justification**: What specific factors from the architecture analysis or documentation justified the assigned risk level for this threat
+   - **Attack Vector Analysis**: How the identified attack surfaces and trust boundary vulnerabilities specifically support this threat scenario
+   - **Mitigation Reasoning**: Why the proposed mitigation strategy is appropriate for this specific threat's security gaps
+   - **Documentation Traceability**: Which specific architectural elements or documentation references support this individual threat identification
+
+   Each threat should have its own dedicated judgment basis that explains the reasoning specific to that threat.
+
 ---
 
-**End your output with:**
+**Expected Output Format:**
 
 {
-  "threats": [ ... ]
+  "threats": [ ... ],
+  "Threat_Analysis_Judgment_Basis": [
+    {
+      "threat_id": 1,
+      "threat_identification_logic": "This Spoofing threat was identified because Actor 1 (External User) can interact with Component 9 (Governance Contract) through Behavior 5 (Vote on Proposal) without explicit authentication mechanisms mentioned in the architectural analysis. The lack of signature verification in the governance process creates an opportunity for identity spoofing.",
+      "risk_level_justification": "Assigned High risk level because this threat involves an external actor targeting high-sensitivity governance assets. The potential impact includes unauthorized control over protocol decisions, which could lead to irreversible changes. The governance token asset has High sensitivity level in the architectural analysis.",
+      "attack_vector_analysis": "Attack surface identified through Data Flow 11 where vote data crosses the trust boundary between user wallet and governance contract. The trust boundary (ID 2) lacks validation requirements for vote authenticity. The attack complexity is Low as it only requires network access without authentication barriers.",
+      "mitigation_reasoning": "Technical control requiring signature-based authentication is appropriate because it directly addresses the authentication gap identified in the security analysis. This mitigation aligns with the High priority threat level and provides cryptographic verification that cannot be easily bypassed.",
+      "documentation_traceability": "Threat traced to Actor 1's capability 'Vote on Proposal' from behavior definitions, Component 9's Low trust level assessment indicating external dependency risks, and Asset 4's High sensitivity classification for governance tokens. Trust boundary analysis confirms insufficient validation at user-contract interface."
+    },
+    {
+      "threat_id": 2,
+      "threat_identification_logic": "This Tampering threat was identified because...",
+      "risk_level_justification": "Assigned Medium risk level because...",
+      "attack_vector_analysis": "Attack surface mapped through...",
+      "mitigation_reasoning": "Process control recommended because...",
+      "documentation_traceability": "Threat linked to specific architectural elements..."
+    }
+  ]
 }
 """
 
@@ -427,6 +491,17 @@ For each threat:
   * A security assumption or mitigation strategy
   * A STRIDE category (mapped to a checklist category)
   * A component or asset (from the threat_target)
+  
+3. **Individual Checklist Item Rationale**: For each checklist item generated, provide a specific judgment basis explaining:
+   - **Checklist Item ID**: The unique identifier of the checklist item being analyzed
+   - **Item Selection Logic**: Why this specific checklist item was generated from the threat analysis and what specific threat aspects it addresses
+   - **Priority Assignment Reasoning**: What factors determined the priority level (High/Medium/Low) for this specific checklist item
+   - **Category Mapping Justification**: How the STRIDE threat category was mapped to this checklist category and why that mapping is appropriate
+   - **Code Binding Assessment**: Whether this item requires code-level verification and why, based on the technical nature of the specific threat
+   - **Evidence Requirements Analysis**: Why the specific evidence type was chosen for this item and how it validates the security control
+   - **Actionability Verification**: How this item provides clear, executable steps for security verification rather than vague guidelines
+
+   Each checklist item should have its own dedicated judgment basis that explains the reasoning specific to that item.
 
 ---
 
@@ -470,9 +545,35 @@ For each threat:
 
 ---
 
-**Expected Output**:
 
-Return a JSON array of checklist items. The number may vary based on how many meaningful items can be derived from the input.
+
+---
+
+**Expected Output Format**:
+
+{
+  "checklist_items": [ ... ],
+  "Checklist_Generation_Judgment_Basis": [
+    {
+      "checklist_item_id": 1,
+      "item_selection_logic": "This checklist item was generated from Threat ID 1 (Spoofing threat) which identified authentication gaps in the governance voting process. The item specifically addresses the mitigation strategy 'Require signature-based vote authentication' by creating a verifiable control to ensure forum accounts are tied to on-chain identities.",
+      "priority_assignment_reasoning": "Assigned High priority because this item directly addresses a High-severity Spoofing threat targeting governance assets. The threat involves external actors potentially controlling protocol decisions, which has critical business impact and regulatory implications for decentralized governance.",
+      "category_mapping_justification": "Mapped to Authentication category because the underlying threat is Spoofing, which fundamentally involves identity verification failures. The control verifies user identity through cryptographic proof rather than relying on traditional username/password mechanisms.",
+      "code_binding_assessment": "Requires code binding because the authentication mechanism involves smart contract verification of on-chain identity signatures. The implementation must be reviewed at the code level to ensure proper cryptographic validation and prevent bypass vulnerabilities.",
+      "evidence_requirements_analysis": "Requires screenshot or audit log evidence because authentication controls must be demonstrable through user interface verification and system logs. This evidence type provides both visual proof of the control implementation and traceable records for audit purposes.",
+      "actionability_verification": "Provides clear verification steps: check forum login process, verify on-chain identity linkage, validate authentication requirements. The item specifies exact components (forum system, authentication module) and measurable outcomes (linked identity verification)."
+    },
+    {
+      "checklist_item_id": 2,
+      "item_selection_logic": "This checklist item was generated from...",
+      "priority_assignment_reasoning": "Assigned Medium priority because...",
+      "category_mapping_justification": "Mapped to Data Integrity category because...",
+      "code_binding_assessment": "Does not require code binding because...",
+      "evidence_requirements_analysis": "Requires configuration documentation because...",
+      "actionability_verification": "Provides specific verification steps..."
+    }
+  ]
+}
 """
 
 
@@ -507,6 +608,17 @@ Generate a **final, corrected JSON checklist** that:
    * Fully schema-compliant
    * Consistent in fields like ID, references, categories, and technical accuracy
 
+5. **Individual Checklist Correction Rationale**: For each corrected/retained checklist item, provide a specific judgment basis explaining:
+   - **Checklist Item ID**: The unique identifier of the checklist item being analyzed
+   - **Item Selection Logic**: Why this specific checklist item was generated from the threat analysis and what specific threat aspects it addresses
+   - **Priority Assignment Reasoning**: What factors determined the priority level (High/Medium/Low) for this specific checklist item
+   - **Category Mapping Justification**: How the STRIDE threat category was mapped to this checklist category and why that mapping is appropriate
+   - **Code Binding Assessment**: Whether this item requires code-level verification and why, based on the technical nature of the specific threat
+   - **Evidence Requirements Analysis**: Why the specific evidence type was chosen for this item and how it validates the security control
+   - **Actionability Verification**: How this item provides clear, executable steps for security verification rather than vague guidelines
+
+   Each checklist item should have its own dedicated judgment basis that explains the reasoning specific to that item.
+
 ---
 
 **Strict Requirements:**
@@ -536,6 +648,26 @@ Generate a **final, corrected JSON checklist** that:
       "need_code_binding": true,
       "last_checked": null,
       "owner": "..."
+    }
+  ],
+  "Checklist_Generation_Judgment_Basis": [
+    {
+      "checklist_item_id": 1,
+      "item_selection_logic": "This checklist item was generated from Threat ID 1 (Spoofing threat) which identified authentication gaps in the governance voting process. The item specifically addresses the mitigation strategy 'Require signature-based vote authentication' by creating a verifiable control to ensure forum accounts are tied to on-chain identities.",
+      "priority_assignment_reasoning": "Assigned High priority because this item directly addresses a High-severity Spoofing threat targeting governance assets. The threat involves external actors potentially controlling protocol decisions, which has critical business impact and regulatory implications for decentralized governance.",
+      "category_mapping_justification": "Mapped to Authentication category because the underlying threat is Spoofing, which fundamentally involves identity verification failures. The control verifies user identity through cryptographic proof rather than relying on traditional username/password mechanisms.",
+      "code_binding_assessment": "Requires code binding because the authentication mechanism involves smart contract verification of on-chain identity signatures. The implementation must be reviewed at the code level to ensure proper cryptographic validation and prevent bypass vulnerabilities.",
+      "evidence_requirements_analysis": "Requires screenshot or audit log evidence because authentication controls must be demonstrable through user interface verification and system logs. This evidence type provides both visual proof of the control implementation and traceable records for audit purposes.",
+      "actionability_verification": "Provides clear verification steps: check forum login process, verify on-chain identity linkage, validate authentication requirements. The item specifies exact components (forum system, authentication module) and measurable outcomes (linked identity verification)."
+    },
+    {
+      "checklist_item_id": 2,
+      "item_selection_logic": "This checklist item was corrected/retained because...",
+      "priority_assignment_reasoning": "Priority level maintained/adjusted because...",
+      "category_mapping_justification": "Category mapping validated because...",
+      "code_binding_assessment": "Code binding requirement confirmed because...",
+      "evidence_requirements_analysis": "Evidence type validated because...",
+      "actionability_verification": "Verification steps confirmed as actionable because..."
     }
   ]
 }
