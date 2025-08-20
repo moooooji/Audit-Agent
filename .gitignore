@@ -71,7 +71,6 @@ instance/
 
 # Project specific
 cache/       # LLM cache directory (can be large)
-dataset/     # Input documentation (can be large)
 results/     # Output directory for analysis results
 
 # Sphinx documentation
@@ -174,3 +173,5 @@ db/
 db/chroma_db/
 *.bin
 *.sqlite3
+
+dataset/     # Input documentation (can be large)

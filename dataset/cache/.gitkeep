@@ -1,0 +1,2 @@
+# This file ensures the cache directory exists
+# Cache files are ignored by .gitignore but the directory structure is preserved
