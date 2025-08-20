@@ -1,4 +1,4 @@
-# WrappedThreatPromptor
+# Threat Modeling Agent
 
 > **Multi-Agent Threat Modeling System** powered by LangGraph and Google Gemini
 
